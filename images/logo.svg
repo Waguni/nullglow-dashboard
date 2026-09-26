@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="38%" cy="30%" r="85%">
+      <stop offset="0" stop-color="#10261c"/>
+      <stop offset=".55" stop-color="#070d0c"/>
+      <stop offset="1" stop-color="#04070a"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b8ffd7"/>
+      <stop offset=".5" stop-color="#7cffb2"/>
+      <stop offset="1" stop-color="#2be38f"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="55"/></filter>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#ffffff" stroke-opacity=".05" stroke-width="1"/>
+    </pattern>
+    <clipPath id="tile"><rect x="16" y="16" width="480" height="480" rx="112"/></clipPath>
+  </defs>
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#bg)"/>
+  <g clip-path="url(#tile)">
+    <rect x="16" y="16" width="480" height="480" fill="url(#grid)"/>
+    <circle cx="150" cy="110" r="150" fill="#2be38f" opacity=".22" filter="url(#soft)"/>
+  </g>
+  <rect x="16.5" y="16.5" width="479" height="479" rx="111.5" fill="none" stroke="#ffffff" stroke-opacity=".10"/>
+  <!-- Autarkie-Ring (offen unten links, wie in der Energie-Karte) -->
+  <circle cx="256" cy="262" r="148" fill="none" stroke="#ffffff" stroke-opacity=".07" stroke-width="16"/>
+  <circle cx="256" cy="262" r="148" fill="none" stroke="url(#ring)" stroke-width="16" stroke-linecap="round"
+          stroke-dasharray="720 1000" transform="rotate(150 256 262)" filter="url(#glow)"/>
+  <!-- Partikelstrom -->
+  <g fill="#b8ffd7" filter="url(#glow)">
+    <circle cx="92" cy="404" r="7"/><circle cx="122" cy="380" r="5.5" opacity=".85"/><circle cx="146" cy="357" r="4.5" opacity=".7"/>
+    <circle cx="166" cy="336" r="3.5" opacity=".55"/>
+  </g>
+  <!-- Haus mit Blitz -->
+  <g fill="none" stroke="#e8f5ee" stroke-width="15" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M178 262 L256 196 L334 262"/>
+    <path d="M198 248 V330 H314 V248"/>
+  </g>
+  <path d="M268 250 L236 296 H258 L248 336 L284 284 H262 Z" fill="#7cffb2" filter="url(#glow)"/>
+</svg>

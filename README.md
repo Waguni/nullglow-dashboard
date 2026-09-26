@@ -1,3 +1,5 @@
+<p align="center"><img src="https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/banner.png" alt="Nullglow Dashboard für Home Assistant" width="100%"></p>
+
 # Nullglow Dashboard für Home Assistant
 
 Dunkles Glas-Dashboard mit leuchtendem Energiefluss, Lichtkacheln in der echten Lampenfarbe, Raumklima mit
@@ -18,6 +20,29 @@ Einrichtungs-Assistenten. Läuft auf dem **Handy** (HA-App) und auf einem **Full
 
 Dazu: Raum-Pop-ups (Licht lange drücken oder Temperatur antippen), Hintergrund in Wetterfarben und ein
 **Nordlicht**, das mit deiner Solarleistung stärker wird. Seiten ohne passende Geräte erscheinen gar nicht erst.
+
+## Vorschau
+
+<sub>Alle Bilder mit Demo-Daten.</sub>
+
+**Übersicht** — Uhr, Wetter, Energiefluss, Licht, Klima, Rollläden, Personen, Termine
+![Übersicht](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/uebersicht.jpg)
+
+**Energie** — Partikelströme, Phasen, Solar mit Prognose, 24 h, Monatsbilanz
+![Energie](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/energie.jpg)
+
+**Licht** und **Klima**
+![Licht](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/licht.jpg)
+![Klima](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/klima.jpg)
+
+**Raum-Pop-up** (Licht lange drücken oder Temperatur antippen)
+![Raum-Pop-up](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/raum-popup.jpg)
+
+**Auf dem Handy**
+![Handy](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/handy.jpg)
+
+**Einrichtungs-Assistent** — Voraussetzungen, Seiten, Räume; Energie-Punkte zuweisen und benennen
+![Assistent](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/assistent.jpg)
 
 ## Voraussetzungen
 
