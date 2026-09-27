@@ -21,12 +21,14 @@ Einrichtungs-Assistenten. Läuft auf dem **Handy** (HA-App) und auf einem **Full
 Dazu: Raum-Pop-ups (Licht lange drücken oder Temperatur antippen), Hintergrund in Wetterfarben und ein
 **Nordlicht**, das mit deiner Solarleistung stärker wird. Seiten ohne passende Geräte erscheinen gar nicht erst.
 
-## Drei Designs
+## 13 Designs
 
-**Nullglow** (Grün), **Violetnoir** (Violett) und **Halcyon** (Türkis auf Petrol) — gleiche Kacheln und Effekte, eigener
-Akzent, Hintergrund und Schrift. Auswahl im Einrichtungs-Assistenten, jederzeit umstellbar.
+**Nullglow** (Grün), **Violetnoir** (Violett), **Halcyon** (Türkis), **Emberglow** (Orange), **Aurum** (Gold), **Sakura** (Rosé),
+**Nocturne** (Blau), **Glacier** (Eisblau), **Chartreuse** (Limette), **Neonwave** (Magenta), **Graphite** (Silber),
+**Nebula** (Indigo) und **Dune** (Sand) — gleiche Kacheln und Effekte, eigener Akzent, Hintergrund und Schrift.
+Auswahl im Einrichtungs-Assistenten, jederzeit umstellbar.
 
-![Nullglow, Violetnoir, Halcyon](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs.jpg)
+![13 Designs](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs.jpg)
 
 ## Vorschau
 
@@ -76,7 +78,7 @@ Der Assistent prüft das und zeigt fehlende Teile mit Link an.
    2. Seiten an/aus
    3. Räume: ausblenden (Auge), sortieren (Pfeile), antippen für Name, Symbol, Hauptlicht, Temperatur-Sensor
    4. Energie: Punkte zuweisen und **benennen** (Solar, Netz, jeder Verbraucher mit Name und Symbol)
-   5. **Design** (Nullglow, Violetnoir, Halcyon), Wetter, Personen, Kameras, Kalender, Steckdose des Wandmonitors
+   5. **Design** (13 Farbvarianten), Wetter, Personen, Kameras, Kalender, Steckdose des Wandmonitors
 6. **Speichern** → Namen und Symbol für das Dashboard wählen → fertig.
 
 Ändern kannst du alles später über **⋮ → Dashboard bearbeiten** (öffnet den Assistenten wieder).
