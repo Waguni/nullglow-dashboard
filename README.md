@@ -124,7 +124,8 @@ zuweisen, umbenennen und sortieren.
   Raumnamen auf zwei Etagen bekommen die Etage dahinter, z. B. „Flur · OG“). Abschaltbar im Assistenten.
 - **Batteriespeicher** (Anker Solix, Zendure, EcoFlow, Hausspeicher …): erscheint im Energiefluss unter dem Haus — Ladestand als
   leuchtender Ring (Amber unter 15 %, pulsiert beim Laden), Ströme Solar/Netz → Akku und Akku → Haus, Symbol mit Füllstand;
-  Akku-Strom zählt zur Autarkie. Steht der Speicher im HA-Energie-Dashboard, wird er automatisch erkannt; sonst im Assistenten
+  Akku-Strom zählt zur Autarkie. Auf der **Energie-Seite** eine Speicher-Kachel in der Solar-Spalte (Ladestand, lädt/entlädt, 24-h-Kurve)
+  und in „Leistung 24 h“ die Flächen „Akku entladen“ / „Akku laden“ — der Hausverbrauch rechnet den Akku mit. Steht der Speicher im HA-Energie-Dashboard, wird er automatisch erkannt; sonst im Assistenten
   (4. Energie → „Batteriespeicher“) Leistung und Ladestand wählen. Anker meldet Laden positiv → „Vorzeichen umdrehen“ (wird vorgeschlagen).
 - **Live-Kameras:** im Assistenten (5.) eine oder mehrere Kameras für die Übersicht wählen; die Kameras-Seite kann ebenfalls
   live statt Standbild zeigen. Der Stream läuft nur, solange die Karte angezeigt wird (nichts im Hintergrund). Am Wandmonitor

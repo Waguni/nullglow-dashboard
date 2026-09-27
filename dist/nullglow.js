@@ -4499,7 +4499,8 @@ window.__NULLGLOW_THEMES = {
   class NullglowPowerCard extends HTMLElement {
     setConfig(config) {
       if (!config?.grid || !config?.solar) throw new Error("nullglow-power-card: grid und solar angeben");
-      this._cfg = { hours: 24, warn: 3000, ...config, grid: [].concat(config.grid) };
+      this._cfg = { hours: 24, warn: 3000, ...config, grid: [].concat(config.grid),
+        battery: [].concat(config.battery || []), battery_charge: [].concat(config.battery_charge || []) };
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
       card.className = "card";
@@ -4523,7 +4524,7 @@ window.__NULLGLOW_THEMES = {
       if (!this._hass || this._loading) return;
       this._loading = true;
       this._at = Date.now();
-      const ids = [...this._cfg.grid, this._cfg.solar];
+      const c = this._cfg, ids = [...c.grid, c.solar, ...c.battery, ...c.battery_charge];
       try {
         const res = await this._hass.callWS({
           type: "recorder/statistics_during_period", start_time: new Date(Date.now() - this._cfg.hours * 3600e3).toISOString(),
@@ -4536,8 +4537,12 @@ window.__NULLGLOW_THEMES = {
           cnt.set(p.start, (cnt.get(p.start) || 0) + 1);
         }
         for (const p of res[this._cfg.solar] || []) if (p.mean != null) solar.set(p.start, Math.max(0, p.mean));
+        const bat = new Map(), bk = c.battery_invert ? -1 : 1;
+        for (const id of c.battery) for (const p of res[id] || []) if (p.mean != null) bat.set(p.start, (bat.get(p.start) || 0) + bk * p.mean);
+        for (const id of c.battery_charge) for (const p of res[id] || []) if (p.mean != null) bat.set(p.start, (bat.get(p.start) || 0) - Math.abs(p.mean));
+        const gk = c.grid_invert ? -1 : 1;
         this._pts = [...grid.keys()].filter((t) => cnt.get(t) === this._cfg.grid.length).sort((a, b) => a - b)
-          .map((t) => ({ t, net: grid.get(t), sol: solar.get(t) ?? 0 }));
+          .map((t) => ({ t, net: gk * grid.get(t), sol: solar.get(t) ?? 0, bat: bat.get(t) ?? 0 }));
       } catch (e) {
         this._pts = null;
       }
@@ -4550,12 +4555,14 @@ window.__NULLGLOW_THEMES = {
       const g = this._cfg.grid.map((id) => parseFloat(s[id]?.state));
       const sol = Math.max(0, parseFloat(s[this._cfg.solar]?.state) || 0);
       if (!g.every(isFinite)) return null;
-      return { t: Date.now(), net: g.reduce((a, b) => a + b, 0), sol };
+      const c = this._cfg, num = (id) => parseFloat(s[id]?.state) || 0;
+      const bat = c.battery.reduce((a, id) => a + (c.battery_invert ? -1 : 1) * num(id), 0) - c.battery_charge.reduce((a, id) => a + Math.abs(num(id)), 0);
+      return { t: Date.now(), net: (c.grid_invert ? -1 : 1) * g.reduce((a, b) => a + b, 0), sol, bat };
     }
 
     _render() {
       if (!this._card) return;
-      const A = accRgb(this);
+      const A = accRgb(this), A2 = accRgb(this, "--rgb-ng-info", "107, 227, 255");   // Akku: Info-Farbe des Designs
       if (!this._pts || this._pts.length < 3) {
         this._card.innerHTML = `<div class="msg">${this._pts === null ? "Keine Statistik verfügbar" : "Leistungsverlauf lädt …"}</div>`;
         return;
@@ -4563,7 +4570,14 @@ window.__NULLGLOW_THEMES = {
       const pts = this._pts.slice();
       const cur = this._now();
       if (cur) pts.push(cur);
-      for (const p of pts) { p.house = Math.max(0, p.net + p.sol); p.self = Math.min(p.sol, p.house); }
+      const hasB = this._cfg.battery.length > 0;
+      for (const p of pts) {   // Akku: laden zuerst aus Solar; ins Haus erst Solar, dann Akku, Rest Netz
+        const dis = Math.max(0, p.bat || 0), chg = Math.max(0, -(p.bat || 0)), sToB = Math.min(chg, p.sol);
+        p.house = Math.max(0, p.net + p.sol + (p.bat || 0));
+        p.self = Math.min(p.sol - sToB, p.house);
+        p.fromB = p.self + Math.min(dis, Math.max(0, p.house - p.self));   // Oberkante „aus dem Akku“
+        p.exp = Math.max(0, -p.net); p.chg = chg;
+      }
 
       // Kennzahlen
       const houses = pts.map((p) => p.house);
@@ -4575,7 +4589,7 @@ window.__NULLGLOW_THEMES = {
 
       this._card.innerHTML = `
         <div class="top"><span class="title">Leistung · ${this._cfg.hours} h</span>
-          <span class="sub">Hausverbrauch = Netz + Solar</span></div>
+          <span class="sub">Hausverbrauch = Netz + Solar${this._cfg.battery.length ? " ± Akku" : ""}</span></div>
         <div class="kpis">
           <div class="kpi"><span class="v${nowH >= this._cfg.warn ? " warn" : ""}">${nv}<small>${nu}</small></span><span class="l">jetzt</span></div>
           <div class="kpi"><span class="v">${pv}<small>${pu}</small></span><span class="l">Spitze · ${hhmm(peak.t)}</span></div>
@@ -4586,6 +4600,7 @@ window.__NULLGLOW_THEMES = {
           <span><i style="background:rgba(${A},.55)"></i>Solar genutzt</span>
           <span><i style="background:rgba(var(--rgb-ng-txt, 232, 245, 238), .16)"></i>Netzbezug</span>
           <span><i style="background:rgba(${A},.22)"></i>Einspeisung</span>
+          ${hasB ? `<span><i style="background:rgba(${A2},.5)"></i>Akku entladen</span><span><i style="background:rgba(${A2},.2)"></i>Akku laden</span>` : ""}
           <span><i class="line" style="background:rgba(var(--rgb-ng-txt, 232, 245, 238), .85)"></i>Verbrauch</span>
         </div>`;
       const box = this._card.querySelector(".chart");
@@ -4594,7 +4609,7 @@ window.__NULLGLOW_THEMES = {
 
       const padL = 44, padR = 6, padT = 6, padB = 16;
       const t0 = Date.now() - this._cfg.hours * 3600e3, t1 = Date.now();
-      const minNet = Math.min(0, ...pts.map((p) => p.net));
+      const minNet = Math.min(0, ...pts.map((p) => -(p.exp + p.chg)));
       let hi = Math.max(500, ...houses) * 1.08;
       const step = hi > 4000 ? 2000 : hi > 2000 ? 1000 : 500;
       hi = Math.ceil(hi / step) * step;
@@ -4608,7 +4623,9 @@ window.__NULLGLOW_THEMES = {
       const zero = pts.map((p, i) => [X[i], y(0)]);
       const selfTop = pts.map((p, i) => [X[i], y(p.self)]);
       const houseTop = pts.map((p, i) => [X[i], y(p.house)]);
-      const exportBot = pts.map((p, i) => [X[i], y(Math.min(0, p.net))]);
+      const exportBot = pts.map((p, i) => [X[i], y(-p.exp)]);
+      const chargeBot = pts.map((p, i) => [X[i], y(-(p.exp + p.chg))]);
+      const batTop = pts.map((p, i) => [X[i], y(p.fromB)]);
 
       // Raster: Nulllinie, Stufen, Stunden-Beschriftung
       let grid = "";
@@ -4635,8 +4652,9 @@ window.__NULLGLOW_THEMES = {
             </linearGradient>
           </defs>
           ${grid}
-          <path d="${area(houseTop, selfTop)}" style="fill:rgba(var(--rgb-ng-txt, 232, 245, 238), .10)"/>
+          <path d="${area(houseTop, hasB ? batTop : selfTop)}" style="fill:rgba(var(--rgb-ng-txt, 232, 245, 238), .10)"/>
           <path d="${area(selfTop, zero)}" fill="url(#ngpS)"/>
+          ${hasB ? `<path d="${area(batTop, selfTop)}" fill="rgba(${A2},.42)"/><path d="${area(exportBot, chargeBot)}" fill="rgba(${A2},.2)"/>` : ""}
           <path d="${area(zero, exportBot)}" fill="rgba(${A},.18)"/>
           <path d="${path(selfTop)}" fill="none" stroke="rgba(${A},.8)" stroke-width="1.2" stroke-linejoin="round"/>
           <path d="${path(houseTop)}" fill="none" style="stroke:rgba(var(--rgb-ng-txt, 232, 245, 238), .85)" stroke-width="1.5" stroke-linejoin="round"/>
@@ -6665,6 +6683,26 @@ ha-tile-info {
         rows: grid.map((e, i) => ({ entity: e, name: grid.length === 3 ? `L${i + 1}` : `${i + 1}` })), grid_options: { columns: "full", rows: 2 } });
       S.push({ type: "grid", cards });
     }
+    const bat = list(energy.battery), bcharge = list(energy.battery_charge);
+    let batCard = null;
+    if (bat.length) {
+      const soc = energy.battery_soc && hass.states[energy.battery_soc] ? energy.battery_soc : null;
+      const B = `{% set b = ${sumJ(bat, energy.battery_invert ? -1 : 1)}${bcharge.length ? " - (" + sumJ(bcharge) + ")" : ""} %}`;
+      const Sx = soc ? `{% set s = states('${soc}') | float(0) %}` : "{% set s = none %}";
+      const bw = "{{ '{:,.0f}'.format(b | abs).replace(',', 'X').replace('.', ',').replace('X', '.') }} W";
+      const icon = energy.battery_icon || `${B}${Sx}{% if s is none %}mdi:home-battery-outline{% else %}{% set l = ((s / 10) | round(0) | int) * 10 %}`
+        + "{% if b < -3 %}mdi:battery-charging-{{ [l, 10] | max }}{% elif l >= 100 %}mdi:battery{% elif l <= 0 %}mdi:battery-outline"
+        + "{% else %}mdi:battery-{{ l }}{% endif %}{% endif %}";
+      // kompakt (eine Kachelreihe) in der Solar-Spalte — ein eigener Abschnitt schöbe die Monatskarte unter die Navigation
+      const hero = { type: "custom:mushroom-template-card",
+        primary: soc ? `${Sx}{{ s | round(0) | int }} % · ${energy.battery_name || "Speicher"}` : `${B}${bw}`,
+        secondary: `${B}{{ 'lädt ' if b < -3 else ('entlädt ' if b > 3 else 'bereit') }}{% if b | abs > 3 %}${bw}{% endif %}`,
+        icon, icon_color: `${B}${Sx}{{ 'amber' if s is not none and s < 15 else ('green' if b | abs > 3 else 'grey') }}`,
+        tap_action: { action: "more-info", entity: soc || bat[0] },
+        card_mod: { style: `ha-card { --ng-state: ${B}${Sx}{{ 'warn' if s is not none and s < 15 else ('charge' if b < -3 else ('on' if b > 3 else 'off')) }}; }\n` } };
+      batCard = { type: "custom:nullglow-spark-card", entity: soc || bat[0], min_span: soc ? 20 : 100, zero_based: true,
+        grid_options: { columns: "full", rows: 1 }, card: hero };
+    }
     if (solar.length) {
       const P = `{% set p = ${sumJ(solar)} %}`;
       const today = list(energy.today?.solar);
@@ -6679,9 +6717,12 @@ ha-tile-info {
         if (id) cards.push({ type: "custom:mushroom-template-card", entity: id, primary: `{{ '{:,.1f}'.format(states('${id}') | float(0)).replace(',', 'X').replace('.', ',').replace('X', '.') }} kWh`,
           secondary: label, icon, icon_color: "grey", tap_action: { action: "more-info" }, grid_options: { columns: 6 } });
       }
+      if (batCard) cards.push(batCard);
       S.push({ type: "grid", cards });
-    }
+    } else if (batCard) S.push({ type: "grid", cards: [heading(energy.battery_name || "Speicher", "mdi:home-battery-outline"), batCard] });
     if (grid.length || solar.length) S.push({ type: "grid", column_span: 2, cards: [{ type: "custom:nullglow-power-card", grid, ...(solar[0] ? { solar: solar[0] } : {}),
+      ...(energy.grid_invert ? { grid_invert: true } : {}),
+      ...(bat.length ? { battery: bat, ...(energy.battery_invert ? { battery_invert: true } : {}), ...(bcharge.length ? { battery_charge: bcharge } : {}) } : {}),
       hours: 24, grid_options: { columns: "full", rows: 6 } }] });
     if (grid.length && energy.today) S.push({ type: "grid", column_span: 2, cards: [{ type: "custom:nullglow-month-card",
       ...(list(energy.today.solar)[0] ? { solar: list(energy.today.solar)[0] } : {}), grid, price: energy.today.price || 0.35,
