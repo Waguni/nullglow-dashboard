@@ -6,18 +6,23 @@ window.__NG_BUNDLE = true;
 
 // ───── nullglow-fonts.js ─────
 (() => {
-  const id = "nullglow-fonts";
-  if (document.getElementById(id)) return;
-  const link = document.createElement("link");
-  link.id = id;
-  link.rel = "stylesheet";
-  link.href =
-    "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap";
-  document.head.appendChild(link);
+  const urls = [
+    "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap",
+    "https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap",
+    "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+];
+  urls.forEach((href, i) => {
+    const id = `nullglow-fonts-2-${i}`;
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id; link.rel = "stylesheet"; link.href = href;
+    document.head.appendChild(link);
+  });
 })();
 
-// Theme „nullglow“ (aus ha/themes/nullglow/nullglow.yaml, dunkler Modus flach) — setzt nullglow-strategy.js ein
-window.__NULLGLOW_THEME = {
+// Designs (aus ha/themes/nullglow/nullglow.yaml, dunkler Modus flach) — setzt nullglow-strategy.js ein
+window.__NULLGLOW_THEMES = {
+"nullglow": {
 "primary-font-family": "'Space Grotesk', system-ui, sans-serif",
 "paper-font-common-base_-_font-family": "var(--primary-font-family)",
 "paper-font-body1_-_font-family": "var(--primary-font-family)",
@@ -167,7 +172,7 @@ window.__NULLGLOW_THEME = {
 "bubble-box-shadow": "inset 0 0 0 1px var(--ng-line)",
 "bubble-border": "none",
 "bubble-pop-up-background-color": "var(--ng-bg-elev)",
-"bubble-backdrop-background-color": "rgba(5, 7, 10, 0.6)",
+"bubble-backdrop-background-color": "rgba(var(--rgb-ng-bg), 0.6)",
 "bubble-horizontal-buttons-stack-background-color": "var(--ng-bg)",
 "card-mod-theme": "nullglow",
 "card-mod-card": "ha-card {\n  position: relative;\n  transition: transform .14s cubic-bezier(.22,1,.36,1);\n}\nha-card:active:not(:has(mushroom-slider:active)) { transform: scale(.98); }\nha-card::before {\n  content: \"\"; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;\n  opacity: 0; transition: opacity .26s cubic-bezier(.22,1,.36,1);\n  background: radial-gradient(130% 150% at 0% 0%, rgba(var(--ng-glow-rgb, 0, 0, 0), .14), transparent 62%);\n  box-shadow: inset 0 0 0 1px rgba(var(--ng-glow-rgb, 0, 0, 0), .34), 0 0 26px -10px rgba(var(--ng-glow-rgb, 0, 0, 0), .65);\n}\n/* Lebendige Geräte-Symbole: Effekte als ::after am Symbol-Rahmen (ha-tile-icon = Mushroom-Template, mushroom-shape-icon =\n   Mushroom-Climate); Klimaanlagen setzen zusätzlich --ng-fan (Umdrehungsdauer je Lüfterstufe) -> Lüfter-Symbol dreht */\nha-tile-icon, mushroom-shape-icon { position: relative; }\nha-tile-icon::after, mushroom-shape-icon::after {\n  content: \"\"; position: absolute; pointer-events: none; opacity: 0; transition: opacity .4s ease;\n}\n@container style(--ng-state: on) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { filter: drop-shadow(0 0 6px rgba(var(--rgb-ng-acc), .75)); }\n}\n/* Waschmaschine läuft: Lichtkomet kreist um die Trommel, Symbol zittert fein (Schleudern) */\n@container style(--ng-state: wash) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-shake .16s linear infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 13px; height: 13px; left: 50%; top: 50%; margin: -5px 0 0 -6.5px; border-radius: 50%;\n    background: conic-gradient(from 0deg, transparent 0 55%, rgba(var(--rgb-ng-acc), .15) 70%, rgba(var(--rgb-ng-acc), 1) 97%, transparent 100%);\n    -webkit-mask: radial-gradient(circle, transparent 0 4.2px, #000 4.6px 6.5px, transparent 6.8px);\n            mask: radial-gradient(circle, transparent 0 4.2px, #000 4.6px 6.5px, transparent 6.8px);\n    filter: drop-shadow(0 0 3px rgba(var(--rgb-ng-acc), .9));\n    animation: ng-spin .7s linear infinite;\n  }\n}\n@container style(--ng-state: charge) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-pulse 1.6s ease-in-out infinite; }\n}\n/* Heizt: Wärmewellen steigen über dem Symbol auf (♨) */\n@container style(--ng-state: heat) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-warn); opacity: 1; }\n  ha-state-icon { animation: ng-glow-warm 2.4s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 20px; height: 16px; left: 50%; bottom: 84%; margin-left: -10px;\n    background: rgba(var(--rgb-ng-warn), .95);\n    -webkit-mask: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><g fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'><path d='M4 16c-2-2 2-4 0-6s2-4 0-6s1-3 0-4'/><path d='M10 12c-2-2 2-4 0-6s2-4 0-6'/><path d='M16 16c-2-2 2-4 0-6s2-4 0-6s1-3 0-4'/></g></svg>\") 0 0 / 20px 16px repeat-y, linear-gradient(to top, #000 25%, transparent 100%);\n    -webkit-mask-composite: source-in; mask-composite: intersect;\n    filter: drop-shadow(0 0 2.5px rgba(var(--rgb-ng-warn), .8));\n    animation: ng-rise 1.7s linear infinite;\n  }\n}\n/* Kühlt: Schneeflocken schweben aus dem Gerät nach unten */\n@container style(--ng-state: cool) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-info); opacity: 1; }\n  ha-state-icon { animation: ng-glow-cool 2.8s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 22px; height: 18px; left: 50%; top: 86%; margin-left: -11px;\n    background: rgba(var(--rgb-ng-info), .95);\n    -webkit-mask: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 20'><g stroke='black' stroke-width='1.1' stroke-linecap='round'><path d='M5 1v5M2.8 2.2l4.4 2.6M2.8 4.8l4.4-2.6'/><path d='M16 7v5M13.8 8.2l4.4 2.6M13.8 10.8l4.4-2.6'/><path d='M9 13.5v4M7.3 14.5l3.4 2M7.3 16.5l3.4-2'/></g></svg>\") 0 0 / 22px 20px repeat-y, linear-gradient(to bottom, #000 25%, transparent 100%);\n    -webkit-mask-composite: source-in; mask-composite: intersect;\n    filter: drop-shadow(0 0 2.5px rgba(var(--rgb-ng-info), .8));\n    animation: ng-fall 2.6s linear infinite, ng-sway 3s ease-in-out infinite;\n  }\n}\n/* Lüfter dreht nur bei echten Lüfterstufen der Klimaanlagen (tools/build-klima-view.py setzt 2.4s … .45s, sonst 0s).\n   Früher lief ng-spin mit 0 s Dauer endlos auch bei Heizungen -> Stil-Neuberechnung bei jedem Bild. */\n@container (style(--ng-state: heat) or style(--ng-state: cool)) and (style(--ng-fan: 2.4s) or style(--ng-fan: 1.8s) or style(--ng-fan: 1.1s) or style(--ng-fan: .7s) or style(--ng-fan: .45s)) {\n  ha-state-icon { animation: ng-spin var(--ng-fan) linear infinite, var(--ng-glow-anim) !important; }\n}\n@container style(--ng-state: heat) { ha-state-icon { --ng-glow-anim: ng-glow-warm 2.4s ease-in-out infinite; } }\n@container style(--ng-state: cool) { ha-state-icon { --ng-glow-anim: ng-glow-cool 2.8s ease-in-out infinite; } }\n@container style(--ng-state: warn) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-warn); opacity: 1; }\n}\n@container style(--ng-state: crit) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-danger); opacity: 1; }\n  ha-state-icon { animation: ng-alarm 1.4s ease-in-out infinite; }\n}\n@container style(--ng-state: idle) {\n  mushroom-card { opacity: .45; }\n}\n/* Sauger reinigt: Roboter schlingert auf seiner Bahn, ein Lichtkomet zieht die Reinigungsrunde um ihn */\n@container style(--ng-state: clean) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-drive 3.2s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 32px; height: 32px; left: 50%; top: 50%; margin: -16px 0 0 -16px; border-radius: 50%;\n    background: conic-gradient(from 0deg, transparent 0 58%, rgba(var(--rgb-ng-acc), .12) 74%, rgba(var(--rgb-ng-acc), .95) 98%, transparent 100%);\n    -webkit-mask: radial-gradient(circle, transparent 0 14.3px, #000 14.8px 16px, transparent 16.3px);\n            mask: radial-gradient(circle, transparent 0 14.3px, #000 14.8px 16px, transparent 16.3px);\n    filter: drop-shadow(0 0 3px rgba(var(--rgb-ng-acc), .9));\n    animation: ng-spin 2.6s linear infinite;\n  }\n}\n@container style(--ng-state: move) {\n  ha-state-icon { animation: ng-slide 1.1s ease-in-out infinite; }\n}\n@keyframes ng-pulse {\n  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(var(--rgb-ng-acc), 0)); }\n  50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(var(--rgb-ng-acc), .9)); }\n}\n@keyframes ng-alarm {\n  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(var(--rgb-ng-danger), 0)); }\n  50% { transform: scale(1.12); filter: drop-shadow(0 0 8px rgba(var(--rgb-ng-danger), .95)); }\n}\n@keyframes ng-slide { 0%, 100% { transform: translateY(1.5px); } 50% { transform: translateY(-1.5px); } }\n@keyframes ng-spin { to { transform: rotate(360deg); } }\n@keyframes ng-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(.4px, -.3px); } 50% { transform: translate(-.3px, .3px); } 75% { transform: translate(.3px, .4px); } }\n@keyframes ng-rise { from { -webkit-mask-position: 0 0, 0 0; } to { -webkit-mask-position: 0 -16px, 0 0; } }\n@keyframes ng-sway { 0%, 100% { transform: translateX(-1px); } 50% { transform: translateX(1.2px); } }\n@keyframes ng-fall { from { -webkit-mask-position: 0 0, 0 0; } to { -webkit-mask-position: 0 20px, 0 0; } }\n@keyframes ng-glow-warm { 0%, 100% { filter: drop-shadow(0 0 2px rgba(var(--rgb-ng-warn), .5)); } 50% { filter: drop-shadow(0 0 7px rgba(var(--rgb-ng-warn), .95)); } }\n@keyframes ng-glow-cool { 0%, 100% { filter: drop-shadow(0 0 2px rgba(var(--rgb-ng-info), .45)); } 50% { filter: drop-shadow(0 0 7px rgba(var(--rgb-ng-info), .9)); } }\n@keyframes ng-drive {\n  0%, 100% { transform: translate(-2px, 0) rotate(-10deg); } 25% { transform: translate(0, -1.5px) rotate(0); }\n  50% { transform: translate(2px, 0) rotate(10deg); } 75% { transform: translate(0, 1.5px) rotate(0); }\n}\n@media (prefers-reduced-motion: reduce) {\n  ha-state-icon, ha-tile-icon::after, mushroom-shape-icon::after { animation: none !important; }\n}\n",
@@ -183,6 +188,7 @@ window.__NULLGLOW_THEME = {
 "ng-txt-mute": "#5f6f68",
 "ng-acc": "#7cffb2",
 "ng-acc-2": "#2be38f",
+"ng-acc-3": "#0fb87a",
 "ng-acc-ink": "#04140d",
 "ng-acc-wash": "rgba(124, 255, 178, 0.10)",
 "ng-acc-line": "rgba(124, 255, 178, 0.30)",
@@ -194,20 +200,434 @@ window.__NULLGLOW_THEME = {
 "ng-glow-sm": "0 0 18px -2px rgba(124, 255, 178, 0.28)",
 "ng-blur": "blur(18px) saturate(140%)",
 "rgb-ng-acc": "124, 255, 178",
+"rgb-ng-acc-2": "43, 227, 143",
+"rgb-ng-acc-3": "15, 184, 122",
 "rgb-ng-warn": "255, 209, 102",
 "rgb-ng-danger": "255, 107, 107",
 "rgb-ng-info": "107, 227, 255",
 "rgb-ng-mute": "147, 167, 157",
-"lovelace-background": "radial-gradient(900px 600px at 12% -8%, var(--ng-amb-1, rgba(43, 227, 143, 0.16)), transparent 60%), radial-gradient(700px 520px at 96% 8%, var(--ng-amb-2, rgba(124, 255, 178, 0.10)), transparent 62%), radial-gradient(900px 700px at 50% 120%, var(--ng-amb-3, rgba(15, 184, 122, 0.12)), transparent 60%), radial-gradient(1300px 900px at 88% -25%, var(--ng-amb-4, rgba(0, 0, 0, 0)), transparent 65%), radial-gradient(120% 90% at 50% 0%, rgba(5, 7, 10, 0) 55%, #05070a 125%), linear-gradient(rgba(124, 255, 178, 0.10) 1px, transparent 1px) 0 0 / 48px 48px, linear-gradient(90deg, rgba(124, 255, 178, 0.10) 1px, transparent 1px) 0 0 / 48px 48px, #05070a fixed",
-"app-header-background-color": "rgba(5, 7, 10, 0.72)",
+"rgb-ng-bg": "5, 7, 10",
+"rgb-ng-txt": "232, 245, 238",
+"nf-acc": "var(--ng-acc)",
+"nf-acc-ink": "var(--ng-acc-ink)",
+"nf-txt": "var(--ng-txt)",
+"nf-txt-dim": "var(--ng-txt-dim)",
+"nf-txt-mute": "var(--ng-txt-mute)",
+"nf-warn": "var(--ng-warn)",
+"lovelace-background": "radial-gradient(900px 600px at 12% -8%, var(--ng-amb-1, rgba(var(--rgb-ng-acc-2), 0.16)), transparent 60%), radial-gradient(700px 520px at 96% 8%, var(--ng-amb-2, rgba(var(--rgb-ng-acc), 0.10)), transparent 62%), radial-gradient(900px 700px at 50% 120%, var(--ng-amb-3, rgba(var(--rgb-ng-acc-3), 0.12)), transparent 60%), radial-gradient(1300px 900px at 88% -25%, var(--ng-amb-4, rgba(0, 0, 0, 0)), transparent 65%), radial-gradient(120% 90% at 50% 0%, rgba(var(--rgb-ng-bg), 0) 55%, var(--ng-bg) 125%), linear-gradient(rgba(var(--rgb-ng-acc), 0.10) 1px, transparent 1px) 0 0 / 48px 48px, linear-gradient(90deg, rgba(var(--rgb-ng-acc), 0.10) 1px, transparent 1px) 0 0 / 48px 48px, var(--ng-bg) fixed",
+"app-header-background-color": "rgba(var(--rgb-ng-bg), 0.72)",
 "app-theme-color": "#05070a"
+},
+"violetnoir": {
+"primary-font-family": "'Sora', system-ui, sans-serif",
+"paper-font-common-base_-_font-family": "var(--primary-font-family)",
+"paper-font-body1_-_font-family": "var(--primary-font-family)",
+"mdc-typography-font-family": "var(--primary-font-family)",
+"ha-font-family-body": "var(--primary-font-family)",
+"ha-font-family-heading": "var(--primary-font-family)",
+"ha-font-family-code": "'JetBrains Mono', ui-monospace, monospace",
+"code-font-family": "var(--ha-font-family-code)",
+"primary-background-color": "var(--ng-bg)",
+"secondary-background-color": "var(--ng-bg-elev)",
+"card-background-color": "var(--ng-bg-elev)",
+"mdc-theme-surface": "var(--ng-bg-elev)",
+"material-background-color": "var(--ng-bg-elev)",
+"clear-background-color": "var(--ng-glass)",
+"ha-card-background": "var(--ng-glass)",
+"ha-card-border-radius": "20px",
+"ha-card-border-width": "0px",
+"ha-card-backdrop-filter": "var(--ng-blur)",
+"ha-card-box-shadow": "inset 0 0 0 1px var(--ng-line), var(--ng-shadow)",
+"divider-color": "var(--ng-line)",
+"app-header-text-color": "var(--ng-txt)",
+"app-header-backdrop-filter": "var(--ng-blur)",
+"sidebar-background-color": "var(--ng-bg-elev)",
+"sidebar-icon-color": "var(--ng-txt-mute)",
+"sidebar-text-color": "var(--ng-txt-dim)",
+"sidebar-selected-icon-color": "var(--ng-acc)",
+"sidebar-selected-text-color": "var(--ng-acc)",
+"sidebar-selected-background-color": "var(--ng-acc-wash)",
+"primary-text-color": "var(--ng-txt)",
+"secondary-text-color": "var(--ng-txt-dim)",
+"disabled-text-color": "var(--ng-txt-mute)",
+"text-primary-color": "var(--ng-acc-ink)",
+"text-light-primary-color": "var(--ng-acc-ink)",
+"ha-color-text-secondary": "var(--ng-txt-dim)",
+"primary-color": "var(--ng-acc)",
+"accent-color": "var(--ng-acc)",
+"light-primary-color": "var(--ng-acc-2)",
+"dark-primary-color": "var(--ng-acc-2)",
+"ha-color-primary-05": "var(--ng-acc-ink)",
+"ha-color-primary-40": "var(--ng-acc)",
+"ha-color-primary-50": "var(--ng-acc-2)",
+"ha-color-primary-90": "var(--ng-acc-wash)",
+"ha-color-primary-95": "var(--ng-acc-wash)",
+"ha-color-fill-primary-quiet-resting": "var(--ng-acc-wash)",
+"ha-color-fill-primary-quiet-hover": "var(--ng-acc-wash)",
+"state-icon-color": "var(--ng-txt-dim)",
+"state-icon-active-color": "var(--ng-acc)",
+"state-active-color": "var(--ng-acc)",
+"state-inactive-color": "var(--ng-txt-mute)",
+"state-icon-unavailable-color": "var(--ng-txt-mute)",
+"state-light-active-color": "var(--ng-acc)",
+"state-switch-active-color": "var(--ng-acc)",
+"state-climate-heat-color": "var(--ng-warn)",
+"state-climate-cool-color": "var(--ng-info)",
+"state-climate-auto-color": "var(--ng-acc)",
+"state-climate-dry-color": "var(--ng-info)",
+"state-climate-fan_only-color": "var(--ng-info)",
+"state-humidifier-on-color": "var(--ng-info)",
+"paper-item-icon-active-color": "var(--ng-acc)",
+"green-color": "var(--ng-acc)",
+"light-green-color": "var(--ng-acc)",
+"teal-color": "var(--ng-acc-2)",
+"success-color": "var(--ng-ok)",
+"warning-color": "var(--ng-warn)",
+"error-color": "var(--ng-danger)",
+"info-color": "var(--ng-info)",
+"yellow-color": "var(--ng-warn)",
+"amber-color": "var(--ng-warn)",
+"orange-color": "var(--ng-warn)",
+"red-color": "var(--ng-danger)",
+"blue-color": "var(--ng-info)",
+"light-blue-color": "var(--ng-info)",
+"cyan-color": "var(--ng-info)",
+"grey-color": "var(--ng-txt-mute)",
+"rgb-primary-color": "var(--rgb-ng-acc)",
+"rgb-accent-color": "var(--rgb-ng-acc)",
+"rgb-green": "var(--rgb-ng-acc)",
+"rgb-light-green": "var(--rgb-ng-acc)",
+"rgb-teal": "var(--rgb-ng-acc)",
+"rgb-amber": "var(--rgb-ng-warn)",
+"rgb-yellow": "var(--rgb-ng-warn)",
+"rgb-orange": "var(--rgb-ng-warn)",
+"rgb-red": "var(--rgb-ng-danger)",
+"rgb-blue": "var(--rgb-ng-info)",
+"rgb-light-blue": "var(--rgb-ng-info)",
+"rgb-cyan": "var(--rgb-ng-info)",
+"rgb-grey": "var(--rgb-ng-mute)",
+"rgb-disabled": "var(--rgb-ng-mute)",
+"energy-grid-consumption-color": "var(--ng-info)",
+"energy-grid-return-color": "var(--ng-acc)",
+"energy-solar-color": "var(--ng-warn)",
+"energy-non-fossil-color": "var(--ng-acc-2)",
+"switch-checked-color": "var(--ng-acc)",
+"switch-checked-button-color": "var(--ng-acc)",
+"switch-checked-track-color": "var(--ng-acc-2)",
+"switch-unchecked-button-color": "var(--ng-txt-dim)",
+"switch-unchecked-track-color": "var(--ng-glass-hi)",
+"slider-color": "var(--ng-acc)",
+"slider-track-color": "var(--ng-glass-hi)",
+"ha-dialog-surface-background": "var(--ng-bg-elev)",
+"ha-dialog-surface-backdrop-filter": "var(--ng-blur)",
+"dialog-box-shadow": "inset 0 0 0 1px var(--ng-line-2), 0 24px 60px -20px rgba(0, 0, 0, 0.9)",
+"ha-dialog-border-radius": "28px",
+"more-info-header-background": "var(--ng-bg-elev)",
+"markdown-code-background-color": "var(--ng-glass-2)",
+"code-editor-background-color": "var(--ng-bg-elev)",
+"input-fill-color": "var(--ng-glass)",
+"input-ink-color": "var(--ng-txt)",
+"input-label-ink-color": "var(--ng-txt-dim)",
+"input-idle-line-color": "var(--ng-line-2)",
+"input-hover-line-color": "var(--ng-acc-line)",
+"ha-color-form-background": "var(--ng-glass)",
+"ha-color-form-background-hover": "var(--ng-glass-2)",
+"wa-border-width-s": "0px",
+"wa-border-radius-m": "20px",
+"mush-rgb-state-light": "var(--rgb-ng-acc)",
+"mush-rgb-state-switch": "var(--rgb-ng-acc)",
+"mush-rgb-state-fan": "var(--rgb-ng-acc)",
+"mush-rgb-state-climate-heat": "var(--rgb-ng-warn)",
+"mush-rgb-state-climate-cool": "var(--rgb-ng-info)",
+"mush-rgb-state-climate-auto": "var(--rgb-ng-acc)",
+"mush-rgb-state-climate-dry": "var(--rgb-ng-info)",
+"mush-rgb-state-climate-fan-only": "var(--rgb-ng-info)",
+"mush-rgb-state-climate-heat-cool": "var(--rgb-ng-acc)",
+"mush-rgb-state-climate-off": "var(--rgb-ng-mute)",
+"mush-rgb-state-humidifier": "var(--rgb-ng-info)",
+"mush-rgb-state-cover-open": "var(--rgb-ng-acc)",
+"mush-rgb-disabled": "var(--rgb-ng-mute)",
+"mush-rgb-state-entity": "var(--rgb-ng-mute)",
+"mush-card-primary-font-weight": "600",
+"mush-card-secondary-font-weight": "500",
+"mush-control-border-radius": "14px",
+"mush-chip-border-radius": "999px",
+"mush-chip-background": "var(--ng-glass)",
+"mush-chip-box-shadow": "inset 0 0 0 1px var(--ng-line)",
+"mush-chip-height": "44px",
+"mush-control-height": "44px",
+"mush-icon-border-radius": "14px",
+"mush-badge-border-radius": "999px",
+"bubble-main-background-color": "var(--ng-glass)",
+"bubble-secondary-background-color": "var(--ng-glass-2)",
+"bubble-accent-color": "var(--ng-acc)",
+"bubble-button-accent-color": "var(--ng-acc)",
+"bubble-icon-background-color": "var(--ng-glass-2)",
+"bubble-border-radius": "28px",
+"bubble-button-border-radius": "999px",
+"bubble-box-shadow": "inset 0 0 0 1px var(--ng-line)",
+"bubble-border": "none",
+"bubble-pop-up-background-color": "var(--ng-bg-elev)",
+"bubble-backdrop-background-color": "rgba(var(--rgb-ng-bg), 0.6)",
+"bubble-horizontal-buttons-stack-background-color": "var(--ng-bg)",
+"card-mod-theme": "violetnoir",
+"card-mod-card": "ha-card {\n  position: relative;\n  transition: transform .14s cubic-bezier(.22,1,.36,1);\n}\nha-card:active:not(:has(mushroom-slider:active)) { transform: scale(.98); }\nha-card::before {\n  content: \"\"; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;\n  opacity: 0; transition: opacity .26s cubic-bezier(.22,1,.36,1);\n  background: radial-gradient(130% 150% at 0% 0%, rgba(var(--ng-glow-rgb, 0, 0, 0), .14), transparent 62%);\n  box-shadow: inset 0 0 0 1px rgba(var(--ng-glow-rgb, 0, 0, 0), .34), 0 0 26px -10px rgba(var(--ng-glow-rgb, 0, 0, 0), .65);\n}\n/* Lebendige Geräte-Symbole: Effekte als ::after am Symbol-Rahmen (ha-tile-icon = Mushroom-Template, mushroom-shape-icon =\n   Mushroom-Climate); Klimaanlagen setzen zusätzlich --ng-fan (Umdrehungsdauer je Lüfterstufe) -> Lüfter-Symbol dreht */\nha-tile-icon, mushroom-shape-icon { position: relative; }\nha-tile-icon::after, mushroom-shape-icon::after {\n  content: \"\"; position: absolute; pointer-events: none; opacity: 0; transition: opacity .4s ease;\n}\n@container style(--ng-state: on) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { filter: drop-shadow(0 0 6px rgba(var(--rgb-ng-acc), .75)); }\n}\n/* Waschmaschine läuft: Lichtkomet kreist um die Trommel, Symbol zittert fein (Schleudern) */\n@container style(--ng-state: wash) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-shake .16s linear infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 13px; height: 13px; left: 50%; top: 50%; margin: -5px 0 0 -6.5px; border-radius: 50%;\n    background: conic-gradient(from 0deg, transparent 0 55%, rgba(var(--rgb-ng-acc), .15) 70%, rgba(var(--rgb-ng-acc), 1) 97%, transparent 100%);\n    -webkit-mask: radial-gradient(circle, transparent 0 4.2px, #000 4.6px 6.5px, transparent 6.8px);\n            mask: radial-gradient(circle, transparent 0 4.2px, #000 4.6px 6.5px, transparent 6.8px);\n    filter: drop-shadow(0 0 3px rgba(var(--rgb-ng-acc), .9));\n    animation: ng-spin .7s linear infinite;\n  }\n}\n@container style(--ng-state: charge) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-pulse 1.6s ease-in-out infinite; }\n}\n/* Heizt: Wärmewellen steigen über dem Symbol auf (♨) */\n@container style(--ng-state: heat) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-warn); opacity: 1; }\n  ha-state-icon { animation: ng-glow-warm 2.4s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 20px; height: 16px; left: 50%; bottom: 84%; margin-left: -10px;\n    background: rgba(var(--rgb-ng-warn), .95);\n    -webkit-mask: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><g fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'><path d='M4 16c-2-2 2-4 0-6s2-4 0-6s1-3 0-4'/><path d='M10 12c-2-2 2-4 0-6s2-4 0-6'/><path d='M16 16c-2-2 2-4 0-6s2-4 0-6s1-3 0-4'/></g></svg>\") 0 0 / 20px 16px repeat-y, linear-gradient(to top, #000 25%, transparent 100%);\n    -webkit-mask-composite: source-in; mask-composite: intersect;\n    filter: drop-shadow(0 0 2.5px rgba(var(--rgb-ng-warn), .8));\n    animation: ng-rise 1.7s linear infinite;\n  }\n}\n/* Kühlt: Schneeflocken schweben aus dem Gerät nach unten */\n@container style(--ng-state: cool) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-info); opacity: 1; }\n  ha-state-icon { animation: ng-glow-cool 2.8s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 22px; height: 18px; left: 50%; top: 86%; margin-left: -11px;\n    background: rgba(var(--rgb-ng-info), .95);\n    -webkit-mask: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 20'><g stroke='black' stroke-width='1.1' stroke-linecap='round'><path d='M5 1v5M2.8 2.2l4.4 2.6M2.8 4.8l4.4-2.6'/><path d='M16 7v5M13.8 8.2l4.4 2.6M13.8 10.8l4.4-2.6'/><path d='M9 13.5v4M7.3 14.5l3.4 2M7.3 16.5l3.4-2'/></g></svg>\") 0 0 / 22px 20px repeat-y, linear-gradient(to bottom, #000 25%, transparent 100%);\n    -webkit-mask-composite: source-in; mask-composite: intersect;\n    filter: drop-shadow(0 0 2.5px rgba(var(--rgb-ng-info), .8));\n    animation: ng-fall 2.6s linear infinite, ng-sway 3s ease-in-out infinite;\n  }\n}\n/* Lüfter dreht nur bei echten Lüfterstufen der Klimaanlagen (tools/build-klima-view.py setzt 2.4s … .45s, sonst 0s).\n   Früher lief ng-spin mit 0 s Dauer endlos auch bei Heizungen -> Stil-Neuberechnung bei jedem Bild. */\n@container (style(--ng-state: heat) or style(--ng-state: cool)) and (style(--ng-fan: 2.4s) or style(--ng-fan: 1.8s) or style(--ng-fan: 1.1s) or style(--ng-fan: .7s) or style(--ng-fan: .45s)) {\n  ha-state-icon { animation: ng-spin var(--ng-fan) linear infinite, var(--ng-glow-anim) !important; }\n}\n@container style(--ng-state: heat) { ha-state-icon { --ng-glow-anim: ng-glow-warm 2.4s ease-in-out infinite; } }\n@container style(--ng-state: cool) { ha-state-icon { --ng-glow-anim: ng-glow-cool 2.8s ease-in-out infinite; } }\n@container style(--ng-state: warn) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-warn); opacity: 1; }\n}\n@container style(--ng-state: crit) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-danger); opacity: 1; }\n  ha-state-icon { animation: ng-alarm 1.4s ease-in-out infinite; }\n}\n@container style(--ng-state: idle) {\n  mushroom-card { opacity: .45; }\n}\n/* Sauger reinigt: Roboter schlingert auf seiner Bahn, ein Lichtkomet zieht die Reinigungsrunde um ihn */\n@container style(--ng-state: clean) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-drive 3.2s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 32px; height: 32px; left: 50%; top: 50%; margin: -16px 0 0 -16px; border-radius: 50%;\n    background: conic-gradient(from 0deg, transparent 0 58%, rgba(var(--rgb-ng-acc), .12) 74%, rgba(var(--rgb-ng-acc), .95) 98%, transparent 100%);\n    -webkit-mask: radial-gradient(circle, transparent 0 14.3px, #000 14.8px 16px, transparent 16.3px);\n            mask: radial-gradient(circle, transparent 0 14.3px, #000 14.8px 16px, transparent 16.3px);\n    filter: drop-shadow(0 0 3px rgba(var(--rgb-ng-acc), .9));\n    animation: ng-spin 2.6s linear infinite;\n  }\n}\n@container style(--ng-state: move) {\n  ha-state-icon { animation: ng-slide 1.1s ease-in-out infinite; }\n}\n@keyframes ng-pulse {\n  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(var(--rgb-ng-acc), 0)); }\n  50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(var(--rgb-ng-acc), .9)); }\n}\n@keyframes ng-alarm {\n  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(var(--rgb-ng-danger), 0)); }\n  50% { transform: scale(1.12); filter: drop-shadow(0 0 8px rgba(var(--rgb-ng-danger), .95)); }\n}\n@keyframes ng-slide { 0%, 100% { transform: translateY(1.5px); } 50% { transform: translateY(-1.5px); } }\n@keyframes ng-spin { to { transform: rotate(360deg); } }\n@keyframes ng-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(.4px, -.3px); } 50% { transform: translate(-.3px, .3px); } 75% { transform: translate(.3px, .4px); } }\n@keyframes ng-rise { from { -webkit-mask-position: 0 0, 0 0; } to { -webkit-mask-position: 0 -16px, 0 0; } }\n@keyframes ng-sway { 0%, 100% { transform: translateX(-1px); } 50% { transform: translateX(1.2px); } }\n@keyframes ng-fall { from { -webkit-mask-position: 0 0, 0 0; } to { -webkit-mask-position: 0 20px, 0 0; } }\n@keyframes ng-glow-warm { 0%, 100% { filter: drop-shadow(0 0 2px rgba(var(--rgb-ng-warn), .5)); } 50% { filter: drop-shadow(0 0 7px rgba(var(--rgb-ng-warn), .95)); } }\n@keyframes ng-glow-cool { 0%, 100% { filter: drop-shadow(0 0 2px rgba(var(--rgb-ng-info), .45)); } 50% { filter: drop-shadow(0 0 7px rgba(var(--rgb-ng-info), .9)); } }\n@keyframes ng-drive {\n  0%, 100% { transform: translate(-2px, 0) rotate(-10deg); } 25% { transform: translate(0, -1.5px) rotate(0); }\n  50% { transform: translate(2px, 0) rotate(10deg); } 75% { transform: translate(0, 1.5px) rotate(0); }\n}\n@media (prefers-reduced-motion: reduce) {\n  ha-state-icon, ha-tile-icon::after, mushroom-shape-icon::after { animation: none !important; }\n}\n",
+"ng-bg": "#050507",
+"ng-bg-elev": "#0d0b12",
+"ng-glass": "rgba(196, 170, 255, 0.045)",
+"ng-glass-2": "rgba(196, 170, 255, 0.075)",
+"ng-glass-hi": "rgba(196, 170, 255, 0.13)",
+"ng-line": "rgba(196, 170, 255, 0.10)",
+"ng-line-2": "rgba(196, 170, 255, 0.18)",
+"ng-txt": "#ece9f2",
+"ng-txt-dim": "#9a90ad",
+"ng-txt-mute": "#6a6180",
+"ng-acc": "#a855f7",
+"ng-acc-2": "#8b3ff0",
+"ng-acc-3": "#6d28d9",
+"ng-acc-ink": "#f6f0ff",
+"ng-acc-wash": "rgba(168, 85, 247, 0.12)",
+"ng-acc-line": "rgba(168, 85, 247, 0.34)",
+"ng-ok": "#34e5b0",
+"ng-warn": "#ffcf5c",
+"ng-danger": "#ff5d73",
+"ng-info": "#22d3ee",
+"ng-shadow": "0 8px 30px -12px rgba(0, 0, 0, 0.92)",
+"ng-glow-sm": "0 0 18px -2px rgba(168, 85, 247, 0.34)",
+"ng-blur": "blur(18px) saturate(150%)",
+"rgb-ng-acc": "168, 85, 247",
+"rgb-ng-acc-2": "139, 63, 240",
+"rgb-ng-acc-3": "109, 40, 217",
+"rgb-ng-warn": "255, 207, 92",
+"rgb-ng-danger": "255, 93, 115",
+"rgb-ng-info": "34, 211, 238",
+"rgb-ng-mute": "154, 144, 173",
+"rgb-ng-bg": "5, 5, 7",
+"rgb-ng-txt": "236, 233, 242",
+"nf-acc": "var(--ng-acc)",
+"nf-acc-ink": "var(--ng-acc-ink)",
+"nf-txt": "var(--ng-txt)",
+"nf-txt-dim": "var(--ng-txt-dim)",
+"nf-txt-mute": "var(--ng-txt-mute)",
+"nf-warn": "var(--ng-warn)",
+"lovelace-background": "radial-gradient(900px 600px at 12% -8%, var(--ng-amb-1, rgba(var(--rgb-ng-acc-2), 0.16)), transparent 60%), radial-gradient(700px 520px at 96% 8%, var(--ng-amb-2, rgba(var(--rgb-ng-acc), 0.10)), transparent 62%), radial-gradient(900px 700px at 50% 120%, var(--ng-amb-3, rgba(var(--rgb-ng-acc-3), 0.12)), transparent 60%), radial-gradient(1300px 900px at 88% -25%, var(--ng-amb-4, rgba(0, 0, 0, 0)), transparent 65%), radial-gradient(120% 90% at 50% 0%, rgba(var(--rgb-ng-bg), 0) 55%, var(--ng-bg) 125%), linear-gradient(rgba(var(--rgb-ng-acc), 0.10) 1px, transparent 1px) 0 0 / 48px 48px, linear-gradient(90deg, rgba(var(--rgb-ng-acc), 0.10) 1px, transparent 1px) 0 0 / 48px 48px, var(--ng-bg) fixed",
+"app-header-background-color": "rgba(var(--rgb-ng-bg), 0.72)",
+"app-theme-color": "#050507"
+},
+"halcyon": {
+"primary-font-family": "'Manrope', system-ui, sans-serif",
+"paper-font-common-base_-_font-family": "var(--primary-font-family)",
+"paper-font-body1_-_font-family": "var(--primary-font-family)",
+"mdc-typography-font-family": "var(--primary-font-family)",
+"ha-font-family-body": "var(--primary-font-family)",
+"ha-font-family-heading": "var(--primary-font-family)",
+"ha-font-family-code": "'IBM Plex Mono', ui-monospace, monospace",
+"code-font-family": "var(--ha-font-family-code)",
+"primary-background-color": "var(--ng-bg)",
+"secondary-background-color": "var(--ng-bg-elev)",
+"card-background-color": "var(--ng-bg-elev)",
+"mdc-theme-surface": "var(--ng-bg-elev)",
+"material-background-color": "var(--ng-bg-elev)",
+"clear-background-color": "var(--ng-glass)",
+"ha-card-background": "var(--ng-glass)",
+"ha-card-border-radius": "20px",
+"ha-card-border-width": "0px",
+"ha-card-backdrop-filter": "var(--ng-blur)",
+"ha-card-box-shadow": "inset 0 0 0 1px var(--ng-line), var(--ng-shadow)",
+"divider-color": "var(--ng-line)",
+"app-header-text-color": "var(--ng-txt)",
+"app-header-backdrop-filter": "var(--ng-blur)",
+"sidebar-background-color": "var(--ng-bg-elev)",
+"sidebar-icon-color": "var(--ng-txt-mute)",
+"sidebar-text-color": "var(--ng-txt-dim)",
+"sidebar-selected-icon-color": "var(--ng-acc)",
+"sidebar-selected-text-color": "var(--ng-acc)",
+"sidebar-selected-background-color": "var(--ng-acc-wash)",
+"primary-text-color": "var(--ng-txt)",
+"secondary-text-color": "var(--ng-txt-dim)",
+"disabled-text-color": "var(--ng-txt-mute)",
+"text-primary-color": "var(--ng-acc-ink)",
+"text-light-primary-color": "var(--ng-acc-ink)",
+"ha-color-text-secondary": "var(--ng-txt-dim)",
+"primary-color": "var(--ng-acc)",
+"accent-color": "var(--ng-acc)",
+"light-primary-color": "var(--ng-acc-2)",
+"dark-primary-color": "var(--ng-acc-2)",
+"ha-color-primary-05": "var(--ng-acc-ink)",
+"ha-color-primary-40": "var(--ng-acc)",
+"ha-color-primary-50": "var(--ng-acc-2)",
+"ha-color-primary-90": "var(--ng-acc-wash)",
+"ha-color-primary-95": "var(--ng-acc-wash)",
+"ha-color-fill-primary-quiet-resting": "var(--ng-acc-wash)",
+"ha-color-fill-primary-quiet-hover": "var(--ng-acc-wash)",
+"state-icon-color": "var(--ng-txt-dim)",
+"state-icon-active-color": "var(--ng-acc)",
+"state-active-color": "var(--ng-acc)",
+"state-inactive-color": "var(--ng-txt-mute)",
+"state-icon-unavailable-color": "var(--ng-txt-mute)",
+"state-light-active-color": "var(--ng-acc)",
+"state-switch-active-color": "var(--ng-acc)",
+"state-climate-heat-color": "var(--ng-warn)",
+"state-climate-cool-color": "var(--ng-info)",
+"state-climate-auto-color": "var(--ng-acc)",
+"state-climate-dry-color": "var(--ng-info)",
+"state-climate-fan_only-color": "var(--ng-info)",
+"state-humidifier-on-color": "var(--ng-info)",
+"paper-item-icon-active-color": "var(--ng-acc)",
+"green-color": "var(--ng-acc)",
+"light-green-color": "var(--ng-acc)",
+"teal-color": "var(--ng-acc-2)",
+"success-color": "var(--ng-ok)",
+"warning-color": "var(--ng-warn)",
+"error-color": "var(--ng-danger)",
+"info-color": "var(--ng-info)",
+"yellow-color": "var(--ng-warn)",
+"amber-color": "var(--ng-warn)",
+"orange-color": "var(--ng-warn)",
+"red-color": "var(--ng-danger)",
+"blue-color": "var(--ng-info)",
+"light-blue-color": "var(--ng-info)",
+"cyan-color": "var(--ng-info)",
+"grey-color": "var(--ng-txt-mute)",
+"rgb-primary-color": "var(--rgb-ng-acc)",
+"rgb-accent-color": "var(--rgb-ng-acc)",
+"rgb-green": "var(--rgb-ng-acc)",
+"rgb-light-green": "var(--rgb-ng-acc)",
+"rgb-teal": "var(--rgb-ng-acc)",
+"rgb-amber": "var(--rgb-ng-warn)",
+"rgb-yellow": "var(--rgb-ng-warn)",
+"rgb-orange": "var(--rgb-ng-warn)",
+"rgb-red": "var(--rgb-ng-danger)",
+"rgb-blue": "var(--rgb-ng-info)",
+"rgb-light-blue": "var(--rgb-ng-info)",
+"rgb-cyan": "var(--rgb-ng-info)",
+"rgb-grey": "var(--rgb-ng-mute)",
+"rgb-disabled": "var(--rgb-ng-mute)",
+"energy-grid-consumption-color": "var(--ng-info)",
+"energy-grid-return-color": "var(--ng-acc)",
+"energy-solar-color": "var(--ng-warn)",
+"energy-non-fossil-color": "var(--ng-acc-2)",
+"switch-checked-color": "var(--ng-acc)",
+"switch-checked-button-color": "var(--ng-acc)",
+"switch-checked-track-color": "var(--ng-acc-2)",
+"switch-unchecked-button-color": "var(--ng-txt-dim)",
+"switch-unchecked-track-color": "var(--ng-glass-hi)",
+"slider-color": "var(--ng-acc)",
+"slider-track-color": "var(--ng-glass-hi)",
+"ha-dialog-surface-background": "var(--ng-bg-elev)",
+"ha-dialog-surface-backdrop-filter": "var(--ng-blur)",
+"dialog-box-shadow": "inset 0 0 0 1px var(--ng-line-2), 0 24px 60px -20px rgba(0, 0, 0, 0.9)",
+"ha-dialog-border-radius": "28px",
+"more-info-header-background": "var(--ng-bg-elev)",
+"markdown-code-background-color": "var(--ng-glass-2)",
+"code-editor-background-color": "var(--ng-bg-elev)",
+"input-fill-color": "var(--ng-glass)",
+"input-ink-color": "var(--ng-txt)",
+"input-label-ink-color": "var(--ng-txt-dim)",
+"input-idle-line-color": "var(--ng-line-2)",
+"input-hover-line-color": "var(--ng-acc-line)",
+"ha-color-form-background": "var(--ng-glass)",
+"ha-color-form-background-hover": "var(--ng-glass-2)",
+"wa-border-width-s": "0px",
+"wa-border-radius-m": "20px",
+"mush-rgb-state-light": "var(--rgb-ng-acc)",
+"mush-rgb-state-switch": "var(--rgb-ng-acc)",
+"mush-rgb-state-fan": "var(--rgb-ng-acc)",
+"mush-rgb-state-climate-heat": "var(--rgb-ng-warn)",
+"mush-rgb-state-climate-cool": "var(--rgb-ng-info)",
+"mush-rgb-state-climate-auto": "var(--rgb-ng-acc)",
+"mush-rgb-state-climate-dry": "var(--rgb-ng-info)",
+"mush-rgb-state-climate-fan-only": "var(--rgb-ng-info)",
+"mush-rgb-state-climate-heat-cool": "var(--rgb-ng-acc)",
+"mush-rgb-state-climate-off": "var(--rgb-ng-mute)",
+"mush-rgb-state-humidifier": "var(--rgb-ng-info)",
+"mush-rgb-state-cover-open": "var(--rgb-ng-acc)",
+"mush-rgb-disabled": "var(--rgb-ng-mute)",
+"mush-rgb-state-entity": "var(--rgb-ng-mute)",
+"mush-card-primary-font-weight": "600",
+"mush-card-secondary-font-weight": "500",
+"mush-control-border-radius": "14px",
+"mush-chip-border-radius": "999px",
+"mush-chip-background": "var(--ng-glass)",
+"mush-chip-box-shadow": "inset 0 0 0 1px var(--ng-line)",
+"mush-chip-height": "44px",
+"mush-control-height": "44px",
+"mush-icon-border-radius": "14px",
+"mush-badge-border-radius": "999px",
+"bubble-main-background-color": "var(--ng-glass)",
+"bubble-secondary-background-color": "var(--ng-glass-2)",
+"bubble-accent-color": "var(--ng-acc)",
+"bubble-button-accent-color": "var(--ng-acc)",
+"bubble-icon-background-color": "var(--ng-glass-2)",
+"bubble-border-radius": "28px",
+"bubble-button-border-radius": "999px",
+"bubble-box-shadow": "inset 0 0 0 1px var(--ng-line)",
+"bubble-border": "none",
+"bubble-pop-up-background-color": "var(--ng-bg-elev)",
+"bubble-backdrop-background-color": "rgba(var(--rgb-ng-bg), 0.6)",
+"bubble-horizontal-buttons-stack-background-color": "var(--ng-bg)",
+"card-mod-theme": "halcyon",
+"card-mod-card": "ha-card {\n  position: relative;\n  transition: transform .14s cubic-bezier(.22,1,.36,1);\n}\nha-card:active:not(:has(mushroom-slider:active)) { transform: scale(.98); }\nha-card::before {\n  content: \"\"; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;\n  opacity: 0; transition: opacity .26s cubic-bezier(.22,1,.36,1);\n  background: radial-gradient(130% 150% at 0% 0%, rgba(var(--ng-glow-rgb, 0, 0, 0), .14), transparent 62%);\n  box-shadow: inset 0 0 0 1px rgba(var(--ng-glow-rgb, 0, 0, 0), .34), 0 0 26px -10px rgba(var(--ng-glow-rgb, 0, 0, 0), .65);\n}\n/* Lebendige Geräte-Symbole: Effekte als ::after am Symbol-Rahmen (ha-tile-icon = Mushroom-Template, mushroom-shape-icon =\n   Mushroom-Climate); Klimaanlagen setzen zusätzlich --ng-fan (Umdrehungsdauer je Lüfterstufe) -> Lüfter-Symbol dreht */\nha-tile-icon, mushroom-shape-icon { position: relative; }\nha-tile-icon::after, mushroom-shape-icon::after {\n  content: \"\"; position: absolute; pointer-events: none; opacity: 0; transition: opacity .4s ease;\n}\n@container style(--ng-state: on) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { filter: drop-shadow(0 0 6px rgba(var(--rgb-ng-acc), .75)); }\n}\n/* Waschmaschine läuft: Lichtkomet kreist um die Trommel, Symbol zittert fein (Schleudern) */\n@container style(--ng-state: wash) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-shake .16s linear infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 13px; height: 13px; left: 50%; top: 50%; margin: -5px 0 0 -6.5px; border-radius: 50%;\n    background: conic-gradient(from 0deg, transparent 0 55%, rgba(var(--rgb-ng-acc), .15) 70%, rgba(var(--rgb-ng-acc), 1) 97%, transparent 100%);\n    -webkit-mask: radial-gradient(circle, transparent 0 4.2px, #000 4.6px 6.5px, transparent 6.8px);\n            mask: radial-gradient(circle, transparent 0 4.2px, #000 4.6px 6.5px, transparent 6.8px);\n    filter: drop-shadow(0 0 3px rgba(var(--rgb-ng-acc), .9));\n    animation: ng-spin .7s linear infinite;\n  }\n}\n@container style(--ng-state: charge) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-pulse 1.6s ease-in-out infinite; }\n}\n/* Heizt: Wärmewellen steigen über dem Symbol auf (♨) */\n@container style(--ng-state: heat) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-warn); opacity: 1; }\n  ha-state-icon { animation: ng-glow-warm 2.4s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 20px; height: 16px; left: 50%; bottom: 84%; margin-left: -10px;\n    background: rgba(var(--rgb-ng-warn), .95);\n    -webkit-mask: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><g fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'><path d='M4 16c-2-2 2-4 0-6s2-4 0-6s1-3 0-4'/><path d='M10 12c-2-2 2-4 0-6s2-4 0-6'/><path d='M16 16c-2-2 2-4 0-6s2-4 0-6s1-3 0-4'/></g></svg>\") 0 0 / 20px 16px repeat-y, linear-gradient(to top, #000 25%, transparent 100%);\n    -webkit-mask-composite: source-in; mask-composite: intersect;\n    filter: drop-shadow(0 0 2.5px rgba(var(--rgb-ng-warn), .8));\n    animation: ng-rise 1.7s linear infinite;\n  }\n}\n/* Kühlt: Schneeflocken schweben aus dem Gerät nach unten */\n@container style(--ng-state: cool) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-info); opacity: 1; }\n  ha-state-icon { animation: ng-glow-cool 2.8s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 22px; height: 18px; left: 50%; top: 86%; margin-left: -11px;\n    background: rgba(var(--rgb-ng-info), .95);\n    -webkit-mask: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 20'><g stroke='black' stroke-width='1.1' stroke-linecap='round'><path d='M5 1v5M2.8 2.2l4.4 2.6M2.8 4.8l4.4-2.6'/><path d='M16 7v5M13.8 8.2l4.4 2.6M13.8 10.8l4.4-2.6'/><path d='M9 13.5v4M7.3 14.5l3.4 2M7.3 16.5l3.4-2'/></g></svg>\") 0 0 / 22px 20px repeat-y, linear-gradient(to bottom, #000 25%, transparent 100%);\n    -webkit-mask-composite: source-in; mask-composite: intersect;\n    filter: drop-shadow(0 0 2.5px rgba(var(--rgb-ng-info), .8));\n    animation: ng-fall 2.6s linear infinite, ng-sway 3s ease-in-out infinite;\n  }\n}\n/* Lüfter dreht nur bei echten Lüfterstufen der Klimaanlagen (tools/build-klima-view.py setzt 2.4s … .45s, sonst 0s).\n   Früher lief ng-spin mit 0 s Dauer endlos auch bei Heizungen -> Stil-Neuberechnung bei jedem Bild. */\n@container (style(--ng-state: heat) or style(--ng-state: cool)) and (style(--ng-fan: 2.4s) or style(--ng-fan: 1.8s) or style(--ng-fan: 1.1s) or style(--ng-fan: .7s) or style(--ng-fan: .45s)) {\n  ha-state-icon { animation: ng-spin var(--ng-fan) linear infinite, var(--ng-glow-anim) !important; }\n}\n@container style(--ng-state: heat) { ha-state-icon { --ng-glow-anim: ng-glow-warm 2.4s ease-in-out infinite; } }\n@container style(--ng-state: cool) { ha-state-icon { --ng-glow-anim: ng-glow-cool 2.8s ease-in-out infinite; } }\n@container style(--ng-state: warn) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-warn); opacity: 1; }\n}\n@container style(--ng-state: crit) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-danger); opacity: 1; }\n  ha-state-icon { animation: ng-alarm 1.4s ease-in-out infinite; }\n}\n@container style(--ng-state: idle) {\n  mushroom-card { opacity: .45; }\n}\n/* Sauger reinigt: Roboter schlingert auf seiner Bahn, ein Lichtkomet zieht die Reinigungsrunde um ihn */\n@container style(--ng-state: clean) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-drive 3.2s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 32px; height: 32px; left: 50%; top: 50%; margin: -16px 0 0 -16px; border-radius: 50%;\n    background: conic-gradient(from 0deg, transparent 0 58%, rgba(var(--rgb-ng-acc), .12) 74%, rgba(var(--rgb-ng-acc), .95) 98%, transparent 100%);\n    -webkit-mask: radial-gradient(circle, transparent 0 14.3px, #000 14.8px 16px, transparent 16.3px);\n            mask: radial-gradient(circle, transparent 0 14.3px, #000 14.8px 16px, transparent 16.3px);\n    filter: drop-shadow(0 0 3px rgba(var(--rgb-ng-acc), .9));\n    animation: ng-spin 2.6s linear infinite;\n  }\n}\n@container style(--ng-state: move) {\n  ha-state-icon { animation: ng-slide 1.1s ease-in-out infinite; }\n}\n@keyframes ng-pulse {\n  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(var(--rgb-ng-acc), 0)); }\n  50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(var(--rgb-ng-acc), .9)); }\n}\n@keyframes ng-alarm {\n  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(var(--rgb-ng-danger), 0)); }\n  50% { transform: scale(1.12); filter: drop-shadow(0 0 8px rgba(var(--rgb-ng-danger), .95)); }\n}\n@keyframes ng-slide { 0%, 100% { transform: translateY(1.5px); } 50% { transform: translateY(-1.5px); } }\n@keyframes ng-spin { to { transform: rotate(360deg); } }\n@keyframes ng-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(.4px, -.3px); } 50% { transform: translate(-.3px, .3px); } 75% { transform: translate(.3px, .4px); } }\n@keyframes ng-rise { from { -webkit-mask-position: 0 0, 0 0; } to { -webkit-mask-position: 0 -16px, 0 0; } }\n@keyframes ng-sway { 0%, 100% { transform: translateX(-1px); } 50% { transform: translateX(1.2px); } }\n@keyframes ng-fall { from { -webkit-mask-position: 0 0, 0 0; } to { -webkit-mask-position: 0 20px, 0 0; } }\n@keyframes ng-glow-warm { 0%, 100% { filter: drop-shadow(0 0 2px rgba(var(--rgb-ng-warn), .5)); } 50% { filter: drop-shadow(0 0 7px rgba(var(--rgb-ng-warn), .95)); } }\n@keyframes ng-glow-cool { 0%, 100% { filter: drop-shadow(0 0 2px rgba(var(--rgb-ng-info), .45)); } 50% { filter: drop-shadow(0 0 7px rgba(var(--rgb-ng-info), .9)); } }\n@keyframes ng-drive {\n  0%, 100% { transform: translate(-2px, 0) rotate(-10deg); } 25% { transform: translate(0, -1.5px) rotate(0); }\n  50% { transform: translate(2px, 0) rotate(10deg); } 75% { transform: translate(0, 1.5px) rotate(0); }\n}\n@media (prefers-reduced-motion: reduce) {\n  ha-state-icon, ha-tile-icon::after, mushroom-shape-icon::after { animation: none !important; }\n}\n",
+"ng-bg": "#0a1619",
+"ng-bg-elev": "#0e2024",
+"ng-glass": "rgba(180, 240, 234, 0.04)",
+"ng-glass-2": "rgba(180, 240, 234, 0.07)",
+"ng-glass-hi": "rgba(180, 240, 234, 0.12)",
+"ng-line": "rgba(180, 240, 234, 0.10)",
+"ng-line-2": "rgba(180, 240, 234, 0.18)",
+"ng-txt": "#e9f5f3",
+"ng-txt-dim": "#8fb0ac",
+"ng-txt-mute": "#5f7d79",
+"ng-acc": "#35d6c4",
+"ng-acc-2": "#22bfae",
+"ng-acc-3": "#159e8f",
+"ng-acc-ink": "#03140f",
+"ng-acc-wash": "rgba(53, 214, 196, 0.10)",
+"ng-acc-line": "rgba(53, 214, 196, 0.30)",
+"ng-ok": "#35d6c4",
+"ng-warn": "#f4c46b",
+"ng-danger": "#ff7a85",
+"ng-info": "#4aa8ff",
+"ng-shadow": "0 8px 28px -12px rgba(0, 0, 0, 0.72)",
+"ng-glow-sm": "0 0 16px -3px rgba(53, 214, 196, 0.22)",
+"ng-blur": "blur(16px) saturate(135%)",
+"rgb-ng-acc": "53, 214, 196",
+"rgb-ng-acc-2": "34, 191, 174",
+"rgb-ng-acc-3": "21, 158, 143",
+"rgb-ng-warn": "244, 196, 107",
+"rgb-ng-danger": "255, 122, 133",
+"rgb-ng-info": "74, 168, 255",
+"rgb-ng-mute": "143, 176, 172",
+"rgb-ng-bg": "10, 22, 25",
+"rgb-ng-txt": "233, 245, 243",
+"nf-acc": "var(--ng-acc)",
+"nf-acc-ink": "var(--ng-acc-ink)",
+"nf-txt": "var(--ng-txt)",
+"nf-txt-dim": "var(--ng-txt-dim)",
+"nf-txt-mute": "var(--ng-txt-mute)",
+"nf-warn": "var(--ng-warn)",
+"lovelace-background": "radial-gradient(900px 600px at 12% -8%, var(--ng-amb-1, rgba(var(--rgb-ng-acc-2), 0.16)), transparent 60%), radial-gradient(700px 520px at 96% 8%, var(--ng-amb-2, rgba(var(--rgb-ng-acc), 0.10)), transparent 62%), radial-gradient(900px 700px at 50% 120%, var(--ng-amb-3, rgba(var(--rgb-ng-acc-3), 0.12)), transparent 60%), radial-gradient(1300px 900px at 88% -25%, var(--ng-amb-4, rgba(0, 0, 0, 0)), transparent 65%), radial-gradient(120% 90% at 50% 0%, rgba(var(--rgb-ng-bg), 0) 55%, var(--ng-bg) 125%), linear-gradient(rgba(var(--rgb-ng-acc), 0.10) 1px, transparent 1px) 0 0 / 48px 48px, linear-gradient(90deg, rgba(var(--rgb-ng-acc), 0.10) 1px, transparent 1px) 0 0 / 48px 48px, var(--ng-bg) fixed",
+"app-header-background-color": "rgba(var(--rgb-ng-bg), 0.72)",
+"app-theme-color": "#0a1619"
+}
 };
 
 // ───── nullglow-flow-card.js ─────
 (() => {
   if (customElements.get("nullglow-flow-card")) return;
 
-  const RGB = { acc: "124,255,178", txt: "232,245,238", warn: "255,209,102" };
+  const RGB = { acc: "124,255,178", txt: "232,245,238", warn: "255,209,102" };   // Rückfall (eigene Palette)
+  // Farben des aktiven Designs für die Zeichenfläche: --nf-* (setzt das Nullglow-Theme je Design), sonst Rückfall
+  let probe;
+  function toRgb(css, d) {
+    if (!css) return d;
+    probe = probe || document.createElement("canvas").getContext("2d");
+    probe.fillStyle = "#000"; probe.fillStyle = css;
+    const v = probe.fillStyle;
+    if (v[0] === "#") return [1, 3, 5].map((i) => parseInt(v.slice(i, i + 2), 16)).join(",");
+    const m = v.match(/[\d.]+/g);
+    return m && m.length >= 3 ? m.slice(0, 3).join(",") : d;
+  }
   const REF_W = 3000; // W, bei dem ein Strom als „voll“ gilt (Linienhelligkeit)
   const MAX_PARTICLES = 70; // je Strom
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -276,8 +696,8 @@ window.__NULLGLOW_THEME = {
     .disc { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); border-radius: 50%;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
       background: radial-gradient(circle at 50% 38%, rgba(20,30,26,.95), rgba(8,12,14,.96));
-      box-shadow: inset 0 0 0 1px rgba(124,255,178, calc(.10 + .45 * var(--g))),
-                  0 0 calc(4px + 26px * var(--g)) rgba(124,255,178, calc(.30 * var(--g)));
+      box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), calc(.10 + .45 * var(--g))),
+                  0 0 calc(4px + 26px * var(--g)) rgba(var(--rgb-ng-acc, 124, 255, 178), calc(.30 * var(--g)));
       color: var(--nf-txt-dim, #93a79d); cursor: pointer; -webkit-tap-highlight-color: transparent;
       transition: color .26s cubic-bezier(.22,1,.36,1), transform .14s cubic-bezier(.22,1,.36,1); }
     .disc:active { transform: translate(-50%, -50%) scale(.95); }
@@ -460,7 +880,14 @@ window.__NULLGLOW_THEME = {
       this._read();
     }
 
+    _readColors() {
+      const cs = getComputedStyle(this), get = (v) => cs.getPropertyValue(v).trim();
+      this._rgb = { acc: toRgb(get("--nf-acc"), RGB.acc), txt: toRgb(get("--nf-txt"), RGB.txt), warn: toRgb(get("--nf-warn"), RGB.warn) };
+      this._colAt = Date.now();
+    }
+
     _layout() {
+      this._readColors();
       const w = this._wrap.clientWidth, hAll = this._wrap.clientHeight;
       if (!w || !hAll) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -535,6 +962,7 @@ window.__NULLGLOW_THEME = {
 
     _read() {
       if (!this._hass || !this._cfg || !this._flows) return;
+      if (!this._colAt || Date.now() - this._colAt > 10000) this._readColors();   // Design-Wechsel ohne Neuladen
       const c = this._cfg, v = this._v, na = (this._na = {});
       let s = 0;
       for (const id of c.solar) { const x = this._num(id); if (x === null) na.solar = true; else s += x; }
@@ -659,9 +1087,9 @@ window.__NULLGLOW_THEME = {
           f.acc += dt * Math.min(34, 1.25 * Math.sqrt(W / 10)); // Partikel pro Sekunde
           while (f.acc >= 1 && f.parts.length < MAX_PARTICLES) {
             f.acc -= 1;
-            let rgb = RGB.acc;
-            if (f.kind === "import") rgb = W > c.warn_import ? RGB.warn : RGB.txt;
-            else if (f.kind.startsWith("cons")) rgb = Math.random() < d.share ? RGB.acc : RGB.txt;
+            let rgb = this._rgb.acc;
+            if (f.kind === "import") rgb = W > c.warn_import ? this._rgb.warn : this._rgb.txt;
+            else if (f.kind.startsWith("cons")) rgb = Math.random() < d.share ? this._rgb.acc : this._rgb.txt;
             const speed = (45 + 125 * I) * (0.85 + Math.random() * 0.3);
             f.parts.push({ d: Math.random() * speed * dt, v: speed, s: 1.3 + 1.9 * I, off: (Math.random() - 0.5) * (2 + 9 * I), rgb });
           }
@@ -681,7 +1109,7 @@ window.__NULLGLOW_THEME = {
       for (const f of this._flows) {
         if (!f.path) continue;
         const I = clamp(Math.sqrt(f.w / REF_W), 0, 1), on = f.w > 2;
-        const rgb = f.kind === "import" && f.w > c.warn_import ? RGB.warn : f.kind === "import" ? RGB.txt : RGB.acc;
+        const rgb = f.kind === "import" && f.w > c.warn_import ? this._rgb.warn : f.kind === "import" ? this._rgb.txt : this._rgb.acc;
         const P = f.path;
         ctx.beginPath();
         ctx.moveTo(P.p0.x, P.p0.y);
@@ -723,7 +1151,7 @@ window.__NULLGLOW_THEME = {
       // Sonnenkranz: dreht schneller, je mehr erzeugt wird
       if (N.solar && d.solar > 3) {
         const I = clamp(d.solar / c.solar_peak, 0, 1.2), n = N.solar;
-        ctx.strokeStyle = `rgba(${RGB.acc},${0.25 + 0.55 * Math.min(I, 1)})`;
+        ctx.strokeStyle = `rgba(${this._rgb.acc},${0.25 + 0.55 * Math.min(I, 1)})`;
         ctx.lineWidth = 1.6;
         ctx.lineCap = "round";
         for (let i = 0; i < 12; i++) {
@@ -745,7 +1173,7 @@ window.__NULLGLOW_THEME = {
         ctx.arc(n.x, n.y, rf, 0, Math.PI * 2);
         ctx.stroke();
         if (this._fc.frac > 0.005) {
-          ctx.strokeStyle = `rgba(${RGB.acc},0.75)`;
+          ctx.strokeStyle = `rgba(${this._rgb.acc},0.75)`;
           ctx.beginPath();
           ctx.arc(n.x, n.y, rf, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * clamp(this._fc.frac, 0, 1));
           ctx.stroke();
@@ -755,7 +1183,7 @@ window.__NULLGLOW_THEME = {
       // Richtungswechsel am Netz: Ring läuft nach außen
       if (N.grid && this._flash > 0) {
         const n = N.grid, k = 1 - this._flash;
-        ctx.strokeStyle = `rgba(${this._gridSign < 0 ? RGB.acc : RGB.txt},${this._flash * 0.8})`;
+        ctx.strokeStyle = `rgba(${this._gridSign < 0 ? this._rgb.acc : this._rgb.txt},${this._flash * 0.8})`;
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r + 3 + k * 26, 0, Math.PI * 2);
@@ -771,7 +1199,7 @@ window.__NULLGLOW_THEME = {
       ctx.arc(H.x, H.y, rr, 0, Math.PI * 2);
       ctx.stroke();
       if (d.share > 0.005) {
-        ctx.strokeStyle = `rgba(${RGB.acc},0.9)`;
+        ctx.strokeStyle = `rgba(${this._rgb.acc},0.9)`;
         ctx.beginPath();
         ctx.arc(H.x, H.y, rr, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * clamp(d.share, 0, 1));
         ctx.stroke();
@@ -784,7 +1212,7 @@ window.__NULLGLOW_THEME = {
         ctx.arc(H.x, H.y, r2, 0, Math.PI * 2);
         ctx.stroke();
         if (this._dToday > 0.005) {
-          ctx.strokeStyle = `rgba(${RGB.acc},0.45)`;
+          ctx.strokeStyle = `rgba(${this._rgb.acc},0.45)`;
           ctx.beginPath();
           ctx.arc(H.x, H.y, r2, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * clamp(this._dToday, 0, 1));
           ctx.stroke();
@@ -1636,6 +2064,8 @@ window.__NULLGLOW_THEME = {
 // ───── nullglow-month-card.js ─────
 (() => {
   if (customElements.get("nullglow-month-card")) return;
+  // Akzentfarbe des aktiven Designs (Theme-Token --rgb-ng-acc…), Rückfall Nullglow-Grün — für SVG-Attribute, wo var() nicht wirkt
+  const accRgb = (el, v = "--rgb-ng-acc", d = "124, 255, 178") => (getComputedStyle(el).getPropertyValue(v).trim() || d);
   const REFRESH = 15 * 60 * 1000;
   const STYLE = `
     :host { display: block; height: 100%; }
@@ -1716,6 +2146,7 @@ window.__NULLGLOW_THEME = {
 
     _render() {
       if (!this._card || !this._days) return;
+      const A = accRgb(this);
       const c = this._cfg, now = new Date();
       const nDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
       const rows = [];
@@ -1747,8 +2178,8 @@ window.__NULLGLOW_THEME = {
         if (r.future) { bars += `<rect x="${x.toFixed(1)}" y="${(H - pad.b - 2).toFixed(1)}" width="${bw.toFixed(1)}" height="2" rx="1" fill="rgba(255,255,255,.06)"/>`; continue; }
         const yU = y(r.used), yS = y(r.self);
         bars += `<rect x="${x.toFixed(1)}" y="${yU.toFixed(1)}" width="${bw.toFixed(1)}" height="${(y(0) - yU).toFixed(1)}" rx="2" fill="rgba(232,245,238,.22)"/>`;
-        if (r.self > 0.01) bars += `<rect x="${x.toFixed(1)}" y="${yS.toFixed(1)}" width="${bw.toFixed(1)}" height="${(y(0) - yS).toFixed(1)}" rx="2" fill="rgba(124,255,178,.85)"/>`;
-        if (r.i === now.getDate()) bars += `<rect x="${(x - 2).toFixed(1)}" y="${(yU - 3).toFixed(1)}" width="${(bw + 4).toFixed(1)}" height="${(y(0) - yU + 3).toFixed(1)}" rx="3" fill="none" stroke="rgba(124,255,178,.6)" stroke-width="1"/>`;
+        if (r.self > 0.01) bars += `<rect x="${x.toFixed(1)}" y="${yS.toFixed(1)}" width="${bw.toFixed(1)}" height="${(y(0) - yS).toFixed(1)}" rx="2" fill="rgba(${A},.85)"/>`;
+        if (r.i === now.getDate()) bars += `<rect x="${(x - 2).toFixed(1)}" y="${(yU - 3).toFixed(1)}" width="${(bw + 4).toFixed(1)}" height="${(y(0) - yU + 3).toFixed(1)}" rx="3" fill="none" stroke="rgba(${A},.6)" stroke-width="1"/>`;
       }
       let axis = `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(0)}" y2="${y(0)}" stroke="rgba(255,255,255,.12)"/>`;
       for (const v of [top / 2, top]) axis += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.05)" stroke-dasharray="2 3"/>`
@@ -1765,7 +2196,7 @@ window.__NULLGLOW_THEME = {
           <div class="kpi"><span class="v acc">${num(aut * 100)}<small>%</small></span><span class="l">Autarkie</span></div>
         </div>
         <div class="chart"><svg viewBox="0 0 ${W} ${H}" aria-label="Verbrauch je Tag">${axis}${bars}</svg></div>
-        <div class="legend"><span><i style="background:rgba(124,255,178,.85)"></i>Solar selbst genutzt</span>
+        <div class="legend"><span><i style="background:rgba(${A},.85)"></i>Solar selbst genutzt</span>
           <span><i style="background:rgba(232,245,238,.22)"></i>aus dem Netz</span><span>kWh je Tag</span></div>`;
       if (this._html !== html) { this._card.innerHTML = html; this._html = html; if (!box) requestAnimationFrame(() => this._render()); }
     }
@@ -1837,7 +2268,7 @@ window.__NULLGLOW_THEME = {
         const col = neg ? "var(--ng-acc, #7cffb2)"
           : a >= this._cfg.crit ? "var(--ng-danger, #ff6b6b)"
           : a >= this._cfg.warn ? "var(--ng-warn, #ffd166)" : "rgba(232,245,238,.62)";
-        const glow = neg ? "0 0 12px -2px rgba(124,255,178,.6)"
+        const glow = neg ? "0 0 12px -2px rgba(var(--rgb-ng-acc, 124, 255, 178), .6)"
           : a >= this._cfg.warn ? `0 0 12px -2px ${a >= this._cfg.crit ? "rgba(255,107,107,.6)" : "rgba(255,209,102,.55)"}` : "none";
         fill.classList.toggle("neg", neg);
         fill.style.width = pct.toFixed(1) + "%";
@@ -1859,6 +2290,8 @@ window.__NULLGLOW_THEME = {
 // ───── nullglow-power-card.js ─────
 (() => {
   if (customElements.get("nullglow-power-card")) return;
+  // Akzentfarbe des aktiven Designs (Theme-Token --rgb-ng-acc…), Rückfall Nullglow-Grün — für SVG-Attribute, wo var() nicht wirkt
+  const accRgb = (el, v = "--rgb-ng-acc", d = "124, 255, 178") => (getComputedStyle(el).getPropertyValue(v).trim() || d);
   const REFRESH = 5 * 60 * 1000;
   const STYLE = `
     :host { display: block; height: 100%; }
@@ -1949,6 +2382,7 @@ window.__NULLGLOW_THEME = {
 
     _render() {
       if (!this._card) return;
+      const A = accRgb(this);
       if (!this._pts || this._pts.length < 3) {
         this._card.innerHTML = `<div class="msg">${this._pts === null ? "Keine Statistik verfügbar" : "Leistungsverlauf lädt …"}</div>`;
         return;
@@ -1976,9 +2410,9 @@ window.__NULLGLOW_THEME = {
         </div>
         <div class="chart"></div>
         <div class="legend">
-          <span><i style="background:rgba(124,255,178,.55)"></i>Solar genutzt</span>
+          <span><i style="background:rgba(${A},.55)"></i>Solar genutzt</span>
           <span><i style="background:rgba(232,245,238,.16)"></i>Netzbezug</span>
-          <span><i style="background:rgba(124,255,178,.22)"></i>Einspeisung</span>
+          <span><i style="background:rgba(${A},.22)"></i>Einspeisung</span>
           <span><i class="line" style="background:rgba(232,245,238,.85)"></i>Verbrauch</span>
         </div>`;
       const box = this._card.querySelector(".chart");
@@ -2024,14 +2458,14 @@ window.__NULLGLOW_THEME = {
         <svg viewBox="0 0 ${W} ${H}" aria-hidden="true">
           <defs>
             <linearGradient id="ngpS" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#7cffb2" stop-opacity=".55"/><stop offset="1" stop-color="#7cffb2" stop-opacity=".18"/>
+              <stop offset="0" stop-color="rgb(${A})" stop-opacity=".55"/><stop offset="1" stop-color="rgb(${A})" stop-opacity=".18"/>
             </linearGradient>
           </defs>
           ${grid}
           <path d="${area(houseTop, selfTop)}" fill="rgba(232,245,238,.10)"/>
           <path d="${area(selfTop, zero)}" fill="url(#ngpS)"/>
-          <path d="${area(zero, exportBot)}" fill="rgba(124,255,178,.18)"/>
-          <path d="${path(selfTop)}" fill="none" stroke="rgba(124,255,178,.8)" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="${area(zero, exportBot)}" fill="rgba(${A},.18)"/>
+          <path d="${path(selfTop)}" fill="none" stroke="rgba(${A},.8)" stroke-width="1.2" stroke-linejoin="round"/>
           <path d="${path(houseTop)}" fill="none" stroke="rgba(232,245,238,.85)" stroke-width="1.5" stroke-linejoin="round"/>
           <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.5" fill="#e8f5ee" style="filter: drop-shadow(0 0 5px rgba(232,245,238,.7))"/>
         </svg>`;
@@ -2066,7 +2500,7 @@ window.__NULLGLOW_THEME = {
     .lvl-warn .cnt { background: rgba(255,209,102,.18); color: var(--ng-warn, #ffd166); }
     .lvl-crit .cnt { background: rgba(255,107,107,.18); color: var(--ng-danger, #ff6b6b); }
     .sum .s { font-size: 12px; color: var(--ng-txt-dim, #93a79d); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .lvl-ok .ic { color: var(--ng-acc, #7cffb2); background: rgba(124,255,178,.10); }
+    .lvl-ok .ic { color: var(--ng-acc, #7cffb2); background: rgba(var(--rgb-ng-acc, 124, 255, 178), .10); }
     .lvl-warn .ic { color: var(--ng-warn, #ffd166); background: rgba(255,209,102,.12); }
     .lvl-crit .ic { color: var(--ng-danger, #ff6b6b); background: rgba(255,107,107,.13); animation: ngpulse 1.8s ease-in-out infinite; }
     .card.lvl-warn { box-shadow: inset 0 0 0 1px rgba(255,209,102,.35), 0 0 22px -10px rgba(255,209,102,.6); }
@@ -2300,7 +2734,7 @@ window.__NULLGLOW_THEME = {
     .timeline { display: flex; align-items: flex-end; gap: 3px; height: 34px; padding: 10px 16px 0; cursor: pointer; }
     .timeline span { flex: 1; height: 10px; border-radius: 3px; background: rgba(255,255,255,.14); transition: background .2s, height .2s; }
     .timeline span.fc { background: rgba(107,227,255,.22); }
-    .timeline span.now { height: 18px; background: rgba(124,255,178,.55); }
+    .timeline span.now { height: 18px; background: rgba(var(--rgb-ng-acc, 124, 255, 178), .55); }
     .timeline span.cur { height: 22px; background: var(--ng-txt, #e8f5ee); box-shadow: 0 0 10px rgba(232,245,238,.6); }
     .timeline span.cur.fc { background: var(--ng-info, #6be3ff); box-shadow: 0 0 10px rgba(107,227,255,.7); }
     .timeline span.miss { opacity: .25; }
@@ -2596,7 +3030,8 @@ window.__NULLGLOW_THEME = {
 // ───── nullglow-mower-map-card.js ─────
 (() => {
   if (customElements.get("nullglow-mower-map-card")) return;
-  const ACC = "#7cffb2", ACC2 = "#2be38f", DANGER = "#ff6b6b", INFO = "#6be3ff", TXT = "#e8f5ee", DIM = "#93a79d";
+  let ACC = "#7cffb2", ACC2 = "#2be38f";   // Akzent des aktiven Designs, in _render() aus dem Theme gelesen
+  const DANGER = "#ff6b6b", INFO = "#6be3ff", TXT = "#e8f5ee", DIM = "#93a79d";
   const ACTIVE = ["mowing", "returning"];
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -2606,7 +3041,7 @@ window.__NULLGLOW_THEME = {
       background: var(--ha-card-background, rgba(255,255,255,.045)); box-shadow: var(--ha-card-box-shadow, inset 0 0 0 1px rgba(255,255,255,.09)); }
     .map { position: relative; cursor: pointer; }
     .map::before { content: ""; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(70% 70% at 50% 50%, rgba(124,255,178,.06), transparent 70%); }
+      background: radial-gradient(70% 70% at 50% 50%, rgba(var(--rgb-ng-acc, 124, 255, 178), .06), transparent 70%); }
     svg.garden { position: absolute; inset: 12px; width: calc(100% - 24px); height: calc(100% - 24px); overflow: visible; }
     .chip { position: absolute; left: 14px; top: 12px; padding: 8px 14px; border-radius: 14px; background: rgba(5,7,10,.66);
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
@@ -2618,7 +3053,7 @@ window.__NULLGLOW_THEME = {
     .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
     .empty { position: absolute; inset: 0; display: grid; place-items: center; color: ${DIM}; font-size: 13px; }
     @keyframes ngmow { 0% { r: 14px; opacity: .8; } 100% { r: 46px; opacity: 0; } }
-    .pulse { fill: none; stroke: ${ACC}; stroke-width: 2.5; animation: ngmow 2s ease-out infinite; }
+    .pulse { fill: none; stroke: var(--ng-acc, #7cffb2); stroke-width: 2.5; animation: ngmow 2s ease-out infinite; }
   `;
 
   // Punkte eines Polygon/Polyline-Attributs -> [x, y][]
@@ -2634,7 +3069,7 @@ window.__NULLGLOW_THEME = {
       card.className = "card";
       card.innerHTML = `<div class="map" style="height:${this._cfg.height}px"><div class="empty">Karte lädt …</div></div>
         <div class="chip"><b>–</b><span>Garten</span></div>
-        <div class="legend"><span><i style="background:rgba(124,255,178,.35);box-shadow:inset 0 0 0 1px ${ACC}"></i>Rasen</span>
+        <div class="legend"><span><i style="background:rgba(var(--rgb-ng-acc, 124, 255, 178),.35);box-shadow:inset 0 0 0 1px var(--ng-acc, #7cffb2)"></i>Rasen</span>
           <span><i style="background:rgba(255,107,107,.3);box-shadow:inset 0 0 0 1px ${DANGER}"></i>Sperrzone</span>
           <span><i style="background:rgba(107,227,255,.25);box-shadow:inset 0 0 0 1px ${INFO}"></i>VisionFence aus</span>
           <span><i style="background:#05070a;box-shadow:inset 0 0 0 1px ${DIM}"></i>Station</span></div>`;
@@ -2701,6 +3136,9 @@ window.__NULLGLOW_THEME = {
     }
 
     _render(txt) {
+      const cs = getComputedStyle(this);   // Farben des aktiven Designs
+      ACC = `rgb(${cs.getPropertyValue("--rgb-ng-acc").trim() || "124, 255, 178"})`;
+      ACC2 = `rgb(${cs.getPropertyValue("--rgb-ng-acc-2").trim() || "43, 227, 143"})`;
       const doc = new DOMParser().parseFromString(txt, "image/svg+xml");
       const svg = doc.documentElement;
       if (!svg || svg.nodeName !== "svg") return;
@@ -2874,8 +3312,8 @@ window.__NULLGLOW_THEME = {
       const C = 2 * Math.PI * 40, off = C * (1 - Math.max(0, Math.min(100, pr ?? 0)) / 100);
       const ring = `<div class="ring" data-entity="${E.progress}"><svg viewBox="0 0 96 96">
           <circle cx="48" cy="48" r="40" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="8"/>
-          <circle cx="48" cy="48" r="40" fill="none" stroke="var(--ng-acc, #7cffb2)" stroke-width="8" stroke-linecap="round"
-            stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" style="filter:drop-shadow(0 0 6px rgba(124,255,178,.6))"/></svg>
+          <circle cx="48" cy="48" r="40" fill="none" style="stroke: var(--ng-acc, #7cffb2)" stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" style="filter:drop-shadow(0 0 6px rgba(var(--rgb-ng-acc, 124, 255, 178), .6))"/></svg>
         <div class="v"><div><b>${pr != null ? Math.round(pr) + " %" : "–"}</b><small>${esc(zone && zone !== "unknown" ? zone : "Fortschritt")}</small></div></div></div>`;
       const area = (lbl, id, d = 1) => { const v = num(id); return `<div class="a" data-entity="${id}"><span>${lbl}</span><b>${v != null ? n(v, d) : "–"}<small>m²</small></b></div>`; };
       const areas = `<div class="areas">${area("Letzte Fahrt", E.session)}${area("Diese Woche", E.week)}${area("Rasenfläche", E.total)}</div>`;
@@ -2922,10 +3360,13 @@ window.__NULLGLOW_THEME = {
   const C = (r, g, b, a) => ({ r, g, b, a });
   const NONE = C(0, 0, 0, 0);
   // Tagespaletten [oben links, oben rechts, unten, Schein] — bewusst dezent, Grün bleibt die Grundfarbe
+  // Grundfarbe = Akzent des aktiven Designs (A1 = acc-2, A2 = acc, A3 = acc-3; Nullglow-Grün als Rückfall), Wetter tönt
+  const A = { 1: [43, 227, 143], 2: [124, 255, 178], 3: [15, 184, 122] };
+  const CA = (n, a) => C(A[n][0], A[n][1], A[n][2], a);
   const DAY = {
-    default:        [C(43, 227, 143, .16), C(124, 255, 178, .10), C(15, 184, 122, .12), NONE],
-    sunny:          [C(43, 227, 143, .13), C(255, 190, 100, .17), C(15, 184, 122, .10), C(255, 214, 150, .07)],
-    partlycloudy:   [C(43, 227, 143, .15), C(255, 210, 150, .10), C(15, 184, 122, .11), NONE],
+    get default() { return [CA(1, .16), CA(2, .10), CA(3, .12), NONE]; },
+    get sunny() { return [CA(1, .13), C(255, 190, 100, .17), CA(3, .10), C(255, 214, 150, .07)]; },
+    get partlycloudy() { return [CA(1, .15), C(255, 210, 150, .10), CA(3, .11), NONE]; },
     cloudy:         [C(110, 150, 138, .12), C(140, 160, 160, .08), C(60, 110, 96, .10), NONE],
     fog:            [C(170, 190, 185, .10), C(170, 185, 185, .08), C(120, 140, 140, .08), C(200, 210, 210, .04)],
     rainy:          [C(40, 170, 190, .14), C(90, 150, 255, .11), C(20, 110, 150, .12), NONE],
@@ -2956,6 +3397,18 @@ window.__NULLGLOW_THEME = {
     return p;
   }
 
+  // Akzentfarben am Dashboard lesen (Theme-Tokens der View)
+  function readAccent() {
+    const find = (root) => { for (const e of root.querySelectorAll('*')) { if (e.localName === 'hui-view-container' || e.localName === 'hui-view') return e;
+      if (e.shadowRoot) { const x = find(e.shadowRoot); if (x) return x; } } return null; };
+    const el = find(document);
+    if (!el) return;
+    const cs = getComputedStyle(el);
+    for (const [n, v] of [[1, '--rgb-ng-acc-2'], [2, '--rgb-ng-acc'], [3, '--rgb-ng-acc-3']]) {
+      const m = cs.getPropertyValue(v).match(/\d+/g); if (m && m.length >= 3) A[n] = m.slice(0, 3).map(Number);
+    }
+  }
+
   let forced = null, lastKey = '';
   function tick() {
     try {
@@ -2970,6 +3423,7 @@ window.__NULLGLOW_THEME = {
         elev = sun ? parseFloat(sun.attributes.elevation) : null;
         if (!isFinite(elev)) elev = null;
       }
+      readAccent();
       const p = palette(state, elev);
       const key = p.map(css).join('|');
       if (key === lastKey) return;
@@ -2999,7 +3453,7 @@ window.__NULLGLOW_THEME = {
   const VS = "attribute vec2 p; void main() { gl_Position = vec4(p, 0.0, 1.0); }";
   const FS = `
     precision mediump float;
-    uniform vec2 uRes; uniform float uTime; uniform float uPower; uniform float uCalm; uniform float uNight;
+    uniform vec2 uRes; uniform float uTime; uniform float uPower; uniform float uCalm; uniform float uNight; uniform vec3 uAcc; uniform vec3 uAcc2;
     float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
     float noise(vec2 p) {
       vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
@@ -3014,8 +3468,8 @@ window.__NULLGLOW_THEME = {
       float y = 1.0 - uv.y;                         // 0 oben … 1 unten
       float t = uTime;
       float energy = mix(0.25, 1.0, uPower);        // Lebendigkeit
-      vec3 green = vec3(0.486, 1.0, 0.698);         // #7cffb2
-      vec3 deep = vec3(0.168, 0.890, 0.560);        // #2be38f
+      vec3 green = uAcc;                            // Akzent des Designs (Nullglow #7cffb2)
+      vec3 deep = uAcc2;                            // zweiter Akzent (Nullglow #2be38f)
       vec3 cyan = vec3(0.30, 0.86, 0.95);
       vec3 violet = vec3(0.58, 0.46, 1.0);
       vec3 col = vec3(0.0);
@@ -3079,7 +3533,7 @@ window.__NULLGLOW_THEME = {
     const p = gl.getAttribLocation(prog, "p");
     gl.enableVertexAttribArray(p);
     gl.vertexAttribPointer(p, 2, gl.FLOAT, false, 0, 0);
-    for (const u of ["uRes", "uTime", "uPower", "uCalm", "uNight"]) loc[u] = gl.getUniformLocation(prog, u);
+    for (const u of ["uRes", "uTime", "uPower", "uCalm", "uNight", "uAcc", "uAcc2"]) loc[u] = gl.getUniformLocation(prog, u);
     const dbg = gl.getExtension("WEBGL_debug_renderer_info");
     info.renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : "webgl";
     return true;
@@ -3112,6 +3566,12 @@ window.__NULLGLOW_THEME = {
   let forced = null;
   const target = { power: 0, calm: 0, night: 0 }, cur = { power: 0, calm: 0, night: 0 };
   let active = true, cfg = CFG;
+  // Farben des aktiven Designs (Theme-Tokens am Hintergrund), Rückfall Nullglow-Grün
+  const col = { acc: [0.486, 1.0, 0.698], acc2: [0.168, 0.890, 0.560] };
+  function readColors() {
+    const cs = getComputedStyle(canvas), rd = (v, d) => { const m = cs.getPropertyValue(v).match(/\d+/g); return m && m.length >= 3 ? m.slice(0, 3).map((x) => x / 255) : d; };
+    col.acc = rd("--rgb-ng-acc", col.acc); col.acc2 = rd("--rgb-ng-acc-2", col.acc2);
+  }
   function readHass() {
     const h = document.querySelector("home-assistant")?.hass;
     if (!h) return;
@@ -3149,6 +3609,8 @@ window.__NULLGLOW_THEME = {
     gl.uniform1f(loc.uPower, cur.power);
     gl.uniform1f(loc.uCalm, cur.calm);
     gl.uniform1f(loc.uNight, cur.night);
+    gl.uniform3fv(loc.uAcc, col.acc);
+    gl.uniform3fv(loc.uAcc2, col.acc2);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     if (canvas.style.opacity !== "1") canvas.style.opacity = "1";
     frames++;
@@ -3161,6 +3623,7 @@ window.__NULLGLOW_THEME = {
     try {
       cfg = current();
       mount();
+      if (canvas.isConnected) readColors();
       if (!cfg && !forced) { active = false; return; }
       if (!cfg) cfg = CFG;
       readHass(); if (active && !document.hidden) schedule();
@@ -3348,7 +3811,7 @@ window.__NULLGLOW_THEME = {
       styles: [
         ".bubble-button-card-container { border-radius: 20px !important; box-shadow: inset 0 0 0 1px var(--ng-line) !important; }",
         ".bubble-range-slider { border-radius: 20px !important; overflow: hidden !important; }",
-        ".bubble-range-fill { background: linear-gradient(90deg, rgba(124,255,178,.05) 0%, rgba(124,255,178,.20) 85%, rgba(124,255,178,.36) 100%) !important; box-shadow: inset -2px 0 0 rgba(124,255,178,.75); opacity: 1 !important; border-radius: 0 !important; }",
+        ".bubble-range-fill { background: linear-gradient(90deg, rgba(var(--rgb-ng-acc, 124, 255, 178), .05) 0%, rgba(var(--rgb-ng-acc, 124, 255, 178), .20) 85%, rgba(var(--rgb-ng-acc, 124, 255, 178), .36) 100%) !important; box-shadow: inset -2px 0 0 rgba(var(--rgb-ng-acc, 124, 255, 178), .75); opacity: 1 !important; border-radius: 0 !important; }",
         `.bubble-icon { \${${isOpen} ? 'color: var(--ng-acc) !important;' : ''} }`,
         ".bubble-sub-button { background: rgba(255,255,255,.06) !important; box-shadow: inset 0 0 0 1px var(--ng-line); width: 40px !important; height: 40px !important; }",
         "@keyframes ngshutter { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(2px); } }",
@@ -3716,15 +4179,36 @@ ha-tile-info {
   // ---------- Theme ----------
   // Im Weitergabe-Paket liegt das Theme als window.__NULLGLOW_THEME bei (kein separates Theme nötig). Es wird nur in den
   // Browser-Speicher von HA gelegt (hass.themes), nicht auf dem Server — andere Dashboards und das Profil bleiben unberührt.
+  const DESIGNS = { nullglow: "Nullglow — Grün", violetnoir: "Violetnoir — Violett", halcyon: "Halcyon — Türkis" };
+  const bundled = () => window.__NULLGLOW_THEMES || (window.__NULLGLOW_THEME ? { nullglow: window.__NULLGLOW_THEME } : null);
   function ensureTheme() {
-    const T = window.__NULLGLOW_THEME, ha = document.querySelector("home-assistant");
+    const TS = bundled(), ha = document.querySelector("home-assistant");
     const themes = ha?.hass?.themes;
-    if (!T || !themes?.themes || themes.themes.nullglow) return;
-    const neu = { ...themes, themes: { ...themes.themes, nullglow: T } };
+    if (!TS || !themes?.themes) return;
+    const missing = Object.keys(TS).filter((k) => !themes.themes[k]);
+    if (!missing.length) return;
+    const add = Object.fromEntries(missing.map((k) => [k, TS[k]]));
+    const neu = { ...themes, themes: { ...themes.themes, ...add } };
     if (typeof ha._updateHass === "function") ha._updateHass({ themes: neu }); // neue Identität -> Views wenden es an
-    else themes.themes.nullglow = T;
+    else Object.assign(themes.themes, add);
   }
-  if (window.__NULLGLOW_THEME) setInterval(ensureTheme, 2000); // nach „Designs neu laden“ wieder einsetzen
+  // Absicherung: HA merkt sich je Bereich den Theme-Namen (__themes.cacheKey) und überspringt die Anwendung, wenn er gleich
+  // bleibt — kam der Wechsel, bevor das Design eingesetzt war, bleiben die Farben leer. Dann Merker löschen und neu anstoßen.
+  function ensureApplied() {
+    const TS = bundled();
+    const find = (r) => { for (const e of r.querySelectorAll("*")) { if (e.localName === "hui-view-container") return e;
+      if (e.shadowRoot) { const x = find(e.shadowRoot); if (x) return x; } } return null; };
+    const cont = find(document);
+    const key = String(cont?.__themes?.cacheKey || "").split("__")[0];
+    if (!cont || !TS?.[key] || getComputedStyle(cont).getPropertyValue("--ng-acc").trim()) return;
+    cont.__themes = undefined;
+    const ha = document.querySelector("home-assistant");
+    if (ha?.hass?.themes && typeof ha._updateHass === "function") ha._updateHass({ themes: { ...ha.hass.themes } });
+  }
+  if (bundled()) {
+    ensureTheme();                                   // so früh wie möglich, vor dem ersten Zeichnen der Views
+    setInterval(() => { ensureTheme(); ensureApplied(); }, 2000);   // auch nach „Designs neu laden“
+  }
 
   // ---------- Strategie ----------
   class NullglowDashboardStrategy extends HTMLElement {
@@ -3738,6 +4222,7 @@ ha-tile-info {
       const views = VIEWS.filter((v) => on[v.key]);
       const base = "/" + (location.pathname.split("/")[1] || "lovelace");
       ensureTheme();
+      const design = DESIGNS[cfg.design] ? cfg.design : "nullglow";
       // Nordlicht (nullglow-aurora.js) liest hier die Sensoren dieses Dashboards
       window.__nullglowDashboards = { ...(window.__nullglowDashboards || {}), [base]: energy ? {
         solar: list(energy.solar), grid: list(energy.grid), gridExport: list(energy.grid_export), gridInvert: !!energy.grid_invert,
@@ -3751,7 +4236,7 @@ ha-tile-info {
         title: cfg.title || "Nullglow",
         views: views.map((v) => {
           const r = build[v.key]();
-          return { title: v.title, path: v.key, icon: v.icon, theme: "nullglow", type: "sections", max_columns: 4,
+          return { title: v.title, path: v.key, icon: v.icon, theme: design, type: "sections", max_columns: 4,
             dense_section_placement: true, sections: [...r.sections, navSection(views, base, r.extra || [])] };
         }),
       };
@@ -3960,7 +4445,7 @@ ha-tile-info {
       }
 
       // 5. Wetter, Personen, Kameras, Kalender
-      box = this._panel("more", "5 · Wetter, Personen, Kameras, Kalender", "mdi:tune-variant");
+      box = this._panel("more", "5 · Design, Wetter, Personen, Kameras, Kalender", "mdi:tune-variant", DESIGNS[c.design] || DESIGNS.nullglow);
       box.appendChild(this._form([
         { name: "weather", label: "Wetter", helper: `leer = ${inv.weather || "keins gefunden"}`, selector: { entity: { filter: { domain: "weather" } } } },
         { name: "persons", label: "Personen", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "person" } } } },
@@ -3969,9 +4454,12 @@ ha-tile-info {
         { name: "screen_switch", label: "Steckdose des Wandmonitors (optional)", helper: "ist sie aus, pausiert das Nordlicht im Hintergrund",
           selector: { entity: { filter: { domain: ["switch", "light", "input_boolean", "binary_sensor"] } } } },
         { name: "title", label: "Titel des Dashboards", selector: { text: {} } },
-      ], { weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], calendars: c.calendars || [], title: c.title,
+        { name: "design", label: "Design", helper: "Farbvariante — gleiche Elemente, anderer Akzent und andere Schrift",
+          selector: { select: { mode: "dropdown", options: Object.entries(DESIGNS).map(([value, label]) => ({ value, label })) } } },
+      ], { design: c.design || "nullglow", weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], calendars: c.calendars || [], title: c.title,
         screen_switch: c.screen_switch }, (v) => {
         for (const k of ["weather", "title", "screen_switch"]) { if (v[k]) c[k] = v[k]; else delete c[k]; }
+        if (v.design && v.design !== "nullglow") c.design = v.design; else delete c.design;
         for (const k of ["persons", "cameras", "calendars"]) { if (v[k]?.length) c[k] = v[k]; else delete c[k]; }
         this._emit();
       }));
