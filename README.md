@@ -122,6 +122,10 @@ zuweisen, umbenennen und sortieren.
   Stopp · Alle zu mit Rückfrage). Antippen öffnet alle Rollläden **nach Etage** (HA-Etagen) mit Auf/Zu je Etage.
 - **Namen wie „EG - Küche - Rollladen links“:** werden automatisch zu „Küche · links“ (Etage/Raum vorne weg; gleiche
   Raumnamen auf zwei Etagen bekommen die Etage dahinter, z. B. „Flur · OG“). Abschaltbar im Assistenten.
+- **Live-Kameras:** im Assistenten (5.) eine oder mehrere Kameras für die Übersicht wählen; die Kameras-Seite kann ebenfalls
+  live statt Standbild zeigen. Der Stream läuft nur, solange die Karte angezeigt wird (nichts im Hintergrund). Am Wandmonitor
+  den Browser-Cache begrenzen, z. B. Chromium mit `--disk-cache-size=67108864` (64 MB). Reolink, Tapo, Ring … — alles, was
+  in HA ein Livebild hat.
 - **Monitor hochkant:** funktioniert; reicht der Platz nicht für alle Seitennamen, zeigt die Leiste unten nur Symbole.
 - **Das Regenradar zeigt nichts:** Es nutzt den Deutschen Wetterdienst und deckt Deutschland (plus ~100 km) ab.
 - **Eigene Änderungen an Kacheln:** ⋮ → Dashboard bearbeiten → „Kontrolle übernehmen“ macht daraus ein normales Dashboard,

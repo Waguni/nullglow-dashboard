@@ -6267,6 +6267,10 @@ window.__NULLGLOW_THEMES = {
     return list.filter((c) => { const k = isAc(hass, c) ? "ac" : "heat"; if (seen[k]) return false; seen[k] = true; return true; });
   };
 
+  // Kamera: live (Stream nur, solange die Karte angezeigt wird) oder Standbild (erneuert sich, Tippen = live)
+  const camCard = (c, live, name = true) => ({ type: "picture-entity", entity: c, camera_view: live ? "live" : "auto",
+    show_name: name, show_state: false, aspect_ratio: "16:9", tap_action: { action: "more-info" }, grid_options: { columns: "full" } });
+
   const heading = (text, icon, nav) => ({ type: "heading", heading: text, icon, ...(nav ? { tap_action: { action: "navigate", navigation_path: nav } } : {}) });
 
   function clockCard(tap) {
@@ -6441,6 +6445,10 @@ ha-tile-info {
     if (energy) S.push({ type: "grid", column_span: 2, cards: [heading("Energie", "mdi:lightning-bolt", on.energie ? `${base}/energie` : null),
       { type: "custom:nullglow-flow-card", height: 388, grid_options: { columns: "full" }, ...energy }] });
 
+    const live = (cfg.live_cameras || []).filter((c) => hass.states[c]);
+    if (live.length) S.push({ type: "grid", cards: [heading(live.length > 1 ? "Kameras" : "Kamera", "mdi:cctv", on.kameras ? `${base}/kameras` : null),
+      ...live.map((c) => camCard(c, true, live.length > 1))] });
+
     const lightRooms = inv.shown.filter((r) => r.lights.length);
     if (lightRooms.length) {
       const cards = [heading("Licht", "mdi:lightbulb-group", on.licht ? `${base}/licht` : null)];
@@ -6563,10 +6571,8 @@ ha-tile-info {
     return { sections: S };
   }
 
-  function viewKameras(inv) {
-    return { sections: inv.cameras.map((c) => ({ type: "grid", column_span: 2, cards: [
-      { type: "picture-entity", entity: c, camera_view: "auto", show_name: true, show_state: false, aspect_ratio: "16:9",
-        tap_action: { action: "more-info" }, grid_options: { columns: "full" } }] })) };
+  function viewKameras(inv, cfg) {
+    return { sections: inv.cameras.map((c) => ({ type: "grid", column_span: 2, cards: [camCard(c, !!cfg.cameras_live)] })) };
   }
 
   function viewKalender(inv) {
@@ -6746,7 +6752,7 @@ ha-tile-info {
         solarPeak: energy.solar_peak || 800, monitor: cfg.screen_switch || null } : { solar: [], grid: [], monitor: cfg.screen_switch || null } };
       const build = {
         home: () => viewHome(inv, energy, base, on, hass, cfg, design), licht: () => viewLicht(inv, hass), klima: () => viewKlima(inv, hass),
-        energie: () => viewEnergie(energy, hass), kameras: () => viewKameras(inv), kalender: () => viewKalender(inv),
+        energie: () => viewEnergie(energy, hass), kameras: () => viewKameras(inv, cfg), kalender: () => viewKalender(inv),
         sauger: () => viewSauger(inv, hass), maeher: () => viewMaeher(inv, hass),
       };
       return {
@@ -6981,6 +6987,9 @@ ha-tile-info {
         { name: "weather", label: "Wetter", helper: `leer = ${inv.weather || "keins gefunden"}`, selector: { entity: { filter: { domain: "weather" } } } },
         { name: "persons", label: "Personen", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "person" } } } },
         { name: "cameras", label: "Kameras", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
+        { name: "live_cameras", label: "Live-Kameras auf der Übersicht (optional)", helper: "eine oder mehrere; Stream nur, solange die Übersicht offen ist — braucht Platz (ggf. scrollen)",
+          selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
+        { name: "cameras_live", label: "Kameras-Seite live", helper: "aus = Standbild, das sich alle paar Sekunden erneuert (Antippen = live)", selector: { boolean: {} } },
         { name: "calendars", label: "Kalender", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "calendar" } } } },
         { name: "screen_switch", label: "Steckdose des Wandmonitors (optional)", helper: "ist sie aus, pausiert das Nordlicht im Hintergrund",
           selector: { entity: { filter: { domain: ["switch", "light", "input_boolean", "binary_sensor"] } } } },
@@ -6991,12 +7000,13 @@ ha-tile-info {
           selector: { select: { mode: "dropdown", options: [
             { value: "auto", label: "Wie Gerät / HA-Profil" }, { value: "dark", label: "Immer dunkel" },
             { value: "light", label: "Immer hell" }, { value: "sun", label: "Nach Sonne (tagsüber hell)" }] } } },
-      ], { design: c.design || "nullglow", mode: c.mode || "auto", weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], calendars: c.calendars || [], title: c.title,
+      ], { design: c.design || "nullglow", mode: c.mode || "auto", weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], live_cameras: c.live_cameras || [], cameras_live: !!c.cameras_live, calendars: c.calendars || [], title: c.title,
         screen_switch: c.screen_switch }, (v) => {
         for (const k of ["weather", "title", "screen_switch"]) { if (v[k]) c[k] = v[k]; else delete c[k]; }
         if (v.design && v.design !== "nullglow") c.design = v.design; else delete c.design;
         if (v.mode && v.mode !== "auto") c.mode = v.mode; else delete c.mode;
-        for (const k of ["persons", "cameras", "calendars"]) { if (v[k]?.length) c[k] = v[k]; else delete c[k]; }
+        for (const k of ["persons", "cameras", "calendars", "live_cameras"]) { if (v[k]?.length) c[k] = v[k]; else delete c[k]; }
+        if (v.cameras_live) c.cameras_live = true; else delete c.cameras_live;
         this._emit();
       }));
 
@@ -7006,6 +7016,7 @@ ha-tile-info {
         <b>Wandmonitor (Full HD):</b> Dashboard-Adresse mit <code>?kiosk</code> öffnen (braucht Kiosk Mode) — ohne Kopfzeile und
         Seitenleiste. Bei 1920×1080 mit 125 % Zoom sieht es aus wie im Original. Hochkant geht auch (die Leiste zeigt dann nur Symbole).<br>
         <b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist.<br>
+        <b>Livebilder am Wandmonitor:</b> Browser-Cache begrenzen, z. B. Chromium mit <code>--disk-cache-size=67108864</code> (64 MB) starten.<br>
         Ändern kannst du alles später über <b>Dashboard bearbeiten</b>; „Kontrolle übernehmen“ macht daraus ein normales, frei
         bearbeitbares Dashboard (dann ohne automatische Aktualisierung).</div>`);
     }
