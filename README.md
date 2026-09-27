@@ -2,7 +2,7 @@
 
 # Nullglow Dashboard für Home Assistant
 
-Dunkles Glas-Dashboard mit leuchtendem Energiefluss, Lichtkacheln in der echten Lampenfarbe, Raumklima mit
+Glas-Dashboard (dunkel oder hell) mit leuchtendem Energiefluss, Lichtkacheln in der echten Lampenfarbe, Raumklima mit
 Verlaufskurven, Kameras, Kalender, Saug- und Mähroboter — **richtet sich aus deinem Home Assistant selbst ein**.
 Kein YAML: Bereiche, Geräte und das Energie-Dashboard werden automatisch übernommen, alles Weitere klickst du im
 Einrichtungs-Assistenten. Läuft auf dem **Handy** (HA-App) und auf einem **Full-HD-Wandmonitor**.
@@ -21,7 +21,7 @@ Einrichtungs-Assistenten. Läuft auf dem **Handy** (HA-App) und auf einem **Full
 Dazu: Raum-Pop-ups (Licht lange drücken oder Temperatur antippen), Hintergrund in Wetterfarben und ein
 **Nordlicht**, das mit deiner Solarleistung stärker wird. Seiten ohne passende Geräte erscheinen gar nicht erst.
 
-## 13 Designs
+## 13 Designs — jeweils dunkel und hell
 
 **Nullglow** (Grün), **Violetnoir** (Violett), **Halcyon** (Türkis), **Emberglow** (Orange), **Aurum** (Gold), **Sakura** (Rosé),
 **Nocturne** (Blau), **Glacier** (Eisblau), **Chartreuse** (Limette), **Neonwave** (Magenta), **Graphite** (Silber),
@@ -29,6 +29,13 @@ Dazu: Raum-Pop-ups (Licht lange drücken oder Temperatur antippen), Hintergrund 
 Auswahl im Einrichtungs-Assistenten, jederzeit umstellbar.
 
 ![13 Designs](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs.jpg)
+
+Jedes Design gibt es auch **hell** („getöntes Tageslicht“: Seite zart in der Designfarbe, weißes Glas, Akzent kräftiger
+für guten Kontrast; Leuchten werden zu weichen Farbschatten, das Nordlicht zum Farbschleier). Einstellung
+**Hell / Dunkel** im Assistenten: *wie Gerät / HA-Profil* (Standard), *immer dunkel*, *immer hell* oder *nach Sonne*
+(tagsüber hell, nachts dunkel — praktisch für den Wandmonitor).
+
+![13 Designs hell](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs-light.jpg)
 
 ## Vorschau
 
@@ -78,7 +85,7 @@ Der Assistent prüft das und zeigt fehlende Teile mit Link an.
    2. Seiten an/aus
    3. Räume: ausblenden (Auge), sortieren (Pfeile), antippen für Name, Symbol, Hauptlicht, Temperatur-Sensor
    4. Energie: Punkte zuweisen und **benennen** (Solar, Netz, jeder Verbraucher mit Name und Symbol)
-   5. **Design** (13 Farbvarianten), Wetter, Personen, Kameras, Kalender, Steckdose des Wandmonitors
+   5. **Design** (13 Farbvarianten) und **Hell / Dunkel**, Wetter, Personen, Kameras, Kalender, Steckdose des Wandmonitors
 6. **Speichern** → Namen und Symbol für das Dashboard wählen → fertig.
 
 Ändern kannst du alles später über **⋮ → Dashboard bearbeiten** (öffnet den Assistenten wieder).
@@ -116,4 +123,4 @@ zuweisen, umbenennen und sortieren.
 
 ## Lizenz
 
-MIT — siehe [LICENSE](LICENSE). Design: Nullglow (dunkel, Glas, ein grüner Akzent).
+MIT — siehe [LICENSE](LICENSE). Design: Nullglow (dunkel oder hell, Glas, ein Akzent).
