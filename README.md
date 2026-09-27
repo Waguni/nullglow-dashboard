@@ -122,6 +122,10 @@ zuweisen, umbenennen und sortieren.
   Stopp · Alle zu mit Rückfrage). Antippen öffnet alle Rollläden **nach Etage** (HA-Etagen) mit Auf/Zu je Etage.
 - **Namen wie „EG - Küche - Rollladen links“:** werden automatisch zu „Küche · links“ (Etage/Raum vorne weg; gleiche
   Raumnamen auf zwei Etagen bekommen die Etage dahinter, z. B. „Flur · OG“). Abschaltbar im Assistenten.
+- **Batteriespeicher** (Anker Solix, Zendure, EcoFlow, Hausspeicher …): erscheint im Energiefluss unter dem Haus — Ladestand als
+  leuchtender Ring (Amber unter 15 %, pulsiert beim Laden), Ströme Solar/Netz → Akku und Akku → Haus, Symbol mit Füllstand;
+  Akku-Strom zählt zur Autarkie. Steht der Speicher im HA-Energie-Dashboard, wird er automatisch erkannt; sonst im Assistenten
+  (4. Energie → „Batteriespeicher“) Leistung und Ladestand wählen. Anker meldet Laden positiv → „Vorzeichen umdrehen“ (wird vorgeschlagen).
 - **Live-Kameras:** im Assistenten (5.) eine oder mehrere Kameras für die Übersicht wählen; die Kameras-Seite kann ebenfalls
   live statt Standbild zeigen. Der Stream läuft nur, solange die Karte angezeigt wird (nichts im Hintergrund). Am Wandmonitor
   den Browser-Cache begrenzen, z. B. Chromium mit `--disk-cache-size=67108864` (64 MB). Reolink, Tapo, Ring … — alles, was

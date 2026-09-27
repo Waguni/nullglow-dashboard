@@ -2753,7 +2753,12 @@ window.__NULLGLOW_THEMES = {
       font-variant-numeric: tabular-nums; color: var(--nf-txt, #e8f5ee); font-weight: 500; line-height: 1; }
     .house .in small { font-size: .6em; color: var(--nf-txt-dim, #93a79d); margin-left: .12em; }
     .na .val { color: var(--nf-txt-mute, #5f6f68); }
-    .cons .meta { transform: translateY(-50%); text-align: left; }  /* Verbraucher: Werte rechts neben dem Knoten */
+    .cons .meta, .battery .meta { transform: translateY(-50%); text-align: left; }  /* Verbraucher/Akku: Werte rechts neben dem Knoten */
+    .battery .soc { font-family: var(--ha-font-family-code, 'JetBrains Mono', ui-monospace, monospace); font-variant-numeric: tabular-nums;
+      color: var(--nf-txt, #e8f5ee); font-weight: 600; font-size: 1.15em; }
+    .battery .soc small { font-size: .7em; color: var(--nf-txt-dim, #93a79d); margin-left: .1em; font-weight: 400; }
+    .battery .bw { font-family: var(--ha-font-family-code, 'JetBrains Mono', ui-monospace, monospace); font-size: .85em; color: var(--nf-txt-dim, #93a79d); }
+    .battery.on .bw { color: var(--nf-acc, #7cffb2); }
     .cons .lbl { font-size: 9px; letter-spacing: .04em; }
     .cons .kwh { font-size: 9px; color: var(--nf-txt-mute, #5f6f68); font-family: var(--ha-font-family-code, 'JetBrains Mono', ui-monospace, monospace); }
     .today { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, 1fr);
@@ -2797,6 +2802,7 @@ window.__NULLGLOW_THEMES = {
       this._cfg = {
         height: 260, solar_peak: 800, warn_import: 2000, ...config,
         solar: list(config.solar), grid: list(config.grid), grid_export: list(config.grid_export),
+        battery: list(config.battery), battery_charge: list(config.battery_charge),
         consumers: (config.consumers || []).map((c) => (typeof c === "string" ? { entity: c } : c))
           .concat(config.other ? [{ name: "Sonstige", icon: "mdi:dots-horizontal-circle-outline", ...config.other, virtual: true }] : []),
         today: config.today ? { price: 0, ...config.today, solar: list(config.today.solar),
@@ -2873,6 +2879,7 @@ window.__NULLGLOW_THEMES = {
         solar: c.solar.length ? mk("solar", "src solar", c.solar_icon || "mdi:solar-power-variant", c.solar_name || "Solar", c.solar[0]) : null,
         grid: c.grid.length ? mk("grid", "src grid", c.grid_icon || "mdi:transmission-tower", c.grid_name || "Netz", c.grid[0]) : null,
         house: mk("house", "house", c.house_icon || "mdi:home-lightning-bolt-outline", "Haus", null),
+        battery: c.battery.length ? mk("battery", "src battery", c.battery_icon || "mdi:home-battery-outline", c.battery_name || "Akku", c.battery_soc || c.battery[0]) : null,
         cons: c.consumers.map((x, i) => mk("c" + i, "cons", x.icon || "mdi:power-plug", x.name || "", x.entity)), // ohne Namen: Anzeigename aus HA
       };
       this._nodes.house.disc.innerHTML = `<ha-icon icon="${esc(c.house_icon || "mdi:home-lightning-bolt-outline")}"></ha-icon><div class="in"></div>`;
@@ -2905,10 +2912,16 @@ window.__NULLGLOW_THEMES = {
       if (N.solar) this._flows.push(flow(N.solar, N.house, "solar"));
       if (N.solar && N.grid) this._flows.push(flow(N.solar, N.grid, "export"));
       if (N.grid) this._flows.push(flow(N.grid, N.house, "import"));
+      if (N.battery) { // Speicher: laden aus Solar bzw. Netz, entladen ins Haus
+        if (N.solar) this._flows.push(flow(N.solar, N.battery, "bsolar"));
+        if (N.grid) this._flows.push(flow(N.grid, N.battery, "bgrid"));
+        this._flows.push(flow(N.battery, N.house, "bout"));
+        if (N.grid) this._flows.push(flow(N.battery, N.grid, "bexp"));   // Akku speist ein (selten)
+      }
       N.cons.forEach((n, i) => this._flows.push(flow(N.house, n, "cons" + i)));
 
-      this._v = { solar: 0, grid: 0, house: 0, share: 0, cons: c.consumers.map(() => 0) };
-      this._d = { solar: 0, grid: 0, house: 0, share: 0, cons: c.consumers.map(() => 0) }; // angezeigte (gezählte) Werte
+      this._v = { solar: 0, grid: 0, house: 0, share: 0, battery: 0, soc: null, cons: c.consumers.map(() => 0) };
+      this._d = { solar: 0, grid: 0, house: 0, share: 0, battery: 0, soc: 0, cons: c.consumers.map(() => 0) }; // angezeigte (gezählte) Werte
       this._dToday = 0; // angezeigte Autarkie heute
       this._halo = 0; this._flash = 0; this._gridSign = 0; this._na = {};
 
@@ -2959,7 +2972,13 @@ window.__NULLGLOW_THEMES = {
       const single = !(N.solar && N.grid);
       place(N.solar, xs, h * (single ? 0.45 : 0.25), rS, Math.round(rS * 0.82));
       place(N.grid, xs, h * (single ? 0.45 : 0.71), rS, Math.round(rS * 0.82));
-      place(N.house, xh, h * 0.46, rH, Math.round(rH * 0.4));
+      const rB = clamp(m * 0.085, 18, 30);
+      place(N.house, xh, h * (N.battery ? 0.4 : 0.46), rH, Math.round(rH * 0.4));
+      if (N.battery) { // unter dem Haus, Werte rechts daneben
+        place(N.battery, xh, h - rB - 16, rB, Math.round(rB * 0.95));
+        N.battery.meta.style.top = "0px";
+        N.battery.meta.style.left = `${rB + 12}px`;
+      }
       N.house.el.querySelector(".in").style.fontSize = `${Math.round(rH * 0.42)}px`;
       N.house.meta.style.top = `${rH + 9}px`;
       const n = N.cons.length, top = h * 0.14, bot = h * 0.86;
@@ -2969,7 +2988,7 @@ window.__NULLGLOW_THEMES = {
         c.meta.style.left = `${rC + 7}px`;
       });
       const fs = clamp(m * 0.05, 11, 15);
-      [N.solar, N.grid].forEach((x) => x && (x.meta.style.fontSize = `${fs}px`));
+      [N.solar, N.grid, N.battery].forEach((x) => x && (x.meta.style.fontSize = `${fs}px`));
       N.house.meta.style.fontSize = `${fs - 1}px`;
       N.cons.forEach((x) => (x.meta.style.fontSize = `${fs - 2}px`));
 
@@ -2981,6 +3000,10 @@ window.__NULLGLOW_THEMES = {
           const bulge = a.x - 6; // weit nach links, damit der Bogen an den Beschriftungen vorbeiläuft
           c1 = { x: a.x - bulge, y: a.y + (b.y - a.y) * 0.35 };
           c2 = { x: b.x - bulge, y: b.y - (b.y - a.y) * 0.35 };
+        } else if (f.kind === "bout") { // Akku -> Haus: senkrecht nach oben
+          const dy = b.y - a.y;
+          c1 = { x: a.x, y: a.y + dy * 0.45 };
+          c2 = { x: b.x, y: b.y - dy * 0.45 };
         } else {
           const dx = b.x - a.x;
           c1 = { x: a.x + dx * 0.55, y: a.y };
@@ -3004,18 +3027,32 @@ window.__NULLGLOW_THEMES = {
     _read() {
       if (!this._hass || !this._cfg || !this._flows) return;
       if (!this._colAt || Date.now() - this._colAt > 10000) this._readColors();   // Design-Wechsel ohne Neuladen
-      const c = this._cfg, v = this._v, na = (this._na = {});
+      const c = this._cfg, v = this._v, na = (this._na = {}), N = this._nodes;
       let s = 0;
       for (const id of c.solar) { const x = this._num(id); if (x === null) na.solar = true; else s += x; }
       let g = 0;
       for (const id of c.grid) { const x = this._num(id); if (x === null) na.grid = true; else g += x; }
       if (c.grid_invert) g = -g;
       for (const id of c.grid_export) { const x = this._num(id); if (x === null) na.grid = true; else g -= Math.abs(x); }
+      // Speicher: + = Entladen (wie HA), − = Laden
+      let b = 0;
+      for (const id of c.battery) { const x = this._num(id); if (x === null) na.battery = true; else b += x; }
+      if (c.battery_invert) b = -b;
+      for (const id of c.battery_charge) { const x = this._num(id); if (x === null) na.battery = true; else b -= Math.abs(x); }
+      if (!c.battery.length) b = 0;
+      v.battery = b;
+      v.soc = c.battery_soc ? this._num(c.battery_soc) : null;
+      const bOut = Math.max(0, b), bIn = Math.max(0, -b);
       v.solar = Math.max(0, s);
       v.grid = g;
-      v.house = Math.max(0, v.solar + g);
-      const sToH = Math.min(v.solar, v.house);
-      v.share = v.house > 1 ? sToH / v.house : v.solar > 1 ? 1 : 0;
+      v.house = Math.max(0, v.solar + g + bOut - bIn);
+      const sToB = Math.min(bIn, v.solar);                       // lädt zuerst aus Solar …
+      const gToB = Math.min(Math.max(0, bIn - sToB), Math.max(0, g)); // … den Rest aus dem Netz
+      const sToH = Math.min(v.solar - sToB, v.house);
+      const bToH = Math.min(bOut, Math.max(0, v.house - sToH));
+      const sExp = Math.min(Math.max(0, -g), Math.max(0, v.solar - sToB - sToH));   // Einspeisung zuerst aus Solar …
+      const bExp = Math.max(0, Math.max(0, -g) - sExp);                               // … den Rest aus dem Akku
+      v.share = v.house > 1 ? Math.min(1, (sToH + bToH) / v.house) : v.solar > 1 || bOut > 1 ? 1 : 0;   // Akku zählt als selbst erzeugt
       v.cons = c.consumers.map((x, i) => { if (x.virtual) return 0; const w = this._num(x.entity); na["c" + i] = w === null; return Math.max(0, w || 0); });
       c.consumers.forEach((x, i) => { // „Sonstige“: was das Haus sonst noch braucht
         if (x.virtual) v.cons[i] = Math.max(0, v.house - v.cons.reduce((a, w, j) => a + (c.consumers[j].virtual ? 0 : w), 0));
@@ -3029,8 +3066,9 @@ window.__NULLGLOW_THEMES = {
       if (!this._balAt[this._period] || Date.now() - this._balAt[this._period] > 5 * 60 * 1000) this._fetchBalance(this._period);
 
       for (const f of this._flows) {
-        f.target = f.kind === "solar" ? sToH : f.kind === "export" ? Math.max(0, -g)
-          : f.kind === "import" ? Math.max(0, g) : v.cons[+f.kind.slice(4)];
+        f.target = f.kind === "solar" ? sToH : f.kind === "export" ? (N.battery ? sExp : Math.max(0, -g))
+          : f.kind === "import" ? Math.max(0, g - gToB) : f.kind === "bsolar" ? sToB : f.kind === "bgrid" ? gToB
+          : f.kind === "bout" ? bToH : f.kind === "bexp" ? bExp : v.cons[+f.kind.slice(4)];
       }
       this._kick();
     }
@@ -3115,7 +3153,8 @@ window.__NULLGLOW_THEMES = {
     _step(dt) {
       const c = this._cfg, v = this._v, d = this._d;
       const ease = 1 - Math.exp(-dt * 5); // weiches Nachführen der Zahlen und Ströme
-      for (const k of ["solar", "grid", "house", "share"]) d[k] += (v[k] - d[k]) * ease;
+      for (const k of ["solar", "grid", "house", "share", "battery"]) d[k] += (v[k] - d[k]) * ease;
+      if (v.soc !== null) d.soc += (v.soc - d.soc) * ease;
       d.cons = d.cons.map((x, i) => x + (v.cons[i] - x) * ease);
       this._halo += dt * (0.12 + 0.9 * Math.sqrt(clamp(d.solar / c.solar_peak, 0, 1.5)));
       this._flash = Math.max(0, this._flash - dt * 1.3);
@@ -3130,6 +3169,7 @@ window.__NULLGLOW_THEMES = {
             f.acc -= 1;
             let rgb = this._rgb.acc;
             if (f.kind === "import") rgb = W > c.warn_import ? this._rgb.warn : this._rgb.txt;
+            else if (f.kind === "bgrid") rgb = this._rgb.txt;
             else if (f.kind.startsWith("cons")) rgb = Math.random() < d.share ? this._rgb.acc : this._rgb.txt;
             const speed = (45 + 125 * I) * (0.85 + Math.random() * 0.3);
             f.parts.push({ d: Math.random() * speed * dt, v: speed, s: 1.3 + 1.9 * I, off: (Math.random() - 0.5) * (2 + 9 * I), rgb });
@@ -3150,7 +3190,7 @@ window.__NULLGLOW_THEMES = {
       for (const f of this._flows) {
         if (!f.path) continue;
         const I = clamp(Math.sqrt(f.w / REF_W), 0, 1), on = f.w > 2;
-        const rgb = f.kind === "import" && f.w > c.warn_import ? this._rgb.warn : f.kind === "import" ? this._rgb.txt : this._rgb.acc;
+        const rgb = f.kind === "import" && f.w > c.warn_import ? this._rgb.warn : f.kind === "import" || f.kind === "bgrid" ? this._rgb.txt : this._rgb.acc;
         const P = f.path;
         ctx.beginPath();
         ctx.moveTo(P.p0.x, P.p0.y);
@@ -3231,6 +3271,24 @@ window.__NULLGLOW_THEMES = {
         ctx.stroke();
       }
 
+      // Ladestand-Ring um den Akku: Amber unter 15 %, pulsiert beim Laden
+      if (N.battery && this._v.soc !== null) {
+        const n = N.battery, rb = n.r + 5, soc = clamp(d.soc / 100, 0, 1), low = d.soc < 15;
+        const charging = this._v.battery < -3, a = charging ? 0.6 + 0.35 * Math.sin(this._halo * 3) : 0.9;
+        ctx.lineCap = "round";
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = `rgba(${this._rgb.txt},0.08)`;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, rb, 0, Math.PI * 2);
+        ctx.stroke();
+        if (soc > 0.005) {
+          ctx.strokeStyle = `rgba(${low ? this._rgb.warn : this._rgb.acc},${a})`;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, rb, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * soc);
+          ctx.stroke();
+        }
+      }
+
       // Autarkie-Ring ums Haus
       const H = N.house, rr = H.r + 5;
       ctx.lineCap = "round";
@@ -3295,6 +3353,18 @@ window.__NULLGLOW_THEMES = {
         set(N.grid, `${na.grid ? '<span class="val">–</span>' : W(Math.abs(d.grid))}<div class="lbl">${lbl}</div>`,
           `${exp ? "on" : ""} ${imp && v.grid > c.warn_import ? "warn" : ""} ${na.grid ? "na" : ""}`,
           exp ? clamp(-d.grid / REF_W, 0.15, 1) : 0);
+      }
+      if (N.battery) {
+        const bw = d.battery, chg = v.battery < -3, dis = v.battery > 3, soc = v.soc;
+        const lvl = soc === null ? null : clamp(Math.round(soc / 10) * 10, 0, 100);
+        const icon = c.battery_icon || (lvl === null ? "mdi:home-battery-outline"
+          : chg ? `mdi:battery-charging-${Math.max(10, lvl)}` : lvl >= 100 ? "mdi:battery" : lvl <= 0 ? "mdi:battery-outline" : `mdi:battery-${lvl}`);
+        if (N.battery.icon !== icon) { N.battery.disc.innerHTML = `<ha-icon icon="${esc(icon)}"></ha-icon>`; N.battery.icon = icon; }
+        const socHtml = soc === null ? "" : `<div class="soc">${Math.round(d.soc)}<small>%</small></div>`;
+        const state = na.battery ? "–" : chg ? `lädt ${fmt(-bw)} W` : dis ? `entlädt ${fmt(bw)} W` : "bereit";
+        set(N.battery, `${socHtml}<div class="bw">${state}</div><div class="lbl">${N.battery.name}</div>`,
+          `${chg || dis ? "on" : ""} ${soc !== null && soc < 15 ? "warn" : ""} ${na.battery ? "na" : ""}`,
+          chg || dis ? clamp(Math.sqrt(Math.abs(bw) / REF_W), 0.15, 1) : 0);
       }
       const inner = `${fmt(d.house)}<small>W</small>`;
       const hin = N.house.el.querySelector(".in");
@@ -3372,11 +3442,13 @@ window.__NULLGLOW_THEMES = {
       const e = ents[id], d = e && devs[e.device_id];
       return (d && (d.name_by_user || d.name)) || st[id]?.attributes?.friendly_name || id;
     };
-    return { st, ents, isPower, isEnergy, sibling, nameOf, powerOf: (id) => sibling(id, isPower), energyOf: (id) => sibling(id, isEnergy) };
+    const isSoc = (id) => !!st[id] && id.startsWith("sensor.") && st[id].attributes.device_class === "battery" && unit(id) === "%";
+    return { st, ents, isPower, isEnergy, sibling, nameOf, powerOf: (id) => sibling(id, isPower), energyOf: (id) => sibling(id, isEnergy),
+      socOf: (id) => sibling(id, isSoc) };
   }
 
   async function detectConfig(hass) {
-    const T = sensorTools(hass), out = { solar: [], grid: [], grid_export: [], consumers: [] };
+    const T = sensorTools(hass), out = { solar: [], grid: [], grid_export: [], consumers: [], battery: [], battery_charge: [] };
     const today = { solar: [], import: [], export: [] };
     let prefs = null, price = null;
     try { prefs = await hass.callWS({ type: "energy/get_prefs" }); } catch (e) { /* Energie-Dashboard nicht eingerichtet */ }
@@ -3386,6 +3458,13 @@ window.__NULLGLOW_THEMES = {
         if (s.stat_energy_from) today.solar.push(s.stat_energy_from);
         const p = pc.stat_rate || s.stat_rate || (s.stat_energy_from && T.powerOf(s.stat_energy_from));
         if (p) out.solar.push(p);
+      } else if (s.type === "battery") { // HA: positiv = Entladen
+        if (pc.stat_rate || s.stat_rate) out.battery.push(pc.stat_rate || s.stat_rate);
+        else if (pc.stat_rate_inverted) { out.battery.push(pc.stat_rate_inverted); out.battery_invert = true; }
+        else if (pc.stat_rate_from) { out.battery.push(pc.stat_rate_from); if (pc.stat_rate_to) out.battery_charge.push(pc.stat_rate_to); }
+        else { const p = s.stat_energy_from && T.powerOf(s.stat_energy_from); if (p) out.battery.push(p); }
+        const any = out.battery[0] || s.stat_energy_from;
+        if (any && !out.battery_soc) out.battery_soc = T.socOf(any) || undefined;
       } else if (s.type === "grid") { // neues Format: ein Eintrag je Zähler; altes: flow_from/flow_to-Listen
         const from = [s.stat_energy_from, ...(s.flow_from || []).map((f) => f.stat_energy_from)].filter(Boolean);
         const to = [s.stat_energy_to, ...(s.flow_to || []).map((f) => f.stat_energy_to)].filter(Boolean);
@@ -3438,6 +3517,12 @@ window.__NULLGLOW_THEMES = {
     if (out.grid.length) cfg.grid = out.grid;
     if (out.grid_invert) cfg.grid_invert = true;
     if (out.grid_export.length) cfg.grid_export = out.grid_export;
+    if (out.battery.length) {
+      cfg.battery = out.battery.length === 1 ? out.battery[0] : out.battery;
+      if (out.battery_invert) cfg.battery_invert = true;
+      if (out.battery_charge.length) cfg.battery_charge = out.battery_charge;
+      if (out.battery_soc) cfg.battery_soc = out.battery_soc;
+    }
     if (out.consumers.length) {
       cfg.consumers = out.consumers;
       cfg.other = { name: "Sonstige", icon: "mdi:dots-horizontal-circle-outline" };
@@ -3527,6 +3612,10 @@ window.__NULLGLOW_THEMES = {
       const c = this._config, got = [];
       const take = (k, label) => { if (!empty(d[k]) && empty(c[k])) { c[k] = d[k]; got.push(label); } };
       take("solar", "Solar"); take("grid", "Netz");
+      if (!empty(d.battery) && empty(c.battery)) {
+        for (const k of ["battery", "battery_invert", "battery_charge", "battery_soc"]) if (!empty(d[k])) c[k] = d[k];
+        got.push("Speicher");
+      }
       if (!empty(d.grid) && c.grid === d.grid) { if (d.grid_invert) c.grid_invert = true; if (d.grid_export) c.grid_export = d.grid_export; }
       if (d.solar_peak && (!c.solar_peak || c.solar === d.solar)) c.solar_peak = d.solar_peak;
       const have = new Set((c.consumers || []).map((x) => (typeof x === "string" ? x : x.entity)));
@@ -3641,6 +3730,35 @@ window.__NULLGLOW_THEMES = {
         warn_import: c.warn_import ?? 2000 }, (v) => {
         set("grid", v.grid); set("grid_invert", v.grid_invert || undefined); set("grid_export", v.grid_export);
         set("grid_name", v.grid_name); set("grid_icon", v.grid_icon); set("warn_import", v.warn_import);
+        this._emit();
+      }));
+      root.appendChild(p);
+
+      // Batteriespeicher (optional)
+      [p, in_] = this._panel("bat", "Batteriespeicher (optional)", "mdi:home-battery-outline", arr(c.battery).length ? "eingerichtet" : "keiner");
+      in_.insertAdjacentHTML("beforeend", '<div class="note">Z. B. Anker Solix, Zendure, EcoFlow, Hausspeicher. Erscheint unter dem Haus: '
+        + 'Ladestand als Ring, Ströme Solar/Netz → Akku und Akku → Haus.</div>');
+      in_.appendChild(this._form([
+        { name: "battery", label: "Akku-Leistung (W)", helper: "positiv = Entladen; mehrere werden addiert", selector: this._ent(true, "power") },
+        { name: "battery_invert", label: "Vorzeichen umdrehen", helper: "einschalten, wenn dein Sensor Laden positiv meldet (z. B. Anker Solix „Ladeleistung“)", selector: { boolean: {} } },
+        { name: "battery_soc", label: "Ladestand (%)", selector: this._all ? { entity: { filter: { domain: "sensor" } } } : { entity: { filter: { domain: "sensor", device_class: "battery" } } } },
+        { type: "grid", name: "", schema: [
+          { name: "battery_name", label: "Name", selector: { text: {} } },
+          { name: "battery_icon", label: "Symbol", helper: "leer = passt sich dem Ladestand an", selector: { icon: { placeholder: "mdi:battery-70" } } },
+        ] },
+        { name: "battery_charge", label: "Getrennte Lade-Leistung (optional)", helper: "nur falls Laden und Entladen zwei Sensoren sind (beide positiv)",
+          selector: this._ent(true, "power") },
+      ], { battery: arr(c.battery), battery_invert: !!c.battery_invert, battery_soc: c.battery_soc, battery_name: c.battery_name,
+        battery_icon: c.battery_icon, battery_charge: arr(c.battery_charge) }, (v) => {
+        const T = sensorTools(this._hass), neu = arr(v.battery).find((x) => !arr(c.battery).includes(x));
+        set("battery", v.battery); set("battery_invert", v.battery_invert || undefined); set("battery_charge", v.battery_charge);
+        set("battery_name", v.battery_name); set("battery_icon", v.battery_icon); set("battery_soc", v.battery_soc);
+        if (neu) { // neu gewählt: Ladestand am selben Gerät suchen, Vorzeichen nach Namen raten
+          if (!c.battery_soc) { const soc = T.socOf(neu); if (soc) c.battery_soc = soc; }
+          const txt = `${neu} ${T.st[neu]?.attributes?.friendly_name || ""}`;
+          if (/charg|lade/i.test(txt) && !/discharg|entlade/i.test(txt)) c.battery_invert = true;
+          this._build();
+        }
         this._emit();
       }));
       root.appendChild(p);
