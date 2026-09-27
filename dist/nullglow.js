@@ -5712,6 +5712,270 @@ window.__NULLGLOW_THEMES = {
   setInterval(tick, 2000);
 })();
 
+// ───── nullglow-covers-card.js ─────
+(() => {
+  if (customElements.get("nullglow-covers-card")) return;
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const STYLE = `
+    :host { display: block; height: 100%; container: ngcov / inline-size; }
+    .card { position: relative; height: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: var(--ha-card-border-radius, 20px);
+      background: var(--ha-card-background, rgba(var(--rgb-ng-txt, 255, 255, 255), .045));
+      box-shadow: var(--ha-card-box-shadow, inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .09));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, none); backdrop-filter: var(--ha-card-backdrop-filter, none);
+      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "ic t btns" "bars bars bars";
+      align-items: center; align-content: center; column-gap: 12px; row-gap: 10px; }
+    .ic { grid-area: ic; } .mid { grid-area: t; } .btns { grid-area: btns; } .bars { grid-area: bars; }
+    .card.tap { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .ic { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; flex: none;
+      background: rgba(var(--rgb-ng-txt, 255, 255, 255), .06); color: var(--ng-txt-dim, #93a79d); --mdc-icon-size: 22px; }
+    .ic.open { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .14); color: var(--ng-acc, #7cffb2); }
+    .mid { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .mid b { font-size: 15px; font-weight: 600; color: var(--ng-txt, #e8f5ee); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mid span { font-size: 12px; color: var(--ng-txt-dim, #93a79d); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bars { display: flex; align-items: flex-end; gap: 4px; height: 20px; min-width: 0; overflow: hidden; }
+    .bars i { flex: 1 1 0; max-width: 28px; min-width: 3px; height: 100%; border-radius: 3px; position: relative; overflow: hidden;
+      background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); }
+    .bars i::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--p, 0%); border-radius: 3px;
+      background: var(--ng-acc, #7cffb2); opacity: .85; transition: height .6s cubic-bezier(.22,1,.36,1); }
+    .bars i.na::after { background: var(--ng-txt-mute, #5f6f68); height: 100%; opacity: .25; }
+    .bars i.mv::after { animation: ngcov 1.1s ease-in-out infinite; }
+    @keyframes ngcov { 50% { opacity: .35; } }
+    .btns { display: flex; gap: 6px; }
+    .btns button { border: 0; font: inherit; font-size: 13px; font-weight: 500; min-height: 40px; padding: 0 12px; border-radius: 999px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px; color: var(--ng-txt, #e8f5ee); background: rgba(var(--rgb-ng-txt, 255, 255, 255), .06);
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.1)); -webkit-tap-highlight-color: transparent; white-space: nowrap;
+      transition: background .2s cubic-bezier(.22,1,.36,1), color .2s; }
+    .btns button ha-icon { --mdc-icon-size: 18px; }
+    .btns button.arm { background: var(--ng-warn, #ffd166); color: #1a1405; box-shadow: none; }
+    .btns button:active { transform: scale(.96); }
+    .btns .lbl { display: inline; }
+    @container ngcov (max-width: 520px) { .btns .lbl { display: none; } .btns button { padding: 0 11px; } }
+  `;
+
+  class NullglowCoversCard extends HTMLElement {
+    setConfig(config) {
+      if (!config?.entities?.length) throw new Error("nullglow-covers-card: entities angeben");
+      this._cfg = { title: "Rollläden", icon: "mdi:window-shutter", ...config };
+      if (!this.shadowRoot) this.attachShadow({ mode: "open" });
+      const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
+      card.className = `card ${this._cfg.tap ? "tap" : ""}`;
+      card.innerHTML = `
+        <div class="ic"><ha-icon icon="${esc(this._cfg.icon)}"></ha-icon></div>
+        <div class="mid"><b>${esc(this._cfg.title)}</b><span class="sum">–</span></div>
+        <div class="bars">${this._cfg.entities.map(() => "<i></i>").join("")}</div>
+        <div class="btns">
+          <button data-s="open_cover" title="Alle auf"><ha-icon icon="mdi:arrow-up"></ha-icon><span class="lbl">Auf</span></button>
+          <button data-s="stop_cover" title="Stopp"><ha-icon icon="mdi:stop"></ha-icon></button>
+          <button data-s="close_cover" title="Alle zu"><ha-icon icon="mdi:arrow-down"></ha-icon><span class="lbl">Zu</span></button>
+        </div>`;
+      this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
+      this.shadowRoot.appendChild(card);
+      this._card = card;
+      this._bars = [...card.querySelectorAll(".bars i")];
+      card.addEventListener("click", () => this._open());
+      card.querySelectorAll(".btns button").forEach((b) => b.addEventListener("click", (ev) => { ev.stopPropagation(); this._press(b); }));
+      this._key = null;
+    }
+
+    set hass(h) {
+      this._hass = h;
+      const vals = this._cfg.entities.map((id) => {
+        const s = h.states[id];
+        if (!s || ["unavailable", "unknown"].includes(s.state)) return null;
+        const p = s.attributes.current_position;
+        return { p: typeof p === "number" ? p : s.state === "closed" ? 0 : 100, mv: ["opening", "closing"].includes(s.state) };
+      });
+      const key = JSON.stringify(vals);
+      if (key === this._key) return;
+      this._key = key;
+      const ok = vals.filter(Boolean), open = ok.filter((v) => v.p > 0).length, mv = ok.filter((v) => v.mv).length;
+      const parts = [`${ok.length - open} zu`, `${open} offen`];
+      if (mv) parts.push(`${mv} ${mv === 1 ? "fährt" : "fahren"}`);
+      if (ok.length < vals.length) parts.push(`${vals.length - ok.length} nicht erreichbar`);
+      this._card.querySelector(".sum").textContent = parts.join(" · ");
+      this._card.querySelector(".ic").classList.toggle("open", open > 0);
+      vals.forEach((v, i) => {
+        const el = this._bars[i];
+        el.className = v ? (v.mv ? "mv" : "") : "na";
+        el.style.setProperty("--p", v ? `${Math.max(v.p, v.p > 0 ? 8 : 0)}%` : "0%");
+        el.title = this._hass.states[this._cfg.entities[i]]?.attributes?.friendly_name || this._cfg.entities[i];
+      });
+    }
+
+    _press(b) {
+      const svc = b.dataset.s;
+      if (svc !== "stop_cover" && !b.classList.contains("arm")) {   // erst scharf schalten, dann ausführen
+        this._card.querySelectorAll("button.arm").forEach((x) => x.classList.remove("arm"));
+        b.classList.add("arm");
+        const lbl = b.querySelector(".lbl"), old = lbl.textContent;
+        lbl.textContent = "Wirklich?";
+        clearTimeout(this._armT);
+        this._armT = setTimeout(() => { b.classList.remove("arm"); lbl.textContent = old; }, 4000);
+        return;
+      }
+      clearTimeout(this._armT);
+      b.classList.remove("arm");
+      const lbl = b.querySelector(".lbl"); if (lbl) lbl.textContent = svc === "open_cover" ? "Auf" : "Zu";
+      this._hass.callService("cover", svc, { entity_id: this._cfg.entities });
+    }
+
+    _open() {
+      const t = this._cfg.tap;
+      if (!t) return;
+      if (t.startsWith("#")) {   // Bubble-Pop-up
+        history.pushState(null, "", location.pathname + location.search + t);
+        window.dispatchEvent(new Event("location-changed"));
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+      } else {
+        history.pushState(null, "", t);
+        window.dispatchEvent(new Event("location-changed"));
+      }
+    }
+
+    getCardSize() { return 2; }
+    getGridOptions() { return { columns: 12, rows: 2, min_rows: 2 }; }
+  }
+
+  customElements.define("nullglow-covers-card", NullglowCoversCard);
+  window.customCards = window.customCards || [];
+  window.customCards.push({ type: "nullglow-covers-card", name: "Nullglow Rollläden", description: "Viele Rollläden als eine Kachel: Zustand, Balken je Rollladen, Alle auf/zu" });
+})();
+
+// ───── nullglow-design-card.js ─────
+(() => {
+  if (customElements.get("nullglow-design-card")) return;
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const STYLE = `
+    :host { display: block; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding: 4px 2px 8px; }
+    .d { position: relative; border: 0; border-radius: 18px; padding: 14px 14px 12px; min-height: 104px; cursor: pointer; text-align: left;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 10px; font: inherit;
+      transition: transform .14s cubic-bezier(.22,1,.36,1), box-shadow .26s ease;
+      -webkit-tap-highlight-color: transparent; overflow: hidden; }
+    .d:active { transform: scale(.97); }
+    .d .sw { display: flex; gap: 6px; align-items: center; }
+    .d .sw i { width: 22px; height: 22px; border-radius: 50%; display: block; }
+    .d .sw i.main { width: 30px; height: 30px; }
+    .d b { font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+    .d small { display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; opacity: .7; margin-top: 2px; }
+    .d .ok { position: absolute; right: 10px; top: 10px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; }
+    .d .ok ha-icon { --mdc-icon-size: 16px; }
+    .hint { font-size: 12px; color: var(--secondary-text-color); padding: 2px 4px 6px; }
+    .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 0 2px 8px; }
+    .seg { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .05);
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.1)); }
+    .seg button { border: 0; font: inherit; font-size: 14px; font-weight: 500; min-height: 40px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--ng-txt-dim, var(--secondary-text-color));
+      transition: background .2s cubic-bezier(.22,1,.36,1), color .2s cubic-bezier(.22,1,.36,1); -webkit-tap-highlight-color: transparent; }
+    .seg button ha-icon { --mdc-icon-size: 18px; }
+    .seg button.on { background: var(--ng-acc, var(--primary-color)); color: var(--ng-acc-ink, #fff); box-shadow: var(--ng-glow-sm, none); }
+    .reset { border: 0; font: inherit; font-size: 14px; min-height: 40px; padding: 0 14px; border-radius: 999px; cursor: pointer; display: inline-flex;
+      align-items: center; gap: 6px; background: transparent; color: var(--ng-txt-dim, var(--secondary-text-color));
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.1)); }
+    .reset ha-icon { --mdc-icon-size: 18px; }
+  `;
+
+  // Hell/Dunkel für storage: local (Vorlage/Paket): Werte wie die Option „mode“ der Nullglow-Vorlage
+  const LOCAL_MODES = [["Dunkel", "dark", "mdi:weather-night"], ["Hell", "light", "mdi:white-balance-sunny"],
+    ["Sonne", "sun", "mdi:weather-sunset"], ["Gerät", "auto", "mdi:cellphone-cog"]];
+  const MODE_NAME = { dark: "dunkel", light: "hell", sun: "nach Sonne", auto: "wie Gerät" };
+  const readLocal = (k) => { try { return JSON.parse(localStorage.getItem(k) || "{}") || {}; } catch (e) { return {}; } };
+
+  class NullglowDesignCard extends HTMLElement {
+    setConfig(config) {
+      // storage: local -> Wahl nur in diesem Browser (Schlüssel nullglow-design:<dashboard>), sonst zwei input_select-Helfer
+      this._cfg = { entity: "input_select.kiosk_design", mode_entity: "input_select.kiosk_design_mode", ...config };
+      this._local = this._cfg.storage === "local";
+      this._lkey = `nullglow-design:${this._cfg.dashboard || "/" + (location.pathname.split("/")[1] || "lovelace")}`;
+      if (!this.shadowRoot) this.attachShadow({ mode: "open" });
+    }
+
+    set hass(h) {
+      this._hass = h;
+      const st = h.states[this._cfg.entity], md = h.states[this._cfg.mode_entity];
+      const src = this._local ? JSON.stringify(readLocal(this._lkey)) : st ? `${st.state}|${(st.attributes.options || []).join(",")}|${md?.state}` : "-";
+      const key = `${src}|${Object.keys(h.themes?.themes || {}).length}|${h.themes?.darkMode}`;
+      if (key !== this._key) { this._key = key; this._render(); }
+    }
+
+    _theme(name) {   // Farben im gerade aktiven Modus (hell/dunkel), damit die Kacheln zeigen, was man bekommt
+      const t = this._hass?.themes?.themes?.[name];
+      if (!t) return null;
+      const dark = this._hass.themes.darkMode !== false;
+      return { ...t, ...(t.modes?.[dark ? "dark" : "light"] || t.modes?.dark || {}) };
+    }
+
+    _refresh() { window.dispatchEvent(new Event("nullglow-local-design")); this._key = null; this.hass = this._hass; }
+
+    // Zustand + Aktionen, je nach Speicherort
+    _model() {
+      const h = this._hass, c = this._cfg;
+      if (this._local) {
+        const p = readLocal(this._lkey), all = h.themes?.themes || {};
+        const options = Object.keys(all).filter((k) => all[k]?.["ng-design-title"] || all[k]?.modes?.dark?.["ng-design-title"]);
+        const defD = c.default_design || "nullglow", defM = c.default_mode || "auto";
+        const save = (patch) => {
+          const n = { ...readLocal(this._lkey), ...patch };
+          for (const k of Object.keys(n)) if (!n[k]) delete n[k];
+          try { Object.keys(n).length ? localStorage.setItem(this._lkey, JSON.stringify(n)) : localStorage.removeItem(this._lkey); } catch (e) { /* privat/gesperrt */ }
+          this._refresh();
+        };
+        const dT = String(this._theme(defD)?.["ng-design-title"] || defD).split(" — ")[0];
+        return { design: p.design || defD, mode: p.mode || defM, options, modes: LOCAL_MODES,
+          hint: `Gilt nur für dieses Gerät · Standard: ${dT}, ${MODE_NAME[defM] || defM}`,
+          custom: !!(p.design || p.mode),
+          pickDesign: (o) => save({ design: o === defD ? "" : o }), pickMode: (v) => save({ mode: v === defM ? "" : v }),
+          reset: () => { try { localStorage.removeItem(this._lkey); } catch (e) { /* egal */ } this._refresh(); } };
+      }
+      const st = h.states[c.entity], md = h.states[c.mode_entity];
+      if (!st) return null;
+      const cur = String(md?.state || "");
+      const modes = md ? [["Dunkel", "mdi:weather-night"], ["Hell", "mdi:white-balance-sunny"], ["Auto", "mdi:theme-light-dark"]].map(([m, i]) =>
+        [m, (md.attributes.options || []).find((o) => o.toLowerCase().startsWith(m.toLowerCase())) || m, i]) : [];
+      return { design: st.state, mode: cur, options: st.attributes.options || [], modes,
+        hint: `Antippen wechselt sofort — auf allen Geräten, die dieses Dashboard zeigen${cur.toLowerCase().startsWith("auto") ? " · Auto: hell, solange die Sonne scheint" : ""}.`,
+        pickDesign: (o) => h.callService("input_select", "select_option", { entity_id: c.entity, option: o }),
+        pickMode: (v) => h.callService("input_select", "select_option", { entity_id: c.mode_entity, option: v }) };
+    }
+
+    _render() {
+      const m = this._model();
+      if (!m) {
+        this.shadowRoot.innerHTML = `<ha-card><div class="hint" style="padding:16px">${esc(this._cfg.entity)} fehlt — Helfer anlegen und „Eingabeauswahl-Entitäten“ neu laden.</div></ha-card>`;
+        return;
+      }
+      const tiles = m.options.map((o) => {
+        const t = this._theme(o);
+        if (!t) return "";
+        const [name, color] = String(t["ng-design-title"] || o).split(" — ");
+        const on = m.design === o;
+        const bg = t["ng-bg-elev"] || t["ng-bg"] || "#0a0f14";
+        const ring = on ? `box-shadow: inset 0 0 0 2px ${t["ng-acc"]}, 0 0 26px -8px ${t["ng-acc"]};` : `box-shadow: inset 0 0 0 1px ${t["ng-line-2"] || "rgba(255,255,255,.1)"}, ${t["ng-shadow"] || "none"};`;
+        return `<button class="d" data-o="${esc(o)}" style="background: radial-gradient(120% 120% at 0% 0%, color-mix(in srgb, ${t["ng-acc"]} 18%, transparent), transparent 60%), ${bg}; color: ${t["ng-txt"]}; ${ring}">
+          <div class="sw"><i class="main" style="background: linear-gradient(145deg, ${t["ng-acc"]}, ${t["ng-acc-3"] || t["ng-acc-2"]}); box-shadow: 0 0 16px -2px ${t["ng-acc"]};"></i>
+            <i style="background: ${t["ng-acc-2"]}"></i><i style="background: ${t["ng-txt-dim"]}"></i></div>
+          <div><b style="font-family: ${esc(t["primary-font-family"] || "inherit")}">${esc(name)}</b><small>${esc(color || "")}</small></div>
+          ${on ? `<span class="ok" style="background: ${t["ng-acc"]}; color: ${t["ng-acc-ink"]}"><ha-icon icon="mdi:check"></ha-icon></span>` : ""}
+        </button>`;
+      }).join("");
+      const seg = m.modes.length ? `<div class="seg">${m.modes.map(([l, v, i]) =>
+        `<button data-m="${esc(v)}" class="${m.mode === v ? "on" : ""}"><ha-icon icon="${i}"></ha-icon>${esc(l)}</button>`).join("")}</div>` : "";
+      const reset = m.custom ? '<button class="reset"><ha-icon icon="mdi:backup-restore"></ha-icon>Standard</button>' : "";
+      this.shadowRoot.innerHTML = `<style>${STYLE}</style><div class="top"><div class="hint">${esc(m.hint)}</div>${seg}${reset}</div><div class="grid">${tiles}</div>`;
+      this.shadowRoot.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => m.pickMode(b.dataset.m)));
+      this.shadowRoot.querySelectorAll(".d").forEach((b) => b.addEventListener("click", () => m.pickDesign(b.dataset.o)));
+      this.shadowRoot.querySelector(".reset")?.addEventListener("click", () => m.reset());
+    }
+
+    getCardSize() { return 6; }
+    getGridOptions() { return { columns: 12, rows: "auto" }; }
+  }
+
+  customElements.define("nullglow-design-card", NullglowDesignCard);
+  window.customCards = window.customCards || [];
+  window.customCards.push({ type: "nullglow-design-card", name: "Nullglow Design", description: "Design-Auswahl (Farbvarianten)" });
+})();
+
 // ───── nullglow-strategy.js ─────
 (() => {
   if (customElements.get("ll-strategy-dashboard-nullglow")) return;
@@ -5741,14 +6005,34 @@ window.__NULLGLOW_THEMES = {
 .content { align-items: flex-start !important; padding-top: 12px !important; }
 `;
   const escRe = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  // „Esszimmer Hue color lamp 4 | Hue“ -> „Hue color lamp 4“; Raum-/Gerätename vorne weg, Zusatz nach „|“ weg
-  function niceName(hass, id, strip = []) {
+  // Etagen-Kürzel vorne im Namen: „EG - Küche“, „OG | Bad“, „1. OG: Flur“, „Keller – Werkstatt“
+  const FLOOR_RE = /^((?:[EOUDK]G|\d+\.?\s?(?:OG|Etage|Stock)|Erdgeschoss|Obergeschoss|Dachgeschoss|Untergeschoss|Kellergeschoss|Keller|Souterrain|Ground floor|First floor|Basement|Attic))\s*[-–—:|·/]+\s*/i;
+  const SEP_END = /\s*[-–—:|·/]+\s*$/;
+  // „EG - Badezimmer“ -> „Badezimmer“ (auch mit dem Namen der HA-Etage vorne); leer -> Original
+  function shortArea(name, floorName) {
+    let n = name;
+    if (floorName) n = n.replace(new RegExp(`^${escRe(floorName)}\\s*[-–—:|·/]+\\s*`, "i"), "");
+    n = n.replace(FLOOR_RE, "").replace(SEP_END, "").trim();
+    return n || name;
+  }
+  // „Esszimmer Hue color lamp 4 | Hue“ -> „Hue color lamp 4“; Etage, Raum-/Gerätename vorne weg, Zusatz nach „|“ weg
+  function niceName(hass, id, strip = [], short = true) {
     const full = hass.states[id]?.attributes?.friendly_name || id.split(".")[1];
     let n = full.split(" | ")[0];
-    for (const x of strip.filter(Boolean)) n = n.replace(new RegExp(`^${escRe(x)}[\\s:·-]*`, "i"), "");
-    n = n.trim();
-    return n ? n.charAt(0).toUpperCase() + n.slice(1) : full.split(" | ")[0];
+    for (let k = 0; k < 2; k++) {   // zweimal: „EG - Küche - Rollladen“ -> „Küche - Rollladen“ -> „Rollladen“
+      if (short) n = n.replace(FLOOR_RE, "");
+      for (const x of strip.filter(Boolean)) n = n.replace(new RegExp(`^${escRe(x)}[\\s:·|/–—-]*`, "i"), "");
+    }
+    n = n.replace(SEP_END, "").trim();
+    const fb = short ? full.split(" | ")[0].replace(FLOOR_RE, "").trim() || full : full.split(" | ")[0];   // nichts übrig: Name ohne Etage
+    return n ? n.charAt(0).toUpperCase() + n.slice(1) : fb;
   }
+  // „Rollladen links“ -> „links“ (für „Küche · links“)
+  const coverWord = (n, room = "") => {
+    let x = n.replace(/^(?:roll+[aä]den?|jalousien?|raffstores?|markisen?|shutters?|blinds?|covers?)\b[\s:·|/–—-]*/i, "").trim();
+    if (room) x = x.replace(new RegExp(`^${escRe(room)}\\b[\\s:·|/–—-]*`, "i"), "").trim();
+    return x;
+  };
   const technical = (n) => /^[\w.-]+$/.test(n) && /[-_]/.test(n); // „buro-room-hue-scene“ o. ä.
   const num1 = (id) => `{% set x = states('${id}') %}{{ ('%.1f' | format(x | float)) | replace('.', ',') if is_number(x) else '–' }}`;
   const tempColor = (id) => `{% set t = states('${id}') | float(none) %}{{ 'grey' if t is none else 'blue' if t < 19.5 else ('grey' if t < 22.5 else ('amber' if t < 25 else 'red')) }}`;
@@ -5756,11 +6040,18 @@ window.__NULLGLOW_THEMES = {
   // ---------- Was gibt es in diesem Haus? ----------
   function inventory(hass, cfg) {
     const st = hass.states, ents = hass.entities || {}, devs = hass.devices || {};
-    const areasAll = Object.values(hass.areas || {});
+    const areasAll = Object.values(hass.areas || {}).filter((a) => !(cfg.hide_labels || []).some((l) => a.labels?.includes(l)));
     const floors = hass.floors || {};
+    // Labels zum Ausblenden (Assistent): an der Entität, ihrem Gerät oder ihrem Bereich
+    const hideL = new Set(cfg.hide_labels || []);
+    const labelled = (x) => !!x?.labels?.some((l) => hideL.has(l));
+    const areaHidden = (aid) => hideL.size > 0 && labelled((hass.areas || {})[aid]);
     const visible = (id) => {
       const e = ents[id];
-      return !!st[id] && (!e || (!e.hidden && !e.entity_category));
+      if (!st[id] || (e && (e.hidden || e.entity_category))) return false;
+      if (!hideL.size || !e) return true;
+      if (labelled(e) || labelled(devs[e.device_id])) return false;
+      return !areaHidden(e.area_id || devs[e.device_id]?.area_id);
     };
     const devName = (id) => { const d = devs[ents[id]?.device_id]; return d ? d.name_by_user || d.name : null; };
     const areaOf = (id) => { const e = ents[id]; return e ? (e.area_id || devs[e.device_id]?.area_id || null) : null; };
@@ -5778,8 +6069,10 @@ window.__NULLGLOW_THEMES = {
       if (ia !== -1 || ib !== -1) return (ia === -1 ? 1e3 : ia) - (ib === -1 ? 1e3 : ib);
       return floorLevel(a) - floorLevel(b) || a.name.localeCompare(b.name, "de");
     });
+    const short = cfg.short_names !== false;
     const rooms = areasAll.map((a) => {
       const o = (cfg.rooms || {})[a.area_id] || {};
+      const fl = floors[a.floor_id];
       const mine = ids.filter((id) => areaOf(id) === a.area_id);
       const lights = mine.filter(lightOk);
       const groups = lights.filter(isGroup);
@@ -5791,7 +6084,8 @@ window.__NULLGLOW_THEMES = {
       const covers = mine.filter((id) => DOMAIN(id) === "cover" && !["garage", "gate", "door"].includes(dc(id)));
       const light = o.light || (groups[0] || (single.length === 1 ? single[0] : null));
       return {
-        id: a.area_id, name: o.name || a.name, icon: o.icon || areaIcon(a), hide: !!o.hide, hash: `#${slug(a.name)}`,
+        id: a.area_id, name: o.name || (short ? shortArea(a.name, fl?.name) : a.name), custom: !!o.name, icon: o.icon || areaIcon(a),
+        hide: !!o.hide, hash: `#${slug(a.name)}`, floor: fl ? { id: fl.floor_id, name: fl.name, level: fl.level ?? 0, icon: fl.icon } : null,
         lights: single.length ? single : groups, light, climate,
         temperature: o.temperature || temps[0] || null, humidity: o.humidity || hums[0] || null,
         auto: { light: groups[0] || (single.length === 1 ? single[0] : null), temperature: temps[0] || null, humidity: hums[0] || null },
@@ -5799,6 +6093,17 @@ window.__NULLGLOW_THEMES = {
         motion: mine.filter((id) => DOMAIN(id) === "binary_sensor" && ["motion", "occupancy", "presence"].includes(dc(id))),
       };
     });
+    // gleiche Kurznamen (Flur im EG und OG): Etage dahinter, „Flur · OG“
+    if (short) {
+      const cnt = {};
+      rooms.forEach((r) => { cnt[r.name] = (cnt[r.name] || 0) + 1; });
+      rooms.forEach((r) => {
+        if (r.custom || cnt[r.name] < 2) return;
+        const a = areasAll.find((x) => x.area_id === r.id), m = a.name.match(FLOOR_RE);
+        const tag = m ? m[1] : r.floor?.name;
+        if (tag) r.name = `${r.name} · ${tag}`;
+      });
+    }
     const pick = (domain, list) => (list && list.length ? list.filter((id) => st[id]) : ids.filter((id) => DOMAIN(id) === domain));
     const onDevice = (id, test) => {
       const d = ents[id]?.device_id;
@@ -5818,7 +6123,7 @@ window.__NULLGLOW_THEMES = {
       locks: ids.filter((id) => DOMAIN(id) === "lock"),
       garages: ids.filter((id) => DOMAIN(id) === "cover" && ["garage", "gate"].includes(dc(id))),
       lightsAll: ids.filter((id) => lightOk(id)),
-      sameDevice: onDevice, devName, niceName: (id, extra = []) => niceName(hass, id, [...extra, devName(id)]),
+      sameDevice: onDevice, devName, niceName: (id, extra = []) => niceName(hass, id, [...extra, devName(id)], short),
     };
   }
 
@@ -5891,6 +6196,28 @@ window.__NULLGLOW_THEMES = {
     };
   }
 
+  // kompakte Rollladen-Kachel fürs Pop-up: Schieber = Position (ziehen), Symbol antippen = Details
+  function coverSlider(eid, name, columns = 6) {
+    const s = `hass.states[${q(eid)}]`;
+    const moving = `(${s} && ['opening', 'closing'].includes(${s}.state))`;
+    const isOpen = `(${s} && ((${s}.attributes.current_position || 0) > 0 || ${s}.state === 'open'))`;
+    return {
+      type: "custom:bubble-card", card_type: "button", button_type: "slider", entity: eid, name, icon: "mdi:window-shutter",
+      show_state: false, show_attribute: true, attribute: "current_position", tap_to_slide: false, slider_live_update: false,
+      button_action: { tap_action: { action: "more-info" }, hold_action: { action: "more-info" } },
+      tap_action: { action: "more-info" }, hold_action: { action: "more-info" },
+      grid_options: { columns, rows: 1 },
+      styles: [
+        ".bubble-button-card-container { border-radius: 20px !important; box-shadow: inset 0 0 0 1px var(--ng-line) !important; }",
+        ".bubble-range-slider { border-radius: 20px !important; overflow: hidden !important; }",
+        ".bubble-range-fill { background: linear-gradient(90deg, rgba(var(--rgb-ng-acc, 124, 255, 178), .05) 0%, rgba(var(--rgb-ng-acc, 124, 255, 178), .20) 85%, rgba(var(--rgb-ng-acc, 124, 255, 178), .36) 100%) !important; box-shadow: inset -2px 0 0 rgba(var(--rgb-ng-acc, 124, 255, 178), .75); opacity: 1 !important; border-radius: 0 !important; }",
+        `.bubble-icon { \${${isOpen} ? 'color: var(--ng-acc) !important;' : ''} }`,
+        "@keyframes ngshutter { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(2px); } }",
+        `\${${moving} ? '.bubble-icon { animation: ngshutter 1.1s ease-in-out infinite; color: var(--ng-acc) !important; }' : ''}`,
+      ].join("\n") + "\n",
+    };
+  }
+
   const heatCool = (climates) => climates.length
     ? `{{ 'heat' if ${climates.map((c) => `state_attr('${c}', 'hvac_action') == 'heating'`).join(" or ")} else ('cool' if ${climates.map((c) => `state_attr('${c}', 'hvac_action') in ['cooling', 'drying', 'fan']`).join(" or ")} else 'off') }}`
     : "off";
@@ -5942,7 +6269,7 @@ window.__NULLGLOW_THEMES = {
 
   const heading = (text, icon, nav) => ({ type: "heading", heading: text, icon, ...(nav ? { tap_action: { action: "navigate", navigation_path: nav } } : {}) });
 
-  function clockCard() {
+  function clockCard(tap) {
     return {
       type: "custom:mushroom-template-card",
       primary: "{{ now().strftime('%H:%M') }}",
@@ -5950,7 +6277,7 @@ window.__NULLGLOW_THEMES = {
         + "{%- set monate = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'] -%}\n"
         + "{%- set h = now().hour -%}\n"
         + "{{ tage[now().weekday()] }} · {{ now().day }}. {{ monate[now().month - 1] }} · {{ 'Gute Nacht' if h < 5 else ('Guten Morgen' if h < 11 else ('Hallo' if h < 18 else 'Guten Abend')) }}",
-      tap_action: { action: "none" }, grid_options: { columns: "full", rows: "auto" },
+      tap_action: tap ? { action: "navigate", navigation_path: tap } : { action: "none" }, grid_options: { columns: "full", rows: "auto" },
       card_mod: { style: `ha-card { background: none !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 ha-card::before, ha-card::after { display: none !important; }
 ha-tile-icon { display: none !important; }
@@ -6033,8 +6360,12 @@ ha-tile-info {
   }
 
   function navSection(views, base, extra = []) {
+    // ab 600 px volle Breite (Bubble begrenzt sonst unter 871 px wie am Handy); reicht der Platz nicht für alle Namen
+    // (hochkant, Seitenleiste offen), nur Symbole — so passen alle Knöpfe ohne Wischen
     const nav = { type: "custom:bubble-card", card_type: "horizontal-buttons-stack", highlight_current_view: true, hide_gradient: true,
-      styles: "@media (min-width: 871px) { .card-content { max-width: 1400px !important; } }\n" };
+      styles: "@media (min-width: 600px) { .card-content { max-width: 1400px !important; } }\n"
+        + ".card-content { container: ngnav / inline-size; }\n"
+        + `@container ngnav (max-width: ${views.length * 132}px) { .bubble-name { display: none !important; } }\n` };
     views.forEach((v, i) => {
       nav[`${i + 1}_name`] = v.title; nav[`${i + 1}_icon`] = v.icon; nav[`${i + 1}_link`] = `${base}/${v.key}`;
     });
@@ -6055,15 +6386,51 @@ ha-tile-info {
       cards };
   }
 
+  // alle Rollläden nach Etage (HA-Etagen), je Etage Sammelkachel (Auf/Stopp/Zu) + Schieber je Rollladen
+  function coversPopup(inv) {
+    const groups = new Map();
+    inv.shown.filter((r) => r.covers.length).forEach((r) => {
+      const k = r.floor ? r.floor.id : "_";
+      if (!groups.has(k)) groups.set(k, { name: r.floor ? r.floor.name : "Weitere", icon: r.floor?.icon, level: r.floor ? r.floor.level : 99, rooms: [] });
+      groups.get(k).rooms.push(r);
+    });
+    const rank = (l) => (l < 0 ? 100 - l : l);   // EG, OG, DG …, dann Keller
+    const gs = [...groups.values()].sort((a, b) => rank(a.level) - rank(b.level));
+    const cards = [];
+    gs.forEach((g) => {
+      const ents = g.rooms.flatMap((r) => r.covers);
+      cards.push({ type: "custom:nullglow-covers-card", entities: ents, title: gs.length === 1 ? "Alle Rollläden" : g.name,
+        icon: g.icon || (g.level < 0 ? "mdi:home-floor-negative-1" : g.level <= 3 ? `mdi:home-floor-${g.level}` : "mdi:home-roof"),
+        grid_options: { columns: 12, rows: 2 } });
+      const tiles = g.rooms.flatMap((r) => r.covers.map((c, i) => {
+        const n = coverWord(inv.niceName(c, [r.name, r.areaName]), r.name);
+        const label = r.covers.length === 1 ? r.name : `${r.name} · ${n && n.toLowerCase() !== r.name.toLowerCase() ? n : i + 1}`;
+        return coverSlider(c, label, 4);
+      }));
+      cards.push({ type: "grid", columns: 3, square: false, cards: tiles,
+        card_mod: { style: "#root { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; }\n" } });
+    });
+    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#rolllaeden", name: "Rollläden", icon: "mdi:window-shutter",
+      width_desktop: "980px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 180000, cards };
+  }
+
+  // Uhr antippen: Design + Hell/Dunkel für dieses Gerät (nullglow-design-card, Browser-Speicher)
+  function designPopup(base, design, mode) {
+    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#design", name: "Design", icon: "mdi:palette",
+      width_desktop: "900px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 60000,
+      cards: [{ type: "custom:nullglow-design-card", storage: "local", dashboard: base, default_design: design, default_mode: mode }] };
+  }
+
   function radarPopup() {
     return { type: "custom:bubble-card", card_type: "pop-up", hash: "#regenradar", name: "Regenradar", icon: "mdi:weather-pouring",
       width_desktop: "1100px", bg_opacity: 92, auto_close: 120000, close_by_clicking_outside: true,
       cards: [{ type: "custom:nullglow-radar-card", zoom: 8, past: 90, future: 120, step: 10, height: 430 }] };
   }
 
-  function viewHome(inv, energy, base, on, hass) {
+  function viewHome(inv, energy, base, on, hass, cfg, design) {
     const S = [];
-    const top = [clockCard()];
+    const withDesign = has("nullglow-design-card");
+    const top = [clockCard(withDesign ? "#design" : null)];
     if (inv.weather) {
       top.push({ type: "weather-forecast", entity: inv.weather, name: "Heute", forecast_type: "daily", show_current: true, show_forecast: true,
         tap_action: { action: "navigate", navigation_path: "#regenradar" },
@@ -6098,8 +6465,14 @@ ha-tile-info {
       });
       S.push({ type: "grid", cards });
     }
-    const covers = inv.shown.flatMap((r) => r.covers.map((c) => [c, r.name]));
-    if (covers.length) S.push({ type: "grid", cards: [heading("Rollläden", "mdi:window-shutter"), ...covers.map(([c, n]) => coverTile(c, n))] });
+    const covers = inv.shown.flatMap((r) => r.covers.map((c, i) => [c, r, i]));
+    const compact = covers.length && (cfg.covers === "compact" || (cfg.covers !== "list" && covers.length > 6));
+    if (compact) S.push({ type: "grid", cards: [heading("Rollläden", "mdi:window-shutter", "#rolllaeden"),
+      { type: "custom:nullglow-covers-card", entities: covers.map(([c]) => c), title: "Alle Rollläden", tap: "#rolllaeden", grid_options: { columns: 12, rows: 2 } }] });
+    else if (covers.length) S.push({ type: "grid", cards: [heading("Rollläden", "mdi:window-shutter"), ...covers.map(([c, r, i]) => {
+      const n = coverWord(inv.niceName(c, [r.name, r.areaName]), r.name);
+      return coverTile(c, r.covers.length === 1 ? r.name : `${r.name} · ${n && n.toLowerCase() !== r.name.toLowerCase() ? n : i + 1}`);
+    })] });
     if (inv.persons.length || inv.locks.length || inv.garages.length) {
       const cards = [heading("Zuhause", "mdi:home-account")];
       inv.persons.forEach((p) => cards.push({ type: "custom:mushroom-person-card", entity: p, icon_type: "entity-picture", grid_options: { columns: 6 } }));
@@ -6115,6 +6488,8 @@ ha-tile-info {
       icon: "mdi:battery-heart-variant", width_desktop: "620px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 120000,
       cards: [{ type: "custom:nullglow-care-card", mode: "full", battery: { warn: 30, crit: 15 } }] }];
     inv.shown.forEach((r) => { const p = roomPopup(r, hass, inv); if (p) pops.push(p); });
+    if (compact) pops.push(coversPopup(inv));
+    if (withDesign) pops.push(designPopup(base, design, ["dark", "light", "sun"].includes(cfg.mode) ? cfg.mode : "auto"));
     return { sections: S, extra: pops };
   }
 
@@ -6294,6 +6669,18 @@ ha-tile-info {
   // Profil/System ableitet); beim Verlassen kommt der Wert von HA zurück. Profil und andere Dashboards bleiben unberührt.
   window.__nullglowModes = window.__nullglowModes || {};
   const deepEach = (root, fn) => { for (const e of root.querySelectorAll("*")) { fn(e); if (e.shadowRoot) deepEach(e.shadowRoot, fn); } };
+  const deepFind = (root, tag) => {
+    for (const e of root.querySelectorAll("*")) {
+      if (e.localName === tag) return e;
+      if (e.shadowRoot) { const x = deepFind(e.shadowRoot, tag); if (x) return x; }
+    }
+    return null;
+  };
+  const cache = {};   // gefundene Elemente merken, nicht jede Sekunde den ganzen Baum durchsuchen (CPU am Wandmonitor)
+  const el = (tag) => (cache[tag]?.isConnected ? cache[tag] : (cache[tag] = deepFind(document, tag)));
+  // Wahl im Uhr-Pop-up (nullglow-design-card, storage: local): { design, mode } je Dashboard, nur dieses Gerät
+  const localPick = (base) => { try { return JSON.parse(localStorage.getItem(`nullglow-design:${base}`) || "{}") || {}; } catch (e) { return {}; } };
+  window.addEventListener("nullglow-local-design", () => setTimeout(ensureMode, 0));
   window.__ngRepaint = window.__ngRepaint || (() => deepEach(document, (el) => {   // eigene Karten lesen Farben beim Zeichnen
     const n = el.localName;
     if (!n.startsWith("nullglow-") || !n.endsWith("-card")) return;
@@ -6307,7 +6694,18 @@ ha-tile-info {
   function ensureMode() {
     const ha = document.querySelector("home-assistant"), h = ha?.hass;
     if (!h?.themes || typeof ha._updateHass !== "function") return;
-    const m = window.__nullglowModes["/" + (location.pathname.split("/")[1] || "lovelace")];
+    const base = "/" + (location.pathname.split("/")[1] || "lovelace");
+    const own = window.__nullglowModes[base] !== undefined, pick = own ? localPick(base) : {};
+    const m = own ? (pick.mode || window.__nullglowModes[base]) : undefined;
+    // Design pro Gerät: Views des Dashboards im Browser umfärben (wie beim Kiosk, nichts wird gespeichert)
+    if (own && pick.design && h.themes.themes?.[pick.design]) {
+      const p = el("ha-panel-lovelace"), lv = p?.lovelace;
+      if (lv?.config?.views && "/" + lv.urlPath === base && typeof p._setLovelaceConfig === "function"
+          && lv.config.views.some((v) => v.theme && v.theme !== pick.design)) {
+        p._setLovelaceConfig({ ...lv.config, views: lv.config.views.map((v) => (v.theme ? { ...v, theme: pick.design } : v)) }, lv.rawConfig, lv.mode);
+        setTimeout(() => { window.dispatchEvent(new Event("nullglow-design")); window.__ngRepaint(); }, 400);
+      }
+    }
     const dark = m === "dark" ? true : m === "light" ? false : m === "sun" ? (h.states["sun.sun"]?.state !== "above_horizon") : null;
     let changed = false;
     if (dark !== null) {
@@ -6321,7 +6719,7 @@ ha-tile-info {
     // Pop-up-Abdunklung (Bubble-Backdrop am <body>, außerhalb des Designs) im Hellen hell — nur eigene Dashboards
     const de = document.documentElement, mine = m !== undefined && h.themes.darkMode === false;
     if (mine) {
-      let hv = null; deepEach(document, (e) => { if (!hv && e.localName === "hui-view-container") hv = e; });
+      const hv = el("hui-view-container");
       const bg = hv && getComputedStyle(hv).getPropertyValue("--rgb-ng-bg").trim();
       if (bg) { de.style.setProperty("--bubble-backdrop-background-color", `rgba(${bg}, 0.55)`); de.dataset.ngBackdrop = "vorlage"; }
     } else if (de.dataset.ngBackdrop === "vorlage") { de.style.removeProperty("--bubble-backdrop-background-color"); delete de.dataset.ngBackdrop; }
@@ -6347,7 +6745,7 @@ ha-tile-info {
         solar: list(energy.solar), grid: list(energy.grid), gridExport: list(energy.grid_export), gridInvert: !!energy.grid_invert,
         solarPeak: energy.solar_peak || 800, monitor: cfg.screen_switch || null } : { solar: [], grid: [], monitor: cfg.screen_switch || null } };
       const build = {
-        home: () => viewHome(inv, energy, base, on, hass), licht: () => viewLicht(inv, hass), klima: () => viewKlima(inv, hass),
+        home: () => viewHome(inv, energy, base, on, hass, cfg, design), licht: () => viewLicht(inv, hass), klima: () => viewKlima(inv, hass),
         energie: () => viewEnergie(energy, hass), kameras: () => viewKameras(inv), kalender: () => viewKalender(inv),
         sauger: () => viewSauger(inv, hass), maeher: () => viewMaeher(inv, hass),
       };
@@ -6495,7 +6893,21 @@ ha-tile-info {
         }));
 
       // 3. Räume
-      box = this._panel("rooms", "3 · Räume", "mdi:floor-plan", `${inv.shown.length} von ${inv.rooms.length}`);
+      box = this._panel("rooms", "3 · Räume & Rollläden", "mdi:floor-plan", `${inv.shown.length} von ${inv.rooms.length}`);
+      const nCov = inv.shown.reduce((a, r) => a + r.covers.length, 0);
+      box.appendChild(this._form([
+        { name: "hide_labels", label: "Mit Label ausblenden", helper: "Entitäten, Geräte oder ganze Bereiche mit diesem Label erscheinen nicht (z. B. no_dboard)",
+          selector: { label: { multiple: true } } },
+        { name: "short_names", label: "Namen kürzen", helper: "Etage und Raum vorne im Namen weglassen („EG - Küche - Rollladen links“ → „Küche · links“)", selector: { boolean: {} } },
+        { name: "covers", label: `Rollläden auf der Übersicht (${nCov})`, helper: "Zusammengefasst = eine Kachel mit Alle auf/zu, Antippen öffnet alle nach Etage",
+          selector: { select: { mode: "dropdown", options: [
+            { value: "auto", label: "Automatisch (ab 7 zusammengefasst)" }, { value: "list", label: "Einzeln" }, { value: "compact", label: "Zusammengefasst" }] } } },
+      ], { hide_labels: c.hide_labels || [], short_names: c.short_names !== false, covers: c.covers || "auto" }, (v) => {
+        if (v.hide_labels?.length) c.hide_labels = v.hide_labels; else delete c.hide_labels;
+        if (v.short_names === false) c.short_names = false; else delete c.short_names;
+        if (v.covers && v.covers !== "auto") c.covers = v.covers; else delete c.covers;
+        this._emit(); this._build();
+      }));
       if (!inv.rooms.length) box.insertAdjacentHTML("beforeend", `<div class="note">Keine Bereiche gefunden. Lege sie unter
         <b>Einstellungen → Bereiche, Zonen &amp; Etagen</b> an und ordne deine Geräte zu — dann erscheinen hier die Räume.</div>`);
       else box.insertAdjacentHTML("beforeend", '<div class="note">Aus deinen HA-Bereichen. Auge = anzeigen, Pfeile = Reihenfolge, Raum antippen = Name, Symbol, Hauptlicht, Temperatur ändern.</div>');
@@ -6573,7 +6985,7 @@ ha-tile-info {
         { name: "screen_switch", label: "Steckdose des Wandmonitors (optional)", helper: "ist sie aus, pausiert das Nordlicht im Hintergrund",
           selector: { entity: { filter: { domain: ["switch", "light", "input_boolean", "binary_sensor"] } } } },
         { name: "title", label: "Titel des Dashboards", selector: { text: {} } },
-        { name: "design", label: "Design", helper: "Farbvariante — gleiche Elemente, anderer Akzent und andere Schrift",
+        { name: "design", label: "Design", helper: "Standard-Farbvariante — auf jedem Gerät per Uhr antippen umstellbar",
           selector: { select: { mode: "dropdown", options: Object.entries(designs(hass)).map(([value, label]) => ({ value, label })) } } },
         { name: "mode", label: "Hell / Dunkel", helper: "jedes Design gibt es hell und dunkel",
           selector: { select: { mode: "dropdown", options: [
@@ -6592,7 +7004,8 @@ ha-tile-info {
       box = this._panel("tips", "6 · Handy & Wandmonitor", "mdi:monitor-cellphone");
       box.insertAdjacentHTML("beforeend", `<div class="note"><b>Handy:</b> läuft in der HA-App, Seiten unten per Leiste wechseln (wischbar).<br>
         <b>Wandmonitor (Full HD):</b> Dashboard-Adresse mit <code>?kiosk</code> öffnen (braucht Kiosk Mode) — ohne Kopfzeile und
-        Seitenleiste. Bei 1920×1080 mit 125 % Zoom sieht es aus wie im Original.<br>
+        Seitenleiste. Bei 1920×1080 mit 125 % Zoom sieht es aus wie im Original. Hochkant geht auch (die Leiste zeigt dann nur Symbole).<br>
+        <b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist.<br>
         Ändern kannst du alles später über <b>Dashboard bearbeiten</b>; „Kontrolle übernehmen“ macht daraus ein normales, frei
         bearbeitbares Dashboard (dann ohne automatische Aktualisierung).</div>`);
     }

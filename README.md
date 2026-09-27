@@ -18,7 +18,8 @@ Einrichtungs-Assistenten. Läuft auf dem **Handy** (HA-App) und auf einem **Full
 | **Kameras**, **Kalender** | alle Kameras bzw. Kalender |
 | **Sauger**, **Mäher** | Karte, Steuerung, Akku, Verschleiß (nur wenn vorhanden) |
 
-Dazu: Raum-Pop-ups (Licht lange drücken oder Temperatur antippen), Hintergrund in Wetterfarben und ein
+Dazu: **Uhr antippen** = Design und Hell/Dunkel für *dieses* Gerät wählen (Wandmonitor und Handy dürfen verschieden
+aussehen), Raum-Pop-ups (Licht lange drücken oder Temperatur antippen), Hintergrund in Wetterfarben und ein
 **Nordlicht**, das mit deiner Solarleistung stärker wird. Seiten ohne passende Geräte erscheinen gar nicht erst.
 
 ## 13 Designs — jeweils dunkel und hell
@@ -83,7 +84,8 @@ Der Assistent prüft das und zeigt fehlende Teile mit Link an.
 5. Der **Einrichtungs-Assistent** öffnet sich — alles ist schon vorausgefüllt:
    1. Voraussetzungen (grüne Haken)
    2. Seiten an/aus
-   3. Räume: ausblenden (Auge), sortieren (Pfeile), antippen für Name, Symbol, Hauptlicht, Temperatur-Sensor
+   3. Räume & Rollläden: ausblenden (Auge), sortieren (Pfeile), antippen für Name, Symbol, Hauptlicht, Temperatur-Sensor;
+      **Mit Label ausblenden** (z. B. `no_dboard` an Entität, Gerät oder Bereich), **Namen kürzen**, Rollläden einzeln oder zusammengefasst
    4. Energie: Punkte zuweisen und **benennen** (Solar, Netz, jeder Verbraucher mit Name und Symbol)
    5. **Design** (13 Farbvarianten) und **Hell / Dunkel**, Wetter, Personen, Kameras, Kalender, Steckdose des Wandmonitors
 6. **Speichern** → Namen und Symbol für das Dashboard wählen → fertig.
@@ -116,6 +118,11 @@ zuweisen, umbenennen und sortieren.
 
 - **„Konfigurationsfehler“ oder leere Kacheln:** fehlt Bubble Card, Mushroom oder card-mod? Danach Browser hart neu laden (Strg+F5).
 - **„Nullglow“ fehlt bei „Dashboard hinzufügen“:** Browser neu laden; in HACS prüfen, ob Nullglow Dashboard installiert ist.
+- **Viele Rollläden:** ab 7 erscheinen sie auf der Übersicht als *eine* Kachel (Zustand, ein Balken je Rollladen, Alle auf ·
+  Stopp · Alle zu mit Rückfrage). Antippen öffnet alle Rollläden **nach Etage** (HA-Etagen) mit Auf/Zu je Etage.
+- **Namen wie „EG - Küche - Rollladen links“:** werden automatisch zu „Küche · links“ (Etage/Raum vorne weg; gleiche
+  Raumnamen auf zwei Etagen bekommen die Etage dahinter, z. B. „Flur · OG“). Abschaltbar im Assistenten.
+- **Monitor hochkant:** funktioniert; reicht der Platz nicht für alle Seitennamen, zeigt die Leiste unten nur Symbole.
 - **Das Regenradar zeigt nichts:** Es nutzt den Deutschen Wetterdienst und deckt Deutschland (plus ~100 km) ab.
 - **Eigene Änderungen an Kacheln:** ⋮ → Dashboard bearbeiten → „Kontrolle übernehmen“ macht daraus ein normales Dashboard,
   das du frei bearbeiten kannst — dann ohne automatische Aktualisierung.
