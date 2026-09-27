@@ -5977,6 +5977,97 @@ window.__NULLGLOW_THEMES = {
   window.customCards.push({ type: "nullglow-covers-card", name: "Nullglow Rollläden", description: "Viele Rollläden als eine Kachel: Zustand, Balken je Rollladen, Alle auf/zu" });
 })();
 
+// ───── nullglow-contacts-card.js ─────
+(() => {
+  if (customElements.get("nullglow-contacts-card")) return;
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const STYLE = `
+    :host { display: block; height: 100%; }
+    .card { position: relative; height: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: var(--ha-card-border-radius, 20px);
+      background: var(--ha-card-background, rgba(var(--rgb-ng-txt, 255, 255, 255), .045));
+      box-shadow: var(--ha-card-box-shadow, inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .09));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, none); backdrop-filter: var(--ha-card-backdrop-filter, none);
+      display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "ic t" "dots dots";
+      align-items: center; align-content: center; column-gap: 12px; row-gap: 10px; }
+    .card.tap { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .card.open { box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-warn, 255, 209, 102), .45),
+      0 0 26px -10px rgba(var(--rgb-ng-warn, 255, 209, 102), calc(.5 * var(--ng-glow-k, 1))); }
+    .ic { grid-area: ic; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(var(--rgb-ng-txt, 255, 255, 255), .06); color: var(--ng-txt-dim, #93a79d); --mdc-icon-size: 22px; }
+    .open .ic { background: rgba(var(--rgb-ng-warn, 255, 209, 102), .16); color: var(--ng-warn, #ffd166); }
+    .mid { grid-area: t; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .mid b { font-size: 15px; font-weight: 600; color: var(--ng-txt, #e8f5ee); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mid span { font-size: 12px; color: var(--ng-txt-dim, #93a79d); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .open .mid span { color: var(--ng-warn, #ffd166); }
+    .dots { grid-area: dots; display: flex; flex-wrap: wrap; gap: 5px; min-width: 0; max-height: 26px; overflow: hidden; }
+    .dots i { width: 10px; height: 10px; border-radius: 3px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .12); }
+    .dots i.on { background: var(--ng-warn, #ffd166); box-shadow: 0 0 8px rgba(var(--rgb-ng-warn, 255, 209, 102), calc(.7 * var(--ng-glow-k, 1))); }
+    .dots i.na { background: rgba(var(--rgb-ng-txt, 255, 255, 255), .04); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .12); }
+  `;
+
+  class NullglowContactsCard extends HTMLElement {
+    setConfig(config) {
+      if (!config?.entities?.length) throw new Error("nullglow-contacts-card: entities angeben");
+      this._cfg = { title: "Fenster & Türen", names: {}, ...config };
+      if (!this.shadowRoot) this.attachShadow({ mode: "open" });
+      const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
+      card.className = `card ${this._cfg.tap ? "tap" : ""}`;
+      card.innerHTML = `<div class="ic"><ha-icon icon="mdi:window-closed-variant"></ha-icon></div>
+        <div class="mid"><b>${esc(this._cfg.title)}</b><span class="sum">–</span></div>
+        <div class="dots">${this._cfg.entities.map(() => "<i></i>").join("")}</div>`;
+      this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
+      this.shadowRoot.appendChild(card);
+      this._card = card;
+      this._dots = [...card.querySelectorAll(".dots i")];
+      card.addEventListener("click", () => this._open());
+      this._key = null;
+    }
+
+    set hass(h) {
+      this._hass = h;
+      const vals = this._cfg.entities.map((id) => {
+        const s = h.states[id];
+        return !s || ["unavailable", "unknown"].includes(s.state) ? null : s.state === "on";
+      });
+      const key = vals.join(",");
+      if (key === this._key) return;
+      this._key = key;
+      const open = this._cfg.entities.filter((_, i) => vals[i] === true);
+      const na = vals.filter((v) => v === null).length;
+      const nm = (id) => this._cfg.names[id] || h.states[id]?.attributes?.friendly_name || id;
+      let sum = open.length ? `${open.length} offen · ${open.slice(0, 3).map(nm).join(", ")}${open.length > 3 ? " …" : ""}` : "Alles zu";
+      if (na) sum += ` · ${na} nicht erreichbar`;
+      this._card.querySelector(".sum").textContent = sum;
+      this._card.classList.toggle("open", open.length > 0);
+      this._card.querySelector(".ic ha-icon").setAttribute("icon", open.length ? "mdi:window-open-variant" : "mdi:window-closed-variant");
+      vals.forEach((v, i) => {
+        this._dots[i].className = v === null ? "na" : v ? "on" : "";
+        this._dots[i].title = nm(this._cfg.entities[i]);
+      });
+    }
+
+    _open() {
+      const t = this._cfg.tap;
+      if (!t) return;
+      if (t.startsWith("#")) {   // Bubble-Pop-up
+        history.pushState(null, "", location.pathname + location.search + t);
+        window.dispatchEvent(new Event("location-changed"));
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+      } else {
+        history.pushState(null, "", t);
+        window.dispatchEvent(new Event("location-changed"));
+      }
+    }
+
+    getCardSize() { return 2; }
+    getGridOptions() { return { columns: 12, rows: 2, min_rows: 2 }; }
+  }
+
+  customElements.define("nullglow-contacts-card", NullglowContactsCard);
+  window.customCards = window.customCards || [];
+  window.customCards.push({ type: "nullglow-contacts-card", name: "Nullglow Fenster & Türen", description: "Viele Kontakte als eine Kachel: offen/zu, ein Punkt je Kontakt" });
+})();
+
 // ───── nullglow-design-card.js ─────
 (() => {
   if (customElements.get("nullglow-design-card")) return;
@@ -6218,6 +6309,7 @@ window.__NULLGLOW_THEMES = {
       const temps = mine.filter((id) => measure(id, "temperature"));
       const hums = mine.filter((id) => measure(id, "humidity"));
       const covers = mine.filter((id) => DOMAIN(id) === "cover" && !["garage", "gate", "door"].includes(dc(id)));
+      const contacts = mine.filter((id) => DOMAIN(id) === "binary_sensor" && ["window", "door", "opening"].includes(dc(id)));
       const light = o.light || (groups[0] || (single.length === 1 ? single[0] : null));
       return {
         id: a.area_id, name: o.name || (short ? shortArea(a.name, fl?.name) : a.name), custom: !!o.name, icon: o.icon || areaIcon(a),
@@ -6225,7 +6317,7 @@ window.__NULLGLOW_THEMES = {
         lights: single.length ? single : groups, light, climate,
         temperature: o.temperature || temps[0] || null, humidity: o.humidity || hums[0] || null,
         auto: { light: groups[0] || (single.length === 1 ? single[0] : null), temperature: temps[0] || null, humidity: hums[0] || null },
-        covers, scenes: mine.filter((id) => DOMAIN(id) === "scene"), areaName: a.name,
+        covers, contacts, scenes: mine.filter((id) => DOMAIN(id) === "scene"), areaName: a.name,
         motion: mine.filter((id) => DOMAIN(id) === "binary_sensor" && ["motion", "occupancy", "presence"].includes(dc(id))),
       };
     });
@@ -6519,6 +6611,7 @@ ha-tile-info {
     if (room.light && room.lights.length > 1) cards.push(lightTile(room.light, `${room.name} · alle`, room.icon, null, 12));
     room.lights.forEach((l) => cards.push(lightTile(l, inv.niceName(l, [room.name, room.areaName]), null, null, 12)));
     room.covers.forEach((c) => cards.push(coverTile(c, inv.niceName(c, [room.name, room.areaName]) || "Rollladen")));
+    room.contacts.forEach((c, i) => cards.push(contactTile(c, contactName(inv, room, c, i), hass, 6)));
     cards.push(...sceneButtons(room, inv, hass, 6, 12));
     if (!cards.length) return null;
     return { type: "custom:bubble-card", card_type: "pop-up", hash: room.hash, name: room.name, icon: room.icon,
@@ -6551,6 +6644,47 @@ ha-tile-info {
         card_mod: { style: "#root { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; }\n" } });
     });
     return { type: "custom:bubble-card", card_type: "pop-up", hash: "#rolllaeden", name: "Rollläden", icon: "mdi:window-shutter",
+      width_desktop: "980px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 180000, cards };
+  }
+
+  // Fenster-/Türkontakt: nur Anzeige, offen = Amber (Status)
+  const CONTACT_WORD = /^(?:fenster(?:kontakt)?|t(?:ü|ue)r(?:kontakt)?|kontakt|window|door|contact|sensor)\b[\s:·|/–—-]*/i;
+  function contactTile(eid, name, hass, columns = 6) {
+    const door = hass.states[eid]?.attributes?.device_class === "door";
+    return { type: "custom:mushroom-template-card", entity: eid, primary: name,
+      secondary: "{{ 'offen' if is_state(entity, 'on') else ('zu' if is_state(entity, 'off') else 'nicht erreichbar') }}",
+      icon: door ? "{{ 'mdi:door-open' if is_state(entity, 'on') else 'mdi:door-closed' }}"
+        : "{{ 'mdi:window-open-variant' if is_state(entity, 'on') else 'mdi:window-closed-variant' }}",
+      icon_color: "{{ 'amber' if is_state(entity, 'on') else 'grey' }}", tap_action: { action: "more-info" },
+      grid_options: { columns, rows: 1 },
+      card_mod: { style: "ha-card { --ng-state: {{ 'warn' if is_state(config.entity, 'on') else ('idle' if states(config.entity) in ['unavailable', 'unknown'] else 'off') }}; }\n" } };
+  }
+  // „Küche · links“ bzw. „Küche“, wenn der Raum nur einen Kontakt hat
+  const contactName = (inv, r, c, i) => {
+    const n = inv.niceName(c, [r.name, r.areaName]).replace(CONTACT_WORD, "").trim();
+    const m = n.replace(new RegExp(`^${escRe(r.name)}\\b[\\s:·|/–—-]*`, "i"), "").trim();
+    return r.contacts.length === 1 ? r.name : `${r.name} · ${m && m.toLowerCase() !== r.name.toLowerCase() ? m : i + 1}`;
+  };
+  function contactsPopup(inv, hass) {
+    const groups = new Map();
+    inv.shown.filter((r) => r.contacts.length).forEach((r) => {
+      const k = r.floor ? r.floor.id : "_";
+      if (!groups.has(k)) groups.set(k, { name: r.floor ? r.floor.name : "Weitere", level: r.floor ? r.floor.level : 99, rooms: [] });
+      groups.get(k).rooms.push(r);
+    });
+    const rank = (l) => (l < 0 ? 100 - l : l);
+    const gs = [...groups.values()].sort((a, b) => rank(a.level) - rank(b.level));
+    const cards = [];
+    gs.forEach((g) => {
+      const ents = g.rooms.flatMap((r) => r.contacts);
+      cards.push({ type: "custom:nullglow-contacts-card", entities: ents, title: gs.length === 1 ? "Alle Fenster & Türen" : g.name,
+        names: Object.fromEntries(g.rooms.flatMap((r) => r.contacts.map((c, i) => [c, contactName(inv, r, c, i)]))),
+        grid_options: { columns: 12, rows: 2 } });
+      cards.push({ type: "grid", columns: 3, square: false,
+        cards: g.rooms.flatMap((r) => r.contacts.map((c, i) => contactTile(c, contactName(inv, r, c, i), hass, 4))),
+        card_mod: { style: "#root { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; }\n" } });
+    });
+    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#fenster", name: "Fenster & Türen", icon: "mdi:window-closed-variant",
       width_desktop: "980px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 180000, cards };
   }
 
@@ -6617,12 +6751,17 @@ ha-tile-info {
       const n = coverWord(inv.niceName(c, [r.name, r.areaName]), r.name);
       return coverTile(c, r.covers.length === 1 ? r.name : `${r.name} · ${n && n.toLowerCase() !== r.name.toLowerCase() ? n : i + 1}`);
     })] });
-    if (inv.persons.length || inv.locks.length || inv.garages.length) {
+    const contacts = cfg.contacts === "off" ? [] : inv.shown.flatMap((r) => r.contacts.map((c, i) => [c, r, i]));
+    const cCompact = contacts.length && (cfg.contacts === "compact" || (cfg.contacts !== "list" && contacts.length > 6));
+    if (inv.persons.length || inv.locks.length || inv.garages.length || contacts.length) {
       const cards = [heading("Zuhause", "mdi:home-account")];
       inv.persons.forEach((p) => cards.push({ type: "custom:mushroom-person-card", entity: p, icon_type: "entity-picture", grid_options: { columns: 6 } }));
       inv.locks.forEach((l) => cards.push({ type: "tile", entity: l, grid_options: { columns: 6 },
         card_mod: { style: "ha-card { --ng-state: {{ 'warn' if is_state(config.entity, 'unlocked') else 'off' }}; }\n" } }));
       inv.garages.forEach((g) => cards.push({ type: "tile", entity: g, features: [{ type: "cover-open-close" }], grid_options: { columns: 6 } }));
+      if (cCompact) cards.push({ type: "custom:nullglow-contacts-card", entities: contacts.map(([c]) => c), tap: "#fenster",
+        names: Object.fromEntries(contacts.map(([c, r, i]) => [c, contactName(inv, r, c, i)])), grid_options: { columns: 12, rows: 2 } });
+      else contacts.forEach(([c, r, i]) => cards.push(contactTile(c, contactName(inv, r, c, i), hass, 6)));
       S.push({ type: "grid", cards });
     }
     if (inv.calendars.length && has("calendar-card-pro"))
@@ -6633,6 +6772,7 @@ ha-tile-info {
       cards: [{ type: "custom:nullglow-care-card", mode: "full", battery: { warn: 30, crit: 15 } }] }];
     inv.shown.forEach((r) => { const p = roomPopup(r, hass, inv); if (p) pops.push(p); });
     if (compact) pops.push(coversPopup(inv));
+    if (cCompact) pops.push(contactsPopup(inv, hass));
     if (withDesign) pops.push(designPopup(base, design, ["dark", "light", "sun"].includes(cfg.mode) ? cfg.mode : "auto"));
     return { sections: S, extra: pops };
   }
@@ -7058,8 +7198,8 @@ ha-tile-info {
         }));
 
       // 3. Räume
-      box = this._panel("rooms", "3 · Räume & Rollläden", "mdi:floor-plan", `${inv.shown.length} von ${inv.rooms.length}`);
-      const nCov = inv.shown.reduce((a, r) => a + r.covers.length, 0);
+      box = this._panel("rooms", "3 · Räume, Rollläden & Fenster", "mdi:floor-plan", `${inv.shown.length} von ${inv.rooms.length}`);
+      const nCov = inv.shown.reduce((a, r) => a + r.covers.length, 0), nCon = inv.shown.reduce((a, r) => a + r.contacts.length, 0);
       box.appendChild(this._form([
         { name: "hide_labels", label: "Mit Label ausblenden", helper: "Entitäten, Geräte oder ganze Bereiche mit diesem Label erscheinen nicht (z. B. no_dboard)",
           selector: { label: { multiple: true } } },
@@ -7067,7 +7207,12 @@ ha-tile-info {
         { name: "covers", label: `Rollläden auf der Übersicht (${nCov})`, helper: "Zusammengefasst = eine Kachel mit Alle auf/zu, Antippen öffnet alle nach Etage",
           selector: { select: { mode: "dropdown", options: [
             { value: "auto", label: "Automatisch (ab 7 zusammengefasst)" }, { value: "list", label: "Einzeln" }, { value: "compact", label: "Zusammengefasst" }] } } },
-      ], { hide_labels: c.hide_labels || [], short_names: c.short_names !== false, covers: c.covers || "auto" }, (v) => {
+        { name: "contacts", label: `Fenster & Türen auf der Übersicht (${nCon})`, helper: "Zusammengefasst = eine Kachel „Alles zu“ / „2 offen · …“, Antippen zeigt alle nach Etage",
+          selector: { select: { mode: "dropdown", options: [
+            { value: "auto", label: "Automatisch (ab 7 zusammengefasst)" }, { value: "list", label: "Einzeln" },
+            { value: "compact", label: "Zusammengefasst" }, { value: "off", label: "Nicht anzeigen" }] } } },
+      ], { hide_labels: c.hide_labels || [], short_names: c.short_names !== false, covers: c.covers || "auto", contacts: c.contacts || "auto" }, (v) => {
+        if (v.contacts && v.contacts !== "auto") c.contacts = v.contacts; else delete c.contacts;
         if (v.hide_labels?.length) c.hide_labels = v.hide_labels; else delete c.hide_labels;
         if (v.short_names === false) c.short_names = false; else delete c.short_names;
         if (v.covers && v.covers !== "auto") c.covers = v.covers; else delete c.covers;
@@ -7082,7 +7227,7 @@ ha-tile-info {
         row.className = `row ${r.hide ? "off" : ""}`;
         const tv = r.temperature ? parseFloat(hass.states[r.temperature]?.state) : NaN;
         const temp = isFinite(tv) ? tv.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : null;
-        row.innerHTML = `<ha-icon class="ic" icon="${esc(r.icon)}"></ha-icon><div class="t"><b>${esc(r.name)}</b><small>${r.lights.length} Licht${r.lights.length === 1 ? "" : "er"}${temp ? ` · ${esc(temp)} °C` : ""}${r.climate.length ? ` · ${r.climate.length} Heizung/Klima` : ""}${r.covers.length ? ` · ${r.covers.length} Rollladen` : ""}</small></div>
+        row.innerHTML = `<ha-icon class="ic" icon="${esc(r.icon)}"></ha-icon><div class="t"><b>${esc(r.name)}</b><small>${r.lights.length} Licht${r.lights.length === 1 ? "" : "er"}${temp ? ` · ${esc(temp)} °C` : ""}${r.climate.length ? ` · ${r.climate.length} Heizung/Klima` : ""}${r.covers.length ? ` · ${r.covers.length} Rollladen` : ""}${r.contacts.length ? ` · ${r.contacts.length} Fenster/Tür` : ""}</small></div>
           <button data-a="eye" title="${r.hide ? "anzeigen" : "ausblenden"}"><ha-icon icon="${r.hide ? "mdi:eye-off-outline" : "mdi:eye-outline"}"></ha-icon></button>
           <button data-a="up" ${i ? "" : "disabled"}><ha-icon icon="mdi:arrow-up"></ha-icon></button>
           <button data-a="down" ${i < ids.length - 1 ? "" : "disabled"}><ha-icon icon="mdi:arrow-down"></ha-icon></button>`;

@@ -84,7 +84,7 @@ Der Assistent prüft das und zeigt fehlende Teile mit Link an.
 5. Der **Einrichtungs-Assistent** öffnet sich — alles ist schon vorausgefüllt:
    1. Voraussetzungen (grüne Haken)
    2. Seiten an/aus
-   3. Räume & Rollläden: ausblenden (Auge), sortieren (Pfeile), antippen für Name, Symbol, Hauptlicht, Temperatur-Sensor;
+   3. Räume, Rollläden & Fenster: ausblenden (Auge), sortieren (Pfeile), antippen für Name, Symbol, Hauptlicht, Temperatur-Sensor;
       **Mit Label ausblenden** (z. B. `no_dboard` an Entität, Gerät oder Bereich), **Namen kürzen**, Rollläden einzeln oder zusammengefasst
    4. Energie: Punkte zuweisen und **benennen** (Solar, Netz, jeder Verbraucher mit Name und Symbol)
    5. **Design** (13 Farbvarianten) und **Hell / Dunkel**, Wetter, Personen, Kameras, Kalender, Steckdose des Wandmonitors
@@ -120,6 +120,9 @@ zuweisen, umbenennen und sortieren.
 - **„Nullglow“ fehlt bei „Dashboard hinzufügen“:** Browser neu laden; in HACS prüfen, ob Nullglow Dashboard installiert ist.
 - **Viele Rollläden:** ab 7 erscheinen sie auf der Übersicht als *eine* Kachel (Zustand, ein Balken je Rollladen, Alle auf ·
   Stopp · Alle zu mit Rückfrage). Antippen öffnet alle Rollläden **nach Etage** (HA-Etagen) mit Auf/Zu je Etage.
+- **Viele Fenster-/Türkontakte:** ab 7 als *eine* Kachel „Fenster & Türen“ im Bereich Zuhause — „Alles zu“ oder „2 offen · Küche, Bad“
+  (Amber), ein Punkt je Kontakt. Antippen zeigt alle **nach Etage**. Einzeln, zusammengefasst oder aus: Assistent (3.).
+  Die Raum-Pop-ups zeigen die Kontakte des Raums.
 - **Namen wie „EG - Küche - Rollladen links“:** werden automatisch zu „Küche · links“ (Etage/Raum vorne weg; gleiche
   Raumnamen auf zwei Etagen bekommen die Etage dahinter, z. B. „Flur · OG“). Abschaltbar im Assistenten.
 - **Batteriespeicher** (Anker Solix, Zendure, EcoFlow, Hausspeicher …): erscheint im Energiefluss unter dem Haus — Ladestand als
