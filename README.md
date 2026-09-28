@@ -75,7 +75,9 @@ wall monitor).
 - **Energy flow:** solar, grid (per phase, netted like your meter), **home battery** (Anker Solix, Zendure, EcoFlow, …) with
   charge ring, up to 6 consumers + "other"; totals for today / week / month with grid cost and savings; solar forecast.
 - **Doorbell:** optional — when someone rings, the door camera opens full-size for 2 minutes on every page (Ring, Reolink,
-  UniFi, … are detected automatically, no helper or automation needed).
+  UniFi, … are detected automatically, no helper or automation needed). Separate camera, e.g. **Frigate**? Just pick the
+  camera and what rings: a doorbell event, a binary sensor or a simple button (e.g. Zigbee `sensor.…_action` —
+  every press counts as a ring).
 - **Lights:** tap = on/off (default) or open a pop-up with every lamp of the room; long-press opens the room.
 - **Many blinds / window contacts:** 7 or more become *one* tile with a bar/dot per device; tap opens them grouped by floor.
 - **People map:** optional map of everyone's location, tinted in your design colour.

@@ -7219,6 +7219,8 @@ window.__NULLGLOW_THEMES = {
     "eine oder mehrere; Stream nur, solange die Übersicht offen ist — Größe und Platz unter „3 · Übersicht anordnen“":
       "one or more; streams only while the overview is open — size and position under “3 · Arrange overview”",
     "Klingel: Kamera groß anzeigen": "Doorbell: show camera full size", "Klingel-Sensor": "Doorbell sensor",
+    "Auch ein einfacher Taster geht (z. B. Zigbee „…_action“) — jeder Druck zählt als Klingeln.":
+      "A simple button works too (e.g. Zigbee “…_action”) — every press counts as a ring.",
     "keiner gefunden": "none found", "Kamera für das Klingel-Fenster": "Camera for the doorbell window", "keine gefunden": "none found",
     "Kameras-Seite live": "Cameras page live",
     "aus = Standbild, das sich alle paar Sekunden erneuert (Antippen = live)": "off = still image refreshed every few seconds (tap = live)",
@@ -7758,11 +7760,14 @@ ha-tile-info {
 `;
 
   // ---------- Klingel: Kamera groß (optional) — doorbell: { enabled, event, camera } ----------
-  // Klingel-Sensor: event.* mit device_class doorbell (Ring, Reolink, UniFi …) oder binary_sensor „…ding/doorbell/klingel“
+  // Klingel-Sensor: event.* mit device_class doorbell (Ring, Reolink, UniFi …), binary_sensor „…ding/doorbell/klingel“
+  // oder Taster-Sensor „…doorbell/klingel…_action“ (Zigbee2MQTT); von Hand wählbar: jedes event/binary_sensor + sensor.*_action
+  const DOOR_ACTION = (id) => DOMAIN(id) === "sensor" && /_action$/.test(id);
   function doorbellAuto(hass, inv) {
     const ids = Object.keys(hass.states);
     const event = ids.find((id) => DOMAIN(id) === "event" && hass.states[id].attributes.device_class === "doorbell")
-      || ids.find((id) => DOMAIN(id) === "binary_sensor" && /(_ding|doorbell|klingel)/i.test(id) && hass.states[id].attributes.device_class !== "motion") || null;
+      || ids.find((id) => DOMAIN(id) === "binary_sensor" && /(_ding|doorbell|klingel)/i.test(id) && hass.states[id].attributes.device_class !== "motion")
+      || ids.find((id) => DOOR_ACTION(id) && /(doorbell|klingel)/i.test(id)) || null;
     return { event, camera: event ? inv.sameDevice(event, (x) => DOMAIN(x) === "camera")[0] || null : null };
   }
   function doorbellCfg(cfg, hass, inv) {
@@ -7790,7 +7795,8 @@ ha-tile-info {
         W.last[id] = s;
         const cur = W.dash["/" + (location.pathname.split("/")[1] || "lovelace")];
         if (!cur || cur.event !== id || prev === undefined || prev === s || [prev, s].some((x) => x === "unavailable" || x === "unknown")) return;
-        if (DOMAIN(id) !== "event" && s !== "on") return;
+        if (DOMAIN(id) === "binary_sensor" && s !== "on") return;                  // Klingel an
+        if (DOMAIN(id) === "sensor" && (!s || /^none$/i.test(s))) return;          // Taster: jeder neue Wert = gedrückt (Rücksetzen auf leer nicht)
         history.pushState(null, "", location.pathname + location.search + "#klingel");
         window.dispatchEvent(new Event("location-changed"));
       });
@@ -8556,8 +8562,11 @@ ha-tile-info {
           selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
         { name: "doorbell_on", label: t("Klingel: Kamera groß anzeigen"), helper: this._doorHelp, selector: { boolean: {} } },
         ...(c.doorbell?.enabled ? [
-          { name: "doorbell_event", label: t("Klingel-Sensor"), helper: t("leer = automatisch: {x}", { x: this._doorAuto.event || t("keiner gefunden") }),
-            selector: { entity: { filter: { domain: ["event", "binary_sensor"] } } } },
+          { name: "doorbell_event", label: t("Klingel-Sensor"),
+            helper: t("leer = automatisch: {x}", { x: this._doorAuto.event || t("keiner gefunden") }) + ". "
+              + t("Auch ein einfacher Taster geht (z. B. Zigbee „…_action“) — jeder Druck zählt als Klingeln."),
+            selector: { entity: { include_entities: Object.keys(hass.states).filter((id) =>
+              ["event", "binary_sensor"].includes(DOMAIN(id)) || DOOR_ACTION(id) || id === c.doorbell?.event) } } },
           { name: "doorbell_camera", label: t("Kamera für das Klingel-Fenster"), helper: t("leer = automatisch: {x}", { x: this._doorAuto.camera || t("keine gefunden") }),
             selector: { entity: { filter: { domain: "camera" } } } }] : []),
         { name: "cameras_live", label: t("Kameras-Seite live"), helper: t("aus = Standbild, das sich alle paar Sekunden erneuert (Antippen = live)"), selector: { boolean: {} } },
