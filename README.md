@@ -1,164 +1,144 @@
-<p align="center"><img src="https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/banner.png" alt="Nullglow Dashboard für Home Assistant" width="100%"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/banner.png" alt="Nullglow Dashboard for Home Assistant" width="100%"></p>
 
-# Nullglow Dashboard für Home Assistant
+<p align="center">
+  <a href="https://hacs.xyz"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white" alt="HACS Custom"></a>
+  <a href="https://github.com/Waguni/nullglow-dashboard/releases"><img src="https://img.shields.io/github/v/release/Waguni/nullglow-dashboard?color=7cffb2&label=release" alt="Release"></a>
+  <a href="https://ko-fi.com/waguni"><img src="https://img.shields.io/badge/Ko--fi-buy%20me%20a%20coffee-FF5E5B?logo=kofi&logoColor=white" alt="Buy me a coffee on Ko-fi"></a>
+</p>
 
-Glas-Dashboard (dunkel oder hell) mit leuchtendem Energiefluss, Lichtkacheln in der echten Lampenfarbe, Raumklima mit
-Verlaufskurven, Kameras, Kalender, Saug- und Mähroboter — **richtet sich aus deinem Home Assistant selbst ein**.
-Kein YAML: Bereiche, Geräte und das Energie-Dashboard werden automatisch übernommen, alles Weitere klickst du im
-Einrichtungs-Assistenten. Läuft auf dem **Handy** (HA-App) und auf einem **Full-HD-Wandmonitor**.
+# Nullglow Dashboard for Home Assistant
 
-## Was du bekommst
+A frosted-glass dashboard (dark or light) with a glowing energy flow, light tiles in each lamp's real colour, room
+climate with live graphs, cameras, calendar, robot vacuum and mower — and **it builds itself from your Home Assistant**.
+No YAML: areas, devices and the Energy dashboard are picked up automatically, everything else is a few clicks in the
+setup wizard. Works on your **phone** (HA app) and on a **Full HD wall monitor**.
 
-| Seite | Inhalt |
+## What you get
+
+| Page | Content |
 |---|---|
-| **Übersicht** | große Uhr mit Begrüßung, Wetter + nächste Stunden (antippen = **Regenradar**), Energiefluss, Licht je Raum, Raumtemperaturen, Rollläden, Personen, Schlösser, Termine, Batterien & Wartung |
-| **Licht** | je Raum alle Lampen als Schieberegler in ihrer echten Farbe, Szenen, „Alles aus“ |
-| **Klima** | je Raum Temperatur groß mit 24-h-Kurve (farbig), Heizung und Klimaanlage |
-| **Energie** | Energiefluss mit Partikeln, Netz (je Phase), Solar mit Prognose, Leistung 24 h, Monatsbilanz |
-| **Kameras**, **Kalender** | alle Kameras bzw. Kalender |
-| **Sauger**, **Mäher** | Karte, Steuerung, Akku, Verschleiß (nur wenn vorhanden) |
+| **Overview** | big clock with greeting, weather + next hours (tap = **rain radar**), energy flow, lights per room, room temperatures with 24 h graphs, blinds, people (optional map), locks, windows & doors, agenda, batteries & maintenance |
+| **Lights** | every lamp per room as a slider in its real colour, scenes, "all off" |
+| **Climate** | big temperature per room with a coloured 24 h curve, heating and air conditioning |
+| **Energy** | particle energy flow (solar, grid, battery, consumers), grid per phase, solar with forecast, power 24 h, monthly balance with costs |
+| **Cameras**, **Calendar** | all cameras / calendars |
+| **Vacuum**, **Mower** | map, controls, battery, wear (only if you have one) |
 
-Dazu: **Uhr antippen** = Design und Hell/Dunkel für *dieses* Gerät wählen (Wandmonitor und Handy dürfen verschieden
-aussehen), Raum-Pop-ups (Licht lange drücken oder Temperatur antippen), Hintergrund in Wetterfarben und ein
-**Nordlicht**, das mit deiner Solarleistung stärker wird. Seiten ohne passende Geräte erscheinen gar nicht erst.
+Plus: **tap the clock** to pick a design, light/dark and the **glass slider** (clear ↔ frosted) for *this* device —
+wall monitor and phone may look different. Room pop-ups, a background that follows the weather and an **aurora**
+that grows with your solar power. Pages without matching devices simply don't appear.
 
-## 13 Designs — jeweils dunkel und hell
+**Language:** follows your Home Assistant profile — English or German (other languages fall back to English).
+Room and device names come from your own setup.
 
-**Nullglow** (Grün), **Violetnoir** (Violett), **Halcyon** (Türkis), **Emberglow** (Orange), **Aurum** (Gold), **Sakura** (Rosé),
-**Nocturne** (Blau), **Glacier** (Eisblau), **Chartreuse** (Limette), **Neonwave** (Magenta), **Graphite** (Silber),
-**Nebula** (Indigo) und **Dune** (Sand) — gleiche Kacheln und Effekte, eigener Akzent, Hintergrund und Schrift.
-Auswahl im Einrichtungs-Assistenten, jederzeit umstellbar.
+## 13 designs — each dark and light
 
-![13 Designs](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs.jpg)
+**Nullglow** (green), **Violetnoir** (violet), **Halcyon** (teal), **Emberglow** (orange), **Aurum** (gold), **Sakura** (rose),
+**Nocturne** (blue), **Glacier** (ice blue), **Chartreuse** (lime), **Neonwave** (magenta), **Graphite** (silver),
+**Nebula** (indigo) and **Dune** (sand) — same tiles and effects, own accent, background and font.
 
-Jedes Design gibt es auch **hell** („getöntes Tageslicht“: Seite zart in der Designfarbe, weißes Glas, Akzent kräftiger
-für guten Kontrast; Leuchten werden zu weichen Farbschatten, das Nordlicht zum Farbschleier). Einstellung
-**Hell / Dunkel** im Assistenten: *wie Gerät / HA-Profil* (Standard), *immer dunkel*, *immer hell* oder *nach Sonne*
-(tagsüber hell, nachts dunkel — praktisch für den Wandmonitor).
+![13 designs](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs.jpg)
 
-![13 Designs hell](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs-light.jpg)
+Every design also comes in **light** ("tinted daylight": soft page colour, white glass, stronger accent). Light/dark:
+*like device / HA profile* (default), *always dark*, *always light* or *by the sun* (light during the day — nice on a
+wall monitor).
 
-## Vorschau
+![13 designs, light](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs-light.jpg)
 
-<sub>Alle Bilder mit Demo-Daten.</sub>
+## Screenshots
 
-**Übersicht** — Uhr, Wetter, Energiefluss, Licht, Klima, Rollläden, Personen, Termine
-![Übersicht](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/uebersicht.jpg)
+<sub>All screenshots use demo data.</sub>
 
-**Energie** — Partikelströme, Phasen, Solar mit Prognose, 24 h, Monatsbilanz
-![Energie](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/energie.jpg)
+**Overview** — clock, weather, energy flow, lights, climate, blinds, people, agenda
+![Overview](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/overview.jpg)
 
-**Licht** und **Klima**
-![Licht](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/licht.jpg)
-![Klima](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/klima.jpg)
+**Energy** — particle flows, phases, solar with forecast, 24 h, monthly balance
+![Energy](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/energy.jpg)
 
-**Raum-Pop-up** (Licht lange drücken oder Temperatur antippen)
-![Raum-Pop-up](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/raum-popup.jpg)
+**Lights** and **Climate**
+![Lights](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/lights.jpg)
+![Climate](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/climate.jpg)
 
-**Auf dem Handy**
-![Handy](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/handy.jpg)
+**Room pop-up** (long-press a light tile or tap a temperature)
+![Room pop-up](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/room-popup.jpg)
 
-**Einrichtungs-Assistent** — Voraussetzungen, Seiten, Räume; Energie-Punkte zuweisen und benennen
-![Assistent](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/assistent.jpg)
+**On the phone**
+![Phone](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/phone.jpg)
 
-## Voraussetzungen
+**Setup wizard** — requirements, pages, layout, rooms, energy, design
+![Setup wizard](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/wizard.jpg)
 
-- Home Assistant (getestet mit 2026.9) und [HACS](https://hacs.xyz)
-- Aus HACS (Typ „Dashboard“) — ein Klick auf den Link öffnet die Seite direkt in deinem HACS:
-  - **Bubble Card ab Version 3.2** — [in HACS öffnen](https://my.home-assistant.io/redirect/hacs_repository/?owner=Clooos&repository=Bubble-Card&category=plugin)
-  - **Mushroom** — [in HACS öffnen](https://my.home-assistant.io/redirect/hacs_repository/?owner=piitaya&repository=lovelace-mushroom&category=plugin)
-  - **card-mod** — [in HACS öffnen](https://my.home-assistant.io/redirect/hacs_repository/?owner=thomasloven&repository=lovelace-card-mod&category=plugin)
-  - optional **Calendar Card Pro** (Termine) — [in HACS öffnen](https://my.home-assistant.io/redirect/hacs_repository/?owner=alexpfau&repository=calendar-card-pro&category=plugin)
-  - optional **Kiosk Mode** (Wandmonitor ohne Kopfzeile) — [in HACS öffnen](https://my.home-assistant.io/redirect/hacs_repository/?owner=NemesisRE&repository=kiosk-mode&category=plugin)
+## Features in detail
 
-Der Assistent prüft das (auch die Bubble-Card-Version) und zeigt fehlende oder zu alte Teile mit Link an.
+- **Arrange the overview:** move groups (clock & weather, energy, cameras, lights, climate, blinds, home, agenda), hide
+  them, and set each group's **width** (1–4 columns). A wider camera group = bigger live images, 1/2/3 per row.
+- **Energy flow:** solar, grid (per phase, netted like your meter), **home battery** (Anker Solix, Zendure, EcoFlow, …) with
+  charge ring, up to 6 consumers + "other"; totals for today / week / month with grid cost and savings; solar forecast.
+- **Doorbell:** optional — when someone rings, the door camera opens full-size for 2 minutes on every page (Ring, Reolink,
+  UniFi, … are detected automatically, no helper or automation needed).
+- **Lights:** tap = on/off (default) or open a pop-up with every lamp of the room; long-press opens the room.
+- **Many blinds / window contacts:** 7 or more become *one* tile with a bar/dot per device; tap opens them grouped by floor.
+- **People map:** optional map of everyone's location, tinted in your design colour.
+- **Glass slider:** make all tiles clearer or more frosted — per device.
+- **Every card on its own:** all Nullglow cards have a visual editor and suggest matching entities — *Add card* → search
+  for "Nullglow" (energy flow, power 24 h, monthly balance, phase bars, mini graph behind any tile, hourly weather,
+  batteries & maintenance, rain radar, blinds, windows & doors, mower map/stats, design picker).
 
-## Installation (ca. 5 Minuten)
+## Requirements
 
-1. **In HACS öffnen:** [diesen Link antippen](https://my.home-assistant.io/redirect/hacs_repository/?owner=Waguni&repository=nullglow-dashboard&category=plugin)
-   und das Hinzufügen bestätigen — oder von Hand: **HACS → ⋮ (oben rechts) → Benutzerdefinierte Repositories**,
-   URL `https://github.com/Waguni/nullglow-dashboard`, Typ **Dashboard** → Hinzufügen.
-2. In HACS **Nullglow Dashboard** öffnen → **Herunterladen**.
-3. Browser **neu laden** (Strg+F5; in der App: App ganz schließen und neu öffnen).
-4. **Einstellungen → Dashboards → Dashboard hinzufügen** → unten bei „Benutzerdefiniert“ **Nullglow** wählen.
-5. Der **Einrichtungs-Assistent** öffnet sich — alles ist schon vorausgefüllt:
-   1. Voraussetzungen (grüne Haken)
-   2. Seiten an/aus
-   3. **Übersicht anordnen:** Gruppen (Uhr & Wetter, Energie, Kameras, Licht, Klima, Rollläden, Zuhause, Termine) per Pfeil
-      verschieben, per Auge ausblenden, **Breite** 1–4 Spalten wählen — breitere Kameras-Gruppe = größere Livebilder,
-      dazu „1/2/3 je Reihe“. „Standard wiederherstellen“ setzt alles zurück.
-   4. Räume, Rollläden & Fenster: ausblenden (Auge), sortieren (Pfeile), antippen für Name, Symbol, Hauptlicht, Temperatur-Sensor;
-      **Mit Label ausblenden** (z. B. `no_dboard` an Entität, Gerät oder Bereich), **Namen kürzen**, Rollläden einzeln oder zusammengefasst,
-      **Licht-Kachel antippen:** an/aus (Standard) oder Pop-up mit allen Lampen des Raums,
-      **Temperatur-Verlauf** (24 h) in den Klima-Kacheln (Standard an)
-   5. Energie: Punkte zuweisen und **benennen** (Solar, Netz, jeder Verbraucher mit Name und Symbol)
-   6. **Design** (13 Farbvarianten) und **Hell / Dunkel** (im Uhr-Pop-up zusätzlich ein **Glas-Regler**: klar ↔ milchig, je Gerät), Wetter, Personen (optional mit **Karte „Wo sind alle?“** in den Farben des Designs),
-      Kameras, **Klingel: Kamera groß anzeigen** (beim Klingeln öffnet sich das Livebild 2 Minuten groß — Klingel und
-      Kamera werden erkannt, z. B. Ring, Reolink, UniFi), Kalender, Steckdose des Wandmonitors
-6. **Speichern** → Namen und Symbol für das Dashboard wählen → fertig.
+- Home Assistant (tested with 2026.9) and [HACS](https://hacs.xyz)
+- From HACS (type "Dashboard") — each link opens the page directly in your HACS:
+  - **Bubble Card 3.2 or newer** — [open in HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=Clooos&repository=Bubble-Card&category=plugin)
+  - **Mushroom** — [open in HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=piitaya&repository=lovelace-mushroom&category=plugin)
+  - **card-mod** — [open in HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=thomasloven&repository=lovelace-card-mod&category=plugin)
+  - optional **Calendar Card Pro** (agenda) — [open in HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=alexpfau&repository=calendar-card-pro&category=plugin)
+  - optional **Kiosk Mode** (wall monitor without header) — [open in HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=NemesisRE&repository=kiosk-mode&category=plugin)
 
-Ändern kannst du alles später über **⋮ → Dashboard bearbeiten** (öffnet den Assistenten wieder).
+The wizard checks all of this (including the Bubble Card version) and links anything that's missing or too old.
 
-### Tipps für ein gutes Ergebnis
+## Installation (about 5 minutes)
 
-- **Bereiche**: Das Dashboard ordnet nach deinen HA-Bereichen (Einstellungen → Bereiche, Zonen & Etagen). Geräte ohne
-  Bereich tauchen nicht in den Räumen auf — einfach zuordnen.
-- **Energie**: Ist das HA-**Energie-Dashboard** eingerichtet (inkl. Leistungssensoren), ist der Energiefluss sofort fertig.
-  Sonst im Assistenten unter „Energie“ auf **Automatisch erkennen** tippen oder Sensoren wählen.
-- **Hauptlicht**: Hat ein Raum eine Lichtgruppe (z. B. Hue-Raum), wird sie zur Kachel auf der Übersicht; sonst schaltet
-  der Knopf alle Lampen des Raums.
+1. **Add to HACS:** [open this link](https://my.home-assistant.io/redirect/hacs_repository/?owner=Waguni&repository=nullglow-dashboard&category=plugin)
+   and confirm — or manually: **HACS → ⋮ (top right) → Custom repositories**, URL
+   `https://github.com/Waguni/nullglow-dashboard`, type **Dashboard** → Add.
+2. Open **Nullglow Dashboard** in HACS → **Download**.
+3. **Reload** your browser (Ctrl+F5; in the app: close it completely and reopen).
+4. **Settings → Dashboards → Add dashboard** → at the bottom under "Custom" pick **Nullglow**.
+5. The **setup wizard** opens with everything pre-filled: requirements, pages, overview layout, rooms/blinds/windows,
+   energy, design & extras (weather, people, cameras, doorbell, calendars, wall-monitor plug).
+6. **Save** → choose a name and icon → done.
 
-## Wandmonitor (Full HD)
+Change anything later via **⋮ → Edit dashboard** (opens the wizard again).
 
-- Dashboard-Adresse mit **`?kiosk`** öffnen (z. B. `http://homeassistant.local:8123/nullglow/home?kiosk`) — mit Kiosk Mode
-  ohne Kopfzeile und Seitenleiste.
-- Bei 1920×1080 wirkt es mit **125 % Zoom** am besten (Browser-Zoom bzw. `--force-device-scale-factor=1.25`).
-- Schaltest du den Monitor über eine Steckdose, trag sie im Assistenten ein — dann pausiert das Nordlicht, solange sie aus ist.
+**Tips:** the dashboard is organised by your HA **areas** (Settings → Areas, labels & zones) — assign devices to areas.
+If the HA **Energy dashboard** is set up (including power sensors), the energy flow works immediately; otherwise use
+*Auto-detect* in the wizard's energy step. Hide single entities, devices or whole areas with a label such as `no_dboard`.
 
-## Energiefluss-Karte einzeln
+## Wall monitor (Full HD)
 
-Die Karte gibt es auch ohne das ganze Dashboard: Dashboard bearbeiten → **Karte hinzufügen → „Nullglow Flow“**.
-Sie übernimmt Solar, Netz, Zähler, Strompreis und Verbraucher aus dem Energie-Dashboard; jeder Punkt lässt sich per Klick
-zuweisen, umbenennen und sortieren.
+- Open the dashboard with **`?kiosk`** (e.g. `http://homeassistant.local:8123/nullglow/home?kiosk`) — with Kiosk Mode
+  there's no header or sidebar.
+- At 1920×1080 it looks best at **125 % zoom** (browser zoom or `--force-device-scale-factor=1.25`).
+- If the monitor is switched by a smart plug, add it in the wizard — the aurora then pauses while the monitor is off.
+- With live cameras, limit the browser cache, e.g. Chromium with `--disk-cache-size=67108864` (64 MB).
+- Portrait works too; if space runs out, the navigation shows icons only.
 
-**Alle anderen Nullglow-Karten** haben ebenfalls einen Klick-Editor und schlagen beim Hinzufügen passende Entitäten vor:
-Leistung 24 h, Monatsbilanz, Phasen-Balken, Mini-Diagramm (Verlauf hinter einer beliebigen Kachel), Stundenwetter,
-Batterien & Wartung, Regenradar, Rollläden, Fenster & Türen, Mähroboter-Karte und -Statistik, Design-Auswahl —
-Karte hinzufügen → nach „Nullglow“ suchen.
+## FAQ
 
-## Häufige Fragen
+- **"Configuration error" or empty tiles:** Bubble Card, Mushroom or card-mod missing? Install, then hard-reload (Ctrl+F5).
+- **Tapping opens no pop-up** (blinds, rooms, radar …): pop-ups come from Bubble Card — you need **3.2 or newer**.
+  Update in HACS, then hard-reload (in the app: clear the app cache). The wizard shows the detected version.
+- **"Nullglow" is missing under "Add dashboard":** reload the browser; check that Nullglow Dashboard is downloaded in HACS.
+- **Rain radar shows nothing:** it uses the German Weather Service (DWD) and covers Germany plus ~100 km around it.
+- **Want to tweak single tiles:** ⋮ → Edit dashboard → *Take control* turns it into a normal dashboard you can edit freely
+  (it then no longer updates itself).
+- **Updates:** come through HACS; the dashboard rebuilds itself with the new features.
 
-- **„Konfigurationsfehler“ oder leere Kacheln:** fehlt Bubble Card, Mushroom oder card-mod? Danach Browser hart neu laden (Strg+F5).
-- **Kameras größer / Gruppen woanders:** ⋮ → Dashboard bearbeiten → „3 · Übersicht anordnen“. Livebilder erst unter
-  „6 · … Kameras“ bei „Live-Kameras auf der Übersicht“ wählen.
-- **Licht antippen soll die einzelnen Lampen zeigen:** „4 · Räume …“ → „Licht-Kachel auf der Übersicht antippen“ → Pop-up.
-  Dann schaltet langes Drücken den Raum an/aus, Ziehen dimmt wie gewohnt.
-- **Antippen öffnet kein Fenster** (Rollläden, Räume, Regenradar …): Die Fenster kommen von Bubble Card — Version in
-  HACS prüfen, **mindestens 3.2** nötig. Aktualisieren, dann hart neu laden (Strg+F5; in der App den App-Cache leeren).
-  Der Assistent (⋮ → Dashboard bearbeiten) zeigt unter „Voraussetzungen“ die erkannte Version.
-- **„Nullglow“ fehlt bei „Dashboard hinzufügen“:** Browser neu laden; in HACS prüfen, ob Nullglow Dashboard installiert ist.
-- **Viele Rollläden:** ab 7 erscheinen sie auf der Übersicht als *eine* Kachel (Zustand, ein Balken je Rollladen, Alle auf ·
-  Stopp · Alle zu mit Rückfrage). Antippen öffnet alle Rollläden **nach Etage** (HA-Etagen) mit Auf/Zu je Etage.
-- **Viele Fenster-/Türkontakte:** ab 7 als *eine* Kachel „Fenster & Türen“ im Bereich Zuhause — „Alles zu“ oder „2 offen · Küche, Bad“
-  (Amber), ein Punkt je Kontakt. Antippen zeigt alle **nach Etage**. Einzeln, zusammengefasst oder aus: Assistent (3.).
-  Die Raum-Pop-ups zeigen die Kontakte des Raums.
-- **Namen wie „EG - Küche - Rollladen links“:** werden automatisch zu „Küche · links“ (Etage/Raum vorne weg; gleiche
-  Raumnamen auf zwei Etagen bekommen die Etage dahinter, z. B. „Flur · OG“). Abschaltbar im Assistenten.
-- **Batteriespeicher** (Anker Solix, Zendure, EcoFlow, Hausspeicher …): erscheint im Energiefluss unter dem Haus — Ladestand als
-  leuchtender Ring (Amber unter 15 %, pulsiert beim Laden), Ströme Solar/Netz → Akku und Akku → Haus, Symbol mit Füllstand;
-  Akku-Strom zählt zur Autarkie. Auf der **Energie-Seite** eine Speicher-Kachel in der Solar-Spalte (Ladestand, lädt/entlädt, 24-h-Kurve)
-  und in „Leistung 24 h“ die Flächen „Akku entladen“ / „Akku laden“ — der Hausverbrauch rechnet den Akku mit. Steht der Speicher im HA-Energie-Dashboard, wird er automatisch erkannt; sonst im Assistenten
-  (4. Energie → „Batteriespeicher“) Leistung und Ladestand wählen. Anker meldet Laden positiv → „Vorzeichen umdrehen“ (wird vorgeschlagen).
-- **Live-Kameras:** im Assistenten (5.) eine oder mehrere Kameras für die Übersicht wählen; die Kameras-Seite kann ebenfalls
-  live statt Standbild zeigen. Der Stream läuft nur, solange die Karte angezeigt wird (nichts im Hintergrund). Am Wandmonitor
-  den Browser-Cache begrenzen, z. B. Chromium mit `--disk-cache-size=67108864` (64 MB). Reolink, Tapo, Ring … — alles, was
-  in HA ein Livebild hat.
-- **Monitor hochkant:** funktioniert; reicht der Platz nicht für alle Seitennamen, zeigt die Leiste unten nur Symbole.
-- **Das Regenradar zeigt nichts:** Es nutzt den Deutschen Wetterdienst und deckt Deutschland (plus ~100 km) ab.
-- **Eigene Änderungen an Kacheln:** ⋮ → Dashboard bearbeiten → „Kontrolle übernehmen“ macht daraus ein normales Dashboard,
-  das du frei bearbeiten kannst — dann ohne automatische Aktualisierung.
-- **Updates:** kommen über HACS; das Dashboard baut sich danach mit den Neuerungen selbst neu.
+## Support
 
-## Lizenz
+If you like Nullglow, you can **[buy me a coffee on Ko-fi](https://ko-fi.com/waguni)** ☕ — thank you!
+Bugs and ideas: [open an issue](https://github.com/Waguni/nullglow-dashboard/issues).
 
-MIT — siehe [LICENSE](LICENSE). Design: Nullglow (dunkel oder hell, Glas, ein Akzent).
+## License
+
+MIT — see [LICENSE](LICENSE).

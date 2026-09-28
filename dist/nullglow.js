@@ -1,6 +1,6 @@
-/* Nullglow Dashboard — dunkles Glas-Dashboard für Home Assistant (Energiefluss, Licht, Klima, Kameras …).
- * Einstellungen → Dashboards → Dashboard hinzufügen → „Nullglow“. Anleitung: README.md
- * Gebaut mit tools/build-hacs.py aus HA-Touchscreen-Dash — nicht von Hand ändern. */
+/* Nullglow Dashboard — frosted-glass dashboard for Home Assistant (energy flow, lights, climate, cameras …).
+ * Settings → Dashboards → Add dashboard → "Nullglow". Docs: README.md · English + German UI (follows the HA profile).
+ * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
 
@@ -2676,10 +2676,76 @@ window.__NULLGLOW_THEMES = {
     const m = v.match(/[\d.]+/g);
     return m && m.length >= 3 ? m.slice(0, 3).join(",") : d;
   }
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    // Karte
+    "Netz": "Grid", "Einspeisung": "Export", "Bezug": "Import", "Haus": "Home", "Akku": "Battery", "Sonstige": "Other",
+    "Speicher": "Battery", "lädt {w} W": "charging {w} W", "entlädt {w} W": "discharging {w} W", "bereit": "ready",
+    "Autarkie": "Self-sufficiency", "heute": "today", "Woche": "week", "Monat": "month", "morgen": "tomorrow",
+    "erzeugt": "produced", "verbraucht": "consumed", "Netz kWh": "grid kWh", "Netzkosten": "grid cost", "gespart": "saved",
+    "Bilanz: Zähler im Editor wählen": "Totals: pick meters in the editor", "Bilanz lädt …": "Loading totals …",
+    "Karte bearbeiten → „Automatisch erkennen“ oder Solar- bzw. Netz-Sensor wählen.": "Edit card → “Auto-detect” or pick a solar or grid sensor.",
+    "nullglow-flow-card: keine Konfiguration": "nullglow-flow-card: no configuration",
+    "Verbraucher {n}": "Consumer {n}",
+    "Live-Energiefluss mit Partikelströmen (Nullglow) — Sensoren per Klick, „Automatisch erkennen“": "Live energy flow with particle streams (Nullglow) — sensors by click, “Auto-detect”",
+    // Editor
+    "Suche Sensoren …": "Searching sensors …", "Automatische Erkennung fehlgeschlagen.": "Auto-detection failed.",
+    "{n} Verbraucher": "{n} consumers", "Bilanz": "Totals", "Prognose": "Forecast",
+    "Übernommen: {list}. Bitte prüfen, Namen nach Wunsch ändern.": "Applied: {list}. Please check and rename as you like.",
+    "Nichts gefunden — Sensoren bitte unten auswählen.": "Nothing found — please pick sensors below.",
+    "Alles schon eingetragen, nichts geändert.": "Everything already set, nothing changed.",
+    "{label}: Sensoren vorgeschlagen — bitte prüfen.": "{label}: sensors suggested — please check.",
+    "{label}: bitte Sensoren wählen.": "{label}: please pick sensors.",
+    "Automatisch erkennen": "Auto-detect",
+    "Übernimmt Solar, Netz, Zähler, Strompreis und Verbraucher aus dem Energie-Dashboard": "Takes solar, grid, meters, electricity price and consumers from the energy dashboard",
+    "(Einstellungen → Dashboards → Energie). Vorhandene Einträge bleiben.": "(Settings → Dashboards → Energy). Existing entries are kept.",
+    "{n} Sensor(en)": "{n} sensor(s)", "nicht gewählt": "not selected", "eingerichtet": "configured", "keiner": "none",
+    "keine": "none", "{n} Punkte": "{n} points", "an": "on", "aus": "off", "{h} px hoch": "{h} px high",
+    "Solar-Leistung (W)": "Solar power (W)", "Mehrere Wechselrichter werden addiert": "Multiple inverters are added up",
+    "Symbol": "Icon", "Spitzenleistung der Anlage": "Peak power of the system", "steuert Glühen und Sonnenkranz": "controls glow and sun rays",
+    "Netz-Leistung (W)": "Grid power (W)",
+    "positiv = Bezug, negativ = Einspeisung; je Phase ein Sensor wird addiert": "positive = import, negative = export; one sensor per phase is added up",
+    "Vorzeichen umdrehen": "Invert sign",
+    "einschalten, wenn dein Zähler Einspeisung positiv meldet": "turn on if your meter reports export as positive",
+    "Getrennte Einspeise-Leistung (optional)": "Separate export power (optional)",
+    "nur falls Bezug und Einspeisung zwei Sensoren sind (beide positiv)": "only if import and export are two sensors (both positive)",
+    "Bezug in Amber ab": "Import in amber from",
+    "Batteriespeicher (optional)": "Battery storage (optional)",
+    "Z. B. Anker Solix, Zendure, EcoFlow, Hausspeicher. Erscheint unter dem Haus: Ladestand als Ring, Ströme Solar/Netz → Akku und Akku → Haus.":
+      "E.g. Anker Solix, Zendure, EcoFlow, home battery. Appears below the home: state of charge as a ring, flows solar/grid → battery and battery → home.",
+    "Akku-Leistung (W)": "Battery power (W)", "positiv = Entladen; mehrere werden addiert": "positive = discharging; multiple are added up",
+    "einschalten, wenn dein Sensor Laden positiv meldet (z. B. Anker Solix „Ladeleistung“)": "turn on if your sensor reports charging as positive (e.g. Anker Solix “charging power”)",
+    "Ladestand (%)": "State of charge (%)", "leer = passt sich dem Ladestand an": "empty = follows the state of charge",
+    "Getrennte Lade-Leistung (optional)": "Separate charging power (optional)",
+    "nur falls Laden und Entladen zwei Sensoren sind (beide positiv)": "only if charging and discharging are two sensors (both positive)",
+    "Verbraucher": "Consumers",
+    "Jeder Verbraucher ist ein Punkt rechts im Bild. Leistung (W) für den Strom, Zähler (kWh) optional für die Bilanz. Je nach Kartenhöhe passen etwa 4–7 Punkte.":
+      "Each consumer is a point on the right. Power (W) for the flow, meter (kWh) optional for the totals. Depending on the card height about 4–7 points fit.",
+    "neu": "new", "nach oben": "move up", "nach unten": "move down", "entfernen": "remove",
+    "Leistung (W)": "Power (W)", "Zähler (kWh, optional)": "Meter (kWh, optional)", "Verbraucher hinzufügen": "Add consumer",
+    "Punkt „Sonstige“ (Haus minus die Verbraucher oben)": "Point “Other” (home minus the consumers above)",
+    "Bilanz-Leiste (heute / Woche / Monat)": "Totals bar (today / week / month)", "Bilanz unten anzeigen": "Show totals at the bottom",
+    "Solar erzeugt (kWh)": "Solar produced (kWh)", "Netzbezug (kWh)": "Grid import (kWh)",
+    "je Phase ein Zähler wird addiert": "one meter per phase is added up", "Einspeisung (kWh)": "Export (kWh)",
+    "Strompreis": "Electricity price", "Saldieren wie ein Zweirichtungszähler": "Net like a bidirectional meter",
+    "rechnet Bezug/Einspeisung aus der Netz-Leistung aller Phasen (richtig bei Shelly 3EM & Co.); dann werden die Zähler oben nicht gebraucht":
+      "computes import/export from the grid power of all phases (correct for Shelly 3EM & co.); the meters above are then not needed",
+    "Solar-Prognose": "Solar forecast", "Prognose am Solar-Punkt zeigen": "Show forecast at the solar point",
+    "z. B. Integration Forecast.Solar": "e.g. Forecast.Solar integration",
+    "Prognose heute (kWh)": "Forecast today (kWh)", "Prognose morgen (kWh, optional)": "Forecast tomorrow (kWh, optional)",
+    "Darstellung": "Appearance", "Höhe der Karte": "Card height", "Symbol Haus": "Home icon",
+    "Alle Sensoren zur Auswahl anbieten": "Offer all sensors for selection",
+    "(falls dein Sensor oben nicht auftaucht, weil ihm die Geräteklasse fehlt)": "(if your sensor does not show up above because it has no device class)",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass / Editor) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
+
   const REF_W = 3000; // W, bei dem ein Strom als „voll“ gilt (Linienhelligkeit)
   const MAX_PARTICLES = 70; // je Strom
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const fmt = (w) => Math.round(w).toLocaleString("de-DE");
+  const fmt = (w) => Math.round(w).toLocaleString(numLoc());
   const esc = (x) => String(x ?? "").replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]);
   const list = (x) => [].concat(x || []).filter(Boolean);
 
@@ -2804,6 +2870,7 @@ window.__NULLGLOW_THEMES = {
   class NullglowFlowCard extends HTMLElement {
     // Kartenauswahl: Vorschlag aus dem Energie-Dashboard; der Editor ergänzt fehlende Felder
     static async getStubConfig(hass) {
+      if (hass) ngH = hass;
       try { return await detectConfig(hass); } catch (e) { return {}; }
     }
 
@@ -2812,13 +2879,13 @@ window.__NULLGLOW_THEMES = {
     }
 
     setConfig(config) {
-      if (!config) throw new Error("nullglow-flow-card: keine Konfiguration");
+      if (!config) throw new Error(t("nullglow-flow-card: keine Konfiguration"));
       this._cfg = {
         height: 260, solar_peak: 800, warn_import: 2000, ...config,
         solar: list(config.solar), grid: list(config.grid), grid_export: list(config.grid_export),
         battery: list(config.battery), battery_charge: list(config.battery_charge),
         consumers: (config.consumers || []).map((c) => (typeof c === "string" ? { entity: c } : c))
-          .concat(config.other ? [{ name: "Sonstige", icon: "mdi:dots-horizontal-circle-outline", ...config.other, virtual: true }] : []),
+          .concat(config.other ? [{ name: t("Sonstige"), icon: "mdi:dots-horizontal-circle-outline", ...config.other, virtual: true }] : []),
         today: config.today ? { price: 0, ...config.today, solar: list(config.today.solar),
           import: list(config.today.import), export: list(config.today.export) } : null,
         forecast: config.forecast || null,
@@ -2828,6 +2895,7 @@ window.__NULLGLOW_THEMES = {
 
     set hass(h) {
       this._hass = h;
+      if (h) ngH = h;
       this._read();
     }
 
@@ -2867,7 +2935,7 @@ window.__NULLGLOW_THEMES = {
         this._wrap = null; this._flows = null; this._w = 0;
         this.shadowRoot.innerHTML = `<style>${STYLE}</style><ha-card class="card"><div class="empty">
           <ha-icon icon="mdi:solar-power-variant"></ha-icon><div><b>Nullglow Flow</b><br>
-          Karte bearbeiten → „Automatisch erkennen“ oder Solar- bzw. Netz-Sensor wählen.</div></div></ha-card>`;
+          ${t("Karte bearbeiten → „Automatisch erkennen“ oder Solar- bzw. Netz-Sensor wählen.")}</div></div></ha-card>`;
         return;
       }
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
@@ -2890,10 +2958,10 @@ window.__NULLGLOW_THEMES = {
         return { key, el: n, disc: n.querySelector(".disc"), meta: n.querySelector(".meta"), name: esc(name), entity, x: 0, y: 0, r: 20, shown: "" };
       };
       this._nodes = {
-        solar: c.solar.length ? mk("solar", "src solar", c.solar_icon || "mdi:solar-power-variant", c.solar_name || "Solar", c.solar[0]) : null,
-        grid: c.grid.length ? mk("grid", "src grid", c.grid_icon || "mdi:transmission-tower", c.grid_name || "Netz", c.grid[0]) : null,
-        house: mk("house", "house", c.house_icon || "mdi:home-lightning-bolt-outline", "Haus", null),
-        battery: c.battery.length ? mk("battery", "src battery", c.battery_icon || "mdi:home-battery-outline", c.battery_name || "Akku", c.battery_soc || c.battery[0]) : null,
+        solar: c.solar.length ? mk("solar", "src solar", c.solar_icon || "mdi:solar-power-variant", c.solar_name || t("Solar"), c.solar[0]) : null,
+        grid: c.grid.length ? mk("grid", "src grid", c.grid_icon || "mdi:transmission-tower", c.grid_name || t("Netz"), c.grid[0]) : null,
+        house: mk("house", "house", c.house_icon || "mdi:home-lightning-bolt-outline", t("Haus"), null),
+        battery: c.battery.length ? mk("battery", "src battery", c.battery_icon || "mdi:home-battery-outline", c.battery_name || t("Akku"), c.battery_soc || c.battery[0]) : null,
         cons: c.consumers.map((x, i) => mk("c" + i, "cons", x.icon || "mdi:power-plug", x.name || "", x.entity)), // ohne Namen: Anzeigename aus HA
       };
       this._nodes.house.disc.innerHTML = `<ha-icon icon="${esc(c.house_icon || "mdi:home-lightning-bolt-outline")}"></ha-icon><div class="in"></div>`;
@@ -2908,7 +2976,7 @@ window.__NULLGLOW_THEMES = {
       if (this._strip) {
         this._tabs = document.createElement("div");
         this._tabs.className = "ptabs";
-        this._tabs.innerHTML = '<span data-p="day">heute</span><span data-p="week">Woche</span><span data-p="month">Monat</span>';
+        this._tabs.innerHTML = `<span data-p="day">${t("heute")}</span><span data-p="week">${t("Woche")}</span><span data-p="month">${t("Monat")}</span>`;
         this._wrap.appendChild(this._tabs);
         const cycle = (ev) => {
           const p = ev.target?.dataset?.p;
@@ -3348,7 +3416,7 @@ window.__NULLGLOW_THEMES = {
         if (n.g !== gs) { n.el.style.setProperty("--g", gs); n.g = gs; }
       };
       const W = (x) => `<span class="val">${fmt(x)}<small>W</small></span>`;
-      const kwh0 = (x) => x.toLocaleString("de-DE", { minimumFractionDigits: x < 10 ? 1 : 0, maximumFractionDigits: x < 10 ? 1 : 0 });
+      const kwh0 = (x) => x.toLocaleString(numLoc(), { minimumFractionDigits: x < 10 ? 1 : 0, maximumFractionDigits: x < 10 ? 1 : 0 });
       this._fc = null;
       let fcHtml = "";
       if (c.forecast) { // Prognose immer auf „heute“ bezogen, unabhängig vom gewählten Zeitraum
@@ -3357,7 +3425,7 @@ window.__NULLGLOW_THEMES = {
         if (ft !== null && ft > 0) {
           this._fc = { frac: made !== null ? made / ft : 0 };
           fcHtml = `<div class="fc">${made !== null ? `<b>${kwh0(made)}</b> / ` : ""}${kwh0(ft)} kWh</div>`
-            + (fm !== null ? `<div class="fc">morgen ${kwh0(fm)} kWh</div>` : "");
+            + (fm !== null ? `<div class="fc">${t("morgen")} ${kwh0(fm)} kWh</div>` : "");
         }
       }
       if (N.solar) {
@@ -3367,7 +3435,7 @@ window.__NULLGLOW_THEMES = {
       }
       if (N.grid) {
         const imp = d.grid > 25, exp = d.grid < -25;
-        const lbl = exp ? "Einspeisung" : imp ? "Bezug" : N.grid.name;
+        const lbl = exp ? t("Einspeisung") : imp ? t("Bezug") : N.grid.name;
         set(N.grid, `${na.grid ? '<span class="val">–</span>' : W(Math.abs(d.grid))}<div class="lbl">${lbl}</div>`,
           `${exp ? "on" : ""} ${imp && v.grid > c.warn_import ? "warn" : ""} ${na.grid ? "na" : ""}`,
           exp ? clamp(-d.grid / REF_W, 0.15, 1) : 0);
@@ -3379,7 +3447,7 @@ window.__NULLGLOW_THEMES = {
           : chg ? `mdi:battery-charging-${Math.max(10, lvl)}` : lvl >= 100 ? "mdi:battery" : lvl <= 0 ? "mdi:battery-outline" : `mdi:battery-${lvl}`);
         if (N.battery.icon !== icon) { N.battery.disc.innerHTML = `<ha-icon icon="${esc(icon)}"></ha-icon>`; N.battery.icon = icon; }
         const socHtml = soc === null ? "" : `<div class="soc">${Math.round(d.soc)}<small>%</small></div>`;
-        const state = na.battery ? "–" : chg ? `lädt ${fmt(-bw)} W` : dis ? `entlädt ${fmt(bw)} W` : "bereit";
+        const state = na.battery ? "–" : chg ? t("lädt {w} W", { w: fmt(-bw) }) : dis ? t("entlädt {w} W", { w: fmt(bw) }) : t("bereit");
         set(N.battery, `${socHtml}<div class="bw">${state}</div><div class="lbl">${N.battery.name}</div>`,
           `${chg || dis ? "on" : ""} ${soc !== null && soc < 15 ? "warn" : ""} ${na.battery ? "na" : ""}`,
           chg || dis ? clamp(Math.sqrt(Math.abs(bw) / REF_W), 0.15, 1) : 0);
@@ -3387,7 +3455,7 @@ window.__NULLGLOW_THEMES = {
       const inner = `${fmt(d.house)}<small>W</small>`;
       const hin = N.house.el.querySelector(".in");
       if (hin.dataset.v !== inner) { hin.innerHTML = inner; hin.dataset.v = inner; }
-      const T = this._today, kwh = (x) => x.toLocaleString("de-DE", { minimumFractionDigits: x < 10 ? 1 : 0, maximumFractionDigits: x < 10 ? 1 : 0 });
+      const T = this._today, kwh = (x) => x.toLocaleString(numLoc(), { minimumFractionDigits: x < 10 ? 1 : 0, maximumFractionDigits: x < 10 ? 1 : 0 });
       let used = 0, selfUse = 0, autToday = null;
       if (T) {
         used = Math.max(0, T.solar + T.imp - T.exp);
@@ -3395,8 +3463,8 @@ window.__NULLGLOW_THEMES = {
         autToday = used > 0.01 ? selfUse / used : T.solar > 0.01 ? 1 : 0;
         this._dToday += (autToday - this._dToday) * 0.08;
       }
-      const pname = { day: "heute", week: "Woche", month: "Monat" }[this._period];
-      set(N.house, `<div class="lbl">Autarkie ${Math.round(clamp(d.share, 0, 1) * 100)} %${autToday === null ? "" : ` · ${pname} ${Math.round(autToday * 100)} %`}</div>`,
+      const pname = { day: t("heute"), week: t("Woche"), month: t("Monat") }[this._period];
+      set(N.house, `<div class="lbl">${t("Autarkie")} ${Math.round(clamp(d.share, 0, 1) * 100)} %${autToday === null ? "" : ` · ${pname} ${Math.round(autToday * 100)} %`}</div>`,
         d.share > 0.02 ? "on" : "", clamp(d.share, 0, 1) * 0.8);
       N.cons.forEach((n, i) => {
         const w = d.cons[i], idle = v.cons[i] < 3;
@@ -3406,14 +3474,14 @@ window.__NULLGLOW_THEMES = {
           `${idle ? "idle" : "on"} ${na["c" + i] ? "na" : ""}`, idle ? 0 : clamp(Math.sqrt(w / REF_W), 0.1, 1));
       });
       if (this._strip) {
-        const money = (x) => x.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const money = (x) => x.toLocaleString(numLoc(), { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const price = this._cfg.today.price || 0;
-        const html = !T ? `<div style="grid-column: 1 / -1"><span class="l">${this._noBal ? "Bilanz: Zähler im Editor wählen" : "Bilanz lädt …"}</span></div>` : `
-          <div><span class="v acc">${kwh(T.solar)}<small>kWh</small></span><span class="l">erzeugt</span></div>
-          <div><span class="v">${kwh(used)}<small>kWh</small></span><span class="l">verbraucht</span></div>
-          <div><span class="v">${kwh(T.imp)}<small>↓</small> ${kwh(T.exp)}<small>↑</small></span><span class="l">Netz kWh</span></div>
-          <div><span class="v cost">${money(T.imp * price)}<small>€</small></span><span class="l">Netzkosten</span></div>
-          <div><span class="v acc">${money(selfUse * price)}<small>€</small></span><span class="l">gespart</span></div>`;
+        const html = !T ? `<div style="grid-column: 1 / -1"><span class="l">${this._noBal ? t("Bilanz: Zähler im Editor wählen") : t("Bilanz lädt …")}</span></div>` : `
+          <div><span class="v acc">${kwh(T.solar)}<small>kWh</small></span><span class="l">${t("erzeugt")}</span></div>
+          <div><span class="v">${kwh(used)}<small>kWh</small></span><span class="l">${t("verbraucht")}</span></div>
+          <div><span class="v">${kwh(T.imp)}<small>↓</small> ${kwh(T.exp)}<small>↑</small></span><span class="l">${t("Netz kWh")}</span></div>
+          <div><span class="v cost">${money(T.imp * price)}<small>€</small></span><span class="l">${t("Netzkosten")}</span></div>
+          <div><span class="v acc">${money(selfUse * price)}<small>€</small></span><span class="l">${t("gespart")}</span></div>`;
         if (this._strip.dataset.v !== html) { this._strip.innerHTML = html; this._strip.dataset.v = html; }
         if (this._tabs && this._tabs.dataset.p !== this._period) {
           this._tabs.dataset.p = this._period;
@@ -3466,6 +3534,7 @@ window.__NULLGLOW_THEMES = {
   }
 
   async function detectConfig(hass) {
+    if (hass) ngH = hass;
     const T = sensorTools(hass), out = { solar: [], grid: [], grid_export: [], consumers: [], battery: [], battery_charge: [] };
     const today = { solar: [], import: [], export: [] };
     let prefs = null, price = null;
@@ -3498,7 +3567,7 @@ window.__NULLGLOW_THEMES = {
       const p = d.stat_rate || (d.stat_consumption && T.powerOf(d.stat_consumption));
       if (!p || out.consumers.length >= 6) continue;
       const full = d.name || T.nameOf(p);
-      out.consumers.push({ entity: p, name: shortName(full) || `Verbraucher ${out.consumers.length + 1}`,
+      out.consumers.push({ entity: p, name: shortName(full) || t("Verbraucher {n}", { n: out.consumers.length + 1 }),
         icon: guessIcon(`${full} ${p}`), ...(d.stat_consumption ? { energy: d.stat_consumption } : {}) });
     }
     // Rückfall ohne Energie-Dashboard: nach Namen suchen
@@ -3543,7 +3612,7 @@ window.__NULLGLOW_THEMES = {
     }
     if (out.consumers.length) {
       cfg.consumers = out.consumers;
-      cfg.other = { name: "Sonstige", icon: "mdi:dots-horizontal-circle-outline" };
+      cfg.other = { name: t("Sonstige"), icon: "mdi:dots-horizontal-circle-outline" };
     }
     if (today.solar.length || today.import.length) {
       cfg.today = { ...(today.solar.length ? { solar: today.solar.length === 1 ? today.solar[0] : today.solar } : {}),
@@ -3602,6 +3671,7 @@ window.__NULLGLOW_THEMES = {
     set hass(h) {
       const first = !this._hass;
       this._hass = h;
+      if (h) ngH = h;
       this.shadowRoot.querySelectorAll("ha-form").forEach((f) => { f.hass = h; });
       if (first && this._config) this._build();
       // frisch eingefügte Karte ohne Quellen: gleich einen Vorschlag machen
@@ -3624,25 +3694,25 @@ window.__NULLGLOW_THEMES = {
 
     async _detect() {
       if (!this._hass) return;
-      this._msg("Suche Sensoren …");
+      this._msg(t("Suche Sensoren …"));
       let d;
-      try { d = await detectConfig(this._hass); } catch (e) { this._msg("Automatische Erkennung fehlgeschlagen."); return; }
+      try { d = await detectConfig(this._hass); } catch (e) { this._msg(t("Automatische Erkennung fehlgeschlagen.")); return; }
       const c = this._config, got = [];
       const take = (k, label) => { if (!empty(d[k]) && empty(c[k])) { c[k] = d[k]; got.push(label); } };
-      take("solar", "Solar"); take("grid", "Netz");
+      take("solar", t("Solar")); take("grid", t("Netz"));
       if (!empty(d.battery) && empty(c.battery)) {
         for (const k of ["battery", "battery_invert", "battery_charge", "battery_soc"]) if (!empty(d[k])) c[k] = d[k];
-        got.push("Speicher");
+        got.push(t("Speicher"));
       }
       if (!empty(d.grid) && c.grid === d.grid) { if (d.grid_invert) c.grid_invert = true; if (d.grid_export) c.grid_export = d.grid_export; }
       if (d.solar_peak && (!c.solar_peak || c.solar === d.solar)) c.solar_peak = d.solar_peak;
       const have = new Set((c.consumers || []).map((x) => (typeof x === "string" ? x : x.entity)));
       const add = (d.consumers || []).filter((x) => !have.has(x.entity));
-      if (add.length) { c.consumers = [...(c.consumers || []), ...add].slice(0, Math.max(6, (c.consumers || []).length)); got.push(`${add.length} Verbraucher`); }
+      if (add.length) { c.consumers = [...(c.consumers || []), ...add].slice(0, Math.max(6, (c.consumers || []).length)); got.push(t("{n} Verbraucher", { n: add.length })); }
       if (d.other && !c.other && add.length) c.other = d.other;
-      take("today", "Bilanz"); take("forecast", "Prognose");
-      this._msg(got.length ? `Übernommen: ${got.join(", ")}. Bitte prüfen, Namen nach Wunsch ändern.`
-        : empty(c.solar) && empty(c.grid) ? "Nichts gefunden — Sensoren bitte unten auswählen." : "Alles schon eingetragen, nichts geändert.");
+      take("today", t("Bilanz")); take("forecast", t("Prognose"));
+      this._msg(got.length ? t("Übernommen: {list}. Bitte prüfen, Namen nach Wunsch ändern.", { list: got.join(", ") })
+        : empty(c.solar) && empty(c.grid) ? t("Nichts gefunden — Sensoren bitte unten auswählen.") : t("Alles schon eingetragen, nichts geändert."));
       this._build();
       this._emit();
     }
@@ -3656,7 +3726,7 @@ window.__NULLGLOW_THEMES = {
       if (!c[key]) return;
       for (const [k, v] of Object.entries(d)) if (empty(c[key][k])) c[key][k] = v;
       if (key === "today" && empty(c.today.price)) c.today.price = 0.35;
-      this._msg(Object.keys(d).length ? `${label}: Sensoren vorgeschlagen — bitte prüfen.` : `${label}: bitte Sensoren wählen.`);
+      this._msg(Object.keys(d).length ? t("{label}: Sensoren vorgeschlagen — bitte prüfen.", { label }) : t("{label}: bitte Sensoren wählen.", { label }));
       this._build();
       this._emit();
     }
@@ -3706,9 +3776,9 @@ window.__NULLGLOW_THEMES = {
       const c = this._config, root = this.shadowRoot, arr = (x) => [].concat(x || []).filter(Boolean);
       root.innerHTML = `<style>${ED_STYLE}</style>
         <div class="top">
-          <button class="act fill" data-a="detect"><ha-icon icon="mdi:auto-fix"></ha-icon>Automatisch erkennen</button>
-          <div class="hint">Übernimmt Solar, Netz, Zähler, Strompreis und Verbraucher aus dem Energie-Dashboard
-            (Einstellungen → Dashboards → Energie). Vorhandene Einträge bleiben.</div>
+          <button class="act fill" data-a="detect"><ha-icon icon="mdi:auto-fix"></ha-icon>${t("Automatisch erkennen")}</button>
+          <div class="hint">${t("Übernimmt Solar, Netz, Zähler, Strompreis und Verbraucher aus dem Energie-Dashboard")}
+            ${t("(Einstellungen → Dashboards → Energie). Vorhandene Einträge bleiben.")}</div>
           <div class="msg"></div>
         </div>`;
       root.querySelector('[data-a="detect"]').addEventListener("click", () => this._detect());
@@ -3716,14 +3786,14 @@ window.__NULLGLOW_THEMES = {
       const set = (k, v) => { if (empty(v)) delete c[k]; else c[k] = v; };
 
       // Solar
-      let [p, in_] = this._panel("src", "Solar", "mdi:solar-power-variant", arr(c.solar).length ? `${arr(c.solar).length} Sensor(en)` : "nicht gewählt");
+      let [p, in_] = this._panel("src", t("Solar"), "mdi:solar-power-variant", arr(c.solar).length ? t("{n} Sensor(en)", { n: arr(c.solar).length }) : t("nicht gewählt"));
       in_.appendChild(this._form([
-        { name: "solar", label: "Solar-Leistung (W)", helper: "Mehrere Wechselrichter werden addiert", selector: this._ent(true, "power") },
+        { name: "solar", label: t("Solar-Leistung (W)"), helper: t("Mehrere Wechselrichter werden addiert"), selector: this._ent(true, "power") },
         { type: "grid", name: "", schema: [
-          { name: "solar_name", label: "Name", selector: { text: {} } },
-          { name: "solar_icon", label: "Symbol", selector: { icon: { placeholder: "mdi:solar-power-variant" } } },
+          { name: "solar_name", label: t("Name"), selector: { text: {} } },
+          { name: "solar_icon", label: t("Symbol"), selector: { icon: { placeholder: "mdi:solar-power-variant" } } },
         ] },
-        { name: "solar_peak", label: "Spitzenleistung der Anlage", helper: "steuert Glühen und Sonnenkranz",
+        { name: "solar_peak", label: t("Spitzenleistung der Anlage"), helper: t("steuert Glühen und Sonnenkranz"),
           selector: { number: { min: 100, max: 50000, step: 100, mode: "box", unit_of_measurement: "W" } } },
       ], { solar: arr(c.solar), solar_name: c.solar_name, solar_icon: c.solar_icon, solar_peak: c.solar_peak ?? 800 }, (v) => {
         set("solar", v.solar); set("solar_name", v.solar_name); set("solar_icon", v.solar_icon); set("solar_peak", v.solar_peak);
@@ -3732,18 +3802,18 @@ window.__NULLGLOW_THEMES = {
       root.appendChild(p);
 
       // Netz
-      [p, in_] = this._panel("grid", "Netz", "mdi:transmission-tower", arr(c.grid).length ? `${arr(c.grid).length} Sensor(en)` : "nicht gewählt");
+      [p, in_] = this._panel("grid", t("Netz"), "mdi:transmission-tower", arr(c.grid).length ? t("{n} Sensor(en)", { n: arr(c.grid).length }) : t("nicht gewählt"));
       in_.appendChild(this._form([
-        { name: "grid", label: "Netz-Leistung (W)", helper: "positiv = Bezug, negativ = Einspeisung; je Phase ein Sensor wird addiert",
+        { name: "grid", label: t("Netz-Leistung (W)"), helper: t("positiv = Bezug, negativ = Einspeisung; je Phase ein Sensor wird addiert"),
           selector: this._ent(true, "power") },
-        { name: "grid_invert", label: "Vorzeichen umdrehen", helper: "einschalten, wenn dein Zähler Einspeisung positiv meldet", selector: { boolean: {} } },
-        { name: "grid_export", label: "Getrennte Einspeise-Leistung (optional)", helper: "nur falls Bezug und Einspeisung zwei Sensoren sind (beide positiv)",
+        { name: "grid_invert", label: t("Vorzeichen umdrehen"), helper: t("einschalten, wenn dein Zähler Einspeisung positiv meldet"), selector: { boolean: {} } },
+        { name: "grid_export", label: t("Getrennte Einspeise-Leistung (optional)"), helper: t("nur falls Bezug und Einspeisung zwei Sensoren sind (beide positiv)"),
           selector: this._ent(true, "power") },
         { type: "grid", name: "", schema: [
-          { name: "grid_name", label: "Name", selector: { text: {} } },
-          { name: "grid_icon", label: "Symbol", selector: { icon: { placeholder: "mdi:transmission-tower" } } },
+          { name: "grid_name", label: t("Name"), selector: { text: {} } },
+          { name: "grid_icon", label: t("Symbol"), selector: { icon: { placeholder: "mdi:transmission-tower" } } },
         ] },
-        { name: "warn_import", label: "Bezug in Amber ab", selector: { number: { min: 0, max: 50000, step: 100, mode: "box", unit_of_measurement: "W" } } },
+        { name: "warn_import", label: t("Bezug in Amber ab"), selector: { number: { min: 0, max: 50000, step: 100, mode: "box", unit_of_measurement: "W" } } },
       ], { grid: arr(c.grid), grid_invert: !!c.grid_invert, grid_export: arr(c.grid_export), grid_name: c.grid_name, grid_icon: c.grid_icon,
         warn_import: c.warn_import ?? 2000 }, (v) => {
         set("grid", v.grid); set("grid_invert", v.grid_invert || undefined); set("grid_export", v.grid_export);
@@ -3753,18 +3823,18 @@ window.__NULLGLOW_THEMES = {
       root.appendChild(p);
 
       // Batteriespeicher (optional)
-      [p, in_] = this._panel("bat", "Batteriespeicher (optional)", "mdi:home-battery-outline", arr(c.battery).length ? "eingerichtet" : "keiner");
-      in_.insertAdjacentHTML("beforeend", '<div class="note">Z. B. Anker Solix, Zendure, EcoFlow, Hausspeicher. Erscheint unter dem Haus: '
-        + 'Ladestand als Ring, Ströme Solar/Netz → Akku und Akku → Haus.</div>');
+      [p, in_] = this._panel("bat", t("Batteriespeicher (optional)"), "mdi:home-battery-outline", arr(c.battery).length ? t("eingerichtet") : t("keiner"));
+      in_.insertAdjacentHTML("beforeend", '<div class="note">' + t("Z. B. Anker Solix, Zendure, EcoFlow, Hausspeicher. Erscheint unter dem Haus: "
+        + "Ladestand als Ring, Ströme Solar/Netz → Akku und Akku → Haus.") + "</div>");
       in_.appendChild(this._form([
-        { name: "battery", label: "Akku-Leistung (W)", helper: "positiv = Entladen; mehrere werden addiert", selector: this._ent(true, "power") },
-        { name: "battery_invert", label: "Vorzeichen umdrehen", helper: "einschalten, wenn dein Sensor Laden positiv meldet (z. B. Anker Solix „Ladeleistung“)", selector: { boolean: {} } },
-        { name: "battery_soc", label: "Ladestand (%)", selector: this._all ? { entity: { filter: { domain: "sensor" } } } : { entity: { filter: { domain: "sensor", device_class: "battery" } } } },
+        { name: "battery", label: t("Akku-Leistung (W)"), helper: t("positiv = Entladen; mehrere werden addiert"), selector: this._ent(true, "power") },
+        { name: "battery_invert", label: t("Vorzeichen umdrehen"), helper: t("einschalten, wenn dein Sensor Laden positiv meldet (z. B. Anker Solix „Ladeleistung“)"), selector: { boolean: {} } },
+        { name: "battery_soc", label: t("Ladestand (%)"), selector: this._all ? { entity: { filter: { domain: "sensor" } } } : { entity: { filter: { domain: "sensor", device_class: "battery" } } } },
         { type: "grid", name: "", schema: [
-          { name: "battery_name", label: "Name", selector: { text: {} } },
-          { name: "battery_icon", label: "Symbol", helper: "leer = passt sich dem Ladestand an", selector: { icon: { placeholder: "mdi:battery-70" } } },
+          { name: "battery_name", label: t("Name"), selector: { text: {} } },
+          { name: "battery_icon", label: t("Symbol"), helper: t("leer = passt sich dem Ladestand an"), selector: { icon: { placeholder: "mdi:battery-70" } } },
         ] },
-        { name: "battery_charge", label: "Getrennte Lade-Leistung (optional)", helper: "nur falls Laden und Entladen zwei Sensoren sind (beide positiv)",
+        { name: "battery_charge", label: t("Getrennte Lade-Leistung (optional)"), helper: t("nur falls Laden und Entladen zwei Sensoren sind (beide positiv)"),
           selector: this._ent(true, "power") },
       ], { battery: arr(c.battery), battery_invert: !!c.battery_invert, battery_soc: c.battery_soc, battery_name: c.battery_name,
         battery_icon: c.battery_icon, battery_charge: arr(c.battery_charge) }, (v) => {
@@ -3784,17 +3854,17 @@ window.__NULLGLOW_THEMES = {
       // Verbraucher
       const cons = (c.consumers || []).map((x) => (typeof x === "string" ? { entity: x } : x));
       c.consumers = cons;
-      [p, in_] = this._panel("cons", "Verbraucher", "mdi:power-plug", cons.length ? `${cons.length} Punkte` : "keine");
-      in_.insertAdjacentHTML("beforeend", '<div class="note">Jeder Verbraucher ist ein Punkt rechts im Bild. Leistung (W) für den Strom, '
-        + 'Zähler (kWh) optional für die Bilanz. Je nach Kartenhöhe passen etwa 4–7 Punkte.</div>');
+      [p, in_] = this._panel("cons", t("Verbraucher"), "mdi:power-plug", cons.length ? t("{n} Punkte", { n: cons.length }) : t("keine"));
+      in_.insertAdjacentHTML("beforeend", '<div class="note">' + t("Jeder Verbraucher ist ein Punkt rechts im Bild. Leistung (W) für den Strom, "
+        + "Zähler (kWh) optional für die Bilanz. Je nach Kartenhöhe passen etwa 4–7 Punkte.") + "</div>");
       cons.forEach((x, i) => {
         const box = document.createElement("div");
         box.className = "cons";
         box.innerHTML = `<div class="head"><ha-icon class="ic" icon="${esc(x.icon || "mdi:power-plug")}"></ha-icon>
-          <span class="n">${i + 1} · ${esc(x.name || x.entity || "neu")}</span>
-          <button data-m="-1" title="nach oben" ${i ? "" : "disabled"}><ha-icon icon="mdi:arrow-up"></ha-icon></button>
-          <button data-m="1" title="nach unten" ${i < cons.length - 1 ? "" : "disabled"}><ha-icon icon="mdi:arrow-down"></ha-icon></button>
-          <button data-m="x" title="entfernen"><ha-icon icon="mdi:delete-outline"></ha-icon></button></div>`;
+          <span class="n">${i + 1} · ${esc(x.name || x.entity || t("neu"))}</span>
+          <button data-m="-1" title="${t("nach oben")}" ${i ? "" : "disabled"}><ha-icon icon="mdi:arrow-up"></ha-icon></button>
+          <button data-m="1" title="${t("nach unten")}" ${i < cons.length - 1 ? "" : "disabled"}><ha-icon icon="mdi:arrow-down"></ha-icon></button>
+          <button data-m="x" title="${t("entfernen")}"><ha-icon icon="mdi:delete-outline"></ha-icon></button></div>`;
         box.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
           const m = b.dataset.m;
           if (m === "x") cons.splice(i, 1);
@@ -3802,12 +3872,12 @@ window.__NULLGLOW_THEMES = {
           this._build(); this._emit();
         }));
         box.appendChild(this._form([
-          { name: "entity", label: "Leistung (W)", selector: this._ent(false, "power") },
+          { name: "entity", label: t("Leistung (W)"), selector: this._ent(false, "power") },
           { type: "grid", name: "", schema: [
-            { name: "name", label: "Name", selector: { text: {} } },
-            { name: "icon", label: "Symbol", selector: { icon: { placeholder: "mdi:power-plug" } } },
+            { name: "name", label: t("Name"), selector: { text: {} } },
+            { name: "icon", label: t("Symbol"), selector: { icon: { placeholder: "mdi:power-plug" } } },
           ] },
-          { name: "energy", label: "Zähler (kWh, optional)", selector: this._ent(false, "energy") },
+          { name: "energy", label: t("Zähler (kWh, optional)"), selector: this._ent(false, "energy") },
         ], { ...x }, (v) => {
           const T = sensorTools(this._hass), neu = v.entity && v.entity !== x.entity;
           const y = { entity: v.entity, name: v.name, icon: v.icon, energy: v.energy };
@@ -3819,7 +3889,7 @@ window.__NULLGLOW_THEMES = {
           }
           for (const k of Object.keys(y)) if (empty(y[k])) delete y[k];
           cons[i] = y;
-          box.querySelector(".n").textContent = `${i + 1} · ${y.name || y.entity || "neu"}`;
+          box.querySelector(".n").textContent = `${i + 1} · ${y.name || y.entity || t("neu")}`;
           box.querySelector("ha-icon.ic").setAttribute("icon", y.icon || "mdi:power-plug");
           if (neu) this._build();
           this._emit();
@@ -3828,18 +3898,18 @@ window.__NULLGLOW_THEMES = {
       });
       const addB = document.createElement("button");
       addB.className = "act";
-      addB.innerHTML = '<ha-icon icon="mdi:plus"></ha-icon>Verbraucher hinzufügen';
+      addB.innerHTML = '<ha-icon icon="mdi:plus"></ha-icon>' + t("Verbraucher hinzufügen");
       addB.addEventListener("click", () => { c.consumers = cons; cons.push({}); this._open.add("cons"); this._build(); });
       in_.appendChild(addB);
       in_.appendChild(this._form([
-        { name: "other_on", label: "Punkt „Sonstige“ (Haus minus die Verbraucher oben)", selector: { boolean: {} } },
+        { name: "other_on", label: t("Punkt „Sonstige“ (Haus minus die Verbraucher oben)"), selector: { boolean: {} } },
         ...(c.other ? [{ type: "grid", name: "", schema: [
-          { name: "other_name", label: "Name", selector: { text: {} } },
-          { name: "other_icon", label: "Symbol", selector: { icon: { placeholder: "mdi:dots-horizontal-circle-outline" } } },
+          { name: "other_name", label: t("Name"), selector: { text: {} } },
+          { name: "other_icon", label: t("Symbol"), selector: { icon: { placeholder: "mdi:dots-horizontal-circle-outline" } } },
         ] }] : []),
       ], { other_on: !!c.other, other_name: c.other?.name, other_icon: c.other?.icon }, (v) => {
         const was = !!c.other;
-        c.other = v.other_on ? { name: v.other_name || "Sonstige", icon: v.other_icon || "mdi:dots-horizontal-circle-outline" } : undefined;
+        c.other = v.other_on ? { name: v.other_name || t("Sonstige"), icon: v.other_icon || "mdi:dots-horizontal-circle-outline" } : undefined;
         if (!c.other) delete c.other;
         if (was !== !!c.other) this._build();
         this._emit();
@@ -3847,23 +3917,23 @@ window.__NULLGLOW_THEMES = {
       root.appendChild(p);
 
       // Bilanz-Leiste
-      const t = c.today;
-      [p, in_] = this._panel("today", "Bilanz-Leiste (heute / Woche / Monat)", "mdi:counter", t ? "an" : "aus");
+      const td = c.today;
+      [p, in_] = this._panel("today", t("Bilanz-Leiste (heute / Woche / Monat)"), "mdi:counter", td ? t("an") : t("aus"));
       in_.appendChild(this._form([
-        { name: "on", label: "Bilanz unten anzeigen", selector: { boolean: {} } },
-        ...(t ? [
-          { name: "solar", label: "Solar erzeugt (kWh)", selector: this._ent(true, "energy") },
-          { name: "import", label: "Netzbezug (kWh)", helper: "je Phase ein Zähler wird addiert", selector: this._ent(true, "energy") },
-          { name: "export", label: "Einspeisung (kWh)", selector: this._ent(true, "energy") },
-          { name: "price", label: "Strompreis", selector: { number: { min: 0, max: 2, step: 0.0001, mode: "box", unit_of_measurement: "€/kWh" } } },
-          { name: "net", label: "Saldieren wie ein Zweirichtungszähler", helper: "rechnet Bezug/Einspeisung aus der Netz-Leistung aller Phasen "
-            + "(richtig bei Shelly 3EM & Co.); dann werden die Zähler oben nicht gebraucht", selector: { boolean: {} } },
+        { name: "on", label: t("Bilanz unten anzeigen"), selector: { boolean: {} } },
+        ...(td ? [
+          { name: "solar", label: t("Solar erzeugt (kWh)"), selector: this._ent(true, "energy") },
+          { name: "import", label: t("Netzbezug (kWh)"), helper: t("je Phase ein Zähler wird addiert"), selector: this._ent(true, "energy") },
+          { name: "export", label: t("Einspeisung (kWh)"), selector: this._ent(true, "energy") },
+          { name: "price", label: t("Strompreis"), selector: { number: { min: 0, max: 2, step: 0.0001, mode: "box", unit_of_measurement: "€/kWh" } } },
+          { name: "net", label: t("Saldieren wie ein Zweirichtungszähler"), helper: t("rechnet Bezug/Einspeisung aus der Netz-Leistung aller Phasen "
+            + "(richtig bei Shelly 3EM & Co.); dann werden die Zähler oben nicht gebraucht"), selector: { boolean: {} } },
         ] : []),
-      ], { on: !!t, ...(t ? { solar: arr(t.solar), import: arr(t.import), export: arr(t.export), price: t.price ?? 0.35, net: !!t.net } : {}) }, (v) => {
+      ], { on: !!td, ...(td ? { solar: arr(td.solar), import: arr(td.import), export: arr(td.export), price: td.price ?? 0.35, net: !!td.net } : {}) }, (v) => {
         const was = !!c.today;
         if (!v.on) delete c.today;
         else c.today = { solar: v.solar, import: v.import, export: v.export, price: v.price, ...(v.net ? { net: true } : {}) };
-        if (!was && c.today) return this._prefill("today", "Bilanz");
+        if (!was && c.today) return this._prefill("today", t("Bilanz"));
         if (was !== !!c.today) this._build();
         this._emit();
       }));
@@ -3871,32 +3941,32 @@ window.__NULLGLOW_THEMES = {
 
       // Prognose
       const f = c.forecast;
-      [p, in_] = this._panel("fc", "Solar-Prognose", "mdi:weather-sunny-alert", f ? "an" : "aus");
+      [p, in_] = this._panel("fc", t("Solar-Prognose"), "mdi:weather-sunny-alert", f ? t("an") : t("aus"));
       in_.appendChild(this._form([
-        { name: "on", label: "Prognose am Solar-Punkt zeigen", helper: "z. B. Integration Forecast.Solar", selector: { boolean: {} } },
+        { name: "on", label: t("Prognose am Solar-Punkt zeigen"), helper: t("z. B. Integration Forecast.Solar"), selector: { boolean: {} } },
         ...(f ? [
-          { name: "today", label: "Prognose heute (kWh)", selector: this._ent(false, "energy") },
-          { name: "tomorrow", label: "Prognose morgen (kWh, optional)", selector: this._ent(false, "energy") },
+          { name: "today", label: t("Prognose heute (kWh)"), selector: this._ent(false, "energy") },
+          { name: "tomorrow", label: t("Prognose morgen (kWh, optional)"), selector: this._ent(false, "energy") },
         ] : []),
       ], { on: !!f, ...(f || {}) }, (v) => {
         const was = !!c.forecast;
         if (!v.on) delete c.forecast; else c.forecast = { today: v.today, tomorrow: v.tomorrow };
-        if (!was && c.forecast) return this._prefill("forecast", "Prognose");
+        if (!was && c.forecast) return this._prefill("forecast", t("Prognose"));
         if (was !== !!c.forecast) this._build();
         this._emit();
       }));
       root.appendChild(p);
 
       // Darstellung
-      [p, in_] = this._panel("look", "Darstellung", "mdi:palette-outline", `${c.height ?? 260} px hoch`);
+      [p, in_] = this._panel("look", t("Darstellung"), "mdi:palette-outline", t("{h} px hoch", { h: c.height ?? 260 }));
       in_.appendChild(this._form([
-        { name: "height", label: "Höhe der Karte", selector: { number: { min: 180, max: 700, step: 10, mode: "slider", unit_of_measurement: "px" } } },
-        { name: "house_icon", label: "Symbol Haus", selector: { icon: { placeholder: "mdi:home-lightning-bolt-outline" } } },
+        { name: "height", label: t("Höhe der Karte"), selector: { number: { min: 180, max: 700, step: 10, mode: "slider", unit_of_measurement: "px" } } },
+        { name: "house_icon", label: t("Symbol Haus"), selector: { icon: { placeholder: "mdi:home-lightning-bolt-outline" } } },
       ], { height: c.height ?? 260, house_icon: c.house_icon }, (v) => { set("height", v.height); set("house_icon", v.house_icon); this._emit(); }));
       const sw = document.createElement("label");
       sw.className = "sw";
-      sw.innerHTML = `<input type="checkbox" ${this._all ? "checked" : ""}> Alle Sensoren zur Auswahl anbieten
-        (falls dein Sensor oben nicht auftaucht, weil ihm die Geräteklasse fehlt)`;
+      sw.innerHTML = `<input type="checkbox" ${this._all ? "checked" : ""}> ${t("Alle Sensoren zur Auswahl anbieten")}
+        ${t("(falls dein Sensor oben nicht auftaucht, weil ihm die Geräteklasse fehlt)")}`;
       sw.querySelector("input").addEventListener("change", (ev) => { this._all = ev.target.checked; this._build(); });
       in_.appendChild(sw);
       root.appendChild(p);
@@ -3908,12 +3978,20 @@ window.__NULLGLOW_THEMES = {
   customElements.define("nullglow-flow-card", NullglowFlowCard);
   window.customCards = window.customCards || [];
   window.customCards.push({ type: "nullglow-flow-card", name: "Nullglow Flow", preview: true,
-    description: "Live-Energiefluss mit Partikelströmen (Nullglow) — Sensoren per Klick, „Automatisch erkennen“" });
+    description: t("Live-Energiefluss mit Partikelströmen (Nullglow) — Sensoren per Klick, „Automatisch erkennen“") });
 })();
 
 // ───── nullglow-spark-card.js ─────
 (() => {
   if (customElements.get("nullglow-spark-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "nullglow-spark-card: entity und card angeben": "nullglow-spark-card: specify entity and card",
+    "24-h-Mini-Diagramm hinter einer Kachel": "24 h mini chart behind a tile",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
   const REFRESH_MS = 5 * 60 * 1000;
   const STYLE = `
     .ng-spark { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: -1;
@@ -3980,8 +4058,24 @@ window.__NULLGLOW_THEMES = {
 
   class NullglowSparkCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
-    static _ngForm(schema, labels, helpers = {}) {
-      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
     }
     static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
       try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
@@ -4003,7 +4097,14 @@ window.__NULLGLOW_THEMES = {
       ], { entity: "Verlauf von (Sensor mit Statistik)", hours: "Zeitraum", min_span: "Kleinste Spanne", color_scale: "Farben",
         zero_based: "Achse bei 0 beginnen", card: "Kachel darüber (YAML)" },
       { min_span: "verhindert, dass kleines Rauschen riesig wirkt (z. B. 2 bei °C)", color_scale: "leer = neutral in der Akzentfarbe",
-        zero_based: "sinnvoll für Leistung (W)", card: "jede Karte, z. B. type: tile oder custom:mushroom-template-card" });
+        zero_based: "sinnvoll für Leistung (W)", card: "jede Karte, z. B. type: tile oder custom:mushroom-template-card" },
+      { "Raumtemperatur (kalt blau … warm rot)": "Room temperature (cold blue … warm red)", "Außentemperatur": "Outdoor temperature",
+        "Verlauf von (Sensor mit Statistik)": "History of (sensor with statistics)", "Zeitraum": "Time span",
+        "Kleinste Spanne": "Minimum span", "Farben": "Colors", "Achse bei 0 beginnen": "Start axis at 0",
+        "Kachel darüber (YAML)": "Tile on top (YAML)",
+        "verhindert, dass kleines Rauschen riesig wirkt (z. B. 2 bei °C)": "keeps small noise from looking huge (e.g. 2 for °C)",
+        "leer = neutral in der Akzentfarbe": "empty = neutral in the accent color", "sinnvoll für Leistung (W)": "useful for power (W)",
+        "jede Karte, z. B. type: tile oder custom:mushroom-template-card": "any card, e.g. type: tile or custom:mushroom-template-card" });
     }
     static async getStubConfig(hass) {
       const t = this._ngFind(hass, (id, a) => id.startsWith("sensor.") && a.device_class === "temperature" && a.state_class)[0]
@@ -4013,7 +4114,7 @@ window.__NULLGLOW_THEMES = {
     }
     // ── Editor Ende ──
     setConfig(config) {
-      if (!config || !(config.entity || config.entities) || !config.card) throw new Error("nullglow-spark-card: entity und card angeben");
+      if (!config || !(config.entity || config.entities) || !config.card) throw new Error(t("nullglow-spark-card: entity und card angeben"));
       this._cfg = { hours: 24, min_span: 0, zero_based: false, ...config };
       // entities: [a, b, c] -> Verlauf = Summe (z. B. Netzleistung aus drei Phasen), sonst ein Sensor
       this._ids = config.entities ? [].concat(config.entities) : [config.entity];
@@ -4036,7 +4137,7 @@ window.__NULLGLOW_THEMES = {
     }
 
     set hass(h) {
-      this._hass = h;
+      this._hass = h; ngH = h;
       if (this._inner) this._inner.hass = h;
       if (!this._fetched || Date.now() - this._fetched > REFRESH_MS) this._fetch();
       else this._draw(); // aktueller Wert als letzter Punkt
@@ -4185,12 +4286,22 @@ window.__NULLGLOW_THEMES = {
 
   customElements.define("nullglow-spark-card", NullglowSparkCard);
   window.customCards = window.customCards || [];
-  window.customCards.push({ type: "nullglow-spark-card", name: "Nullglow Spark", description: "24-h-Mini-Diagramm hinter einer Kachel" });
+  window.customCards.push({ type: "nullglow-spark-card", name: "Nullglow Spark", description: t("24-h-Mini-Diagramm hinter einer Kachel") });
 })();
 
 // ───── nullglow-hourly-card.js ─────
 (() => {
   if (customElements.get("nullglow-hourly-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "nullglow-hourly-card: entity angeben": "nullglow-hourly-card: entity required", "Vorhersage lädt …": "Loading forecast …",
+    "Keine Stundenvorhersage": "No hourly forecast", "jetzt": "now",
+    "Nullglow Stunden": "Nullglow Hourly", "Kompakte Stundenvorhersage": "Compact hourly forecast",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
 
   const ICON = {
     "clear-night": "mdi:weather-night", cloudy: "mdi:weather-cloudy", exceptional: "mdi:alert-circle-outline",
@@ -4228,8 +4339,24 @@ window.__NULLGLOW_THEMES = {
 
   class NullglowHourlyCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
-    static _ngForm(schema, labels, helpers = {}) {
-      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
     }
     static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
       try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
@@ -4242,19 +4369,20 @@ window.__NULLGLOW_THEMES = {
       return this._ngForm([
         { name: "entity", required: true, selector: { entity: { filter: { domain: "weather" } } } },
         { name: "hours", selector: { number: { min: 3, max: 12, mode: "slider" } } },
-      ], { entity: "Wetter", hours: "Stunden" }, { hours: "Spalten ab der laufenden Stunde" });
+      ], { entity: "Wetter", hours: "Stunden" }, { hours: "Spalten ab der laufenden Stunde" },
+      { "Wetter": "Weather", "Stunden": "Hours", "Spalten ab der laufenden Stunde": "Columns from the current hour" });
     }
     static async getStubConfig(hass) {
       return { entity: this._ngFind(hass, (id) => id.startsWith("weather."))[0] || "", hours: 8 };
     }
     // ── Editor Ende ──
     setConfig(config) {
-      if (!config?.entity) throw new Error("nullglow-hourly-card: entity angeben");
+      if (!config?.entity) throw new Error(t("nullglow-hourly-card: entity angeben"));
       this._cfg = { hours: 8, ...config };
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
       card.className = "card";
-      card.innerHTML = '<div class="row"><div class="empty">Vorhersage lädt …</div></div>';
+      card.innerHTML = `<div class="row"><div class="empty">${t("Vorhersage lädt …")}</div></div>`;
       this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
       this.shadowRoot.appendChild(card);
       this._row = card.querySelector(".row");
@@ -4262,6 +4390,7 @@ window.__NULLGLOW_THEMES = {
     }
 
     set hass(h) {
+      ngH = h;
       const first = !this._hass;
       this._hass = h;
       if (first || !this._unsub) this._resubscribe();
@@ -4286,14 +4415,14 @@ window.__NULLGLOW_THEMES = {
       if (!this._row || !this._fc) return;
       const now = Date.now();
       const list = this._fc.filter((f) => Date.parse(f.datetime) > now - 45 * 60 * 1000).slice(0, this._cfg.hours);
-      if (!list.length) { this._row.innerHTML = '<div class="empty">Keine Stundenvorhersage</div>'; return; }
+      if (!list.length) { this._row.innerHTML = `<div class="empty">${t("Keine Stundenvorhersage")}</div>`; return; }
       const wet = list.some((f) => (f.precipitation || 0) >= 0.1);
-      const num = (x, d = 0) => x.toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d });
+      const num = (x, d = 0) => x.toLocaleString(numLoc(), { minimumFractionDigits: d, maximumFractionDigits: d });
       const html = list.map((f, i) => {
-        const t = new Date(f.datetime);
+        const dt = new Date(f.datetime);
         const p = f.precipitation || 0;
         return `<div class="h ${i === 0 ? "now" : ""} ${TONE[f.condition] || ""}">
-          <span class="t">${i === 0 ? "jetzt" : String(t.getHours()).padStart(2, "0")}</span>
+          <span class="t">${i === 0 ? t("jetzt") : String(dt.getHours()).padStart(2, "0")}</span>
           <ha-icon icon="${ICON[f.condition] || "mdi:weather-cloudy"}"></ha-icon>
           <span class="v">${num(Math.round(f.temperature))}°</span>
           ${wet ? `<span class="p">${p >= 0.1 ? num(p, 1) : ""}</span>` : ""}
@@ -4305,12 +4434,31 @@ window.__NULLGLOW_THEMES = {
 
   customElements.define("nullglow-hourly-card", NullglowHourlyCard);
   window.customCards = window.customCards || [];
-  window.customCards.push({ type: "nullglow-hourly-card", name: "Nullglow Stunden", description: "Kompakte Stundenvorhersage" });
+  window.customCards.push({ type: "nullglow-hourly-card", name: t("Nullglow Stunden"), description: t("Kompakte Stundenvorhersage") });
 })();
 
 // ───── nullglow-month-card.js ─────
 (() => {
   if (customElements.get("nullglow-month-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "nullglow-month-card: solar und grid angeben": "nullglow-month-card: specify solar and grid",
+    "Monatsbilanz lädt …": "Loading monthly balance …",
+    "bis Monatsende ≈ {x} Netz": "≈ {x} grid by month end",
+    "Netzkosten": "Grid cost",
+    "gespart": "Saved",
+    "Autarkie": "Self-sufficiency",
+    "Verbrauch je Tag": "Consumption per day",
+    "Solar selbst genutzt": "Solar self-used",
+    "aus dem Netz": "from grid",
+    "kWh je Tag": "kWh per day",
+    "Nullglow Monat": "Nullglow Month",
+    "Monatsbilanz je Tag mit Kosten und Autarkie": "Monthly balance per day with cost and self-sufficiency",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
   // Akzentfarbe des aktiven Designs (Theme-Token --rgb-ng-acc…), Rückfall Nullglow-Grün — für SVG-Attribute, wo var() nicht wirkt
   const accRgb = (el, v = "--rgb-ng-acc", d = "124, 255, 178") => (getComputedStyle(el).getPropertyValue(v).trim() || d);
   const REFRESH = 15 * 60 * 1000;
@@ -4339,13 +4487,29 @@ window.__NULLGLOW_THEMES = {
     .legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
     .msg { font-size: 12px; color: var(--ng-txt-mute, #5f6f68); padding: 30px 0; text-align: center; }
   `;
-  const num = (x, d = 0) => x.toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const num = (x, d = 0) => x.toLocaleString(numLoc(), { minimumFractionDigits: d, maximumFractionDigits: d });
   const dayKey = (d) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 
   class NullglowMonthCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
-    static _ngForm(schema, labels, helpers = {}) {
-      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
     }
     static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
       try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
@@ -4360,7 +4524,11 @@ window.__NULLGLOW_THEMES = {
         { name: "grid", required: true, selector: { entity: { multiple: true, filter: { domain: "sensor", device_class: "power" } } } },
         { name: "price", selector: { number: { min: 0, max: 2, step: 0.0001, mode: "box", unit_of_measurement: "€/kWh" } } },
       ], { solar: "Solar erzeugt (kWh-Zähler)", grid: "Netzleistung (W, je Phase)", price: "Strompreis" },
-      { grid: "+ Bezug / − Einspeisung; mehrere Phasen werden saldiert wie beim Stromzähler" });
+      { grid: "+ Bezug / − Einspeisung; mehrere Phasen werden saldiert wie beim Stromzähler" },
+      { "Solar erzeugt (kWh-Zähler)": "Solar produced (kWh meter)", "Netzleistung (W, je Phase)": "Grid power (W, per phase)",
+        "Strompreis": "Electricity price",
+        "+ Bezug / − Einspeisung; mehrere Phasen werden saldiert wie beim Stromzähler":
+          "+ import / − export; multiple phases are netted like the electricity meter does" });
     }
     static async getStubConfig(hass) {
       const e = await this._ngEnergy(hass);
@@ -4368,12 +4536,12 @@ window.__NULLGLOW_THEMES = {
     }
     // ── Editor Ende ──
     setConfig(config) {
-      if (!config?.solar || !config?.grid) throw new Error("nullglow-month-card: solar und grid angeben");
+      if (!config?.solar || !config?.grid) throw new Error(t("nullglow-month-card: solar und grid angeben"));
       this._cfg = { price: 0, ...config, grid: [].concat(config.grid) };
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
       card.className = "card";
-      card.innerHTML = '<div class="msg">Monatsbilanz lädt …</div>';
+      card.innerHTML = `<div class="msg">${t("Monatsbilanz lädt …")}</div>`;
       this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
       this.shadowRoot.appendChild(card);
       this._card = card;
@@ -4382,7 +4550,7 @@ window.__NULLGLOW_THEMES = {
     }
 
     set hass(h) {
-      this._hass = h;
+      this._hass = h; ngH = h;
       if (!this._at || Date.now() - this._at > REFRESH) this._fetch();
     }
 
@@ -4433,7 +4601,7 @@ window.__NULLGLOW_THEMES = {
       const cost = imp * c.price, saved = selfM * c.price, aut = usedM > 0 ? selfM / usedM : 0;
       const elapsed = (now.getDate() - 1) + (now.getHours() * 60 + now.getMinutes()) / 1440;
       const proj = elapsed > 0.5 ? cost / elapsed * nDays : null;
-      const month = now.toLocaleString("de-DE", { month: "long" });
+      const month = now.toLocaleString(numLoc(), { month: "long" });
 
       // Balken (SVG in Kartengröße)
       const box = this._card.querySelector(".chart");
@@ -4456,31 +4624,40 @@ window.__NULLGLOW_THEMES = {
       for (const v of [top / 2, top]) axis += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(v)}" y2="${y(v)}" style="stroke:rgba(var(--rgb-ng-txt, 255, 255, 255), .05)" stroke-dasharray="2 3"/>`
         + `<text x="${pad.l - 4}" y="${y(v) + 3}" text-anchor="end" font-size="9" fill="rgba(147,167,157,.9)" font-family="JetBrains Mono, monospace">${num(v)}</text>`;
       for (const dd of [1, 8, 15, 22, 29].filter((q) => q <= nDays))
-        axis += `<text x="${pad.l + (dd - 0.5) * cw}" y="${H - 3}" text-anchor="middle" font-size="9" fill="rgba(147,167,157,.9)" font-family="JetBrains Mono, monospace">${dd}.</text>`;
+        axis += `<text x="${pad.l + (dd - 0.5) * cw}" y="${H - 3}" text-anchor="middle" font-size="9" fill="rgba(147,167,157,.9)" font-family="JetBrains Mono, monospace">${dd}${ngLang() === "de" ? "." : ""}</text>`;
 
       const html = `
         <div class="top"><span class="title">${month}</span>
-          ${proj !== null ? `<span class="proj">bis Monatsende ≈ <b>${num(proj)} €</b> Netz</span>` : ""}</div>
+          ${proj !== null ? `<span class="proj">${t("bis Monatsende ≈ {x} Netz", { x: `<b>${num(proj)} €</b>` })}</span>` : ""}</div>
         <div class="kpis">
-          <div class="kpi"><span class="v">${num(cost, 2)}<small>€</small></span><span class="l">Netzkosten</span></div>
-          <div class="kpi"><span class="v acc">${num(saved, 2)}<small>€</small></span><span class="l">gespart</span></div>
-          <div class="kpi"><span class="v acc">${num(aut * 100)}<small>%</small></span><span class="l">Autarkie</span></div>
+          <div class="kpi"><span class="v">${num(cost, 2)}<small>€</small></span><span class="l">${t("Netzkosten")}</span></div>
+          <div class="kpi"><span class="v acc">${num(saved, 2)}<small>€</small></span><span class="l">${t("gespart")}</span></div>
+          <div class="kpi"><span class="v acc">${num(aut * 100)}<small>%</small></span><span class="l">${t("Autarkie")}</span></div>
         </div>
-        <div class="chart"><svg viewBox="0 0 ${W} ${H}" aria-label="Verbrauch je Tag">${axis}${bars}</svg></div>
-        <div class="legend"><span><i style="background:rgba(${A},.85)"></i>Solar selbst genutzt</span>
-          <span><i style="background:rgba(var(--rgb-ng-txt, 232, 245, 238), .22)"></i>aus dem Netz</span><span>kWh je Tag</span></div>`;
+        <div class="chart"><svg viewBox="0 0 ${W} ${H}" aria-label="${t("Verbrauch je Tag")}">${axis}${bars}</svg></div>
+        <div class="legend"><span><i style="background:rgba(${A},.85)"></i>${t("Solar selbst genutzt")}</span>
+          <span><i style="background:rgba(var(--rgb-ng-txt, 232, 245, 238), .22)"></i>${t("aus dem Netz")}</span><span>${t("kWh je Tag")}</span></div>`;
       if (this._html !== html) { this._card.innerHTML = html; this._html = html; if (!box) requestAnimationFrame(() => this._render()); }
     }
   }
 
   customElements.define("nullglow-month-card", NullglowMonthCard);
   window.customCards = window.customCards || [];
-  window.customCards.push({ type: "nullglow-month-card", name: "Nullglow Monat", description: "Monatsbilanz je Tag mit Kosten und Autarkie" });
+  window.customCards.push({ type: "nullglow-month-card", name: t("Nullglow Monat"), description: t("Monatsbilanz je Tag mit Kosten und Autarkie") });
 })();
 
 // ───── nullglow-bars-card.js ─────
 (() => {
   if (customElements.get("nullglow-bars-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "nullglow-bars-card: rows angeben": "nullglow-bars-card: specify rows",
+    "Live-Balken, z. B. Last je Phase": "Live bars, e.g. load per phase",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
   const STYLE = `
     :host { display: block; }
     .card { padding: 12px 14px; border-radius: var(--ha-card-border-radius, 20px); box-sizing: border-box; height: 100%;
@@ -4501,12 +4678,28 @@ window.__NULLGLOW_THEMES = {
       transition: width .5s cubic-bezier(.22,1,.36,1), background .3s; }
     .fill.neg { left: auto; right: 0; }
   `;
-  const num = (x) => Math.round(x).toLocaleString("de-DE");
+  const num = (x) => Math.round(x).toLocaleString(numLoc());
 
   class NullglowBarsCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
-    static _ngForm(schema, labels, helpers = {}) {
-      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
     }
     static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
       try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
@@ -4526,7 +4719,10 @@ window.__NULLGLOW_THEMES = {
           name: { label: "Name", selector: { text: {} } },
           max: { label: "Vollausschlag (optional)", selector: { number: { min: 0, mode: "box" } } } } } } },
       ], { max: "Vollausschlag", warn: "Amber ab", crit: "Rot ab", rows: "Balken" },
-      { max: "z. B. 3680 W = 16 A × 230 V", rows: "negative Werte (Einspeisung) laufen grün nach links" });
+      { max: "z. B. 3680 W = 16 A × 230 V", rows: "negative Werte (Einspeisung) laufen grün nach links" },
+      { "Sensor": "Sensor", "Name": "Name", "Vollausschlag (optional)": "Full scale (optional)", "Vollausschlag": "Full scale",
+        "Amber ab": "Amber from", "Rot ab": "Red from", "Balken": "Bars", "z. B. 3680 W = 16 A × 230 V": "e.g. 3680 W = 16 A × 230 V",
+        "negative Werte (Einspeisung) laufen grün nach links": "negative values (export) run green to the left" });
     }
     static async getStubConfig(hass) {
       const g = [].concat((await this._ngEnergy(hass)).grid || []);
@@ -4536,7 +4732,7 @@ window.__NULLGLOW_THEMES = {
     }
     // ── Editor Ende ──
     setConfig(config) {
-      if (!config?.rows?.length) throw new Error("nullglow-bars-card: rows angeben");
+      if (!config?.rows?.length) throw new Error(t("nullglow-bars-card: rows angeben"));
       this._cfg = { max: 3680, warn: 2300, crit: 3200, ...config };
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
@@ -4558,7 +4754,7 @@ window.__NULLGLOW_THEMES = {
     }
 
     set hass(h) {
-      this._hass = h;
+      this._hass = h; ngH = h;
       this._cfg.rows.forEach((r, i) => {
         const el = this._rows[i];
         const v = parseFloat(h.states[r.entity]?.state);
@@ -4586,12 +4782,35 @@ window.__NULLGLOW_THEMES = {
 
   customElements.define("nullglow-bars-card", NullglowBarsCard);
   window.customCards = window.customCards || [];
-  window.customCards.push({ type: "nullglow-bars-card", name: "Nullglow Bars", description: "Live-Balken, z. B. Last je Phase" });
+  window.customCards.push({ type: "nullglow-bars-card", name: "Nullglow Bars", description: t("Live-Balken, z. B. Last je Phase") });
 })();
 
 // ───── nullglow-power-card.js ─────
 (() => {
   if (customElements.get("nullglow-power-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "nullglow-power-card: grid und solar angeben": "nullglow-power-card: specify grid and solar",
+    "Leistungsverlauf lädt …": "Loading power history …",
+    "Keine Statistik verfügbar": "No statistics available",
+    "Leistung · {h} h": "Power · {h} h",
+    "Hausverbrauch = Netz + Solar": "Home = grid + solar",
+    "± Akku": "± battery",
+    "jetzt": "now",
+    "Spitze": "peak",
+    "Grundlast": "base load",
+    "Solar genutzt": "Solar used",
+    "Netzbezug": "Grid import",
+    "Einspeisung": "Export",
+    "Akku entladen": "Battery discharge",
+    "Akku laden": "Battery charge",
+    "Verbrauch": "Consumption",
+    "Leistung 24 h: Verbrauch, Solar, Netz": "Power 24 h: consumption, solar, grid",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
   // Akzentfarbe des aktiven Designs (Theme-Token --rgb-ng-acc…), Rückfall Nullglow-Grün — für SVG-Attribute, wo var() nicht wirkt
   const accRgb = (el, v = "--rgb-ng-acc", d = "124, 255, 178") => (getComputedStyle(el).getPropertyValue(v).trim() || d);
   const REFRESH = 5 * 60 * 1000;
@@ -4621,14 +4840,30 @@ window.__NULLGLOW_THEMES = {
     .legend i.line { height: 2px; vertical-align: 2px; border-radius: 1px; }
     .msg { font-size: 12px; color: var(--ng-txt-mute, #5f6f68); padding: 30px 0; text-align: center; }
   `;
-  const num = (x, d = 0) => x.toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const num = (x, d = 0) => x.toLocaleString(numLoc(), { minimumFractionDigits: d, maximumFractionDigits: d });
   const kw = (w) => (Math.abs(w) >= 1000 ? [num(w / 1000, 1), "kW"] : [num(w), "W"]);
-  const hhmm = (t) => new Date(t).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+  const hhmm = (ts) => new Date(ts).toLocaleTimeString(numLoc(), { hour: "2-digit", minute: "2-digit" });
 
   class NullglowPowerCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
-    static _ngForm(schema, labels, helpers = {}) {
-      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
     }
     static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
       try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
@@ -4650,7 +4885,13 @@ window.__NULLGLOW_THEMES = {
         { name: "hours", selector: { number: { min: 1, max: 168, mode: "box", unit_of_measurement: "h" } } },
       ], { grid: "Netzleistung (W, je Phase)", solar: "Solarleistung (W)", grid_invert: "Zähler meldet Einspeisung positiv",
         battery: "Speicher-Leistung", battery_invert: "Speicher: positiv = Laden", battery_charge: "Getrennte Lade-Leistung", hours: "Zeitraum" },
-      { grid: "+ Bezug / − Einspeisung; mehrere Phasen werden saldiert", battery: "+ Entladen / − Laden (sonst umdrehen)" });
+      { grid: "+ Bezug / − Einspeisung; mehrere Phasen werden saldiert", battery: "+ Entladen / − Laden (sonst umdrehen)" },
+      { "Batteriespeicher (optional)": "Battery storage (optional)", "Netzleistung (W, je Phase)": "Grid power (W, per phase)",
+        "Solarleistung (W)": "Solar power (W)", "Zähler meldet Einspeisung positiv": "Meter reports export as positive",
+        "Speicher-Leistung": "Battery power", "Speicher: positiv = Laden": "Battery: positive = charging",
+        "Getrennte Lade-Leistung": "Separate charging power", "Zeitraum": "Time span",
+        "+ Bezug / − Einspeisung; mehrere Phasen werden saldiert": "+ import / − export; multiple phases are netted",
+        "+ Entladen / − Laden (sonst umdrehen)": "+ discharging / − charging (otherwise invert)" });
     }
     static async getStubConfig(hass) {
       const e = await this._ngEnergy(hass);
@@ -4659,13 +4900,13 @@ window.__NULLGLOW_THEMES = {
     }
     // ── Editor Ende ──
     setConfig(config) {
-      if (!config?.grid || !config?.solar) throw new Error("nullglow-power-card: grid und solar angeben");
+      if (!config?.grid || !config?.solar) throw new Error(t("nullglow-power-card: grid und solar angeben"));
       this._cfg = { hours: 24, warn: 3000, ...config, grid: [].concat(config.grid),
         battery: [].concat(config.battery || []), battery_charge: [].concat(config.battery_charge || []) };
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
       card.className = "card";
-      card.innerHTML = '<div class="msg">Leistungsverlauf lädt …</div>';
+      card.innerHTML = `<div class="msg">${t("Leistungsverlauf lädt …")}</div>`;
       this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
       this.shadowRoot.appendChild(card);
       this._card = card;
@@ -4674,7 +4915,7 @@ window.__NULLGLOW_THEMES = {
     }
 
     set hass(h) {
-      this._hass = h;
+      this._hass = h; ngH = h;
       if (!this._at || Date.now() - this._at > REFRESH) this._fetch();
     }
 
@@ -4725,7 +4966,7 @@ window.__NULLGLOW_THEMES = {
       if (!this._card) return;
       const A = accRgb(this), A2 = accRgb(this, "--rgb-ng-info", "107, 227, 255");   // Akku: Info-Farbe des Designs
       if (!this._pts || this._pts.length < 3) {
-        this._card.innerHTML = `<div class="msg">${this._pts === null ? "Keine Statistik verfügbar" : "Leistungsverlauf lädt …"}</div>`;
+        this._card.innerHTML = `<div class="msg">${this._pts === null ? t("Keine Statistik verfügbar") : t("Leistungsverlauf lädt …")}</div>`;
         return;
       }
       const pts = this._pts.slice();
@@ -4749,20 +4990,20 @@ window.__NULLGLOW_THEMES = {
       const [nv, nu] = kw(nowH), [pv, pu] = kw(peak.house), [bv, bu] = kw(base);
 
       this._card.innerHTML = `
-        <div class="top"><span class="title">Leistung · ${this._cfg.hours} h</span>
-          <span class="sub">Hausverbrauch = Netz + Solar${this._cfg.battery.length ? " ± Akku" : ""}</span></div>
+        <div class="top"><span class="title">${t("Leistung · {h} h", { h: this._cfg.hours })}</span>
+          <span class="sub">${t("Hausverbrauch = Netz + Solar")}${this._cfg.battery.length ? " " + t("± Akku") : ""}</span></div>
         <div class="kpis">
-          <div class="kpi"><span class="v${nowH >= this._cfg.warn ? " warn" : ""}">${nv}<small>${nu}</small></span><span class="l">jetzt</span></div>
-          <div class="kpi"><span class="v">${pv}<small>${pu}</small></span><span class="l">Spitze · ${hhmm(peak.t)}</span></div>
-          <div class="kpi"><span class="v">${bv}<small>${bu}</small></span><span class="l">Grundlast</span></div>
+          <div class="kpi"><span class="v${nowH >= this._cfg.warn ? " warn" : ""}">${nv}<small>${nu}</small></span><span class="l">${t("jetzt")}</span></div>
+          <div class="kpi"><span class="v">${pv}<small>${pu}</small></span><span class="l">${t("Spitze")} · ${hhmm(peak.t)}</span></div>
+          <div class="kpi"><span class="v">${bv}<small>${bu}</small></span><span class="l">${t("Grundlast")}</span></div>
         </div>
         <div class="chart"></div>
         <div class="legend">
-          <span><i style="background:rgba(${A},.55)"></i>Solar genutzt</span>
-          <span><i style="background:rgba(var(--rgb-ng-txt, 232, 245, 238), .16)"></i>Netzbezug</span>
-          <span><i style="background:rgba(${A},.22)"></i>Einspeisung</span>
-          ${hasB ? `<span><i style="background:rgba(${A2},.5)"></i>Akku entladen</span><span><i style="background:rgba(${A2},.2)"></i>Akku laden</span>` : ""}
-          <span><i class="line" style="background:rgba(var(--rgb-ng-txt, 232, 245, 238), .85)"></i>Verbrauch</span>
+          <span><i style="background:rgba(${A},.55)"></i>${t("Solar genutzt")}</span>
+          <span><i style="background:rgba(var(--rgb-ng-txt, 232, 245, 238), .16)"></i>${t("Netzbezug")}</span>
+          <span><i style="background:rgba(${A},.22)"></i>${t("Einspeisung")}</span>
+          ${hasB ? `<span><i style="background:rgba(${A2},.5)"></i>${t("Akku entladen")}</span><span><i style="background:rgba(${A2},.2)"></i>${t("Akku laden")}</span>` : ""}
+          <span><i class="line" style="background:rgba(var(--rgb-ng-txt, 232, 245, 238), .85)"></i>${t("Verbrauch")}</span>
         </div>`;
       const box = this._card.querySelector(".chart");
       const W = box.clientWidth, H = box.clientHeight;
@@ -4826,12 +5067,24 @@ window.__NULLGLOW_THEMES = {
 
   customElements.define("nullglow-power-card", NullglowPowerCard);
   window.customCards = window.customCards || [];
-  window.customCards.push({ type: "nullglow-power-card", name: "Nullglow Power", description: "Leistung 24 h: Verbrauch, Solar, Netz" });
+  window.customCards.push({ type: "nullglow-power-card", name: "Nullglow Power", description: t("Leistung 24 h: Verbrauch, Solar, Netz") });
 })();
 
 // ───── nullglow-care-card.js ─────
 (() => {
   if (customElements.get("nullglow-care-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "noch ca. {n} h": "approx. {n} h left", "{n} Batterie schwach": "{n} battery low", "{n} Batterien schwach": "{n} batteries low",
+    "{n}× Verschleiß": "{n}× wear", "alles in Ordnung": "all good", "Wartung": "Maintenance", "Alles in Ordnung": "All good",
+    "Braucht Aufmerksamkeit": "Needs attention", "Batterien": "Batteries", "keine": "none", "Verschleiß": "Wear",
+    "Nicht erreichbar": "Unavailable", "alle Geräte erreichbar": "all devices reachable",
+    "Batterien, Verschleiß, nicht erreichbare Geräte": "Batteries, wear, unavailable devices",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
   const STYLE = `
     :host { display: block; }
     .card { border-radius: var(--ha-card-border-radius, 20px); box-sizing: border-box; height: 100%;
@@ -4894,8 +5147,24 @@ window.__NULLGLOW_THEMES = {
 
   class NullglowCareCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
-    static _ngForm(schema, labels, helpers = {}) {
-      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
     }
     static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
       try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
@@ -4928,7 +5197,16 @@ window.__NULLGLOW_THEMES = {
       ], { mode: "Darstellung", tap_hash: "Antippen öffnet (nur Kachel)", show: "Abschnitte (nur Liste)", warn: "Amber ab", crit: "Rot ab",
         exclude: "Nicht anzeigen (Teil der Entitäts-ID)", wear: "Verschleiß & Verbrauchsmaterial", watch: "Sollten erreichbar sein" },
       { tap_hash: "z. B. #wartung für ein Bubble-Pop-up", show: "leer = alle", exclude: "z. B. pixel_ für Handy-Akkus",
-        watch: "erscheinen als Hinweis, wenn sie nicht erreichbar sind" });
+        watch: "erscheinen als Hinweis, wenn sie nicht erreichbar sind" },
+      { "Liste (alles)": "List (everything)", "Kompakte Kachel": "Compact tile", "Batterien": "Batteries", "Verschleiß": "Wear",
+        "Nicht erreichbar": "Unavailable", "Rest in %": "Remaining in %", "Restzeit (optional)": "Remaining time (optional)",
+        "Name": "Name", "Amber ab %": "Amber from %", "Rot ab %": "Red from %", "Gerät": "Device",
+        "Darstellung": "Display", "Antippen öffnet (nur Kachel)": "Tap opens (tile only)", "Abschnitte (nur Liste)": "Sections (list only)",
+        "Amber ab": "Amber from", "Rot ab": "Red from", "Nicht anzeigen (Teil der Entitäts-ID)": "Hide (part of the entity ID)",
+        "Verschleiß & Verbrauchsmaterial": "Wear & consumables", "Sollten erreichbar sein": "Should be reachable",
+        "z. B. #wartung für ein Bubble-Pop-up": "e.g. #maintenance for a Bubble pop-up", "leer = alle": "empty = all",
+        "z. B. pixel_ für Handy-Akkus": "e.g. pixel_ for phone batteries",
+        "erscheinen als Hinweis, wenn sie nicht erreichbar sind": "shown as a notice when they are unavailable" });
     }
     static async getStubConfig() {
       return { mode: "full", battery: { warn: 30, crit: 15 } };
@@ -4981,12 +5259,12 @@ window.__NULLGLOW_THEMES = {
         const raw = parseFloat(s?.state), na = !s || BAD.includes(s.state) || !isFinite(raw);
         const v = na ? null : Math.round(raw);
         const warn = w.warn ?? 20, crit = w.crit ?? 10;
-        const t = w.time && S[w.time];
-        let time = t && !BAD.includes(t.state) ? `${t.state} ${t.attributes.unit_of_measurement || ""}`.trim() : "";
+        const ts = w.time && S[w.time];
+        let time = ts && !BAD.includes(ts.state) ? `${ts.state} ${ts.attributes.unit_of_measurement || ""}`.trim() : "";
         // ohne eigenen Zeit-Sensor: Restlaufzeit aus Wechselintervall und Laufzeit (z. B. Navimow-Messer)
         const at = s?.attributes || {};
         if (!time && isFinite(at.reminder_interval_hours) && isFinite(at.runtime_minutes))
-          time = `noch ca. ${Math.max(0, Math.round(at.reminder_interval_hours - at.runtime_minutes / 60))} h`;
+          time = t("noch ca. {n} h", { n: Math.max(0, Math.round(at.reminder_interval_hours - at.runtime_minutes / 60)) });
         return { entity: w.entity, name: w.name || cleanName(s?.attributes?.friendly_name), v, na, time,
           lvl: na ? "ok" : v <= crit ? "crit" : v <= warn ? "warn" : "ok" };
       });
@@ -5001,16 +5279,17 @@ window.__NULLGLOW_THEMES = {
     _summaryText(d) {
       const parts = [];
       const lowBat = d.low.filter((x) => !x.na).length, naBat = d.low.filter((x) => x.na).length;
-      if (lowBat) parts.push(`${lowBat} ${lowBat === 1 ? "Batterie" : "Batterien"} schwach`);
-      if (d.worn.length) parts.push(`${d.worn.length}× Verschleiß`);
+      if (lowBat) parts.push(t(lowBat === 1 ? "{n} Batterie schwach" : "{n} Batterien schwach", { n: lowBat }));
+      if (d.worn.length) parts.push(t("{n}× Verschleiß", { n: d.worn.length }));
       const offN = d.off.length + naBat;
       if (offN) parts.push(`${offN} offline`);
-      return parts.length ? parts.join(" · ") : "alles in Ordnung";
+      return parts.length ? parts.join(" · ") : t("alles in Ordnung");
     }
 
     set hass(h) {
+      ngH = h;
       const d = this._collect(h);
-      const key = JSON.stringify(d);
+      const key = JSON.stringify(d) + ngLang();
       if (key === this._key) return;
       this._key = key;
       this._card.className = `card lvl-${d.lvl}`;
@@ -5025,14 +5304,14 @@ window.__NULLGLOW_THEMES = {
         ...d.worn.map((x) => ({ ...x, wear: true, t: `${x.name} ${x.v} %` }))].sort((a, b) => rank(a) - rank(b) || (a.v ?? 0) - (b.v ?? 0));
       if (items.length) return items[0].t;
       if (d.off.length) return `${d.off[0].name} offline`;
-      return "alles in Ordnung";
+      return t("alles in Ordnung");
     }
 
     _summary(d) {
       const icon = d.lvl === "ok" ? "mdi:shield-check-outline" : d.lvl === "crit" ? "mdi:battery-alert-variant" : "mdi:wrench-clock";
       const n = d.low.length + d.worn.length + d.off.length;
       return `<div class="sum lvl-${d.lvl}"><div class="ic"><ha-icon icon="${icon}"></ha-icon></div>
-        <div class="t"><span class="p">Wartung${n ? `<span class="cnt mono">${n}</span>` : ""}</span><span class="s">${esc(this._top(d))}</span></div></div>`;
+        <div class="t"><span class="p">${t("Wartung")}${n ? `<span class="cnt mono">${n}</span>` : ""}</span><span class="s">${esc(this._top(d))}</span></div></div>`;
     }
 
     _row(x, icon, value, pct) {
@@ -5045,7 +5324,7 @@ window.__NULLGLOW_THEMES = {
     _full(d) {
       const icon = d.lvl === "ok" ? "mdi:shield-check-outline" : d.lvl === "crit" ? "mdi:battery-alert-variant" : "mdi:wrench-clock";
       const col = COL[d.lvl];
-      const title = d.lvl === "ok" ? "Alles in Ordnung" : "Braucht Aufmerksamkeit";
+      const title = d.lvl === "ok" ? t("Alles in Ordnung") : t("Braucht Aufmerksamkeit");
       const show = (k) => !this._cfg.show || ![].concat(this._cfg.show).length || [].concat(this._cfg.show).includes(k);   // leer = alle
       const bats = d.bats.map((x) => this._row(x, batIcon(x.v), x.na ? "offline" : `${x.v} %`, x.v ?? 0)).join("");
       const wear = d.wear.map((x) => this._row(x, x.lvl === "ok" ? "mdi:progress-wrench" : "mdi:wrench-clock",
@@ -5054,9 +5333,9 @@ window.__NULLGLOW_THEMES = {
       return `<div class="full">
         <div class="hero"><div class="ic" style="color:${col};background:color-mix(in srgb, ${col} 12%, transparent)"><ha-icon icon="${icon}"></ha-icon></div>
           <div><div class="p">${title}</div><div class="s">${esc(this._summaryText(d))}</div></div></div>
-        ${show("battery") ? `<div class="grp"><h3>Batterien</h3><div class="rows">${bats || '<span class="none">keine</span>'}</div></div>` : ""}
-        ${wear && show("wear") ? `<div class="grp"><h3>${esc(this._cfg.wear_title || "Verschleiß")}</h3><div class="rows">${wear}</div></div>` : ""}
-        ${show("watch") ? `<div class="grp"><h3>Nicht erreichbar</h3>${off ? `<div class="chips">${off}</div>` : '<span class="none">alle Geräte erreichbar</span>'}</div>` : ""}
+        ${show("battery") ? `<div class="grp"><h3>${t("Batterien")}</h3><div class="rows">${bats || `<span class="none">${t("keine")}</span>`}</div></div>` : ""}
+        ${wear && show("wear") ? `<div class="grp"><h3>${esc(this._cfg.wear_title || t("Verschleiß"))}</h3><div class="rows">${wear}</div></div>` : ""}
+        ${show("watch") ? `<div class="grp"><h3>${t("Nicht erreichbar")}</h3>${off ? `<div class="chips">${off}</div>` : `<span class="none">${t("alle Geräte erreichbar")}</span>`}</div>` : ""}
       </div>`;
     }
 
@@ -5066,12 +5345,33 @@ window.__NULLGLOW_THEMES = {
 
   customElements.define("nullglow-care-card", NullglowCareCard);
   window.customCards = window.customCards || [];
-  window.customCards.push({ type: "nullglow-care-card", name: "Nullglow Care", description: "Batterien, Verschleiß, nicht erreichbare Geräte" });
+  window.customCards.push({ type: "nullglow-care-card", name: "Nullglow Care", description: t("Batterien, Verschleiß, nicht erreichbare Geräte") });
 })();
 
 // ───── nullglow-radar-card.js ─────
 (() => {
   if (customElements.get("nullglow-radar-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "Regenradar": "Rain radar", "Näher": "Zoom in", "Weiter weg": "Zoom out", "Abspielen/Anhalten": "Play/Pause",
+    "leicht": "light", "stark": "heavy", "lädt …": "loading …", "lädt {a}/{b}": "loading {a}/{b}",
+    "vor {n} Min": "{n} min ago", "jetzt": "now", "+{n} Std Vorhersage": "+{n} h forecast",
+    "Am Haus · nächste 2 Std": "At home · next 2 h",
+    "Radar &amp; Vorhersage: Deutscher Wetterdienst · Niederschlag am Haus: Open-Meteo (ICON-D2) · Karte © OpenStreetMap-Mitwirkende":
+      "Radar &amp; forecast: Deutscher Wetterdienst (DWD) · Precipitation at home: Open-Meteo (ICON-D2) · Map © OpenStreetMap contributors",
+    "Radar derzeit nicht erreichbar": "Radar currently unavailable", "Vorhersage · in {n} Min": "Forecast · in {n} min",
+    "Vorhersage nicht erreichbar": "Forecast unavailable",
+    "leichter": "light", "mäßiger": "moderate", "starker": "heavy",
+    "Trocken – kein Regen in Sicht": "Dry – no rain in sight",
+    "Es regnet ({w} Regen) – hält die nächsten 2 Std an": "Raining ({w} rain) – continues for the next 2 h",
+    "Es regnet – hört gegen {t} auf": "Raining – stops around {t}",
+    "{w} Regen ab ca. {t}": "{w} rain from approx. {t}", " bis {t}": " until {t}",
+    "Nullglow Regenradar": "Nullglow Rain Radar", "DWD-Radar mit 2-h-Vorhersage + Regen am Haus": "DWD radar with 2 h forecast + rain at home",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
 
   const R = 6378137, TILE = 256;
   const WMS = "https://maps.dwd.de/geoserver/dwd/wms";
@@ -5149,8 +5449,24 @@ window.__NULLGLOW_THEMES = {
 
   class NullglowRadarCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
-    static _ngForm(schema, labels, helpers = {}) {
-      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
     }
     static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
       try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
@@ -5172,7 +5488,11 @@ window.__NULLGLOW_THEMES = {
             { name: "latitude", selector: { number: { min: -90, max: 90, step: 0.0001, mode: "box" } } },
             { name: "longitude", selector: { number: { min: -180, max: 180, step: 0.0001, mode: "box" } } } ] } ] },
       ], { zoom: "Zoom", height: "Höhe", past: "Vergangenheit", future: "Vorhersage", step: "Minuten je Bild", latitude: "Breite", longitude: "Länge" },
-      { future: "der DWD-Nowcast reicht 2 Stunden", latitude: "leer = Standort aus Home Assistant" });
+      { future: "der DWD-Nowcast reicht 2 Stunden", latitude: "leer = Standort aus Home Assistant" },
+      { "Anderer Ort (optional)": "Other location (optional)", "Zoom": "Zoom", "Höhe": "Height", "Vergangenheit": "Past",
+        "Vorhersage": "Forecast", "Minuten je Bild": "Minutes per frame", "Breite": "Latitude", "Länge": "Longitude",
+        "der DWD-Nowcast reicht 2 Stunden": "the DWD nowcast covers 2 hours",
+        "leer = Standort aus Home Assistant": "empty = location from Home Assistant" });
     }
     static async getStubConfig() {
       return { zoom: 8, past: 90, future: 120, step: 10, height: 430 };
@@ -5189,15 +5509,15 @@ window.__NULLGLOW_THEMES = {
       card.innerHTML = `
         <div class="map" style="height:${this._cfg.height}px">
           <div class="tiles"></div><canvas class="rain"></canvas><div class="shade"></div><div class="home"></div>
-          <div class="badge"><b>–</b><span>Regenradar</span></div>
-          <div class="ctrl"><button data-a="in" title="Näher">+</button><button data-a="out" title="Weiter weg">−</button>
-            <button data-a="play" title="Abspielen/Anhalten"><ha-icon icon="mdi:pause"></ha-icon></button></div>
-          <div class="legend">leicht <i></i> stark</div><div class="status">lädt …</div>
+          <div class="badge"><b>–</b><span>${t("Regenradar")}</span></div>
+          <div class="ctrl"><button data-a="in" title="${t("Näher")}">+</button><button data-a="out" title="${t("Weiter weg")}">−</button>
+            <button data-a="play" title="${t("Abspielen/Anhalten")}"><ha-icon icon="mdi:pause"></ha-icon></button></div>
+          <div class="legend">${t("leicht")} <i></i> ${t("stark")}</div><div class="status">${t("lädt …")}</div>
         </div>
         <div class="timeline"></div>
-        <div class="tl-lbl"><span style="left:0">vor ${this._cfg.past} Min</span><b>jetzt</b><span style="right:0">+${this._cfg.future / 60} Std Vorhersage</span></div>
-        <div class="soon"><div><div class="sub">Am Haus · nächste 2 Std</div><div class="sum">–</div></div><div class="bars"></div></div>
-        <div class="attr">Radar &amp; Vorhersage: Deutscher Wetterdienst · Niederschlag am Haus: Open-Meteo (ICON-D2) · Karte © OpenStreetMap-Mitwirkende</div>`;
+        <div class="tl-lbl"><span style="left:0">${t("vor {n} Min", { n: this._cfg.past })}</span><b>${t("jetzt")}</b><span style="right:0">${t("+{n} Std Vorhersage", { n: this._cfg.future / 60 })}</span></div>
+        <div class="soon"><div><div class="sub">${t("Am Haus · nächste 2 Std")}</div><div class="sum">–</div></div><div class="bars"></div></div>
+        <div class="attr">${t("Radar &amp; Vorhersage: Deutscher Wetterdienst · Niederschlag am Haus: Open-Meteo (ICON-D2) · Karte © OpenStreetMap-Mitwirkende")}</div>`;
       root.appendChild(card);
       this._el = {
         map: card.querySelector(".map"), tiles: card.querySelector(".tiles"), canvas: card.querySelector("canvas.rain"),
@@ -5219,7 +5539,7 @@ window.__NULLGLOW_THEMES = {
       this._frames = []; this._cache = new Map(); this._idx = 0; this._playing = true; this._visible = false;
     }
 
-    set hass(h) { this._hass = h; if (!this._center) this._initCenter(); }
+    set hass(h) { ngH = h; this._hass = h; if (!this._center) this._initCenter(); }
     _initCenter() {
       const h = this._hass;
       const lat = this._cfg.latitude ?? h?.config?.latitude, lon = this._cfg.longitude ?? h?.config?.longitude;
@@ -5329,7 +5649,7 @@ window.__NULLGLOW_THEMES = {
       const frames = list.map((t, i) => ({ t, fc: i > nowIdx, now: i === nowIdx, img: null, miss: false }));
       this._frames = frames; this._nowIdx = nowIdx; this._idx = nowIdx;   // Start bei „jetzt“, dann Vorhersage, dann Schleife
       this._renderTimeline();
-      this._el.status.textContent = "lädt …";
+      this._el.status.textContent = t("lädt …");
       this._rain();
       // „Jetzt“ zuerst, dann der Rest (max. 4 gleichzeitig)
       const order = [nowIdx, ...frames.map((_, i) => i).filter((i) => i !== nowIdx)];
@@ -5341,12 +5661,12 @@ window.__NULLGLOW_THEMES = {
           if (gen !== this._gen) return;
           frames[i].img = cv; frames[i].miss = !cv; done++;
           if (i === nowIdx || !this._drawn) this._show(this._playing ? this._idx : nowIdx, true);
-          this._el.status.textContent = done < frames.length ? `lädt ${done}/${frames.length}` : "";
+          this._el.status.textContent = done < frames.length ? t("lädt {a}/{b}", { a: done, b: frames.length }) : "";
           this._renderTimeline();
         }
       };
       await Promise.all([worker(), worker(), worker(), worker()]);
-      if (gen === this._gen && frames.every((f) => f.miss)) this._el.status.textContent = "Radar derzeit nicht erreichbar";
+      if (gen === this._gen && frames.every((f) => f.miss)) this._el.status.textContent = t("Radar derzeit nicht erreichbar");
     }
 
     _renderTimeline() {
@@ -5374,7 +5694,7 @@ window.__NULLGLOW_THEMES = {
       const d = new Date(fr.t), mins = Math.round((fr.t - Date.now()) / 60000);
       this._el.badge.className = `badge ${fr.fc ? "fc" : ""} ${fr.now ? "now" : ""}`;
       this._el.badge.querySelector("b").textContent = hhmm(d);
-      this._el.badge.querySelector("span").textContent = fr.now ? "jetzt" : fr.fc ? `Vorhersage · in ${mins} Min` : `vor ${-mins} Min`;
+      this._el.badge.querySelector("span").textContent = fr.now ? t("jetzt") : fr.fc ? t("Vorhersage · in {n} Min", { n: mins }) : t("vor {n} Min", { n: -mins });
       const spans = this._el.tl.children;
       for (let k = 0; k < spans.length; k++) spans[k].classList.toggle("cur", k === i);
     }
@@ -5416,22 +5736,22 @@ window.__NULLGLOW_THEMES = {
         const slots = times.slice(s, s + 8).map((t, i) => ({ t: new Date(t), mm: Math.max(0, vals[s + i] || 0) }));
         this._rainAt = Date.now();
         this._renderRain(slots);
-      } catch (e) { this._el.sum.textContent = "Vorhersage nicht erreichbar"; }
+      } catch (e) { this._el.sum.textContent = t("Vorhersage nicht erreichbar"); }
     }
 
     _renderRain(slots) {
       const wet = (x) => x.mm >= 0.05;
       const i0 = slots.findIndex(wet);
       const peak = Math.max(...slots.map((x) => x.mm * 4));
-      const word = peak < 2.5 ? "leichter" : peak < 10 ? "mäßiger" : "starker";
+      const word = t(peak < 2.5 ? "leichter" : peak < 10 ? "mäßiger" : "starker");
       let txt;
-      if (i0 < 0) txt = "Trocken – kein Regen in Sicht";
+      if (i0 < 0) txt = t("Trocken – kein Regen in Sicht");
       else if (i0 === 0) {
         const e = slots.findIndex((x, k) => k > 0 && !wet(x));
-        txt = e < 0 ? `Es regnet (${word} Regen) – hält die nächsten 2 Std an` : `Es regnet – hört gegen ${hhmm(slots[e].t)} auf`;
+        txt = e < 0 ? t("Es regnet ({w} Regen) – hält die nächsten 2 Std an", { w: word }) : t("Es regnet – hört gegen {t} auf", { t: hhmm(slots[e].t) });
       } else {
         const e = slots.findIndex((x, k) => k > i0 && !wet(x));
-        txt = `${word[0].toUpperCase() + word.slice(1)} Regen ab ca. ${hhmm(slots[i0].t)}` + (e > 0 ? ` bis ${hhmm(slots[e].t)}` : "");
+        txt = t("{w} Regen ab ca. {t}", { w: word[0].toUpperCase() + word.slice(1), t: hhmm(slots[i0].t) }) + (e > 0 ? t(" bis {t}", { t: hhmm(slots[e].t) }) : "");
       }
       this._el.sum.textContent = txt;
       this._el.bars.innerHTML = slots.map((x, k) => {
@@ -5447,12 +5767,30 @@ window.__NULLGLOW_THEMES = {
 
   customElements.define("nullglow-radar-card", NullglowRadarCard);
   window.customCards = window.customCards || [];
-  window.customCards.push({ type: "nullglow-radar-card", name: "Nullglow Regenradar", description: "DWD-Radar mit 2-h-Vorhersage + Regen am Haus" });
+  window.customCards.push({ type: "nullglow-radar-card", name: t("Nullglow Regenradar"), description: t("DWD-Radar mit 2-h-Vorhersage + Regen am Haus") });
 })();
 
 // ───── nullglow-mower-map-card.js ─────
 (() => {
   if (customElements.get("nullglow-mower-map-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "nullglow-mower-map-card: camera angeben": "nullglow-mower-map-card: specify camera",
+    "Karte lädt …": "Loading map …",
+    "Karte nicht erreichbar": "Map unavailable",
+    "Garten": "Garden",
+    "Rasen": "Lawn",
+    "Rasen {a}": "Lawn {a}",
+    "gemäht": "mowed",
+    "Sperrzone": "No-go zone",
+    "VisionFence aus": "VisionFence off",
+    "Station": "Station",
+    "Nullglow Gartenkarte": "Nullglow Garden Map",
+    "Karte des Mähroboters (navimow_pro) im Nullglow-Look": "Robot mower map (navimow_pro) in the Nullglow look",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
   let ACC = "#7cffb2", ACC2 = "#2be38f";   // Akzent des aktiven Designs, in _render() aus dem Theme gelesen
   let DANGER = "#ff6b6b", INFO = "#6be3ff", DIMV = "#93a79d", BG = "#05070a";   // SVG-Attribute: in _render() aus dem Theme gelesen
   const TXT = "var(--ng-txt, #e8f5ee)", DIM = "var(--ng-txt-dim, #93a79d)";       // CSS
@@ -5485,8 +5823,24 @@ window.__NULLGLOW_THEMES = {
 
   class NullglowMowerMapCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
-    static _ngForm(schema, labels, helpers = {}) {
-      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
     }
     static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
       try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
@@ -5502,7 +5856,10 @@ window.__NULLGLOW_THEMES = {
         { name: "coverage", selector: { entity: { filter: { domain: "sensor" } } } },
         { name: "height", selector: { number: { min: 200, max: 900, step: 10, mode: "box", unit_of_measurement: "px" } } },
       ], { camera: "Karte (Kamera der Mäher-Integration)", mower: "Mäher", coverage: "Fortschritt (optional)", height: "Höhe" },
-      { camera: "SVG-Karte, z. B. von navimow_pro", mower: "Zustand bestimmt Takt und Puls beim Mähen" });
+      { camera: "SVG-Karte, z. B. von navimow_pro", mower: "Zustand bestimmt Takt und Puls beim Mähen" },
+      { "Karte (Kamera der Mäher-Integration)": "Map (camera of the mower integration)", "Mäher": "Mower",
+        "Fortschritt (optional)": "Progress (optional)", "Höhe": "Height", "SVG-Karte, z. B. von navimow_pro": "SVG map, e.g. from navimow_pro",
+        "Zustand bestimmt Takt und Puls beim Mähen": "state sets refresh rate and pulse while mowing" });
     }
     static async getStubConfig(hass) {
       const m = this._ngFind(hass, (id) => id.startsWith("lawn_mower."))[0];
@@ -5513,18 +5870,18 @@ window.__NULLGLOW_THEMES = {
     }
     // ── Editor Ende ──
     setConfig(config) {
-      if (!config?.camera) throw new Error("nullglow-mower-map-card: camera angeben");
+      if (!config?.camera) throw new Error(t("nullglow-mower-map-card: camera angeben"));
       this._cfg = { height: 470, ...config };
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
       this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
       card.className = "card";
-      card.innerHTML = `<div class="map" style="height:${this._cfg.height}px"><div class="empty">Karte lädt …</div></div>
-        <div class="chip"><b>–</b><span>Garten</span></div>
-        <div class="legend"><span><i style="background:rgba(var(--rgb-ng-acc, 124, 255, 178),.35);box-shadow:inset 0 0 0 1px var(--ng-acc, #7cffb2)"></i>Rasen</span>
-          <span><i style="background:rgba(255,107,107,.3);box-shadow:inset 0 0 0 1px var(--ng-danger, #ff6b6b)"></i>Sperrzone</span>
-          <span><i style="background:rgba(107,227,255,.25);box-shadow:inset 0 0 0 1px var(--ng-info, #6be3ff)"></i>VisionFence aus</span>
-          <span><i style="background:var(--ng-bg, #05070a);box-shadow:inset 0 0 0 1px ${DIM}"></i>Station</span></div>`;
+      card.innerHTML = `<div class="map" style="height:${this._cfg.height}px"><div class="empty">${t("Karte lädt …")}</div></div>
+        <div class="chip"><b>–</b><span>${t("Garten")}</span></div>
+        <div class="legend"><span><i style="background:rgba(var(--rgb-ng-acc, 124, 255, 178),.35);box-shadow:inset 0 0 0 1px var(--ng-acc, #7cffb2)"></i>${t("Rasen")}</span>
+          <span><i style="background:rgba(255,107,107,.3);box-shadow:inset 0 0 0 1px var(--ng-danger, #ff6b6b)"></i>${t("Sperrzone")}</span>
+          <span><i style="background:rgba(107,227,255,.25);box-shadow:inset 0 0 0 1px var(--ng-info, #6be3ff)"></i>${t("VisionFence aus")}</span>
+          <span><i style="background:var(--ng-bg, #05070a);box-shadow:inset 0 0 0 1px ${DIM}"></i>${t("Station")}</span></div>`;
       this.shadowRoot.appendChild(card);
       this._map = card.querySelector(".map");
       this._chip = card.querySelector(".chip");
@@ -5536,7 +5893,7 @@ window.__NULLGLOW_THEMES = {
     }
 
     set hass(h) {
-      this._hass = h;
+      this._hass = h; ngH = h;
       const m = this._cfg.mower && h.states[this._cfg.mower];
       const active = !!m && ACTIVE.includes(m.state);
       if (active !== this._active) { this._active = active; this._schedule(); }
@@ -5564,12 +5921,12 @@ window.__NULLGLOW_THEMES = {
     _renderChip() {
       const h = this._hass, cov = this._cfg.coverage && h.states[this._cfg.coverage];
       const m = this._cfg.mower && h.states[this._cfg.mower];
-      const zone = m?.attributes?.current_zone || h.states[this._cfg.zone]?.state || "Garten";
+      const zone = m?.attributes?.current_zone || h.states[this._cfg.zone]?.state || t("Garten");
       const a = cov?.attributes || {};
       const pct = cov && isFinite(parseFloat(cov.state)) ? Math.round(parseFloat(cov.state)) : null;
       const area = isFinite(a.total_area) ? `${Math.round(a.total_area)} m²` : "";
       this._chip.querySelector("b").textContent = pct != null ? `${zone} · ${pct} %` : zone;
-      this._chip.querySelector("span").textContent = [area && `Rasen ${area}`, pct != null ? "gemäht" : ""].filter(Boolean).join(" · ") || "Garten";
+      this._chip.querySelector("span").textContent = [area && t("Rasen {a}", { a: area }), pct != null ? t("gemäht") : ""].filter(Boolean).join(" · ") || t("Garten");
     }
 
     async _fetch() {
@@ -5583,7 +5940,7 @@ window.__NULLGLOW_THEMES = {
         if (txt !== this._last) { this._last = txt; this._render(txt); }
         this._loadedOnce = true;
       } catch (e) {
-        if (!this._loadedOnce) this._map.innerHTML = `<div class="empty">Karte nicht erreichbar</div>`;
+        if (!this._loadedOnce) this._map.innerHTML = `<div class="empty">${t("Karte nicht erreichbar")}</div>`;
       } finally { this._busy = false; }
     }
 
@@ -5681,14 +6038,38 @@ window.__NULLGLOW_THEMES = {
 
   customElements.define("nullglow-mower-map-card", NullglowMowerMapCard);
   window.customCards = window.customCards || [];
-  window.customCards.push({ type: "nullglow-mower-map-card", name: "Nullglow Gartenkarte", description: "Karte des Mähroboters (navimow_pro) im Nullglow-Look" });
+  window.customCards.push({ type: "nullglow-mower-map-card", name: t("Nullglow Gartenkarte"), description: t("Karte des Mähroboters (navimow_pro) im Nullglow-Look") });
 })();
 
 // ───── nullglow-mower-stats-card.js ─────
 (() => {
   if (customElements.get("nullglow-mower-stats-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "nullglow-mower-stats-card: device angeben": "nullglow-mower-stats-card: specify device",
+    "Fortschritt": "Progress",
+    "Letzte Fahrt": "Last session",
+    "Diese Woche": "This week",
+    "Rasenfläche": "Lawn area",
+    "{u} von {i} Std · Wechsel in ca. {r} Std": "{u} of {i} h · replace in approx. {r} h",
+    "Verschleiß": "Wear",
+    "Messer": "Blades",
+    "Fahrwerk": "Chassis",
+    "WLAN": "Wi-Fi",
+    "Störung": "Fault",
+    "Keine Fehler": "No errors",
+    "Nächstes Mähen {x}": "Next mow {x}",
+    "Kein Termin geplant": "Nothing scheduled",
+    "Mähplan aus": "Schedule off",
+    "Nullglow Mäher-Statistik": "Nullglow Mower Stats",
+    "Fortschritt, Flächen, Verschleiß, Status (navimow_pro)": "Progress, areas, wear, status (navimow_pro)",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
   const BAD = ["unavailable", "unknown", ""];
-  const n = (v, d = 1) => Number(v).toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const n = (v, d = 1) => Number(v).toLocaleString(numLoc(), { minimumFractionDigits: d, maximumFractionDigits: d });
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
   const STYLE = `
@@ -5728,8 +6109,24 @@ window.__NULLGLOW_THEMES = {
 
   class NullglowMowerStatsCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
-    static _ngForm(schema, labels, helpers = {}) {
-      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
     }
     static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
       try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
@@ -5740,7 +6137,9 @@ window.__NULLGLOW_THEMES = {
 
     static getConfigForm() {
       return this._ngForm([{ name: "device", required: true, selector: { text: {} } }],
-        { device: "Gerät (Präfix der Entitäten)" }, { device: "z. B. mein_maeher für lawn_mower.mein_maeher, sensor.mein_maeher_battery …" });
+        { device: "Gerät (Präfix der Entitäten)" }, { device: "z. B. mein_maeher für lawn_mower.mein_maeher, sensor.mein_maeher_battery …" },
+        { "Gerät (Präfix der Entitäten)": "Device (entity prefix)",
+          "z. B. mein_maeher für lawn_mower.mein_maeher, sensor.mein_maeher_battery …": "e.g. my_mower for lawn_mower.my_mower, sensor.my_mower_battery …" });
     }
     static async getStubConfig(hass) {
       const m = this._ngFind(hass, (id) => id.startsWith("lawn_mower."))[0];
@@ -5748,7 +6147,7 @@ window.__NULLGLOW_THEMES = {
     }
     // ── Editor Ende ──
     setConfig(config) {
-      if (!config?.device) throw new Error("nullglow-mower-stats-card: device angeben");
+      if (!config?.device) throw new Error(t("nullglow-mower-stats-card: device angeben"));
       this._cfg = config;
       const d = config.device;
       this._e = {
@@ -5774,9 +6173,9 @@ window.__NULLGLOW_THEMES = {
     }
 
     set hass(h) {
-      this._hass = h;
+      this._hass = h; ngH = h;
       const E = this._e, S = (id) => h.states[id];
-      const key = Object.values(E).map((id) => { const s = S(id); return s ? s.state + (s.attributes.runtime_minutes ?? "") : "-"; }).join("|");
+      const key = Object.values(E).map((id) => { const s = S(id); return s ? s.state + (s.attributes.runtime_minutes ?? "") : "-"; }).join("|") + ngLang();
       if (key === this._key) return;
       this._key = key;
       const num = (id) => { const s = S(id); const v = s && !BAD.includes(s.state) ? parseFloat(s.state) : NaN; return isFinite(v) ? v : null; };
@@ -5788,31 +6187,31 @@ window.__NULLGLOW_THEMES = {
           <circle cx="48" cy="48" r="40" fill="none" style="stroke:rgba(var(--rgb-ng-txt, 255, 255, 255), .07)" stroke-width="8"/>
           <circle cx="48" cy="48" r="40" fill="none" stroke-width="8" stroke-linecap="round"
             stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" style="stroke: var(--ng-acc, #7cffb2); filter:drop-shadow(0 0 6px rgba(var(--rgb-ng-acc, 124, 255, 178), calc(.6 * var(--ng-glow-k, 1))))"/></svg>
-        <div class="v"><div><b>${pr != null ? Math.round(pr) + " %" : "–"}</b><small>${esc(zone && zone !== "unknown" ? zone : "Fortschritt")}</small></div></div></div>`;
+        <div class="v"><div><b>${pr != null ? Math.round(pr) + " %" : "–"}</b><small>${esc(zone && zone !== "unknown" ? zone : t("Fortschritt"))}</small></div></div></div>`;
       const area = (lbl, id, d = 1) => { const v = num(id); return `<div class="a" data-entity="${id}"><span>${lbl}</span><b>${v != null ? n(v, d) : "–"}<small>m²</small></b></div>`; };
-      const areas = `<div class="areas">${area("Letzte Fahrt", E.session)}${area("Diese Woche", E.week)}${area("Rasenfläche", E.total)}</div>`;
+      const areas = `<div class="areas">${area(t("Letzte Fahrt"), E.session)}${area(t("Diese Woche"), E.week)}${area(t("Rasenfläche"), E.total)}</div>`;
 
       // Verschleiß
       const wearRow = (lbl, id) => {
         const s = S(id), v = num(id);
         const col = v == null ? "rgba(var(--rgb-ng-txt, 255, 255, 255), .2)" : v < 20 ? "var(--ng-danger, #ff6b6b)" : v < 40 ? "var(--ng-warn, #ffd166)" : "var(--ng-acc, #7cffb2)";
         const a = s?.attributes || {}, used = isFinite(a.runtime_minutes) ? a.runtime_minutes / 60 : null, iv = a.reminder_interval_hours;
-        const hint = used != null && iv ? `${n(used, 0)} von ${iv} Std · Wechsel in ca. ${n(Math.max(0, iv - used), 0)} Std` : "";
+        const hint = used != null && iv ? t("{u} von {i} Std · Wechsel in ca. {r} Std", { u: n(used, 0), i: iv, r: n(Math.max(0, iv - used), 0) }) : "";
         return `<div class="w" data-entity="${id}"><span>${lbl}</span><div class="track"><div class="fill" style="width:${v ?? 0}%;background:${col};box-shadow:0 0 10px ${col}"></div></div>
           <b>${v != null ? Math.round(v) + " %" : "–"}</b>${hint ? `<em>${hint}</em>` : ""}</div>`;
       };
-      const wear = `<div class="sec">Verschleiß</div><div class="wear">${wearRow("Messer", E.blades)}${wearRow("Fahrwerk", E.chassis)}</div>`;
+      const wear = `<div class="sec">${t("Verschleiß")}</div><div class="wear">${wearRow(t("Messer"), E.blades)}${wearRow(t("Fahrwerk"), E.chassis)}</div>`;
 
       // Chips
       const on = S(E.online)?.state === "on", prob = S(E.problem)?.state === "on";
       const err = S(E.error)?.state;
       const wifi = num(E.wifi), next = S(E.next), sched = S(E.schedule);
-      const nextTxt = next && !BAD.includes(next.state) ? new Date(next.state).toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : null;
+      const nextTxt = next && !BAD.includes(next.state) ? new Date(next.state).toLocaleString(numLoc(), { weekday: "short", hour: "2-digit", minute: "2-digit" }) : null;
       const chips = `<div class="chips">
         <span class="chip ${on ? "ok" : "bad"}" data-entity="${E.online}"><i></i>${on ? "Online" : "Offline"}</span>
-        <span class="chip" data-entity="${E.wifi}"><ha-icon icon="mdi:wifi"></ha-icon>WLAN ${wifi != null ? wifi : "–"}</span>
-        <span class="chip ${prob ? "bad" : "ok"}" data-entity="${E.error}"><i></i>${prob ? esc(err && err !== "No errors" ? err : "Störung") : "Keine Fehler"}</span>
-        <span class="chip" data-entity="${nextTxt ? E.next : E.schedule}"><ha-icon icon="mdi:calendar-clock"></ha-icon>${nextTxt ? "Nächstes Mähen " + esc(nextTxt) : sched?.state === "on" ? "Kein Termin geplant" : "Mähplan aus"}</span>
+        <span class="chip" data-entity="${E.wifi}"><ha-icon icon="mdi:wifi"></ha-icon>${t("WLAN")} ${wifi != null ? wifi : "–"}</span>
+        <span class="chip ${prob ? "bad" : "ok"}" data-entity="${E.error}"><i></i>${prob ? esc(err && err !== "No errors" ? err : t("Störung")) : t("Keine Fehler")}</span>
+        <span class="chip" data-entity="${nextTxt ? E.next : E.schedule}"><ha-icon icon="mdi:calendar-clock"></ha-icon>${nextTxt ? t("Nächstes Mähen {x}", { x: esc(nextTxt) }) : sched?.state === "on" ? t("Kein Termin geplant") : t("Mähplan aus")}</span>
       </div>`;
       this._card.innerHTML = `<div class="top">${ring}${areas}</div>${wear}${chips}`;
     }
@@ -5823,7 +6222,7 @@ window.__NULLGLOW_THEMES = {
 
   customElements.define("nullglow-mower-stats-card", NullglowMowerStatsCard);
   window.customCards = window.customCards || [];
-  window.customCards.push({ type: "nullglow-mower-stats-card", name: "Nullglow Mäher-Statistik", description: "Fortschritt, Flächen, Verschleiß, Status (navimow_pro)" });
+  window.customCards.push({ type: "nullglow-mower-stats-card", name: t("Nullglow Mäher-Statistik"), description: t("Fortschritt, Flächen, Verschleiß, Status (navimow_pro)") });
 })();
 
 // ───── nullglow-ambient.js ─────
@@ -6134,6 +6533,18 @@ window.__NULLGLOW_THEMES = {
 // ───── nullglow-covers-card.js ─────
 (() => {
   if (customElements.get("nullglow-covers-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "nullglow-covers-card: entities angeben": "nullglow-covers-card: entities required", "Rollläden": "Blinds",
+    "Alle auf": "Open all", "Stopp": "Stop", "Alle zu": "Close all", "Auf": "Open", "Zu": "Close", "Wirklich?": "Sure?",
+    "{n} zu": "{n} closed", "{n} offen": "{n} open", "{n} fährt": "{n} moving", "{n} fahren": "{n} moving",
+    "{n} nicht erreichbar": "{n} unavailable", "Nullglow Rollläden": "Nullglow Blinds",
+    "Viele Rollläden als eine Kachel: Zustand, Balken je Rollladen, Alle auf/zu": "Many blinds as one tile: state, one bar per blind, open/close all",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const STYLE = `
     :host { display: block; height: 100%; container: ngcov / inline-size; }
@@ -6173,8 +6584,24 @@ window.__NULLGLOW_THEMES = {
 
   class NullglowCoversCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
-    static _ngForm(schema, labels, helpers = {}) {
-      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
     }
     static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
       try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
@@ -6189,15 +6616,18 @@ window.__NULLGLOW_THEMES = {
         { type: "grid", name: "", schema: [{ name: "title", selector: { text: {} } }, { name: "icon", selector: { icon: {} } }] },
         { name: "tap", selector: { text: {} } },
       ], { entities: "Rollläden", title: "Titel", icon: "Symbol", tap: "Antippen öffnet" },
-      { entities: "Reihenfolge = Reihenfolge der Balken", tap: "z. B. #rolllaeden für ein Bubble-Pop-up (optional)" });
+      { entities: "Reihenfolge = Reihenfolge der Balken", tap: "z. B. #rolllaeden für ein Bubble-Pop-up (optional)" },
+      { "Rollläden": "Blinds", "Titel": "Title", "Symbol": "Icon", "Antippen öffnet": "Tap opens",
+        "Reihenfolge = Reihenfolge der Balken": "order = order of the bars",
+        "z. B. #rolllaeden für ein Bubble-Pop-up (optional)": "e.g. #blinds for a Bubble pop-up (optional)" });
     }
     static async getStubConfig(hass) {
-      return { entities: this._ngFind(hass, (id) => id.startsWith("cover.")).slice(0, 12), title: "Rollläden" };
+      return { entities: this._ngFind(hass, (id) => id.startsWith("cover.")).slice(0, 12), title: this._ngEn() ? "Blinds" : "Rollläden" };
     }
     // ── Editor Ende ──
     setConfig(config) {
-      if (!config?.entities?.length) throw new Error("nullglow-covers-card: entities angeben");
-      this._cfg = { title: "Rollläden", icon: "mdi:window-shutter", ...config };
+      if (!config?.entities?.length) throw new Error(t("nullglow-covers-card: entities angeben"));
+      this._cfg = { title: t("Rollläden"), icon: "mdi:window-shutter", ...config };
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
       card.className = `card ${this._cfg.tap ? "tap" : ""}`;
@@ -6206,9 +6636,9 @@ window.__NULLGLOW_THEMES = {
         <div class="mid"><b>${esc(this._cfg.title)}</b><span class="sum">–</span></div>
         <div class="bars">${this._cfg.entities.map(() => "<i></i>").join("")}</div>
         <div class="btns">
-          <button data-s="open_cover" title="Alle auf"><ha-icon icon="mdi:arrow-up"></ha-icon><span class="lbl">Auf</span></button>
-          <button data-s="stop_cover" title="Stopp"><ha-icon icon="mdi:stop"></ha-icon></button>
-          <button data-s="close_cover" title="Alle zu"><ha-icon icon="mdi:arrow-down"></ha-icon><span class="lbl">Zu</span></button>
+          <button data-s="open_cover" title="${t("Alle auf")}"><ha-icon icon="mdi:arrow-up"></ha-icon><span class="lbl">${t("Auf")}</span></button>
+          <button data-s="stop_cover" title="${t("Stopp")}"><ha-icon icon="mdi:stop"></ha-icon></button>
+          <button data-s="close_cover" title="${t("Alle zu")}"><ha-icon icon="mdi:arrow-down"></ha-icon><span class="lbl">${t("Zu")}</span></button>
         </div>`;
       this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
       this.shadowRoot.appendChild(card);
@@ -6220,6 +6650,7 @@ window.__NULLGLOW_THEMES = {
     }
 
     set hass(h) {
+      ngH = h;
       this._hass = h;
       const vals = this._cfg.entities.map((id) => {
         const s = h.states[id];
@@ -6227,13 +6658,13 @@ window.__NULLGLOW_THEMES = {
         const p = s.attributes.current_position;
         return { p: typeof p === "number" ? p : s.state === "closed" ? 0 : 100, mv: ["opening", "closing"].includes(s.state) };
       });
-      const key = JSON.stringify(vals);
+      const key = JSON.stringify(vals) + ngLang();
       if (key === this._key) return;
       this._key = key;
       const ok = vals.filter(Boolean), open = ok.filter((v) => v.p > 0).length, mv = ok.filter((v) => v.mv).length;
-      const parts = [`${ok.length - open} zu`, `${open} offen`];
-      if (mv) parts.push(`${mv} ${mv === 1 ? "fährt" : "fahren"}`);
-      if (ok.length < vals.length) parts.push(`${vals.length - ok.length} nicht erreichbar`);
+      const parts = [t("{n} zu", { n: ok.length - open }), t("{n} offen", { n: open })];
+      if (mv) parts.push(t(mv === 1 ? "{n} fährt" : "{n} fahren", { n: mv }));
+      if (ok.length < vals.length) parts.push(t("{n} nicht erreichbar", { n: vals.length - ok.length }));
       this._card.querySelector(".sum").textContent = parts.join(" · ");
       this._card.querySelector(".ic").classList.toggle("open", open > 0);
       vals.forEach((v, i) => {
@@ -6250,14 +6681,14 @@ window.__NULLGLOW_THEMES = {
         this._card.querySelectorAll("button.arm").forEach((x) => x.classList.remove("arm"));
         b.classList.add("arm");
         const lbl = b.querySelector(".lbl"), old = lbl.textContent;
-        lbl.textContent = "Wirklich?";
+        lbl.textContent = t("Wirklich?");
         clearTimeout(this._armT);
         this._armT = setTimeout(() => { b.classList.remove("arm"); lbl.textContent = old; }, 4000);
         return;
       }
       clearTimeout(this._armT);
       b.classList.remove("arm");
-      const lbl = b.querySelector(".lbl"); if (lbl) lbl.textContent = svc === "open_cover" ? "Auf" : "Zu";
+      const lbl = b.querySelector(".lbl"); if (lbl) lbl.textContent = t(svc === "open_cover" ? "Auf" : "Zu");
       this._hass.callService("cover", svc, { entity_id: this._cfg.entities });
     }
 
@@ -6280,12 +6711,23 @@ window.__NULLGLOW_THEMES = {
 
   customElements.define("nullglow-covers-card", NullglowCoversCard);
   window.customCards = window.customCards || [];
-  window.customCards.push({ type: "nullglow-covers-card", name: "Nullglow Rollläden", description: "Viele Rollläden als eine Kachel: Zustand, Balken je Rollladen, Alle auf/zu" });
+  window.customCards.push({ type: "nullglow-covers-card", name: t("Nullglow Rollläden"), description: t("Viele Rollläden als eine Kachel: Zustand, Balken je Rollladen, Alle auf/zu") });
 })();
 
 // ───── nullglow-contacts-card.js ─────
 (() => {
   if (customElements.get("nullglow-contacts-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "nullglow-contacts-card: entities angeben": "nullglow-contacts-card: entities required", "Fenster & Türen": "Windows & doors",
+    "{n} offen": "{n} open", "Alles zu": "All closed", "{n} nicht erreichbar": "{n} unavailable",
+    "Nullglow Fenster & Türen": "Nullglow Windows & Doors",
+    "Viele Kontakte als eine Kachel: offen/zu, ein Punkt je Kontakt": "Many contacts as one tile: open/closed, one dot per contact",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const STYLE = `
     :host { display: block; height: 100%; }
@@ -6313,8 +6755,24 @@ window.__NULLGLOW_THEMES = {
 
   class NullglowContactsCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
-    static _ngForm(schema, labels, helpers = {}) {
-      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
     }
     static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
       try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
@@ -6330,16 +6788,20 @@ window.__NULLGLOW_THEMES = {
         { name: "tap", selector: { text: {} } },
         { name: "names", selector: { object: {} } },
       ], { entities: "Fenster & Türen", title: "Titel", tap: "Antippen öffnet", names: "Kurznamen (YAML, optional)" },
-      { tap: "z. B. #fenster für ein Bubble-Pop-up (optional)", names: "binary_sensor.fenster_kueche: Küche — für „2 offen · Küche, Bad“" });
+      { tap: "z. B. #fenster für ein Bubble-Pop-up (optional)", names: "binary_sensor.fenster_kueche: Küche — für „2 offen · Küche, Bad“" },
+      { "Fenster & Türen": "Windows & doors", "Titel": "Title", "Antippen öffnet": "Tap opens",
+        "Kurznamen (YAML, optional)": "Short names (YAML, optional)",
+        "z. B. #fenster für ein Bubble-Pop-up (optional)": "e.g. #windows for a Bubble pop-up (optional)",
+        "binary_sensor.fenster_kueche: Küche — für „2 offen · Küche, Bad“": "binary_sensor.kitchen_window: Kitchen — for “2 open · Kitchen, Bath”" });
     }
     static async getStubConfig(hass) {
       return { entities: this._ngFind(hass, (id, a) => id.startsWith("binary_sensor.") && ["window", "door", "opening"].includes(a.device_class)).slice(0, 16),
-        title: "Fenster & Türen" };
+        title: this._ngEn() ? "Windows & doors" : "Fenster & Türen" };
     }
     // ── Editor Ende ──
     setConfig(config) {
-      if (!config?.entities?.length) throw new Error("nullglow-contacts-card: entities angeben");
-      this._cfg = { title: "Fenster & Türen", names: {}, ...config };
+      if (!config?.entities?.length) throw new Error(t("nullglow-contacts-card: entities angeben"));
+      this._cfg = { title: t("Fenster & Türen"), names: {}, ...config };
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
       card.className = `card ${this._cfg.tap ? "tap" : ""}`;
@@ -6355,19 +6817,20 @@ window.__NULLGLOW_THEMES = {
     }
 
     set hass(h) {
+      ngH = h;
       this._hass = h;
       const vals = this._cfg.entities.map((id) => {
         const s = h.states[id];
         return !s || ["unavailable", "unknown"].includes(s.state) ? null : s.state === "on";
       });
-      const key = vals.join(",");
+      const key = vals.join(",") + ngLang();
       if (key === this._key) return;
       this._key = key;
       const open = this._cfg.entities.filter((_, i) => vals[i] === true);
       const na = vals.filter((v) => v === null).length;
       const nm = (id) => this._cfg.names[id] || h.states[id]?.attributes?.friendly_name || id;
-      let sum = open.length ? `${open.length} offen · ${open.slice(0, 3).map(nm).join(", ")}${open.length > 3 ? " …" : ""}` : "Alles zu";
-      if (na) sum += ` · ${na} nicht erreichbar`;
+      let sum = open.length ? `${t("{n} offen", { n: open.length })} · ${open.slice(0, 3).map(nm).join(", ")}${open.length > 3 ? " …" : ""}` : t("Alles zu");
+      if (na) sum += ` · ${t("{n} nicht erreichbar", { n: na })}`;
       this._card.querySelector(".sum").textContent = sum;
       this._card.classList.toggle("open", open.length > 0);
       this._card.querySelector(".ic ha-icon").setAttribute("icon", open.length ? "mdi:window-open-variant" : "mdi:window-closed-variant");
@@ -6396,12 +6859,33 @@ window.__NULLGLOW_THEMES = {
 
   customElements.define("nullglow-contacts-card", NullglowContactsCard);
   window.customCards = window.customCards || [];
-  window.customCards.push({ type: "nullglow-contacts-card", name: "Nullglow Fenster & Türen", description: "Viele Kontakte als eine Kachel: offen/zu, ein Punkt je Kontakt" });
+  window.customCards.push({ type: "nullglow-contacts-card", name: t("Nullglow Fenster & Türen"), description: t("Viele Kontakte als eine Kachel: offen/zu, ein Punkt je Kontakt") });
 })();
 
 // ───── nullglow-design-card.js ─────
 (() => {
   if (customElements.get("nullglow-design-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  // Nur Anzeige übersetzen: die Helfer-Optionen (Dunkel | Hell | Auto) bleiben deutsch und werden deutsch verglichen.
+  const colorWord = (c) => (c ? t(c) : "");   // Farbwort des Design-Titels (lokales t = Theme im Render)
+  const EN = {
+    // Farbwörter der Design-Titel (ng-design-title)
+    "Grün": "Green", "Violett": "Violet", "Türkis": "Teal", "Orange": "Orange", "Gold": "Gold", "Rosé": "Rose",
+    "Blau": "Blue", "Eisblau": "Ice blue", "Limette": "Lime", "Magenta": "Magenta", "Silber": "Silver",
+    "Indigo": "Indigo", "Sand": "Sand", "Mint": "Mint",
+    "Dunkel": "Dark", "Hell": "Light", "Sonne": "Sun", "Gerät": "Device", "Auto": "Auto",
+    "dunkel": "dark", "hell": "light", "nach Sonne": "by sun", "wie Gerät": "like device",
+    "Gilt nur für dieses Gerät · Standard: {d}, {m}": "Applies to this device only · Default: {d}, {m}",
+    "Antippen wechselt sofort — auf allen Geräten, die dieses Dashboard zeigen{x}.": "Tap to switch instantly — on all devices showing this dashboard{x}.",
+    " · Auto: hell, solange die Sonne scheint": " · Auto: light while the sun is up",
+    "{e} fehlt — Helfer anlegen und „Eingabeauswahl-Entitäten“ neu laden.": "{e} missing — create the helper and reload “Input select entities”.",
+    "Standard": "Default", "Glas": "Glass", "klar": "clear", "milchig": "frosted", "Glas-Deckkraft": "Glass opacity",
+    "Design-Auswahl (Farbvarianten)": "Design picker (color variants)",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
   const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const STYLE = `
     :host { display: block; }
@@ -6453,8 +6937,24 @@ window.__NULLGLOW_THEMES = {
 
   class NullglowDesignCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
-    static _ngForm(schema, labels, helpers = {}) {
-      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
     }
     static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
       try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
@@ -6478,7 +6978,14 @@ window.__NULLGLOW_THEMES = {
       ], { storage: "Wahl speichern", dashboard: "Dashboard", default_design: "Standard-Design", default_mode: "Standard Hell/Dunkel",
         entity: "Design-Helfer", mode_entity: "Hell/Dunkel-Helfer" },
       { dashboard: "Adresse, z. B. /nullglow — leer = dieses Dashboard", default_design: "z. B. nullglow, halcyon, emberglow",
-        entity: "Optionen = Theme-Namen", mode_entity: "Optionen Dunkel | Hell | Auto" });
+        entity: "Optionen = Theme-Namen", mode_entity: "Optionen Dunkel | Hell | Auto" },
+      { "Nur dieses Gerät (Browser)": "This device only (browser)", "Für alle Geräte (input_select-Helfer)": "All devices (input_select helper)",
+        "Wie Gerät": "Like device", "Dunkel": "Dark", "Hell": "Light", "Nach Sonne": "By sun",
+        "Helfer (nur „Für alle Geräte“)": "Helpers (only “All devices”)", "Wahl speichern": "Save choice", "Dashboard": "Dashboard",
+        "Standard-Design": "Default design", "Standard Hell/Dunkel": "Default light/dark", "Design-Helfer": "Design helper",
+        "Hell/Dunkel-Helfer": "Light/dark helper", "Adresse, z. B. /nullglow — leer = dieses Dashboard": "Path, e.g. /nullglow — empty = this dashboard",
+        "z. B. nullglow, halcyon, emberglow": "e.g. nullglow, halcyon, emberglow", "Optionen = Theme-Namen": "Options = theme names",
+        "Optionen Dunkel | Hell | Auto": "Options Dunkel | Hell | Auto" });
     }
     static async getStubConfig() {
       return { storage: "local", dashboard: "/" + (location.pathname.split("/")[1] || "lovelace"), default_design: "nullglow", default_mode: "auto" };
@@ -6493,11 +7000,12 @@ window.__NULLGLOW_THEMES = {
     }
 
     set hass(h) {
+      ngH = h;
       this._hass = h;
       if (this._drag) return;   // Regler wird gerade gezogen -> nicht neu aufbauen
       const st = h.states[this._cfg.entity], md = h.states[this._cfg.mode_entity], gl = h.states[this._cfg.glass_entity];
       const src = this._local ? JSON.stringify(readLocal(this._lkey)) : st ? `${st.state}|${(st.attributes.options || []).join(",")}|${md?.state}|${gl?.state}` : "-";
-      const key = `${src}|${Object.keys(h.themes?.themes || {}).length}|${h.themes?.darkMode}`;
+      const key = `${src}|${Object.keys(h.themes?.themes || {}).length}|${h.themes?.darkMode}|${ngLang()}`;
       if (key !== this._key) { this._key = key; this._render(); }
     }
 
@@ -6525,7 +7033,7 @@ window.__NULLGLOW_THEMES = {
         };
         const dT = String(this._theme(defD)?.["ng-design-title"] || defD).split(" — ")[0];
         return { design: p.design || defD, mode: p.mode || defM, options, modes: LOCAL_MODES,
-          hint: `Gilt nur für dieses Gerät · Standard: ${dT}, ${MODE_NAME[defM] || defM}`,
+          hint: t("Gilt nur für dieses Gerät · Standard: {d}, {m}", { d: dT, m: MODE_NAME[defM] ? t(MODE_NAME[defM]) : defM }),
           custom: !!(p.design || p.mode || p.glass),
           glass: +p.glass || 1, setGlass: (k) => save({ glass: Math.abs(k - 1) < 0.001 ? "" : k }),
           pickDesign: (o) => save({ design: o === defD ? "" : o }), pickMode: (v) => save({ mode: v === defM ? "" : v }),
@@ -6539,7 +7047,7 @@ window.__NULLGLOW_THEMES = {
       const gl = h.states[c.glass_entity], gk = parseFloat(gl?.state);
       return { design: st.state, mode: cur, options: st.attributes.options || [], modes,
         ...(gl ? { glass: isFinite(gk) ? gk : 1, setGlass: (k) => h.callService("input_number", "set_value", { entity_id: c.glass_entity, value: k }) } : {}),
-        hint: `Antippen wechselt sofort — auf allen Geräten, die dieses Dashboard zeigen${cur.toLowerCase().startsWith("auto") ? " · Auto: hell, solange die Sonne scheint" : ""}.`,
+        hint: t("Antippen wechselt sofort — auf allen Geräten, die dieses Dashboard zeigen{x}.", { x: cur.toLowerCase().startsWith("auto") ? t(" · Auto: hell, solange die Sonne scheint") : "" }),
         pickDesign: (o) => h.callService("input_select", "select_option", { entity_id: c.entity, option: o }),
         pickMode: (v) => h.callService("input_select", "select_option", { entity_id: c.mode_entity, option: v }) };
     }
@@ -6547,7 +7055,7 @@ window.__NULLGLOW_THEMES = {
     _render() {
       const m = this._model();
       if (!m) {
-        this.shadowRoot.innerHTML = `<ha-card><div class="hint" style="padding:16px">${esc(this._cfg.entity)} fehlt — Helfer anlegen und „Eingabeauswahl-Entitäten“ neu laden.</div></ha-card>`;
+        this.shadowRoot.innerHTML = `<ha-card><div class="hint" style="padding:16px">${t("{e} fehlt — Helfer anlegen und „Eingabeauswahl-Entitäten“ neu laden.", { e: esc(this._cfg.entity) })}</div></ha-card>`;
         return;
       }
       const tiles = m.options.map((o) => {
@@ -6560,16 +7068,16 @@ window.__NULLGLOW_THEMES = {
         return `<button class="d" data-o="${esc(o)}" style="background: radial-gradient(120% 120% at 0% 0%, color-mix(in srgb, ${t["ng-acc"]} 18%, transparent), transparent 60%), ${bg}; color: ${t["ng-txt"]}; ${ring}">
           <div class="sw"><i class="main" style="background: linear-gradient(145deg, ${t["ng-acc"]}, ${t["ng-acc-3"] || t["ng-acc-2"]}); box-shadow: 0 0 16px -2px ${t["ng-acc"]};"></i>
             <i style="background: ${t["ng-acc-2"]}"></i><i style="background: ${t["ng-txt-dim"]}"></i></div>
-          <div><b style="font-family: ${esc(t["primary-font-family"] || "inherit")}">${esc(name)}</b><small>${esc(color || "")}</small></div>
+          <div><b style="font-family: ${esc(t["primary-font-family"] || "inherit")}">${esc(name)}</b><small>${esc(colorWord(color))}</small></div>
           ${on ? `<span class="ok" style="background: ${t["ng-acc"]}; color: ${t["ng-acc-ink"]}"><ha-icon icon="mdi:check"></ha-icon></span>` : ""}
         </button>`;
       }).join("");
       const seg = m.modes.length ? `<div class="seg">${m.modes.map(([l, v, i]) =>
-        `<button data-m="${esc(v)}" class="${m.mode === v ? "on" : ""}"><ha-icon icon="${i}"></ha-icon>${esc(l)}</button>`).join("")}</div>` : "";
-      const reset = m.custom ? '<button class="reset"><ha-icon icon="mdi:backup-restore"></ha-icon>Standard</button>' : "";
-      const glass = m.setGlass ? `<div class="glass"><ha-icon icon="mdi:blur"></ha-icon><span class="lbl">Glas</span><span class="end">klar</span>
-        <input type="range" min="${GLASS_MIN}" max="${GLASS_MAX}" step="0.05" value="${m.glass}" aria-label="Glas-Deckkraft">
-        <span class="end">milchig</span><span class="val">${pct(m.glass)}</span>
+        `<button data-m="${esc(v)}" class="${m.mode === v ? "on" : ""}"><ha-icon icon="${i}"></ha-icon>${esc(t(l))}</button>`).join("")}</div>` : "";
+      const reset = m.custom ? `<button class="reset"><ha-icon icon="mdi:backup-restore"></ha-icon>${t("Standard")}</button>` : "";
+      const glass = m.setGlass ? `<div class="glass"><ha-icon icon="mdi:blur"></ha-icon><span class="lbl">${t("Glas")}</span><span class="end">${t("klar")}</span>
+        <input type="range" min="${GLASS_MIN}" max="${GLASS_MAX}" step="0.05" value="${m.glass}" aria-label="${t("Glas-Deckkraft")}">
+        <span class="end">${t("milchig")}</span><span class="val">${pct(m.glass)}</span>
         ${Math.abs(m.glass - 1) > 0.001 ? '<button class="g1">100 %</button>' : ""}</div>` : "";
       this.shadowRoot.innerHTML = `<style>${STYLE}</style><div class="top"><div class="hint">${esc(m.hint)}</div>${seg}${reset}</div>${glass}<div class="grid">${tiles}</div>`;
       const rng = this.shadowRoot.querySelector(".glass input");
@@ -6594,12 +7102,152 @@ window.__NULLGLOW_THEMES = {
 
   customElements.define("nullglow-design-card", NullglowDesignCard);
   window.customCards = window.customCards || [];
-  window.customCards.push({ type: "nullglow-design-card", name: "Nullglow Design", description: "Design-Auswahl (Farbvarianten)" });
+  window.customCards.push({ type: "nullglow-design-card", name: "Nullglow Design", description: t("Design-Auswahl (Farbvarianten)") });
 })();
 
 // ───── nullglow-strategy.js ─────
 (() => {
   if (customElements.get("ll-strategy-dashboard-nullglow")) return;
+
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    // Farbwörter der Design-Titel (ng-design-title)
+    "Grün": "Green", "Violett": "Violet", "Türkis": "Teal", "Orange": "Orange", "Gold": "Gold", "Rosé": "Rose",
+    "Blau": "Blue", "Eisblau": "Ice blue", "Limette": "Lime", "Magenta": "Magenta", "Silber": "Silver",
+    "Indigo": "Indigo", "Sand": "Sand", "Mint": "Mint",
+    // Seiten, Überschriften, Karten
+    "Übersicht": "Overview", "Licht": "Lights", "Klima": "Climate", "Energie": "Energy", "Kameras": "Cameras", "Kamera": "Camera",
+    "Kalender": "Calendar", "Sauger": "Vacuum", "Mäher": "Mower", "Rollläden": "Blinds", "Zuhause": "Home", "Termine": "Agenda",
+    "Uhr & Wetter": "Clock & weather", "Alle": "All", "Als Nächstes": "Up next", "Karte": "Map", "Garten": "Garden",
+    "Verschleiß": "Wear", "Akku": "Battery", "Saugroboter": "Robot vacuum", "Mähroboter": "Robot mower", "Heute": "Today",
+    "Energiefluss": "Energy flow", "Netz": "Grid", "Speicher": "Battery",
+    "Alles aus": "All off", "Wirklich alle Lichter ausschalten?": "Really turn off all lights?", "{{ ns.n }} Lichter an": "{{ ns.n }} lights on",
+    "Batterien & Wartung": "Batteries & maintenance", "Regenradar": "Rain radar", "Es hat geklingelt": "Someone's at the door",
+    "Fenster & Türen": "Windows & doors", "Alle Fenster & Türen": "All windows & doors", "Alle Rollläden": "All blinds",
+    "Weitere": "Other", "Rollladen": "Blind", "{n} · alle": "{n} · all", "Klimaanlage": "Air conditioning", "Heizung": "Heating",
+    "Auf": "Up", "Stopp": "Stop", "Zu": "Down",
+    " an": " on", " · aus": " · off",
+    "offen": "open", "zu": "closed", "nicht erreichbar": "unavailable",
+    "NETZ": "GRID", "EINSPEISUNG": "EXPORT", "BEZUG": "IMPORT", "lädt ": "charging ", "entlädt ": "discharging ", "bereit": "idle",
+    "SOLAR · HEUTE": "SOLAR · TODAY", "PROGNOSE": "FORECAST", "MORGEN": "TOMORROW",
+    "Montag": "Monday", "Dienstag": "Tuesday", "Mittwoch": "Wednesday", "Donnerstag": "Thursday", "Freitag": "Friday",
+    "Samstag": "Saturday", "Sonntag": "Sunday",
+    "Januar": "January", "Februar": "February", "März": "March", "April": "April", "Mai": "May", "Juni": "June", "Juli": "July",
+    "August": "August", "September": "September", "Oktober": "October", "November": "November", "Dezember": "December",
+    "Gute Nacht": "Good night", "Guten Morgen": "Good morning", "Hallo": "Hello", "Guten Abend": "Good evening",
+    "Dunkles Glas-Dashboard mit Energiefluss, Licht, Klima, Kameras — richtet sich aus deinen Bereichen selbst ein":
+      "Dark glass dashboard with energy flow, lights, climate, cameras — sets itself up from your areas",
+    // Assistent: Voraussetzungen
+    "Pop-ups (Rollläden, Räume, Regenradar …) öffnen sich sonst nicht": "otherwise pop-ups (blinds, rooms, rain radar …) won't open",
+    "Wandmonitor ohne Kopfzeile": "wall display without header",
+    "Nullglow einrichten.": "Set up Nullglow.",
+    "Das Dashboard baut sich aus deinen Bereichen, Geräten und dem Energie-Dashboard selbst — hier nur noch anpassen. Neue Geräte erscheinen später automatisch.":
+      "The dashboard builds itself from your areas, devices and the energy dashboard — you only fine-tune it here. New devices show up automatically later.",
+    "1 · Voraussetzungen (HACS)": "1 · Requirements (HACS)", "{n} fehlt": "{n} missing", "{n} zu alt": "{n} too old", "alles da": "all set",
+    " — mindestens {min} nötig: {why}": " — at least {min} required: {why}",
+    "(Version nicht erkannt — mindestens {min} nötig)": "(version not detected — at least {min} required)",
+    "In HACS aktualisieren": "Update in HACS", "In HACS öffnen": "Open in HACS",
+    "Nach der {x} in HACS die Seite neu laden (Strg+F5, in der Handy-App den App-Cache leeren).":
+      "After the {x} in HACS, reload the page (Ctrl+F5; in the mobile app, clear the app cache).",
+    "Aktualisierung": "update", "Installation": "installation",
+    // Assistent: Seiten
+    "Uhr, Wetter, Energie, Licht, Klima, Rollläden, Personen, Termine": "Clock, weather, energy, lights, climate, blinds, people, agenda",
+    "{n} Lampen": "{n} lights", "{n} Räume mit Temperatur": "{n} rooms with temperature",
+    "aus dem Energie-Dashboard": "from the energy dashboard", "kein Solar/Netz gefunden": "no solar/grid found",
+    "{n} Kameras": "{n} cameras", "{n} Kalender": "{n} calendars", "{n} Saugroboter": "{n} robot vacuums", "kein Saugroboter": "no robot vacuum",
+    "{n} Mähroboter": "{n} robot mowers", "kein Mähroboter": "no robot mower",
+    "2 · Seiten": "2 · Pages", "{n} aktiv": "{n} active",
+    // Assistent: Übersicht anordnen
+    "3 · Übersicht anordnen": "3 · Arrange overview", "angepasst": "customized", "Standard": "Default",
+    "Reihenfolge der Gruppen auf der Übersicht (Pfeile, von links oben nach rechts unten; passt eine kleine Gruppe in eine Lücke davor, rückt sie dort hinein), Auge = ein-/ausblenden, Auswahl = Breite in Spalten. Mehr Breite = größere Kameras. Am Handy steht ohnehin alles untereinander.":
+      "Order of the groups on the overview (arrows, from top left to bottom right; if a small group fits into a gap before it, it moves up there), eye = show/hide, dropdown = width in columns. More width = bigger cameras. On a phone everything is stacked anyway.",
+    "1 Spalte": "1 column", "2 Spalten": "2 columns", "3 Spalten": "3 columns", "ganze Breite": "full width",
+    "Kameras nebeneinander": "Cameras side by side", "{n} je Reihe": "{n} per row", "Breite": "Width",
+    "anzeigen": "show", "ausblenden": "hide",
+    "Kameras auf der Übersicht: unter <b>6 · … Kameras</b> „Live-Kameras auf der Übersicht“ wählen — dann erscheinen sie hier zum Anordnen.":
+      "Cameras on the overview: pick them under <b>6 · … Cameras</b> “Live cameras on the overview” — then they show up here to arrange.",
+    "Standard wiederherstellen": "Restore default",
+    // Assistent: Räume
+    "4 · Räume, Rollläden & Fenster": "4 · Rooms, blinds & windows", "{n} von {m}": "{n} of {m}",
+    "Mit Label ausblenden": "Hide by label",
+    "Entitäten, Geräte oder ganze Bereiche mit diesem Label erscheinen nicht (z. B. no_dboard)":
+      "Entities, devices or whole areas with this label are left out (e.g. no_dboard)",
+    "Namen kürzen": "Shorten names",
+    "Etage und Raum vorne im Namen weglassen („EG - Küche - Rollladen links“ → „Küche · links“)":
+      "Drop floor and room at the start of names (“GF - Kitchen - Blind left” → “Kitchen · left”)",
+    "Rollläden auf der Übersicht ({n})": "Blinds on the overview ({n})",
+    "Zusammengefasst = eine Kachel mit Alle auf/zu, Antippen öffnet alle nach Etage":
+      "Combined = one tile with all up/down, tapping opens all of them by floor",
+    "Automatisch (ab 7 zusammengefasst)": "Automatic (combined from 7)", "Einzeln": "Individually", "Zusammengefasst": "Combined",
+    "Licht-Kachel auf der Übersicht antippen": "Tapping a light tile on the overview",
+    "Pop-up = alle Lampen des Raums einzeln (dimmen, Farbe, Szenen); Halten schaltet dann den Raum an/aus":
+      "Pop-up = every light in the room individually (dim, color, scenes); holding then toggles the room",
+    "Licht an/aus (Standard)": "Toggle lights (default)", "Pop-up mit den Lampen des Raums": "Pop-up with the room's lights",
+    "Temperatur-Verlauf in den Klima-Kacheln": "Temperature history in the climate tiles",
+    "zeigt die letzten 24 Stunden als Linie hinter der Kachel (farbig nach Temperatur)":
+      "shows the last 24 hours as a line behind the tile (colored by temperature)",
+    "Fenster & Türen auf der Übersicht ({n})": "Windows & doors on the overview ({n})",
+    "Zusammengefasst = eine Kachel „Alles zu“ / „2 offen · …“, Antippen zeigt alle nach Etage":
+      "Combined = one tile “All closed” / “2 open · …”, tapping shows all of them by floor",
+    "Nicht anzeigen": "Don't show",
+    "Keine Bereiche gefunden. Lege sie unter <b>Einstellungen → Bereiche, Zonen &amp; Etagen</b> an und ordne deine Geräte zu — dann erscheinen hier die Räume.":
+      "No areas found. Create them under <b>Settings → Areas, labels &amp; zones</b> and assign your devices — then the rooms show up here.",
+    "Aus deinen HA-Bereichen. Auge = anzeigen, Pfeile = Reihenfolge, Raum antippen = Name, Symbol, Hauptlicht, Temperatur ändern.":
+      "From your HA areas. Eye = show, arrows = order, tap a room = change name, icon, main light, temperature.",
+    "{n} Licht": "{n} light", "{n} Lichter": "{n} lights", " · {n} Heizung/Klima": " · {n} × heating/climate",
+    " · {n} Rollladen": " · {n} × blind", " · {n} Fenster/Tür": " · {n} × window/door",
+    "Name": "Name", "Symbol": "Icon", "Hauptlicht (Kachel auf der Übersicht)": "Main light (tile on the overview)",
+    "leer = automatisch: {x}": "empty = automatic: {x}", "Knopf schaltet alle Lampen des Raums": "button toggles all lights in the room",
+    "keiner": "none", "Temperatur-Sensor": "Temperature sensor", "Luftfeuchte-Sensor": "Humidity sensor",
+    // Assistent: Energie
+    "5 · Energie": "5 · Energy", "automatisch": "automatic", "nicht gefunden": "not found",
+    "Leer lassen = automatisch aus dem Energie-Dashboard. Hier kannst du Punkte zuweisen und benennen — wie in der Energie-Karte.":
+      "Leave empty = automatic from the energy dashboard. Here you can assign and name the points — as in the energy card.",
+    // Assistent: Design, Wetter, Personen, Kameras, Kalender
+    "aktiv: {e} → {c} — beim Klingeln öffnet sich die Kamera groß (2 Min, auf jeder Seite)":
+      "active: {e} → {c} — when the doorbell rings, the camera opens full size (2 min, on every page)",
+    "keine Klingel oder Kamera gefunden — unten wählen": "no doorbell or camera found — pick them below",
+    "beim Klingeln öffnet sich die Kamera groß auf jeder Seite (2 Min){x}": "when the doorbell rings, the camera opens full size on every page (2 min){x}",
+    " — erkannt: {e}": " — detected: {e}",
+    "6 · Design, Wetter, Personen, Kameras, Kalender": "6 · Design, weather, people, cameras, calendars",
+    "Wetter": "Weather", "leer = {x}": "empty = {x}", "keins gefunden": "none found", "Personen": "People", "leer = alle": "empty = all",
+    "Karte mit Personen auf der Übersicht": "Map with people on the overview",
+    "zeigt, wo alle gerade sind (Standort aus der HA-App) — unter den Personen im Bereich Zuhause":
+      "shows where everyone is right now (location from the HA app) — below the people in the Home group",
+    "Karte in den Design-Farben": "Map in the design colors", "aus = normale Kartenfarben": "off = normal map colors",
+    "Live-Kameras auf der Übersicht (optional)": "Live cameras on the overview (optional)",
+    "eine oder mehrere; Stream nur, solange die Übersicht offen ist — Größe und Platz unter „3 · Übersicht anordnen“":
+      "one or more; streams only while the overview is open — size and position under “3 · Arrange overview”",
+    "Klingel: Kamera groß anzeigen": "Doorbell: show camera full size", "Klingel-Sensor": "Doorbell sensor",
+    "keiner gefunden": "none found", "Kamera für das Klingel-Fenster": "Camera for the doorbell window", "keine gefunden": "none found",
+    "Kameras-Seite live": "Cameras page live",
+    "aus = Standbild, das sich alle paar Sekunden erneuert (Antippen = live)": "off = still image refreshed every few seconds (tap = live)",
+    "Steckdose des Wandmonitors (optional)": "Wall display power plug (optional)",
+    "ist sie aus, pausiert das Nordlicht im Hintergrund": "when it is off, the aurora background pauses",
+    "Titel des Dashboards": "Dashboard title",
+    "Standard-Farbvariante — auf jedem Gerät per Uhr antippen umstellbar": "default color variant — tap the clock on any device to change it there",
+    "Hell / Dunkel": "Light / dark", "jedes Design gibt es hell und dunkel": "every design comes in light and dark",
+    "Wie Gerät / HA-Profil": "Like device / HA profile", "Immer dunkel": "Always dark", "Immer hell": "Always light",
+    "Nach Sonne (tagsüber hell)": "By the sun (light during the day)",
+    // Assistent: Tipps
+    "7 · Handy & Wandmonitor": "7 · Phone & wall display",
+    "<b>Handy:</b> läuft in der HA-App, Seiten unten per Leiste wechseln (wischbar).": "<b>Phone:</b> runs in the HA app, switch pages with the bar at the bottom (swipeable).",
+    "<b>Wandmonitor (Full HD):</b> Dashboard-Adresse mit <code>?kiosk</code> öffnen (braucht Kiosk Mode) — ohne Kopfzeile und Seitenleiste. Bei 1920×1080 mit 125 % Zoom sieht es aus wie im Original. Hochkant geht auch (die Leiste zeigt dann nur Symbole).":
+      "<b>Wall display (Full HD):</b> open the dashboard URL with <code>?kiosk</code> (needs Kiosk Mode) — no header and no sidebar. At 1920×1080 with 125 % zoom it looks like the original. Portrait works too (the bar then shows icons only).",
+    "<b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist.":
+      "<b>Tap the clock:</b> design and light/dark for this device only — the default stays what is set here.",
+    "<b>Livebilder am Wandmonitor:</b> Browser-Cache begrenzen, z. B. Chromium mit <code>--disk-cache-size=67108864</code> (64 MB) starten.":
+      "<b>Live video on the wall display:</b> limit the browser cache, e.g. start Chromium with <code>--disk-cache-size=67108864</code> (64 MB).",
+    "Ändern kannst du alles später über <b>Dashboard bearbeiten</b>; „Kontrolle übernehmen“ macht daraus ein normales, frei bearbeitbares Dashboard (dann ohne automatische Aktualisierung).":
+      "You can change everything later via <b>Edit dashboard</b>; “Take control” turns it into a normal, freely editable dashboard (then without automatic updates).",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (generate/Editor setzen es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
+  // Jinja: Dezimalkomma bzw. deutsche Tausenderpunkte nur auf Deutsch (Englisch behält Punkt/Komma von Python)
+  const dec = () => (ngLang() === "de" ? " | replace('.', ',')" : "");
+  const kSep = () => (ngLang() === "de" ? ".replace(',', 'X').replace('.', ',').replace('X', '.')" : "");
 
   // ---------- Hilfen ----------
   const WARM = "255,196,130";
@@ -6655,7 +7303,7 @@ window.__NULLGLOW_THEMES = {
     return x;
   };
   const technical = (n) => /^[\w.-]+$/.test(n) && /[-_]/.test(n); // „buro-room-hue-scene“ o. ä.
-  const num1 = (id) => `{% set x = states('${id}') %}{{ ('%.1f' | format(x | float)) | replace('.', ',') if is_number(x) else '–' }}`;
+  const num1 = (id) => `{% set x = states('${id}') %}{{ ('%.1f' | format(x | float))${dec()} if is_number(x) else '–' }}`;
   const tempColor = (id) => `{% set t = states('${id}') | float(none) %}{{ 'grey' if t is none else 'blue' if t < 19.5 else ('grey' if t < 22.5 else ('amber' if t < 25 else 'red')) }}`;
 
   // ---------- Was gibt es in diesem Haus? ----------
@@ -6790,7 +7438,7 @@ window.__NULLGLOW_THEMES = {
       styles: [
         `.bubble-button-card-container { border-radius: 20px !important; \${${cnt} ? 'box-shadow: inset 0 0 0 1px rgba(${WARM},.5), 0 0 30px -10px rgba(${WARM},.7) !important; background: rgba(${WARM},.12) !important;' : 'box-shadow: inset 0 0 0 1px var(--ng-line) !important;'} }`,
         `.bubble-icon { \${${cnt} ? 'color: rgb(${WARM}) !important;' : ''} }`,
-        `.bubble-name::after { content: '\${(() => { const n = ${cnt}; return n ? ' · ' + n + ' an' : ' · aus'; })()}'; opacity: .6; font-weight: 400; }`,
+        `.bubble-name::after { content: '\${(() => { const n = ${cnt}; return n ? ' · ' + n + '${t(" an")}' : '${t(" · aus")}'; })()}'; opacity: .6; font-weight: 400; }`,
       ].join("\n") + "\n",
     };
   }
@@ -6806,9 +7454,9 @@ window.__NULLGLOW_THEMES = {
       button_action: { tap_action: { action: "more-info" }, hold_action: { action: "more-info" } },
       tap_action: { action: "more-info" }, hold_action: { action: "more-info" },
       sub_button: [
-        { icon: "mdi:arrow-up", name: "Auf", show_background: true, tap_action: act("open_cover") },
-        { icon: "mdi:stop", name: "Stopp", show_background: true, tap_action: act("stop_cover") },
-        { icon: "mdi:arrow-down", name: "Zu", show_background: true, tap_action: act("close_cover") },
+        { icon: "mdi:arrow-up", name: t("Auf"), show_background: true, tap_action: act("open_cover") },
+        { icon: "mdi:stop", name: t("Stopp"), show_background: true, tap_action: act("stop_cover") },
+        { icon: "mdi:arrow-down", name: t("Zu"), show_background: true, tap_action: act("close_cover") },
       ],
       grid_options: { columns, rows: 1 },
       styles: [
@@ -6852,7 +7500,7 @@ window.__NULLGLOW_THEMES = {
   // Raumtemperatur groß + 24-h-Verlauf
   function roomTempCard(room, tap, big = 34) {
     const t = room.temperature;
-    const temp = t ? num1(t) : `{% set x = state_attr('${room.climate[0]}', 'current_temperature') %}{{ ('%.1f' | format(x | float)) | replace('.', ',') if is_number(x) else '–' }}`;
+    const temp = t ? num1(t) : `{% set x = state_attr('${room.climate[0]}', 'current_temperature') %}{{ ('%.1f' | format(x | float))${dec()} if is_number(x) else '–' }}`;
     const hum = room.humidity ? ` · {% set x = states('${room.humidity}') %}{{ ('%.0f' | format(x | float)) if is_number(x) else '–' }} %` : "";
     const inner = {
       type: "custom:mushroom-template-card",
@@ -6869,7 +7517,7 @@ window.__NULLGLOW_THEMES = {
     const a = hass.states[eid]?.attributes || {};
     const ac = isAc(hass, eid);
     return {
-      type: "custom:mushroom-climate-card", entity: eid, name: ac ? "Klimaanlage" : "Heizung", icon: ac ? "mdi:fan" : "mdi:radiator",
+      type: "custom:mushroom-climate-card", entity: eid, name: ac ? t("Klimaanlage") : t("Heizung"), icon: ac ? "mdi:fan" : "mdi:radiator",
       show_temperature_control: true, collapsible_controls: true, hvac_modes: a.hvac_modes || [],
       grid_options: { columns: "full" },
       card_mod: { style: { ".": `ha-card { --ng-state: {% set a = state_attr(config.entity, 'hvac_action') %}{{ 'heat' if a == 'heating' else ('cool' if a in ['cooling', 'drying', 'fan'] else 'off') }};${ac
@@ -6901,13 +7549,15 @@ window.__NULLGLOW_THEMES = {
   const heading = (text, icon, nav) => ({ type: "heading", heading: text, icon, ...(nav ? { tap_action: { action: "navigate", navigation_path: nav } } : {}) });
 
   function clockCard(tap) {
+    const jl = (a) => `[${a.map((x) => `'${t(x)}'`).join(",")}]`;   // Jinja-Liste, übersetzt
     return {
       type: "custom:mushroom-template-card",
       primary: "{{ now().strftime('%H:%M') }}",
-      secondary: "{%- set tage = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'] -%}\n"
-        + "{%- set monate = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'] -%}\n"
+      secondary: `{%- set tage = ${jl(["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"])} -%}\n`
+        + `{%- set monate = ${jl(["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"])} -%}\n`
         + "{%- set h = now().hour -%}\n"
-        + "{{ tage[now().weekday()] }} · {{ now().day }}. {{ monate[now().month - 1] }} · {{ 'Gute Nacht' if h < 5 else ('Guten Morgen' if h < 11 else ('Hallo' if h < 18 else 'Guten Abend')) }}",
+        + `{{ tage[now().weekday()] }} · ${ngLang() === "de" ? "{{ now().day }}. {{ monate[now().month - 1] }}" : "{{ monate[now().month - 1] }} {{ now().day }}"}`
+        + ` · {{ '${t("Gute Nacht")}' if h < 5 else ('${t("Guten Morgen")}' if h < 11 else ('${t("Hallo")}' if h < 18 else '${t("Guten Abend")}')) }}`,
       tap_action: tap ? { action: "navigate", navigation_path: tap } : { action: "none" }, grid_options: { columns: "full", rows: "auto" },
       card_mod: { style: `ha-card { background: none !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
 ha-card::before, ha-card::after { display: none !important; }
@@ -6930,7 +7580,7 @@ ha-tile-info {
   function calendarPro(ids, days, nav) {
     return {
       type: "custom:calendar-card-pro", entities: ids.map((e) => ({ entity: e, accent_color: "var(--ng-acc)" })),
-      language: "de", time_24h: true, show_location: false, show_end_time: false, filter_duplicates: true,
+      language: ngLang(), time_24h: true, show_location: false, show_end_time: false, filter_duplicates: true,
       background_color: "transparent", accent_color: "var(--ng-acc)", vertical_line_width: "2px", day_spacing: "4px", event_spacing: "2px",
       weekday_font_size: "11px", weekday_color: "var(--ng-txt-dim)", day_font_size: "20px", day_color: "var(--ng-txt)",
       month_font_size: "10px", month_color: "var(--ng-txt-mute)", today_weekday_color: "var(--ng-acc)", today_day_color: "var(--ng-acc)",
@@ -6941,12 +7591,12 @@ ha-tile-info {
     };
   }
 
-  const LIGHTS_ON = "{%- set ns = namespace(n=0) -%}\n{%- for s in states.light if s.state == 'on' and '_segment_' not in s.entity_id\n"
-    + "     and not s.attributes.get('is_hue_group') and s.attributes.get('entity_id') is none -%}\n{%- set ns.n = ns.n + 1 -%}\n{%- endfor -%}\n{{ ns.n }} Lichter an";
+  const LIGHTS_ON = () => "{%- set ns = namespace(n=0) -%}\n{%- for s in states.light if s.state == 'on' and '_segment_' not in s.entity_id\n"
+    + "     and not s.attributes.get('is_hue_group') and s.attributes.get('entity_id') is none -%}\n{%- set ns.n = ns.n + 1 -%}\n{%- endfor -%}\n" + t("{{ ns.n }} Lichter an");
   const allOff = () => ({
-    type: "custom:mushroom-template-card", primary: "Alles aus", secondary: LIGHTS_ON, icon: "mdi:lightbulb-group-off", icon_color: "red",
+    type: "custom:mushroom-template-card", primary: t("Alles aus"), secondary: LIGHTS_ON(), icon: "mdi:lightbulb-group-off", icon_color: "red",
     tap_action: { action: "perform-action", perform_action: "light.turn_off", target: { entity_id: "all" },
-      confirmation: { text: "Wirklich alle Lichter ausschalten?" } },
+      confirmation: { text: t("Wirklich alle Lichter ausschalten?") } },
     grid_options: { columns: 6 },
   });
 
@@ -6998,7 +7648,7 @@ ha-tile-info {
         + ".card-content { container: ngnav / inline-size; }\n"
         + `@container ngnav (max-width: ${views.length * 132}px) { .bubble-name { display: none !important; } }\n` };
     views.forEach((v, i) => {
-      nav[`${i + 1}_name`] = v.title; nav[`${i + 1}_icon`] = v.icon; nav[`${i + 1}_link`] = `${base}/${v.key}`;
+      nav[`${i + 1}_name`] = t(v.title); nav[`${i + 1}_icon`] = v.icon; nav[`${i + 1}_link`] = `${base}/${v.key}`;
     });
     return { type: "grid", column_span: 4, cards: [nav, ...extra] };
   }
@@ -7007,9 +7657,9 @@ ha-tile-info {
     const cards = [];
     if (room.temperature || room.climate.length) cards.push(roomTempCard(room, null, 30));
     room.climate.forEach((c) => cards.push(climateCard(c, hass)));
-    if (room.light && room.lights.length > 1) cards.push(lightTile(room.light, `${room.name} · alle`, room.icon, null, 12));
+    if (room.light && room.lights.length > 1) cards.push(lightTile(room.light, t("{n} · alle", { n: room.name }), room.icon, null, 12));
     room.lights.forEach((l) => cards.push(lightTile(l, inv.niceName(l, [room.name, room.areaName]), null, null, 12)));
-    room.covers.forEach((c) => cards.push(coverTile(c, inv.niceName(c, [room.name, room.areaName]) || "Rollladen")));
+    room.covers.forEach((c) => cards.push(coverTile(c, inv.niceName(c, [room.name, room.areaName]) || t("Rollladen"))));
     room.contacts.forEach((c, i) => cards.push(contactTile(c, contactName(inv, room, c, i), hass, 6)));
     cards.push(...sceneButtons(room, inv, hass, 6, 12));
     if (!cards.length) return null;
@@ -7023,7 +7673,7 @@ ha-tile-info {
     const groups = new Map();
     inv.shown.filter((r) => r.covers.length).forEach((r) => {
       const k = r.floor ? r.floor.id : "_";
-      if (!groups.has(k)) groups.set(k, { name: r.floor ? r.floor.name : "Weitere", icon: r.floor?.icon, level: r.floor ? r.floor.level : 99, rooms: [] });
+      if (!groups.has(k)) groups.set(k, { name: r.floor ? r.floor.name : t("Weitere"), icon: r.floor?.icon, level: r.floor ? r.floor.level : 99, rooms: [] });
       groups.get(k).rooms.push(r);
     });
     const rank = (l) => (l < 0 ? 100 - l : l);   // EG, OG, DG …, dann Keller
@@ -7031,7 +7681,7 @@ ha-tile-info {
     const cards = [];
     gs.forEach((g) => {
       const ents = g.rooms.flatMap((r) => r.covers);
-      cards.push({ type: "custom:nullglow-covers-card", entities: ents, title: gs.length === 1 ? "Alle Rollläden" : g.name,
+      cards.push({ type: "custom:nullglow-covers-card", entities: ents, title: gs.length === 1 ? t("Alle Rollläden") : g.name,
         icon: g.icon || (g.level < 0 ? "mdi:home-floor-negative-1" : g.level <= 3 ? `mdi:home-floor-${g.level}` : "mdi:home-roof"),
         grid_options: { columns: 12, rows: 2 } });
       const tiles = g.rooms.flatMap((r) => r.covers.map((c, i) => {
@@ -7042,7 +7692,7 @@ ha-tile-info {
       cards.push({ type: "grid", columns: 3, square: false, cards: tiles,
         card_mod: { style: "#root { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; }\n" } });
     });
-    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#rolllaeden", name: "Rollläden", icon: "mdi:window-shutter",
+    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#rolllaeden", name: t("Rollläden"), icon: "mdi:window-shutter",
       width_desktop: "980px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 180000, cards };
   }
 
@@ -7051,7 +7701,7 @@ ha-tile-info {
   function contactTile(eid, name, hass, columns = 6) {
     const door = hass.states[eid]?.attributes?.device_class === "door";
     return { type: "custom:mushroom-template-card", entity: eid, primary: name,
-      secondary: "{{ 'offen' if is_state(entity, 'on') else ('zu' if is_state(entity, 'off') else 'nicht erreichbar') }}",
+      secondary: `{{ '${t("offen")}' if is_state(entity, 'on') else ('${t("zu")}' if is_state(entity, 'off') else '${t("nicht erreichbar")}') }}`,
       icon: door ? "{{ 'mdi:door-open' if is_state(entity, 'on') else 'mdi:door-closed' }}"
         : "{{ 'mdi:window-open-variant' if is_state(entity, 'on') else 'mdi:window-closed-variant' }}",
       icon_color: "{{ 'amber' if is_state(entity, 'on') else 'grey' }}", tap_action: { action: "more-info" },
@@ -7068,7 +7718,7 @@ ha-tile-info {
     const groups = new Map();
     inv.shown.filter((r) => r.contacts.length).forEach((r) => {
       const k = r.floor ? r.floor.id : "_";
-      if (!groups.has(k)) groups.set(k, { name: r.floor ? r.floor.name : "Weitere", level: r.floor ? r.floor.level : 99, rooms: [] });
+      if (!groups.has(k)) groups.set(k, { name: r.floor ? r.floor.name : t("Weitere"), level: r.floor ? r.floor.level : 99, rooms: [] });
       groups.get(k).rooms.push(r);
     });
     const rank = (l) => (l < 0 ? 100 - l : l);
@@ -7076,14 +7726,14 @@ ha-tile-info {
     const cards = [];
     gs.forEach((g) => {
       const ents = g.rooms.flatMap((r) => r.contacts);
-      cards.push({ type: "custom:nullglow-contacts-card", entities: ents, title: gs.length === 1 ? "Alle Fenster & Türen" : g.name,
+      cards.push({ type: "custom:nullglow-contacts-card", entities: ents, title: gs.length === 1 ? t("Alle Fenster & Türen") : g.name,
         names: Object.fromEntries(g.rooms.flatMap((r) => r.contacts.map((c, i) => [c, contactName(inv, r, c, i)]))),
         grid_options: { columns: 12, rows: 2 } });
       cards.push({ type: "grid", columns: 3, square: false,
         cards: g.rooms.flatMap((r) => r.contacts.map((c, i) => contactTile(c, contactName(inv, r, c, i), hass, 4))),
         card_mod: { style: "#root { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; }\n" } });
     });
-    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#fenster", name: "Fenster & Türen", icon: "mdi:window-closed-variant",
+    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#fenster", name: t("Fenster & Türen"), icon: "mdi:window-closed-variant",
       width_desktop: "980px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 180000, cards };
   }
 
@@ -7095,7 +7745,7 @@ ha-tile-info {
   }
 
   function radarPopup() {
-    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#regenradar", name: "Regenradar", icon: "mdi:weather-pouring",
+    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#regenradar", name: t("Regenradar"), icon: "mdi:weather-pouring",
       width_desktop: "1100px", bg_opacity: 92, auto_close: 120000, close_by_clicking_outside: true,
       cards: [{ type: "custom:nullglow-radar-card", zoom: 8, past: 90, future: 120, step: 10, height: 430 }] };
   }
@@ -7122,7 +7772,7 @@ ha-tile-info {
     return event && camera && hass.states[event] && hass.states[camera] ? { event, camera } : null;
   }
   function doorbellPopup(d) {
-    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#klingel", name: "Es hat geklingelt", icon: "mdi:doorbell-video",
+    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#klingel", name: t("Es hat geklingelt"), icon: "mdi:doorbell-video",
       width_desktop: "100%", margin_top_desktop: "0px", bg_opacity: 94, auto_close: 120000, close_by_clicking_outside: true,
       cards: [{ type: "picture-entity", entity: d.camera, camera_view: "live", show_name: false, show_state: false, aspect_ratio: "16:9",
         tap_action: { action: "none" },
@@ -7190,23 +7840,23 @@ ha-tile-info {
     const withDesign = has("nullglow-design-card");
     const top = [clockCard(withDesign ? "#design" : null)];
     if (inv.weather) {
-      top.push({ type: "weather-forecast", entity: inv.weather, name: "Heute", forecast_type: "daily", show_current: true, show_forecast: true,
+      top.push({ type: "weather-forecast", entity: inv.weather, name: t("Heute"), forecast_type: "daily", show_current: true, show_forecast: true,
         tap_action: { action: "navigate", navigation_path: "#regenradar" },
         card_mod: { style: ".state, .name { white-space: normal !important; }\n" } });
       top.push({ type: "custom:nullglow-hourly-card", entity: inv.weather, hours: 8 });
     }
     S.push("uhr", { type: "grid", cards: top });
-    if (energy) S.push("energie", { type: "grid", cards: [heading("Energie", "mdi:lightning-bolt", on.energie ? `${base}/energie` : null),
+    if (energy) S.push("energie", { type: "grid", cards: [heading(t("Energie"), "mdi:lightning-bolt", on.energie ? `${base}/energie` : null),
       { type: "custom:nullglow-flow-card", height: 388, grid_options: { columns: "full" }, ...energy }] });
 
     // Live-Kameras: Größe über die Breite der Gruppe, nebeneinander über cam_cols (beides applyHomeLayout)
     const live = (cfg.live_cameras || []).filter((c) => hass.states[c]);
-    if (live.length) S.push("kameras", { type: "grid", cards: [heading(live.length > 1 ? "Kameras" : "Kamera", "mdi:cctv", on.kameras ? `${base}/kameras` : null),
+    if (live.length) S.push("kameras", { type: "grid", cards: [heading(t(live.length > 1 ? "Kameras" : "Kamera"), "mdi:cctv", on.kameras ? `${base}/kameras` : null),
       ...live.map((c) => camCard(c, true, live.length > 1))] });
 
     const lightRooms = inv.shown.filter((r) => r.lights.length);
     if (lightRooms.length) {
-      const cards = [heading("Licht", "mdi:lightbulb-group", on.licht ? `${base}/licht` : null)];
+      const cards = [heading(t("Licht"), "mdi:lightbulb-group", on.licht ? `${base}/licht` : null)];
       const tapPop = cfg.light_tap === "popup";   // Standard: Antippen schaltet den Raum an/aus
       lightRooms.forEach((r) => cards.push(r.light ? lightTile(r.light, r.name, r.icon, r.hash, 6, tapPop) : roomLightsButton(r, r.hash, 6, tapPop)));
       cards.push(allOff());
@@ -7216,14 +7866,14 @@ ha-tile-info {
     }
     const climRooms = inv.shown.filter((r) => r.temperature || r.climate.length);
     if (climRooms.length) {
-      const cards = [heading("Klima", "mdi:thermometer", on.klima ? `${base}/klima` : null)];
+      const cards = [heading(t("Klima"), "mdi:thermometer", on.klima ? `${base}/klima` : null)];
       // Verlauf 24 h hinter der Kachel (Standard an, climate_graph: false = aus) — nur mit Temperatur-Sensor (Statistik)
       const graph = cfg.climate_graph !== false && has("nullglow-spark-card");
       climRooms.forEach((r) => {
         const t = r.temperature;
         const tile = { type: "custom:mushroom-template-card", entity: t || r.climate[0],
           primary: r.name,
-          secondary: t ? `${num1(t)} °C` : `{% set x = state_attr('${r.climate[0]}', 'current_temperature') %}{{ ('%.1f' | format(x | float)) | replace('.', ',') if is_number(x) else '–' }} °C`,
+          secondary: t ? `${num1(t)} °C` : `{% set x = state_attr('${r.climate[0]}', 'current_temperature') %}{{ ('%.1f' | format(x | float))${dec()} if is_number(x) else '–' }} °C`,
           icon: r.icon, icon_color: t ? tempColor(t) : "grey",
           tap_action: { action: "navigate", navigation_path: r.hash },
           card_mod: { style: `ha-card { --ng-state: ${heatCool(r.climate)}; }\n` } };
@@ -7235,16 +7885,16 @@ ha-tile-info {
     }
     const covers = inv.shown.flatMap((r) => r.covers.map((c, i) => [c, r, i]));
     const compact = covers.length && (cfg.covers === "compact" || (cfg.covers !== "list" && covers.length > 6));
-    if (compact) S.push("rolllaeden", { type: "grid", cards: [heading("Rollläden", "mdi:window-shutter", "#rolllaeden"),
-      { type: "custom:nullglow-covers-card", entities: covers.map(([c]) => c), title: "Alle Rollläden", tap: "#rolllaeden", grid_options: { columns: 12, rows: 2 } }] });
-    else if (covers.length) S.push("rolllaeden", { type: "grid", cards: [heading("Rollläden", "mdi:window-shutter"), ...covers.map(([c, r, i]) => {
+    if (compact) S.push("rolllaeden", { type: "grid", cards: [heading(t("Rollläden"), "mdi:window-shutter", "#rolllaeden"),
+      { type: "custom:nullglow-covers-card", entities: covers.map(([c]) => c), title: t("Alle Rollläden"), tap: "#rolllaeden", grid_options: { columns: 12, rows: 2 } }] });
+    else if (covers.length) S.push("rolllaeden", { type: "grid", cards: [heading(t("Rollläden"), "mdi:window-shutter"), ...covers.map(([c, r, i]) => {
       const n = coverWord(inv.niceName(c, [r.name, r.areaName]), r.name);
       return coverTile(c, r.covers.length === 1 ? r.name : `${r.name} · ${n && n.toLowerCase() !== r.name.toLowerCase() ? n : i + 1}`);
     })] });
     const contacts = cfg.contacts === "off" ? [] : inv.shown.flatMap((r) => r.contacts.map((c, i) => [c, r, i]));
     const cCompact = contacts.length && (cfg.contacts === "compact" || (cfg.contacts !== "list" && contacts.length > 6));
     if (inv.persons.length || inv.locks.length || inv.garages.length || contacts.length) {
-      const cards = [heading("Zuhause", "mdi:home-account")];
+      const cards = [heading(t("Zuhause"), "mdi:home-account")];
       inv.persons.forEach((p) => cards.push({ type: "custom:mushroom-person-card", entity: p, icon_type: "entity-picture", grid_options: { columns: 6 } }));
       // optional (person_map: true): Karte „Wo sind alle?“ — nur Personen mit Standort (GPS aus der HA-App)
       const located = inv.persons.filter((p) => hass.states[p]?.attributes?.latitude != null);
@@ -7260,9 +7910,9 @@ ha-tile-info {
       S.push("zuhause", { type: "grid", cards });
     }
     if (inv.calendars.length && has("calendar-card-pro"))
-      S.push("termine", { type: "grid", cards: [heading("Termine", "mdi:calendar-heart", on.kalender ? `${base}/kalender` : null), calendarPro(inv.calendars, 14, on.kalender ? `${base}/kalender` : null)] });
+      S.push("termine", { type: "grid", cards: [heading(t("Termine"), "mdi:calendar-heart", on.kalender ? `${base}/kalender` : null), calendarPro(inv.calendars, 14, on.kalender ? `${base}/kalender` : null)] });
 
-    const pops = [radarPopup(), { type: "custom:bubble-card", card_type: "pop-up", hash: "#wartung", name: "Batterien & Wartung",
+    const pops = [radarPopup(), { type: "custom:bubble-card", card_type: "pop-up", hash: "#wartung", name: t("Batterien & Wartung"),
       icon: "mdi:battery-heart-variant", width_desktop: "620px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 120000,
       cards: [{ type: "custom:nullglow-care-card", mode: "full", battery: { warn: 30, crit: 15 } }] }];
     inv.shown.forEach((r) => { const p = roomPopup(r, hass, inv); if (p) pops.push(p); });
@@ -7276,7 +7926,7 @@ ha-tile-info {
     const S = [];
     inv.shown.filter((r) => r.lights.length).forEach((r) => {
       const cards = [heading(r.name, r.icon)];
-      if (r.light && r.lights.length > 1) cards.push(lightTile(r.light, `${r.name} · alle`, r.icon, null, 12));
+      if (r.light && r.lights.length > 1) cards.push(lightTile(r.light, t("{n} · alle", { n: r.name }), r.icon, null, 12));
       r.lights.forEach((l) => { // lange Namen bekommen die ganze Breite (Bubble lässt sie sonst durchlaufen)
         const n = inv.niceName(l, [r.name, r.areaName]);
         cards.push(lightTile(l, n, null, null, r.lights.length === 1 || n.length > 13 ? 12 : 6));
@@ -7284,7 +7934,7 @@ ha-tile-info {
       cards.push(...sceneButtons(r, inv, hass, 4, 6));
       S.push({ type: "grid", cards });
     });
-    S.push({ type: "grid", cards: [heading("Alle", "mdi:lightbulb-group"), { ...allOff(), grid_options: { columns: 12 } }] });
+    S.push({ type: "grid", cards: [heading(t("Alle"), "mdi:lightbulb-group"), { ...allOff(), grid_options: { columns: 12 } }] });
     return { sections: S };
   }
 
@@ -7300,17 +7950,17 @@ ha-tile-info {
 
   function viewEnergie(energy, hass) {
     const S = [];
-    S.push({ type: "grid", column_span: 2, cards: [heading("Energiefluss", "mdi:transmission-tower"),
+    S.push({ type: "grid", column_span: 2, cards: [heading(t("Energiefluss"), "mdi:transmission-tower"),
       { type: "custom:nullglow-flow-card", height: 300, grid_options: { columns: "full" }, ...energy }] });
     const grid = list(energy.grid), solar = list(energy.solar), inv = energy.grid_invert ? -1 : 1;
     const sumJ = (ids, k = 1) => ids.map((id) => `states('${id}') | float(0) * ${k * (/^kW$/i.test(hass.states[id]?.attributes?.unit_of_measurement || "") ? 1000 : 1)}`).join(" + ") || "0";
-    const fmtW = "{{ '{:,.0f}'.format(p | abs).replace(',', 'X').replace('.', ',').replace('X', '.') }} W";
+    const fmtW = `{{ '{:,.0f}'.format(p | abs)${kSep()} }} W`;
     if (grid.length) {
       const P = `{% set p = ${sumJ(grid, inv)}${list(energy.grid_export).length ? " - (" + sumJ(list(energy.grid_export)) + ")" : ""} %}`;
-      const cards = [heading(energy.grid_name || "Netz", "mdi:transmission-tower"),
+      const cards = [heading(energy.grid_name || t("Netz"), "mdi:transmission-tower"),
         { type: "custom:nullglow-spark-card", entities: grid, min_span: 500, zero_based: true, grid_options: { columns: "full", rows: 3 },
           card: { type: "custom:mushroom-template-card", primary: `${P}${fmtW}`,
-            secondary: `${P}NETZ · {{ 'EINSPEISUNG' if p < -5 else 'BEZUG' }}`, icon: energy.grid_icon || "mdi:transmission-tower",
+            secondary: `${P}${t("NETZ")} · {{ '${t("EINSPEISUNG")}' if p < -5 else '${t("BEZUG")}' }}`, icon: energy.grid_icon || "mdi:transmission-tower",
             icon_color: `${P}{{ 'green' if p < -5 else ('amber' if p >= ${energy.warn_import || 2000} else 'grey') }}`,
             tap_action: { action: "more-info", entity: grid[0] },
             card_mod: { style: `ha-card { --ng-state: ${P}{{ 'on' if p < -50 else ('warn' if p >= ${energy.warn_import || 2000} else 'off') }}; }\n${TILE_TYPO(34)}` } } }];
@@ -7324,14 +7974,14 @@ ha-tile-info {
       const soc = energy.battery_soc && hass.states[energy.battery_soc] ? energy.battery_soc : null;
       const B = `{% set b = ${sumJ(bat, energy.battery_invert ? -1 : 1)}${bcharge.length ? " - (" + sumJ(bcharge) + ")" : ""} %}`;
       const Sx = soc ? `{% set s = states('${soc}') | float(0) %}` : "{% set s = none %}";
-      const bw = "{{ '{:,.0f}'.format(b | abs).replace(',', 'X').replace('.', ',').replace('X', '.') }} W";
+      const bw = `{{ '{:,.0f}'.format(b | abs)${kSep()} }} W`;
       const icon = energy.battery_icon || `${B}${Sx}{% if s is none %}mdi:home-battery-outline{% else %}{% set l = ((s / 10) | round(0) | int) * 10 %}`
         + "{% if b < -3 %}mdi:battery-charging-{{ [l, 10] | max }}{% elif l >= 100 %}mdi:battery{% elif l <= 0 %}mdi:battery-outline"
         + "{% else %}mdi:battery-{{ l }}{% endif %}{% endif %}";
       // kompakt (eine Kachelreihe) in der Solar-Spalte — ein eigener Abschnitt schöbe die Monatskarte unter die Navigation
       const hero = { type: "custom:mushroom-template-card",
-        primary: soc ? `${Sx}{{ s | round(0) | int }} % · ${energy.battery_name || "Speicher"}` : `${B}${bw}`,
-        secondary: `${B}{{ 'lädt ' if b < -3 else ('entlädt ' if b > 3 else 'bereit') }}{% if b | abs > 3 %}${bw}{% endif %}`,
+        primary: soc ? `${Sx}{{ s | round(0) | int }} % · ${energy.battery_name || t("Speicher")}` : `${B}${bw}`,
+        secondary: `${B}{{ '${t("lädt ")}' if b < -3 else ('${t("entlädt ")}' if b > 3 else '${t("bereit")}') }}{% if b | abs > 3 %}${bw}{% endif %}`,
         icon, icon_color: `${B}${Sx}{{ 'amber' if s is not none and s < 15 else ('green' if b | abs > 3 else 'grey') }}`,
         tap_action: { action: "more-info", entity: soc || bat[0] },
         card_mod: { style: `ha-card { --ng-state: ${B}${Sx}{{ 'warn' if s is not none and s < 15 else ('charge' if b < -3 else ('on' if b > 3 else 'off')) }}; }\n` } };
@@ -7344,17 +7994,17 @@ ha-tile-info {
       const cards = [heading(energy.solar_name || "Solar", "mdi:solar-power-variant"),
         { type: "custom:nullglow-spark-card", entity: solar[0], min_span: 100, zero_based: true, grid_options: { columns: "full", rows: 3 },
           card: { type: "custom:mushroom-template-card", primary: `${P}${fmtW}`,
-            secondary: today.length ? `SOLAR · HEUTE {{ '{:,.1f}'.format(${sumJ(today)}).replace(',', 'X').replace('.', ',').replace('X', '.') }} KWH` : "SOLAR",
+            secondary: today.length ? `${t("SOLAR · HEUTE")} {{ '{:,.1f}'.format(${sumJ(today)})${kSep()} }} KWH` : "SOLAR",
             icon: energy.solar_icon || "mdi:solar-power-variant", icon_color: `${P}{{ 'green' if p > 5 else 'grey' }}`,
             tap_action: { action: "more-info", entity: solar[0] },
             card_mod: { style: `ha-card { --ng-state: ${P}{{ 'on' if p > 5 else 'off' }}; }\n${TILE_TYPO(34)}` } } }];
-      for (const [id, label, icon] of [[energy.forecast?.today, "PROGNOSE", "mdi:weather-sunny"], [energy.forecast?.tomorrow, "MORGEN", "mdi:weather-partly-cloudy"]]) {
-        if (id) cards.push({ type: "custom:mushroom-template-card", entity: id, primary: `{{ '{:,.1f}'.format(states('${id}') | float(0)).replace(',', 'X').replace('.', ',').replace('X', '.') }} kWh`,
+      for (const [id, label, icon] of [[energy.forecast?.today, t("PROGNOSE"), "mdi:weather-sunny"], [energy.forecast?.tomorrow, t("MORGEN"), "mdi:weather-partly-cloudy"]]) {
+        if (id) cards.push({ type: "custom:mushroom-template-card", entity: id, primary: `{{ '{:,.1f}'.format(states('${id}') | float(0))${kSep()} }} kWh`,
           secondary: label, icon, icon_color: "grey", tap_action: { action: "more-info" }, grid_options: { columns: 6 } });
       }
       if (batCard) cards.push(batCard);
       S.push({ type: "grid", cards });
-    } else if (batCard) S.push({ type: "grid", cards: [heading(energy.battery_name || "Speicher", "mdi:home-battery-outline"), batCard] });
+    } else if (batCard) S.push({ type: "grid", cards: [heading(energy.battery_name || t("Speicher"), "mdi:home-battery-outline"), batCard] });
     if (grid.length || solar.length) S.push({ type: "grid", column_span: 2, cards: [{ type: "custom:nullglow-power-card", grid, ...(solar[0] ? { solar: solar[0] } : {}),
       ...(energy.grid_invert ? { grid_invert: true } : {}),
       ...(bat.length ? { battery: bat, ...(energy.battery_invert ? { battery_invert: true } : {}), ...(bcharge.length ? { battery_charge: bcharge } : {}) } : {}),
@@ -7372,7 +8022,7 @@ ha-tile-info {
   function viewKalender(inv) {
     const S = [{ type: "grid", column_span: 3, cards: [{ type: "calendar", entities: inv.calendars, initial_view: "dayGridMonth",
       grid_options: { columns: "full", rows: 9 } }] }];
-    if (has("calendar-card-pro")) S.push({ type: "grid", cards: [heading("Als Nächstes", "mdi:calendar-clock"), calendarPro(inv.calendars, 21)] });
+    if (has("calendar-card-pro")) S.push({ type: "grid", cards: [heading(t("Als Nächstes"), "mdi:calendar-clock"), calendarPro(inv.calendars, 21)] });
     return { sections: S };
   }
 
@@ -7387,21 +8037,21 @@ ha-tile-info {
       grid_options: { columns: "full" } };
   }
   const wearCard = (inv, list, dev) => (list.length ? { type: "custom:nullglow-care-card", mode: "full", show: ["wear"], battery: { exclude: [".*"] },
-    wear: list.map((e) => ({ entity: e, name: inv.niceName(e) })), wear_title: "Verschleiß", grid_options: { columns: "full" } } : null);
+    wear: list.map((e) => ({ entity: e, name: inv.niceName(e) })), wear_title: t("Verschleiß"), grid_options: { columns: "full" } } : null);
 
   function viewSauger(inv, hass) {
     return { sections: inv.vacuums.flatMap((v) => {
       const bat = inv.sameDevice(v, (id) => DOMAIN(id) === "sensor" && hass.states[id].attributes.device_class === "battery")[0];
       const wear = inv.sameDevice(v, (id) => DOMAIN(id) === "sensor" && hass.states[id].attributes.unit_of_measurement === "%"
         && /(_left|_life|remaining)$/.test(id) && !/time/.test(id));
-      const cards = [heading(inv.devName(v) || hass.states[v]?.attributes?.friendly_name || "Saugroboter", "mdi:robot-vacuum"),
+      const cards = [heading(inv.devName(v) || hass.states[v]?.attributes?.friendly_name || t("Saugroboter"), "mdi:robot-vacuum"),
         { type: "custom:mushroom-vacuum-card", entity: v, name: "Status", icon_animation: true,
           commands: ["start_pause", "stop", "locate", "clean_spot", "return_home"], grid_options: { columns: "full" },
           card_mod: { style: "ha-card { --ng-state: {{ 'clean' if is_state(config.entity, 'cleaning') else ('charge' if is_state(config.entity, 'docked') else ('crit' if is_state(config.entity, 'error') else 'off')) }}; }\n" } }];
-      if (bat) cards.push({ type: "tile", entity: bat, name: "Akku", grid_options: { columns: 6 } });
+      if (bat) cards.push({ type: "tile", entity: bat, name: t("Akku"), grid_options: { columns: 6 } });
       const w = wearCard(inv, wear); if (w) cards.push(w);
       const map = robotMap(inv, hass, v);
-      return map ? [{ type: "grid", column_span: 2, cards: [heading("Karte", "mdi:map-outline"), map] }, { type: "grid", column_span: 2, cards }]
+      return map ? [{ type: "grid", column_span: 2, cards: [heading(t("Karte"), "mdi:map-outline"), map] }, { type: "grid", column_span: 2, cards }]
         : [{ type: "grid", column_span: 2, cards }];
     }) };
   }
@@ -7411,13 +8061,13 @@ ha-tile-info {
       const bat = inv.sameDevice(m, (id) => DOMAIN(id) === "sensor" && hass.states[id].attributes.device_class === "battery")[0];
       const wear = inv.sameDevice(m, (id) => DOMAIN(id) === "sensor" && hass.states[id].attributes.unit_of_measurement === "%"
         && /(blade|chassis|_life|_left)/.test(id));
-      const cards = [heading(inv.devName(m) || hass.states[m]?.attributes?.friendly_name || "Mähroboter", "mdi:robot-mower"),
+      const cards = [heading(inv.devName(m) || hass.states[m]?.attributes?.friendly_name || t("Mähroboter"), "mdi:robot-mower"),
         { type: "tile", entity: m, name: "Status", features: [{ type: "lawn-mower-commands", commands: ["start_pause", "dock"] }], grid_options: { columns: "full" },
           card_mod: { style: "ha-card { --ng-state: {{ 'move' if is_state(config.entity, 'mowing') else ('crit' if is_state(config.entity, 'error') else 'off') }}; }\n" } }];
-      if (bat) cards.push({ type: "tile", entity: bat, name: "Akku", grid_options: { columns: 6 } });
+      if (bat) cards.push({ type: "tile", entity: bat, name: t("Akku"), grid_options: { columns: 6 } });
       const w = wearCard(inv, wear); if (w) cards.push(w);
       const map = robotMap(inv, hass, m);
-      return map ? [{ type: "grid", column_span: 2, cards: [heading("Garten", "mdi:map-outline"), map] }, { type: "grid", column_span: 2, cards }]
+      return map ? [{ type: "grid", column_span: 2, cards: [heading(t("Garten"), "mdi:map-outline"), map] }, { type: "grid", column_span: 2, cards }]
         : [{ type: "grid", column_span: 2, cards }];
     }) };
   }
@@ -7426,12 +8076,14 @@ ha-tile-info {
   // Im Weitergabe-Paket liegt das Theme als window.__NULLGLOW_THEME bei (kein separates Theme nötig). Es wird nur in den
   // Browser-Speicher von HA gelegt (hass.themes), nicht auf dem Server — andere Dashboards und das Profil bleiben unberührt.
   // Designs = alle Themes mit „ng-design-title“ (tools/build-themes.py): mitgelieferte + in HA vorhandene
+  // Farbwort im Design-Titel („Nullglow — Grün“) übersetzen — Name bleibt
+  const designTitle = (s) => { const [n, c] = String(s).split(" — "); return c ? `${n} — ${t(c)}` : String(s); };
   function designs(hass) {
     const out = {};
-    const add = (k, t) => { const title = t?.["ng-design-title"] || t?.modes?.dark?.["ng-design-title"]; if (title && !out[k]) out[k] = title; };
-    for (const [k, t] of Object.entries(bundled() || {})) add(k, t);
-    for (const [k, t] of Object.entries(hass?.themes?.themes || {})) add(k, t);
-    if (!Object.keys(out).length) out.nullglow = "Nullglow — Grün";
+    const add = (k, th) => { const title = th?.["ng-design-title"] || th?.modes?.dark?.["ng-design-title"]; if (title && !out[k]) out[k] = designTitle(title); };
+    for (const [k, th] of Object.entries(bundled() || {})) add(k, th);
+    for (const [k, th] of Object.entries(hass?.themes?.themes || {})) add(k, th);
+    if (!Object.keys(out).length) out.nullglow = designTitle("Nullglow — Grün");
     return out;
   }
   const bundled = () => window.__NULLGLOW_THEMES || (window.__NULLGLOW_THEME ? { nullglow: window.__NULLGLOW_THEME } : null);
@@ -7539,6 +8191,7 @@ ha-tile-info {
   // ---------- Strategie ----------
   class NullglowDashboardStrategy extends HTMLElement {
     static async generate(config, hass) {
+      ngH = hass;
       const cfg = config || {};
       const inv = inventory(hass, cfg);
       const energy = await energyCfg(cfg, hass);
@@ -7565,7 +8218,7 @@ ha-tile-info {
         title: cfg.title || "Nullglow",
         views: views.map((v) => {
           const r = build[v.key]();
-          return { title: v.title, path: v.key, icon: v.icon, theme: design, type: "sections", max_columns: 4,
+          return { title: t(v.title), path: v.key, icon: v.icon, theme: design, type: "sections", max_columns: 4,
             dense_section_placement: true, sections: [...r.sections, navSection(views, base, [...(r.extra || []), ...(door ? [doorbellPopup(door)] : [])])] };
         }),
       };
@@ -7660,6 +8313,7 @@ ha-tile-info {
     set hass(h) {
       const first = !this._hass;
       this._hass = h;
+      ngH = h;
       this.shadowRoot.querySelectorAll("ha-form, nullglow-flow-card-editor").forEach((f) => { f.hass = h; });
       if (first) this._build();
     }
@@ -7694,6 +8348,7 @@ ha-tile-info {
 
     async _build() {
       if (!this._config || !this._hass) return;
+      ngH = this._hass;
       const c = this._config, hass = this._hass, root = this.shadowRoot;
       const token = (this._tok = (this._tok || 0) + 1);
       const inv = inventory(hass, c);
@@ -7701,8 +8356,7 @@ ha-tile-info {
         Promise.all(NEEDS.map((n) => (n.file && has(n.tag) ? cardVersion(hass, n.file) : null)))]);
       if (token !== this._tok) return; // inzwischen neu aufgebaut
       const avail = available(inv, energy);
-      root.innerHTML = `<style>${WZ_STYLE}</style><p class="intro"><b>Nullglow einrichten.</b> Das Dashboard baut sich aus deinen
-        Bereichen, Geräten und dem Energie-Dashboard selbst — hier nur noch anpassen. Neue Geräte erscheinen später automatisch.</p>`;
+      root.innerHTML = `<style>${WZ_STYLE}</style><p class="intro"><b>${t("Nullglow einrichten.")}</b> ${t("Das Dashboard baut sich aus deinen Bereichen, Geräten und dem Energie-Dashboard selbst — hier nur noch anpassen. Neue Geräte erscheinen später automatisch.")}</p>`;
 
       // 1. Voraussetzungen
       const state = NEEDS.map((n, i) => {
@@ -7712,31 +8366,31 @@ ha-tile-info {
       const missing = NEEDS.filter((n, i) => n.must && (!state[i].inst || state[i].old));
       const anyOld = state.some((s) => s.old);
       const nMiss = NEEDS.filter((n, i) => n.must && !state[i].inst).length, nOld = state.filter((s) => s.old).length;
-      let box = this._panel("req", "1 · Voraussetzungen (HACS)", "mdi:puzzle-check-outline",
-        [nMiss && `${nMiss} fehlt`, nOld && `${nOld} zu alt`].filter(Boolean).join(" · ") || "alles da");
+      let box = this._panel("req", t("1 · Voraussetzungen (HACS)"), "mdi:puzzle-check-outline",
+        [nMiss && t("{n} fehlt", { n: nMiss }), nOld && t("{n} zu alt", { n: nOld })].filter(Boolean).join(" · ") || t("alles da"));
       if (missing.length) this._open.add("req");
       NEEDS.forEach((n, i) => {
         const { inst, v, old } = state[i], ok = inst && !old;
-        const vtxt = v ? ` <small>v${v.join(".")}${old ? ` — mindestens ${n.min.join(".")} nötig: ${esc(n.why_min)}` : ""}</small>`
-          : inst && n.min ? ` <small>(Version nicht erkannt — mindestens ${n.min.join(".")} nötig)</small>` : "";
+        const vtxt = v ? ` <small>v${v.join(".")}${old ? t(" — mindestens {min} nötig: {why}", { min: n.min.join("."), why: esc(t(n.why_min)) }) : ""}</small>`
+          : inst && n.min ? ` <small>${t("(Version nicht erkannt — mindestens {min} nötig)", { min: n.min.join(".") })}</small>` : "";
         box.insertAdjacentHTML("beforeend", `<div class="req"><ha-icon class="${ok ? "ok" : n.must ? "no" : "opt"}"
           icon="${ok ? "mdi:check-circle" : old ? "mdi:update" : n.must ? "mdi:close-circle" : "mdi:minus-circle-outline"}"></ha-icon>
-          <span class="t">${esc(n.name)}${vtxt}${n.must ? "" : ` <small>(optional: ${esc(n.why)})</small>`}</span>
-          ${ok ? "" : `<a href="${hacsLink(n.repo)}" target="_blank" rel="noreferrer">${old ? "In HACS aktualisieren" : "In HACS öffnen"}</a>`}</div>`);
+          <span class="t">${esc(n.name)}${vtxt}${n.must ? "" : ` <small>(optional: ${esc(t(n.why))})</small>`}</span>
+          ${ok ? "" : `<a href="${hacsLink(n.repo)}" target="_blank" rel="noreferrer">${old ? t("In HACS aktualisieren") : t("In HACS öffnen")}</a>`}</div>`);
       });
-      if (missing.length) box.insertAdjacentHTML("beforeend", `<div class="note">Nach der ${anyOld ? "Aktualisierung" : "Installation"} in HACS die Seite
-        neu laden (Strg+F5, in der Handy-App den App-Cache leeren).</div>`);
+      if (missing.length) box.insertAdjacentHTML("beforeend", `<div class="note">${t("Nach der {x} in HACS die Seite neu laden (Strg+F5, in der Handy-App den App-Cache leeren).",
+        { x: t(anyOld ? "Aktualisierung" : "Installation") })}</div>`);
 
       // 2. Seiten
       const info = {
-        home: "Uhr, Wetter, Energie, Licht, Klima, Rollläden, Personen, Termine",
-        licht: `${inv.lightsAll.length} Lampen`, klima: `${inv.shown.filter((r) => r.temperature || r.climate.length).length} Räume mit Temperatur`,
-        energie: energy ? "aus dem Energie-Dashboard" : "kein Solar/Netz gefunden", kameras: `${inv.cameras.length} Kameras`,
-        kalender: `${inv.calendars.length} Kalender`, sauger: inv.vacuums.length ? `${inv.vacuums.length} Saugroboter` : "kein Saugroboter",
-        maeher: inv.mowers.length ? `${inv.mowers.length} Mähroboter` : "kein Mähroboter",
+        home: t("Uhr, Wetter, Energie, Licht, Klima, Rollläden, Personen, Termine"),
+        licht: t("{n} Lampen", { n: inv.lightsAll.length }), klima: t("{n} Räume mit Temperatur", { n: inv.shown.filter((r) => r.temperature || r.climate.length).length }),
+        energie: energy ? t("aus dem Energie-Dashboard") : t("kein Solar/Netz gefunden"), kameras: t("{n} Kameras", { n: inv.cameras.length }),
+        kalender: t("{n} Kalender", { n: inv.calendars.length }), sauger: inv.vacuums.length ? t("{n} Saugroboter", { n: inv.vacuums.length }) : t("kein Saugroboter"),
+        maeher: inv.mowers.length ? t("{n} Mähroboter", { n: inv.mowers.length }) : t("kein Mähroboter"),
       };
-      box = this._panel("views", "2 · Seiten", "mdi:view-dashboard-outline", `${VIEWS.filter((v) => avail[v.key] && (c.views?.[v.key] ?? true)).length} aktiv`);
-      box.appendChild(this._form(VIEWS.map((v) => ({ name: v.key, label: `${v.title} — ${info[v.key]}`, disabled: !avail[v.key], selector: { boolean: {} } })),
+      box = this._panel("views", t("2 · Seiten"), "mdi:view-dashboard-outline", t("{n} aktiv", { n: VIEWS.filter((v) => avail[v.key] && (c.views?.[v.key] ?? true)).length }));
+      box.appendChild(this._form(VIEWS.map((v) => ({ name: v.key, label: `${t(v.title)} — ${info[v.key]}`, disabled: !avail[v.key], selector: { boolean: {} } })),
         Object.fromEntries(VIEWS.map((v) => [v.key, avail[v.key] && (c.views?.[v.key] ?? true)])), (val) => {
           c.views = Object.fromEntries(VIEWS.filter((v) => avail[v.key] && val[v.key] === false).map((v) => [v.key, false]));
           this._emit();
@@ -7757,21 +8411,19 @@ ha-tile-info {
         if (Object.keys(n).length) c.home_layout = n; else delete c.home_layout;
         this._emit(); this._build();
       };
-      box = this._panel("layout", "3 · Übersicht anordnen", "mdi:view-grid-plus-outline", c.home_layout ? "angepasst" : "Standard");
-      box.insertAdjacentHTML("beforeend", `<div class="note">Reihenfolge der Gruppen auf der Übersicht (Pfeile, von links oben nach rechts unten;
-        passt eine kleine Gruppe in eine Lücke davor, rückt sie dort hinein), Auge = ein-/ausblenden, Auswahl = Breite in Spalten.
-        Mehr Breite = größere Kameras. Am Handy steht ohnehin alles untereinander.</div>`);
-      const WOPT = [[1, "1 Spalte"], [2, "2 Spalten"], [3, "3 Spalten"], [4, "ganze Breite"]];
+      box = this._panel("layout", t("3 · Übersicht anordnen"), "mdi:view-grid-plus-outline", c.home_layout ? t("angepasst") : t("Standard"));
+      box.insertAdjacentHTML("beforeend", `<div class="note">${t("Reihenfolge der Gruppen auf der Übersicht (Pfeile, von links oben nach rechts unten; passt eine kleine Gruppe in eine Lücke davor, rückt sie dort hinein), Auge = ein-/ausblenden, Auswahl = Breite in Spalten. Mehr Breite = größere Kameras. Am Handy steht ohnehin alles untereinander.")}</div>`);
+      const WOPT = [[1, t("1 Spalte")], [2, t("2 Spalten")], [3, t("3 Spalten")], [4, t("ganze Breite")]];
       keys.forEach((k, i) => {
         const p = HOME_PARTS.find((h) => h.key === k), off = (L.hide || []).includes(k);
         const w = +(L.width || {})[k] || p.width, nCam = (c.live_cameras || []).filter((x) => hass.states[x]).length;
         const row = document.createElement("div");
         row.className = `row lay ${off ? "off" : ""}`;
-        row.innerHTML = `<ha-icon class="ic" icon="${p.icon}"></ha-icon><div class="t"><b>${esc(p.name)}</b></div>
-          ${k === "kameras" && nCam > 1 ? `<select data-a="cams" title="Kameras nebeneinander">${[1, 2, 3].map((n) =>
-            `<option value="${n}" ${(+L.cam_cols || 1) === n ? "selected" : ""}>${n} je Reihe</option>`).join("")}</select>` : ""}
-          <select data-a="width" title="Breite">${WOPT.map(([v, t]) => `<option value="${v}" ${w === v ? "selected" : ""}>${t}</option>`).join("")}</select>
-          <button data-a="eye" title="${off ? "anzeigen" : "ausblenden"}"><ha-icon icon="${off ? "mdi:eye-off-outline" : "mdi:eye-outline"}"></ha-icon></button>
+        row.innerHTML = `<ha-icon class="ic" icon="${p.icon}"></ha-icon><div class="t"><b>${esc(t(p.name))}</b></div>
+          ${k === "kameras" && nCam > 1 ? `<select data-a="cams" title="${t("Kameras nebeneinander")}">${[1, 2, 3].map((n) =>
+            `<option value="${n}" ${(+L.cam_cols || 1) === n ? "selected" : ""}>${t("{n} je Reihe", { n })}</option>`).join("")}</select>` : ""}
+          <select data-a="width" title="${t("Breite")}">${WOPT.map(([v, t]) => `<option value="${v}" ${w === v ? "selected" : ""}>${t}</option>`).join("")}</select>
+          <button data-a="eye" title="${off ? t("anzeigen") : t("ausblenden")}"><ha-icon icon="${off ? "mdi:eye-off-outline" : "mdi:eye-outline"}"></ha-icon></button>
           <button data-a="up" ${i ? "" : "disabled"}><ha-icon icon="mdi:arrow-up"></ha-icon></button>
           <button data-a="down" ${i < keys.length - 1 ? "" : "disabled"}><ha-icon icon="mdi:arrow-down"></ha-icon></button>`;
         row.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => setLayout((n) => {
@@ -7783,33 +8435,32 @@ ha-tile-info {
         })));
         box.appendChild(row);
       });
-      if (!present.includes("kameras")) box.insertAdjacentHTML("beforeend", `<div class="note">Kameras auf der Übersicht: unter
-        <b>6 · … Kameras</b> „Live-Kameras auf der Übersicht“ wählen — dann erscheinen sie hier zum Anordnen.</div>`);
+      if (!present.includes("kameras")) box.insertAdjacentHTML("beforeend", `<div class="note">${t("Kameras auf der Übersicht: unter <b>6 · … Kameras</b> „Live-Kameras auf der Übersicht“ wählen — dann erscheinen sie hier zum Anordnen.")}</div>`);
       if (c.home_layout) {
-        box.insertAdjacentHTML("beforeend", '<div class="note"><button class="reset">Standard wiederherstellen</button></div>');
+        box.insertAdjacentHTML("beforeend", `<div class="note"><button class="reset">${t("Standard wiederherstellen")}</button></div>`);
         box.querySelector("button.reset").addEventListener("click", () => { delete c.home_layout; this._emit(); this._build(); });
       }
 
       // 4. Räume
-      box = this._panel("rooms", "4 · Räume, Rollläden & Fenster", "mdi:floor-plan", `${inv.shown.length} von ${inv.rooms.length}`);
+      box = this._panel("rooms", t("4 · Räume, Rollläden & Fenster"), "mdi:floor-plan", t("{n} von {m}", { n: inv.shown.length, m: inv.rooms.length }));
       const nCov = inv.shown.reduce((a, r) => a + r.covers.length, 0), nCon = inv.shown.reduce((a, r) => a + r.contacts.length, 0);
       box.appendChild(this._form([
-        { name: "hide_labels", label: "Mit Label ausblenden", helper: "Entitäten, Geräte oder ganze Bereiche mit diesem Label erscheinen nicht (z. B. no_dboard)",
+        { name: "hide_labels", label: t("Mit Label ausblenden"), helper: t("Entitäten, Geräte oder ganze Bereiche mit diesem Label erscheinen nicht (z. B. no_dboard)"),
           selector: { label: { multiple: true } } },
-        { name: "short_names", label: "Namen kürzen", helper: "Etage und Raum vorne im Namen weglassen („EG - Küche - Rollladen links“ → „Küche · links“)", selector: { boolean: {} } },
-        { name: "covers", label: `Rollläden auf der Übersicht (${nCov})`, helper: "Zusammengefasst = eine Kachel mit Alle auf/zu, Antippen öffnet alle nach Etage",
+        { name: "short_names", label: t("Namen kürzen"), helper: t("Etage und Raum vorne im Namen weglassen („EG - Küche - Rollladen links“ → „Küche · links“)"), selector: { boolean: {} } },
+        { name: "covers", label: t("Rollläden auf der Übersicht ({n})", { n: nCov }), helper: t("Zusammengefasst = eine Kachel mit Alle auf/zu, Antippen öffnet alle nach Etage"),
           selector: { select: { mode: "dropdown", options: [
-            { value: "auto", label: "Automatisch (ab 7 zusammengefasst)" }, { value: "list", label: "Einzeln" }, { value: "compact", label: "Zusammengefasst" }] } } },
-        { name: "light_tap", label: "Licht-Kachel auf der Übersicht antippen",
-          helper: "Pop-up = alle Lampen des Raums einzeln (dimmen, Farbe, Szenen); Halten schaltet dann den Raum an/aus",
+            { value: "auto", label: t("Automatisch (ab 7 zusammengefasst)") }, { value: "list", label: t("Einzeln") }, { value: "compact", label: t("Zusammengefasst") }] } } },
+        { name: "light_tap", label: t("Licht-Kachel auf der Übersicht antippen"),
+          helper: t("Pop-up = alle Lampen des Raums einzeln (dimmen, Farbe, Szenen); Halten schaltet dann den Raum an/aus"),
           selector: { select: { mode: "dropdown", options: [
-            { value: "toggle", label: "Licht an/aus (Standard)" }, { value: "popup", label: "Pop-up mit den Lampen des Raums" }] } } },
-        { name: "climate_graph", label: "Temperatur-Verlauf in den Klima-Kacheln",
-          helper: "zeigt die letzten 24 Stunden als Linie hinter der Kachel (farbig nach Temperatur)", selector: { boolean: {} } },
-        { name: "contacts", label: `Fenster & Türen auf der Übersicht (${nCon})`, helper: "Zusammengefasst = eine Kachel „Alles zu“ / „2 offen · …“, Antippen zeigt alle nach Etage",
+            { value: "toggle", label: t("Licht an/aus (Standard)") }, { value: "popup", label: t("Pop-up mit den Lampen des Raums") }] } } },
+        { name: "climate_graph", label: t("Temperatur-Verlauf in den Klima-Kacheln"),
+          helper: t("zeigt die letzten 24 Stunden als Linie hinter der Kachel (farbig nach Temperatur)"), selector: { boolean: {} } },
+        { name: "contacts", label: t("Fenster & Türen auf der Übersicht ({n})", { n: nCon }), helper: t("Zusammengefasst = eine Kachel „Alles zu“ / „2 offen · …“, Antippen zeigt alle nach Etage"),
           selector: { select: { mode: "dropdown", options: [
-            { value: "auto", label: "Automatisch (ab 7 zusammengefasst)" }, { value: "list", label: "Einzeln" },
-            { value: "compact", label: "Zusammengefasst" }, { value: "off", label: "Nicht anzeigen" }] } } },
+            { value: "auto", label: t("Automatisch (ab 7 zusammengefasst)") }, { value: "list", label: t("Einzeln") },
+            { value: "compact", label: t("Zusammengefasst") }, { value: "off", label: t("Nicht anzeigen") }] } } },
       ], { hide_labels: c.hide_labels || [], short_names: c.short_names !== false, covers: c.covers || "auto", contacts: c.contacts || "auto",
         light_tap: c.light_tap || "toggle", climate_graph: c.climate_graph !== false }, (v) => {
         if (v.contacts && v.contacts !== "auto") c.contacts = v.contacts; else delete c.contacts;
@@ -7820,17 +8471,16 @@ ha-tile-info {
         if (v.covers && v.covers !== "auto") c.covers = v.covers; else delete c.covers;
         this._emit(); this._build();
       }));
-      if (!inv.rooms.length) box.insertAdjacentHTML("beforeend", `<div class="note">Keine Bereiche gefunden. Lege sie unter
-        <b>Einstellungen → Bereiche, Zonen &amp; Etagen</b> an und ordne deine Geräte zu — dann erscheinen hier die Räume.</div>`);
-      else box.insertAdjacentHTML("beforeend", '<div class="note">Aus deinen HA-Bereichen. Auge = anzeigen, Pfeile = Reihenfolge, Raum antippen = Name, Symbol, Hauptlicht, Temperatur ändern.</div>');
+      if (!inv.rooms.length) box.insertAdjacentHTML("beforeend", `<div class="note">${t("Keine Bereiche gefunden. Lege sie unter <b>Einstellungen → Bereiche, Zonen &amp; Etagen</b> an und ordne deine Geräte zu — dann erscheinen hier die Räume.")}</div>`);
+      else box.insertAdjacentHTML("beforeend", `<div class="note">${t("Aus deinen HA-Bereichen. Auge = anzeigen, Pfeile = Reihenfolge, Raum antippen = Name, Symbol, Hauptlicht, Temperatur ändern.")}</div>`);
       const ids = inv.rooms.map((r) => r.id);
       inv.rooms.forEach((r, i) => {
         const row = document.createElement("div");
         row.className = `row ${r.hide ? "off" : ""}`;
         const tv = r.temperature ? parseFloat(hass.states[r.temperature]?.state) : NaN;
-        const temp = isFinite(tv) ? tv.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : null;
-        row.innerHTML = `<ha-icon class="ic" icon="${esc(r.icon)}"></ha-icon><div class="t"><b>${esc(r.name)}</b><small>${r.lights.length} Licht${r.lights.length === 1 ? "" : "er"}${temp ? ` · ${esc(temp)} °C` : ""}${r.climate.length ? ` · ${r.climate.length} Heizung/Klima` : ""}${r.covers.length ? ` · ${r.covers.length} Rollladen` : ""}${r.contacts.length ? ` · ${r.contacts.length} Fenster/Tür` : ""}</small></div>
-          <button data-a="eye" title="${r.hide ? "anzeigen" : "ausblenden"}"><ha-icon icon="${r.hide ? "mdi:eye-off-outline" : "mdi:eye-outline"}"></ha-icon></button>
+        const temp = isFinite(tv) ? tv.toLocaleString(numLoc(), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : null;
+        row.innerHTML = `<ha-icon class="ic" icon="${esc(r.icon)}"></ha-icon><div class="t"><b>${esc(r.name)}</b><small>${t(r.lights.length === 1 ? "{n} Licht" : "{n} Lichter", { n: r.lights.length })}${temp ? ` · ${esc(temp)} °C` : ""}${r.climate.length ? t(" · {n} Heizung/Klima", { n: r.climate.length }) : ""}${r.covers.length ? t(" · {n} Rollladen", { n: r.covers.length }) : ""}${r.contacts.length ? t(" · {n} Fenster/Tür", { n: r.contacts.length }) : ""}</small></div>
+          <button data-a="eye" title="${r.hide ? t("anzeigen") : t("ausblenden")}"><ha-icon icon="${r.hide ? "mdi:eye-off-outline" : "mdi:eye-outline"}"></ha-icon></button>
           <button data-a="up" ${i ? "" : "disabled"}><ha-icon icon="mdi:arrow-up"></ha-icon></button>
           <button data-a="down" ${i < ids.length - 1 ? "" : "disabled"}><ha-icon icon="mdi:arrow-down"></ha-icon></button>`;
         const setRoom = (patch) => {
@@ -7856,14 +8506,14 @@ ha-tile-info {
           wrap.className = "roomform";
           wrap.appendChild(this._form([
             { type: "grid", name: "", schema: [
-              { name: "name", label: "Name", selector: { text: {} } },
-              { name: "icon", label: "Symbol", selector: { icon: { placeholder: r.icon } } },
+              { name: "name", label: t("Name"), selector: { text: {} } },
+              { name: "icon", label: t("Symbol"), selector: { icon: { placeholder: r.icon } } },
             ] },
-            { name: "light", label: "Hauptlicht (Kachel auf der Übersicht)",
-              helper: `leer = automatisch: ${r.auto.light ? inv.niceName(r.auto.light) : "Knopf schaltet alle Lampen des Raums"}`,
+            { name: "light", label: t("Hauptlicht (Kachel auf der Übersicht)"),
+              helper: t("leer = automatisch: {x}", { x: r.auto.light ? inv.niceName(r.auto.light) : t("Knopf schaltet alle Lampen des Raums") }),
               selector: { entity: { filter: { domain: "light" } } } },
-            { name: "temperature", label: "Temperatur-Sensor", helper: `leer = automatisch: ${r.auto.temperature ? inv.niceName(r.auto.temperature) : "keiner"}`, selector: { entity: { filter: { domain: "sensor", device_class: "temperature" } } } },
-            { name: "humidity", label: "Luftfeuchte-Sensor", helper: `leer = automatisch: ${r.auto.humidity ? inv.niceName(r.auto.humidity) : "keiner"}`, selector: { entity: { filter: { domain: "sensor", device_class: "humidity" } } } },
+            { name: "temperature", label: t("Temperatur-Sensor"), helper: t("leer = automatisch: {x}", { x: r.auto.temperature ? inv.niceName(r.auto.temperature) : t("keiner") }), selector: { entity: { filter: { domain: "sensor", device_class: "temperature" } } } },
+            { name: "humidity", label: t("Luftfeuchte-Sensor"), helper: t("leer = automatisch: {x}", { x: r.auto.humidity ? inv.niceName(r.auto.humidity) : t("keiner") }), selector: { entity: { filter: { domain: "sensor", device_class: "humidity" } } } },
           ], { name: o.name, icon: o.icon, light: o.light, temperature: o.temperature, humidity: o.humidity }, (v) => {
             setRoom({ name: v.name, icon: v.icon, light: v.light, temperature: v.temperature, humidity: v.humidity });
             this._emit();
@@ -7873,8 +8523,8 @@ ha-tile-info {
       });
 
       // 5. Energie
-      box = this._panel("energy", "5 · Energie", "mdi:lightning-bolt", c.energy ? "angepasst" : energy ? "automatisch" : "nicht gefunden");
-      box.insertAdjacentHTML("beforeend", '<div class="note">Leer lassen = automatisch aus dem Energie-Dashboard. Hier kannst du Punkte zuweisen und benennen — wie in der Energie-Karte.</div>');
+      box = this._panel("energy", t("5 · Energie"), "mdi:lightning-bolt", c.energy ? t("angepasst") : energy ? t("automatisch") : t("nicht gefunden"));
+      box.insertAdjacentHTML("beforeend", `<div class="note">${t("Leer lassen = automatisch aus dem Energie-Dashboard. Hier kannst du Punkte zuweisen und benennen — wie in der Energie-Karte.")}</div>`);
       if (customElements.get("nullglow-flow-card-editor")) {
         const ed = document.createElement("nullglow-flow-card-editor");
         ed.setConfig(c.energy || energy || {});
@@ -7891,36 +8541,36 @@ ha-tile-info {
       this._doorAuto = doorbellAuto(hass, inv);
       const door = doorbellCfg(c, hass, inv);
       this._doorHelp = c.doorbell?.enabled
-        ? (door ? `aktiv: ${door.event} → ${door.camera} — beim Klingeln öffnet sich die Kamera groß (2 Min, auf jeder Seite)`
-          : "keine Klingel oder Kamera gefunden — unten wählen")
-        : `beim Klingeln öffnet sich die Kamera groß auf jeder Seite (2 Min)${this._doorAuto.event ? ` — erkannt: ${this._doorAuto.event}` : ""}`;
-      box = this._panel("more", "6 · Design, Wetter, Personen, Kameras, Kalender", "mdi:tune-variant", designs(hass)[c.design] || designs(hass).nullglow || "Nullglow");
+        ? (door ? t("aktiv: {e} → {c} — beim Klingeln öffnet sich die Kamera groß (2 Min, auf jeder Seite)", { e: door.event, c: door.camera })
+          : t("keine Klingel oder Kamera gefunden — unten wählen"))
+        : t("beim Klingeln öffnet sich die Kamera groß auf jeder Seite (2 Min){x}", { x: this._doorAuto.event ? t(" — erkannt: {e}", { e: this._doorAuto.event }) : "" });
+      box = this._panel("more", t("6 · Design, Wetter, Personen, Kameras, Kalender"), "mdi:tune-variant", designs(hass)[c.design] || designs(hass).nullglow || "Nullglow");
       box.appendChild(this._form([
-        { name: "weather", label: "Wetter", helper: `leer = ${inv.weather || "keins gefunden"}`, selector: { entity: { filter: { domain: "weather" } } } },
-        { name: "persons", label: "Personen", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "person" } } } },
-        { name: "person_map", label: "Karte mit Personen auf der Übersicht", helper: "zeigt, wo alle gerade sind (Standort aus der HA-App) — unter den Personen im Bereich Zuhause",
+        { name: "weather", label: t("Wetter"), helper: t("leer = {x}", { x: inv.weather || t("keins gefunden") }), selector: { entity: { filter: { domain: "weather" } } } },
+        { name: "persons", label: t("Personen"), helper: t("leer = alle"), selector: { entity: { multiple: true, filter: { domain: "person" } } } },
+        { name: "person_map", label: t("Karte mit Personen auf der Übersicht"), helper: t("zeigt, wo alle gerade sind (Standort aus der HA-App) — unter den Personen im Bereich Zuhause"),
           selector: { boolean: {} } },
-        ...(c.person_map ? [{ name: "map_tint", label: "Karte in den Design-Farben", helper: "aus = normale Kartenfarben", selector: { boolean: {} } }] : []),
-        { name: "cameras", label: "Kameras", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
-        { name: "live_cameras", label: "Live-Kameras auf der Übersicht (optional)", helper: "eine oder mehrere; Stream nur, solange die Übersicht offen ist — Größe und Platz unter „3 · Übersicht anordnen“",
+        ...(c.person_map ? [{ name: "map_tint", label: t("Karte in den Design-Farben"), helper: t("aus = normale Kartenfarben"), selector: { boolean: {} } }] : []),
+        { name: "cameras", label: t("Kameras"), helper: t("leer = alle"), selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
+        { name: "live_cameras", label: t("Live-Kameras auf der Übersicht (optional)"), helper: t("eine oder mehrere; Stream nur, solange die Übersicht offen ist — Größe und Platz unter „3 · Übersicht anordnen“"),
           selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
-        { name: "doorbell_on", label: "Klingel: Kamera groß anzeigen", helper: this._doorHelp, selector: { boolean: {} } },
+        { name: "doorbell_on", label: t("Klingel: Kamera groß anzeigen"), helper: this._doorHelp, selector: { boolean: {} } },
         ...(c.doorbell?.enabled ? [
-          { name: "doorbell_event", label: "Klingel-Sensor", helper: `leer = automatisch: ${this._doorAuto.event || "keiner gefunden"}`,
+          { name: "doorbell_event", label: t("Klingel-Sensor"), helper: t("leer = automatisch: {x}", { x: this._doorAuto.event || t("keiner gefunden") }),
             selector: { entity: { filter: { domain: ["event", "binary_sensor"] } } } },
-          { name: "doorbell_camera", label: "Kamera für das Klingel-Fenster", helper: `leer = automatisch: ${this._doorAuto.camera || "keine gefunden"}`,
+          { name: "doorbell_camera", label: t("Kamera für das Klingel-Fenster"), helper: t("leer = automatisch: {x}", { x: this._doorAuto.camera || t("keine gefunden") }),
             selector: { entity: { filter: { domain: "camera" } } } }] : []),
-        { name: "cameras_live", label: "Kameras-Seite live", helper: "aus = Standbild, das sich alle paar Sekunden erneuert (Antippen = live)", selector: { boolean: {} } },
-        { name: "calendars", label: "Kalender", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "calendar" } } } },
-        { name: "screen_switch", label: "Steckdose des Wandmonitors (optional)", helper: "ist sie aus, pausiert das Nordlicht im Hintergrund",
+        { name: "cameras_live", label: t("Kameras-Seite live"), helper: t("aus = Standbild, das sich alle paar Sekunden erneuert (Antippen = live)"), selector: { boolean: {} } },
+        { name: "calendars", label: t("Kalender"), helper: t("leer = alle"), selector: { entity: { multiple: true, filter: { domain: "calendar" } } } },
+        { name: "screen_switch", label: t("Steckdose des Wandmonitors (optional)"), helper: t("ist sie aus, pausiert das Nordlicht im Hintergrund"),
           selector: { entity: { filter: { domain: ["switch", "light", "input_boolean", "binary_sensor"] } } } },
-        { name: "title", label: "Titel des Dashboards", selector: { text: {} } },
-        { name: "design", label: "Design", helper: "Standard-Farbvariante — auf jedem Gerät per Uhr antippen umstellbar",
+        { name: "title", label: t("Titel des Dashboards"), selector: { text: {} } },
+        { name: "design", label: "Design", helper: t("Standard-Farbvariante — auf jedem Gerät per Uhr antippen umstellbar"),
           selector: { select: { mode: "dropdown", options: Object.entries(designs(hass)).map(([value, label]) => ({ value, label })) } } },
-        { name: "mode", label: "Hell / Dunkel", helper: "jedes Design gibt es hell und dunkel",
+        { name: "mode", label: t("Hell / Dunkel"), helper: t("jedes Design gibt es hell und dunkel"),
           selector: { select: { mode: "dropdown", options: [
-            { value: "auto", label: "Wie Gerät / HA-Profil" }, { value: "dark", label: "Immer dunkel" },
-            { value: "light", label: "Immer hell" }, { value: "sun", label: "Nach Sonne (tagsüber hell)" }] } } },
+            { value: "auto", label: t("Wie Gerät / HA-Profil") }, { value: "dark", label: t("Immer dunkel") },
+            { value: "light", label: t("Immer hell") }, { value: "sun", label: t("Nach Sonne (tagsüber hell)") }] } } },
       ], { design: c.design || "nullglow", mode: c.mode || "auto", weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], live_cameras: c.live_cameras || [], cameras_live: !!c.cameras_live, person_map: !!c.person_map, map_tint: c.map_tint !== false, calendars: c.calendars || [], title: c.title,
         doorbell_on: !!c.doorbell?.enabled, doorbell_event: c.doorbell?.event, doorbell_camera: c.doorbell?.camera,
         screen_switch: c.screen_switch }, (v) => {
@@ -7941,14 +8591,12 @@ ha-tile-info {
       }));
 
       // 7. Tipps
-      box = this._panel("tips", "7 · Handy & Wandmonitor", "mdi:monitor-cellphone");
-      box.insertAdjacentHTML("beforeend", `<div class="note"><b>Handy:</b> läuft in der HA-App, Seiten unten per Leiste wechseln (wischbar).<br>
-        <b>Wandmonitor (Full HD):</b> Dashboard-Adresse mit <code>?kiosk</code> öffnen (braucht Kiosk Mode) — ohne Kopfzeile und
-        Seitenleiste. Bei 1920×1080 mit 125 % Zoom sieht es aus wie im Original. Hochkant geht auch (die Leiste zeigt dann nur Symbole).<br>
-        <b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist.<br>
-        <b>Livebilder am Wandmonitor:</b> Browser-Cache begrenzen, z. B. Chromium mit <code>--disk-cache-size=67108864</code> (64 MB) starten.<br>
-        Ändern kannst du alles später über <b>Dashboard bearbeiten</b>; „Kontrolle übernehmen“ macht daraus ein normales, frei
-        bearbeitbares Dashboard (dann ohne automatische Aktualisierung).</div>`);
+      box = this._panel("tips", t("7 · Handy & Wandmonitor"), "mdi:monitor-cellphone");
+      box.insertAdjacentHTML("beforeend", `<div class="note">${t("<b>Handy:</b> läuft in der HA-App, Seiten unten per Leiste wechseln (wischbar).")}<br>
+        ${t("<b>Wandmonitor (Full HD):</b> Dashboard-Adresse mit <code>?kiosk</code> öffnen (braucht Kiosk Mode) — ohne Kopfzeile und Seitenleiste. Bei 1920×1080 mit 125 % Zoom sieht es aus wie im Original. Hochkant geht auch (die Leiste zeigt dann nur Symbole).")}<br>
+        ${t("<b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist.")}<br>
+        ${t("<b>Livebilder am Wandmonitor:</b> Browser-Cache begrenzen, z. B. Chromium mit <code>--disk-cache-size=67108864</code> (64 MB) starten.")}<br>
+        ${t("Ändern kannst du alles später über <b>Dashboard bearbeiten</b>; „Kontrolle übernehmen“ macht daraus ein normales, frei bearbeitbares Dashboard (dann ohne automatische Aktualisierung).")}</div>`);
     }
   }
 
@@ -7957,6 +8605,6 @@ ha-tile-info {
   window.customStrategies = window.customStrategies || [];
   if (!window.customStrategies.some((s) => s.type === "nullglow"))
     window.customStrategies.push({ type: "nullglow", strategyType: "dashboard", name: "Nullglow",
-      description: "Dunkles Glas-Dashboard mit Energiefluss, Licht, Klima, Kameras — richtet sich aus deinen Bereichen selbst ein" });
+      description: t("Dunkles Glas-Dashboard mit Energiefluss, Licht, Klima, Kameras — richtet sich aus deinen Bereichen selbst ein") });
   window.__nullglowStrategy = { inventory, generate: NullglowDashboardStrategy.generate }; // Tests
 })();
