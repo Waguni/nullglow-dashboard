@@ -82,6 +82,10 @@ wall monitor).
 - **Many blinds / window contacts:** 7 or more become *one* tile with a bar/dot per device; tap opens them grouped by floor.
 - **People map:** optional map of everyone's location, tinted in your design colour.
 - **Glass slider:** make all tiles clearer or more frosted — per device.
+- **Power saving** for slow PCs and old tablets: tap the clock → *Power saving* **Off / On / Auto**. It turns off the
+  aurora and the weather colors, stops the tile animations and runs the energy flow at 15 instead of 30 fps. *Auto*
+  (default) switches it on by itself when the device is too slow (measured once on the dashboard), has very weak hardware
+  or has "reduce motion" enabled — tapping *Auto* measures again.
 - **Every card on its own:** all Nullglow cards have a visual editor and suggest matching entities — *Add card* → search
   for "Nullglow" (energy flow, power 24 h, monthly balance, phase bars, mini graph behind any tile, hourly weather,
   batteries & maintenance, rain radar, blinds, windows & doors, mower map/stats, design picker).
@@ -131,6 +135,8 @@ If the HA **Energy dashboard** is set up (including power sensors), the energy f
 - **Tapping opens no pop-up** (blinds, rooms, radar …): pop-ups come from Bubble Card — you need **3.2 or newer**.
   Update in HACS, then hard-reload (in the app: clear the app cache). The wizard shows the detected version.
 - **"Nullglow" is missing under "Add dashboard":** reload the browser; check that Nullglow Dashboard is downloaded in HACS.
+- **Slow or stuttering on an older PC/tablet:** tap the clock → *Power saving* → **On**. The aurora missing? *Auto* may
+  have switched power saving on for a slow device — pick **Off** to get it back.
 - **Rain radar shows nothing:** it uses the German Weather Service (DWD) and covers Germany plus ~100 km around it.
 - **Want to tweak single tiles:** ⋮ → Edit dashboard → *Take control* turns it into a normal dashboard you can edit freely
   (it then no longer updates itself).
