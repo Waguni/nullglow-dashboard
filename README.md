@@ -92,7 +92,7 @@ Der Assistent prüft das (auch die Bubble-Card-Version) und zeigt fehlende oder 
       **Licht-Kachel antippen:** an/aus (Standard) oder Pop-up mit allen Lampen des Raums,
       **Temperatur-Verlauf** (24 h) in den Klima-Kacheln (Standard an)
    5. Energie: Punkte zuweisen und **benennen** (Solar, Netz, jeder Verbraucher mit Name und Symbol)
-   6. **Design** (13 Farbvarianten) und **Hell / Dunkel**, Wetter, Personen (optional mit **Karte „Wo sind alle?“** in den Farben des Designs),
+   6. **Design** (13 Farbvarianten) und **Hell / Dunkel** (im Uhr-Pop-up zusätzlich ein **Glas-Regler**: klar ↔ milchig, je Gerät), Wetter, Personen (optional mit **Karte „Wo sind alle?“** in den Farben des Designs),
       Kameras, **Klingel: Kamera groß anzeigen** (beim Klingeln öffnet sich das Livebild 2 Minuten groß — Klingel und
       Kamera werden erkannt, z. B. Ring, Reolink, UniFi), Kalender, Steckdose des Wandmonitors
 6. **Speichern** → Namen und Symbol für das Dashboard wählen → fertig.
