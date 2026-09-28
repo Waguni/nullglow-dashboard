@@ -6048,7 +6048,10 @@ window.__NULLGLOW_THEMES = {
     if (cfg.gridInvert) grid = -grid;
     grid -= [].concat(cfg.gridExport || []).reduce((a, id) => a + Math.abs(num(id) * kw(id)), 0);
     const elev = parseFloat(h.states["sun.sun"]?.attributes?.elevation);
-    const mon = cfg.monitor ? h.states[cfg.monitor] : null;
+    // Monitor-Stecker zählt nur am Wandmonitor selbst (Benutzer „kiosk“ oder Adresse mit ?kiosk) — PC/Handy zeigen das
+    // Nordlicht auch, wenn der Flur-Monitor gerade aus ist
+    const wall = /kiosk/i.test(h.user?.name || "") || /(^|[?&])kiosk(=|&|$)/.test(location.search);
+    const mon = cfg.monitor && wall ? h.states[cfg.monitor] : null;
     active = !!forced || !mon || mon.state !== "off";   // Test (erzwungene Werte) zeichnet immer
     if (forced) { Object.assign(target, { power: forced.power ?? 0.6, calm: forced.calm ?? 0, night: forced.night ? 1 : 0 }); return; }
     target.power = Math.min(1, Math.sqrt(solar / (cfg.solarPeak || 800)));        // Wurzel: auch 100 W sind schon sichtbar
