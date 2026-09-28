@@ -89,9 +89,12 @@ Der Assistent prüft das (auch die Bubble-Card-Version) und zeigt fehlende oder 
       dazu „1/2/3 je Reihe“. „Standard wiederherstellen“ setzt alles zurück.
    4. Räume, Rollläden & Fenster: ausblenden (Auge), sortieren (Pfeile), antippen für Name, Symbol, Hauptlicht, Temperatur-Sensor;
       **Mit Label ausblenden** (z. B. `no_dboard` an Entität, Gerät oder Bereich), **Namen kürzen**, Rollläden einzeln oder zusammengefasst,
-      **Licht-Kachel antippen:** an/aus (Standard) oder Pop-up mit allen Lampen des Raums
+      **Licht-Kachel antippen:** an/aus (Standard) oder Pop-up mit allen Lampen des Raums,
+      **Temperatur-Verlauf** (24 h) in den Klima-Kacheln (Standard an)
    5. Energie: Punkte zuweisen und **benennen** (Solar, Netz, jeder Verbraucher mit Name und Symbol)
-   6. **Design** (13 Farbvarianten) und **Hell / Dunkel**, Wetter, Personen, Kameras, Kalender, Steckdose des Wandmonitors
+   6. **Design** (13 Farbvarianten) und **Hell / Dunkel**, Wetter, Personen (optional mit **Karte „Wo sind alle?“** in den Farben des Designs),
+      Kameras, **Klingel: Kamera groß anzeigen** (beim Klingeln öffnet sich das Livebild 2 Minuten groß — Klingel und
+      Kamera werden erkannt, z. B. Ring, Reolink, UniFi), Kalender, Steckdose des Wandmonitors
 6. **Speichern** → Namen und Symbol für das Dashboard wählen → fertig.
 
 Ändern kannst du alles später über **⋮ → Dashboard bearbeiten** (öffnet den Assistenten wieder).
@@ -117,6 +120,11 @@ Der Assistent prüft das (auch die Bubble-Card-Version) und zeigt fehlende oder 
 Die Karte gibt es auch ohne das ganze Dashboard: Dashboard bearbeiten → **Karte hinzufügen → „Nullglow Flow“**.
 Sie übernimmt Solar, Netz, Zähler, Strompreis und Verbraucher aus dem Energie-Dashboard; jeder Punkt lässt sich per Klick
 zuweisen, umbenennen und sortieren.
+
+**Alle anderen Nullglow-Karten** haben ebenfalls einen Klick-Editor und schlagen beim Hinzufügen passende Entitäten vor:
+Leistung 24 h, Monatsbilanz, Phasen-Balken, Mini-Diagramm (Verlauf hinter einer beliebigen Kachel), Stundenwetter,
+Batterien & Wartung, Regenradar, Rollläden, Fenster & Türen, Mähroboter-Karte und -Statistik, Design-Auswahl —
+Karte hinzufügen → nach „Nullglow“ suchen.
 
 ## Häufige Fragen
 

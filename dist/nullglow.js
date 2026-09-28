@@ -3959,6 +3959,39 @@ window.__NULLGLOW_THEMES = {
   let uid = 0;
 
   class NullglowSparkCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngForm(schema, labels, helpers = {}) {
+      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      return this._ngForm([
+        { name: "entity", required: true, selector: { entity: { filter: { domain: "sensor" } } } },
+        { type: "grid", name: "", schema: [
+          { name: "hours", selector: { number: { min: 1, max: 168, mode: "box", unit_of_measurement: "h" } } },
+          { name: "min_span", selector: { number: { min: 0, step: 0.1, mode: "box" } } } ] },
+        { name: "color_scale", selector: { select: { mode: "dropdown", options: [
+          { value: "room", label: "Raumtemperatur (kalt blau … warm rot)" }, { value: "outdoor", label: "Außentemperatur" }] } } },
+        { name: "zero_based", selector: { boolean: {} } },
+        { name: "card", required: true, selector: { object: {} } },
+      ], { entity: "Verlauf von (Sensor mit Statistik)", hours: "Zeitraum", min_span: "Kleinste Spanne", color_scale: "Farben",
+        zero_based: "Achse bei 0 beginnen", card: "Kachel darüber (YAML)" },
+      { min_span: "verhindert, dass kleines Rauschen riesig wirkt (z. B. 2 bei °C)", color_scale: "leer = neutral in der Akzentfarbe",
+        zero_based: "sinnvoll für Leistung (W)", card: "jede Karte, z. B. type: tile oder custom:mushroom-template-card" });
+    }
+    static async getStubConfig(hass) {
+      const t = this._ngFind(hass, (id, a) => id.startsWith("sensor.") && a.device_class === "temperature" && a.state_class)[0]
+        || this._ngFind(hass, (id, a) => id.startsWith("sensor.") && a.state_class === "measurement")[0] || "";
+      return { entity: t, hours: 24, min_span: 2, ...(hass?.states[t]?.attributes?.device_class === "temperature" ? { color_scale: "room" } : {}),
+        card: { type: "tile", entity: t } };
+    }
+    // ── Editor Ende ──
     setConfig(config) {
       if (!config || !(config.entity || config.entities) || !config.card) throw new Error("nullglow-spark-card: entity und card angeben");
       this._cfg = { hours: 24, min_span: 0, zero_based: false, ...config };
@@ -4174,6 +4207,27 @@ window.__NULLGLOW_THEMES = {
   `;
 
   class NullglowHourlyCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngForm(schema, labels, helpers = {}) {
+      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      return this._ngForm([
+        { name: "entity", required: true, selector: { entity: { filter: { domain: "weather" } } } },
+        { name: "hours", selector: { number: { min: 3, max: 12, mode: "slider" } } },
+      ], { entity: "Wetter", hours: "Stunden" }, { hours: "Spalten ab der laufenden Stunde" });
+    }
+    static async getStubConfig(hass) {
+      return { entity: this._ngFind(hass, (id) => id.startsWith("weather."))[0] || "", hours: 8 };
+    }
+    // ── Editor Ende ──
     setConfig(config) {
       if (!config?.entity) throw new Error("nullglow-hourly-card: entity angeben");
       this._cfg = { hours: 8, ...config };
@@ -4269,6 +4323,30 @@ window.__NULLGLOW_THEMES = {
   const dayKey = (d) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 
   class NullglowMonthCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngForm(schema, labels, helpers = {}) {
+      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      return this._ngForm([
+        { name: "solar", required: true, selector: { entity: { filter: { domain: "sensor", device_class: "energy" } } } },
+        { name: "grid", required: true, selector: { entity: { multiple: true, filter: { domain: "sensor", device_class: "power" } } } },
+        { name: "price", selector: { number: { min: 0, max: 2, step: 0.0001, mode: "box", unit_of_measurement: "€/kWh" } } },
+      ], { solar: "Solar erzeugt (kWh-Zähler)", grid: "Netzleistung (W, je Phase)", price: "Strompreis" },
+      { grid: "+ Bezug / − Einspeisung; mehrere Phasen werden saldiert wie beim Stromzähler" });
+    }
+    static async getStubConfig(hass) {
+      const e = await this._ngEnergy(hass);
+      return { solar: [].concat(e.today?.solar || [])[0] || "", grid: [].concat(e.grid || []), price: e.today?.price || 0.35 };
+    }
+    // ── Editor Ende ──
     setConfig(config) {
       if (!config?.solar || !config?.grid) throw new Error("nullglow-month-card: solar und grid angeben");
       this._cfg = { price: 0, ...config, grid: [].concat(config.grid) };
@@ -4406,6 +4484,37 @@ window.__NULLGLOW_THEMES = {
   const num = (x) => Math.round(x).toLocaleString("de-DE");
 
   class NullglowBarsCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngForm(schema, labels, helpers = {}) {
+      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      return this._ngForm([
+        { type: "grid", name: "", schema: [
+          { name: "max", selector: { number: { min: 100, step: 10, mode: "box", unit_of_measurement: "W" } } },
+          { name: "warn", selector: { number: { min: 0, step: 10, mode: "box", unit_of_measurement: "W" } } },
+          { name: "crit", selector: { number: { min: 0, step: 10, mode: "box", unit_of_measurement: "W" } } } ] },
+        { name: "rows", required: true, selector: { object: { multiple: true, label_field: "name", fields: {
+          entity: { label: "Sensor", required: true, selector: { entity: { filter: { domain: "sensor" } } } },
+          name: { label: "Name", selector: { text: {} } },
+          max: { label: "Vollausschlag (optional)", selector: { number: { min: 0, mode: "box" } } } } } } },
+      ], { max: "Vollausschlag", warn: "Amber ab", crit: "Rot ab", rows: "Balken" },
+      { max: "z. B. 3680 W = 16 A × 230 V", rows: "negative Werte (Einspeisung) laufen grün nach links" });
+    }
+    static async getStubConfig(hass) {
+      const g = [].concat((await this._ngEnergy(hass)).grid || []);
+      const rows = (g.length ? g : this._ngFind(hass, (id, a) => id.startsWith("sensor.") && a.device_class === "power").slice(0, 3))
+        .map((entity, i, all) => ({ entity, name: all.length === 3 ? `L${i + 1}` : `${i + 1}` }));
+      return { max: 3680, warn: 2300, crit: 3200, rows };
+    }
+    // ── Editor Ende ──
     setConfig(config) {
       if (!config?.rows?.length) throw new Error("nullglow-bars-card: rows angeben");
       this._cfg = { max: 3680, warn: 2300, crit: 3200, ...config };
@@ -4497,6 +4606,38 @@ window.__NULLGLOW_THEMES = {
   const hhmm = (t) => new Date(t).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
 
   class NullglowPowerCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngForm(schema, labels, helpers = {}) {
+      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      const pw = { entity: { filter: { domain: "sensor", device_class: "power" } } };
+      return this._ngForm([
+        { name: "grid", required: true, selector: { entity: { multiple: true, filter: pw.entity.filter } } },
+        { name: "solar", required: true, selector: pw },
+        { name: "grid_invert", selector: { boolean: {} } },
+        { type: "expandable", name: "", title: "Batteriespeicher (optional)", flatten: true, schema: [
+          { name: "battery", selector: { entity: { multiple: true, filter: pw.entity.filter } } },
+          { name: "battery_invert", selector: { boolean: {} } },
+          { name: "battery_charge", selector: { entity: { multiple: true, filter: pw.entity.filter } } } ] },
+        { name: "hours", selector: { number: { min: 1, max: 168, mode: "box", unit_of_measurement: "h" } } },
+      ], { grid: "Netzleistung (W, je Phase)", solar: "Solarleistung (W)", grid_invert: "Zähler meldet Einspeisung positiv",
+        battery: "Speicher-Leistung", battery_invert: "Speicher: positiv = Laden", battery_charge: "Getrennte Lade-Leistung", hours: "Zeitraum" },
+      { grid: "+ Bezug / − Einspeisung; mehrere Phasen werden saldiert", battery: "+ Entladen / − Laden (sonst umdrehen)" });
+    }
+    static async getStubConfig(hass) {
+      const e = await this._ngEnergy(hass);
+      return { grid: [].concat(e.grid || []), solar: [].concat(e.solar || [])[0] || "", ...(e.grid_invert ? { grid_invert: true } : {}),
+        ...([].concat(e.battery || []).length ? { battery: [].concat(e.battery), ...(e.battery_invert ? { battery_invert: true } : {}) } : {}), hours: 24 };
+    }
+    // ── Editor Ende ──
     setConfig(config) {
       if (!config?.grid || !config?.solar) throw new Error("nullglow-power-card: grid und solar angeben");
       this._cfg = { hours: 24, warn: 3000, ...config, grid: [].concat(config.grid),
@@ -4732,6 +4873,47 @@ window.__NULLGLOW_THEMES = {
   const cleanName = (n) => String(n || "").replace(/\s*(Batterie|Battery( level)?|Akku)$/i, "").trim();
 
   class NullglowCareCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngForm(schema, labels, helpers = {}) {
+      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      return this._ngForm([
+        { name: "mode", selector: { select: { mode: "dropdown", options: [
+          { value: "full", label: "Liste (alles)" }, { value: "summary", label: "Kompakte Kachel" }] } } },
+        { name: "tap_hash", selector: { text: {} } },
+        { name: "show", selector: { select: { multiple: true, options: [
+          { value: "battery", label: "Batterien" }, { value: "wear", label: "Verschleiß" }, { value: "watch", label: "Nicht erreichbar" }] } } },
+        { type: "expandable", name: "battery", title: "Batterien", schema: [
+          { type: "grid", name: "", schema: [
+            { name: "warn", selector: { number: { min: 0, max: 100, mode: "box", unit_of_measurement: "%" } } },
+            { name: "crit", selector: { number: { min: 0, max: 100, mode: "box", unit_of_measurement: "%" } } } ] },
+          { name: "exclude", selector: { text: { multiple: true } } } ] },
+        { name: "wear", selector: { object: { multiple: true, label_field: "name", fields: {
+          entity: { label: "Rest in %", required: true, selector: { entity: { filter: { domain: "sensor" } } } },
+          time: { label: "Restzeit (optional)", selector: { entity: { filter: { domain: "sensor" } } } },
+          name: { label: "Name", selector: { text: {} } },
+          warn: { label: "Amber ab %", selector: { number: { min: 0, max: 100, mode: "box" } } },
+          crit: { label: "Rot ab %", selector: { number: { min: 0, max: 100, mode: "box" } } } } } } },
+        { name: "watch", selector: { object: { multiple: true, label_field: "name", fields: {
+          entity: { label: "Gerät", required: true, selector: { entity: {} } },
+          name: { label: "Name", selector: { text: {} } } } } } },
+      ], { mode: "Darstellung", tap_hash: "Antippen öffnet (nur Kachel)", show: "Abschnitte (nur Liste)", warn: "Amber ab", crit: "Rot ab",
+        exclude: "Nicht anzeigen (Teil der Entitäts-ID)", wear: "Verschleiß & Verbrauchsmaterial", watch: "Sollten erreichbar sein" },
+      { tap_hash: "z. B. #wartung für ein Bubble-Pop-up", show: "leer = alle", exclude: "z. B. pixel_ für Handy-Akkus",
+        watch: "erscheinen als Hinweis, wenn sie nicht erreichbar sind" });
+    }
+    static async getStubConfig() {
+      return { mode: "full", battery: { warn: 30, crit: 15 } };
+    }
+    // ── Editor Ende ──
     setConfig(config) {
       this._cfg = { mode: "full", tap_hash: "#wartung", ...config };
       this._bat = { warn: 30, crit: 15, exclude: [], names: {}, ...(config.battery || {}) };
@@ -4844,7 +5026,7 @@ window.__NULLGLOW_THEMES = {
       const icon = d.lvl === "ok" ? "mdi:shield-check-outline" : d.lvl === "crit" ? "mdi:battery-alert-variant" : "mdi:wrench-clock";
       const col = COL[d.lvl];
       const title = d.lvl === "ok" ? "Alles in Ordnung" : "Braucht Aufmerksamkeit";
-      const show = (k) => !this._cfg.show || [].concat(this._cfg.show).includes(k);
+      const show = (k) => !this._cfg.show || ![].concat(this._cfg.show).length || [].concat(this._cfg.show).includes(k);   // leer = alle
       const bats = d.bats.map((x) => this._row(x, batIcon(x.v), x.na ? "offline" : `${x.v} %`, x.v ?? 0)).join("");
       const wear = d.wear.map((x) => this._row(x, x.lvl === "ok" ? "mdi:progress-wrench" : "mdi:wrench-clock",
         x.na ? "–" : `${x.v} %${x.time ? `<br><small>${esc(x.time)}</small>` : ""}`, x.v ?? 0)).join("");
@@ -4946,6 +5128,36 @@ window.__NULLGLOW_THEMES = {
   `;
 
   class NullglowRadarCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngForm(schema, labels, helpers = {}) {
+      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      return this._ngForm([
+        { type: "grid", name: "", schema: [
+          { name: "zoom", selector: { number: { min: 6, max: 10, mode: "box" } } },
+          { name: "height", selector: { number: { min: 200, max: 900, step: 10, mode: "box", unit_of_measurement: "px" } } },
+          { name: "past", selector: { number: { min: 10, max: 180, step: 5, mode: "box", unit_of_measurement: "min" } } },
+          { name: "future", selector: { number: { min: 0, max: 120, step: 5, mode: "box", unit_of_measurement: "min" } } },
+          { name: "step", selector: { number: { min: 5, max: 30, step: 5, mode: "box", unit_of_measurement: "min" } } } ] },
+        { type: "expandable", name: "", title: "Anderer Ort (optional)", flatten: true, schema: [
+          { type: "grid", name: "", schema: [
+            { name: "latitude", selector: { number: { min: -90, max: 90, step: 0.0001, mode: "box" } } },
+            { name: "longitude", selector: { number: { min: -180, max: 180, step: 0.0001, mode: "box" } } } ] } ] },
+      ], { zoom: "Zoom", height: "Höhe", past: "Vergangenheit", future: "Vorhersage", step: "Minuten je Bild", latitude: "Breite", longitude: "Länge" },
+      { future: "der DWD-Nowcast reicht 2 Stunden", latitude: "leer = Standort aus Home Assistant" });
+    }
+    static async getStubConfig() {
+      return { zoom: 8, past: 90, future: 120, step: 10, height: 430 };
+    }
+    // ── Editor Ende ──
     setConfig(config) {
       this._cfg = { zoom: 8, past: 90, future: 120, step: 10, height: 430, layer: "Niederschlagsradar", ...config };
       this._zoom = Math.max(6, Math.min(10, this._cfg.zoom));
@@ -5252,6 +5464,34 @@ window.__NULLGLOW_THEMES = {
   const pts = (s) => (s || "").trim().split(/\s+/).map((p) => p.split(",").map(Number)).filter((p) => p.length === 2 && isFinite(p[0]));
 
   class NullglowMowerMapCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngForm(schema, labels, helpers = {}) {
+      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      return this._ngForm([
+        { name: "camera", required: true, selector: { entity: { filter: { domain: "camera" } } } },
+        { name: "mower", selector: { entity: { filter: { domain: "lawn_mower" } } } },
+        { name: "coverage", selector: { entity: { filter: { domain: "sensor" } } } },
+        { name: "height", selector: { number: { min: 200, max: 900, step: 10, mode: "box", unit_of_measurement: "px" } } },
+      ], { camera: "Karte (Kamera der Mäher-Integration)", mower: "Mäher", coverage: "Fortschritt (optional)", height: "Höhe" },
+      { camera: "SVG-Karte, z. B. von navimow_pro", mower: "Zustand bestimmt Takt und Puls beim Mähen" });
+    }
+    static async getStubConfig(hass) {
+      const m = this._ngFind(hass, (id) => id.startsWith("lawn_mower."))[0];
+      const dev = hass?.entities?.[m]?.device_id;
+      const same = (test) => Object.values(hass?.entities || {}).filter((e) => dev && e.device_id === dev && test(e.entity_id)).map((e) => e.entity_id)[0];
+      return { camera: same((id) => id.startsWith("camera.")) || "", ...(m ? { mower: m } : {}),
+        ...(same((id) => /_coverage$/.test(id)) ? { coverage: same((id) => /_coverage$/.test(id)) } : {}), height: 470 };
+    }
+    // ── Editor Ende ──
     setConfig(config) {
       if (!config?.camera) throw new Error("nullglow-mower-map-card: camera angeben");
       this._cfg = { height: 470, ...config };
@@ -5467,6 +5707,26 @@ window.__NULLGLOW_THEMES = {
   `;
 
   class NullglowMowerStatsCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngForm(schema, labels, helpers = {}) {
+      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      return this._ngForm([{ name: "device", required: true, selector: { text: {} } }],
+        { device: "Gerät (Präfix der Entitäten)" }, { device: "z. B. mein_maeher für lawn_mower.mein_maeher, sensor.mein_maeher_battery …" });
+    }
+    static async getStubConfig(hass) {
+      const m = this._ngFind(hass, (id) => id.startsWith("lawn_mower."))[0];
+      return { device: m ? m.split(".")[1] : "" };
+    }
+    // ── Editor Ende ──
     setConfig(config) {
       if (!config?.device) throw new Error("nullglow-mower-stats-card: device angeben");
       this._cfg = config;
@@ -5889,6 +6149,29 @@ window.__NULLGLOW_THEMES = {
   `;
 
   class NullglowCoversCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngForm(schema, labels, helpers = {}) {
+      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      return this._ngForm([
+        { name: "entities", required: true, selector: { entity: { multiple: true, filter: { domain: "cover" } } } },
+        { type: "grid", name: "", schema: [{ name: "title", selector: { text: {} } }, { name: "icon", selector: { icon: {} } }] },
+        { name: "tap", selector: { text: {} } },
+      ], { entities: "Rollläden", title: "Titel", icon: "Symbol", tap: "Antippen öffnet" },
+      { entities: "Reihenfolge = Reihenfolge der Balken", tap: "z. B. #rolllaeden für ein Bubble-Pop-up (optional)" });
+    }
+    static async getStubConfig(hass) {
+      return { entities: this._ngFind(hass, (id) => id.startsWith("cover.")).slice(0, 12), title: "Rollläden" };
+    }
+    // ── Editor Ende ──
     setConfig(config) {
       if (!config?.entities?.length) throw new Error("nullglow-covers-card: entities angeben");
       this._cfg = { title: "Rollläden", icon: "mdi:window-shutter", ...config };
@@ -6006,6 +6289,31 @@ window.__NULLGLOW_THEMES = {
   `;
 
   class NullglowContactsCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngForm(schema, labels, helpers = {}) {
+      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      return this._ngForm([
+        { name: "entities", required: true, selector: { entity: { multiple: true, filter: { domain: "binary_sensor", device_class: ["window", "door", "opening", "garage_door"] } } } },
+        { name: "title", selector: { text: {} } },
+        { name: "tap", selector: { text: {} } },
+        { name: "names", selector: { object: {} } },
+      ], { entities: "Fenster & Türen", title: "Titel", tap: "Antippen öffnet", names: "Kurznamen (YAML, optional)" },
+      { tap: "z. B. #fenster für ein Bubble-Pop-up (optional)", names: "binary_sensor.fenster_kueche: Küche — für „2 offen · Küche, Bad“" });
+    }
+    static async getStubConfig(hass) {
+      return { entities: this._ngFind(hass, (id, a) => id.startsWith("binary_sensor.") && ["window", "door", "opening"].includes(a.device_class)).slice(0, 16),
+        title: "Fenster & Türen" };
+    }
+    // ── Editor Ende ──
     setConfig(config) {
       if (!config?.entities?.length) throw new Error("nullglow-contacts-card: entities angeben");
       this._cfg = { title: "Fenster & Türen", names: {}, ...config };
@@ -6109,6 +6417,38 @@ window.__NULLGLOW_THEMES = {
   const readLocal = (k) => { try { return JSON.parse(localStorage.getItem(k) || "{}") || {}; } catch (e) { return {}; } };
 
   class NullglowDesignCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngForm(schema, labels, helpers = {}) {
+      return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      return this._ngForm([
+        { name: "storage", selector: { select: { mode: "dropdown", options: [
+          { value: "local", label: "Nur dieses Gerät (Browser)" }, { value: "helper", label: "Für alle Geräte (input_select-Helfer)" }] } } },
+        { name: "dashboard", selector: { text: {} } },
+        { type: "grid", name: "", schema: [
+          { name: "default_design", selector: { text: {} } },
+          { name: "default_mode", selector: { select: { mode: "dropdown", options: [
+            { value: "auto", label: "Wie Gerät" }, { value: "dark", label: "Dunkel" }, { value: "light", label: "Hell" }, { value: "sun", label: "Nach Sonne" }] } } } ] },
+        { type: "expandable", name: "", title: "Helfer (nur „Für alle Geräte“)", flatten: true, schema: [
+          { name: "entity", selector: { entity: { filter: { domain: "input_select" } } } },
+          { name: "mode_entity", selector: { entity: { filter: { domain: "input_select" } } } } ] },
+      ], { storage: "Wahl speichern", dashboard: "Dashboard", default_design: "Standard-Design", default_mode: "Standard Hell/Dunkel",
+        entity: "Design-Helfer", mode_entity: "Hell/Dunkel-Helfer" },
+      { dashboard: "Adresse, z. B. /nullglow — leer = dieses Dashboard", default_design: "z. B. nullglow, halcyon, emberglow",
+        entity: "Optionen = Theme-Namen", mode_entity: "Optionen Dunkel | Hell | Auto" });
+    }
+    static async getStubConfig() {
+      return { storage: "local", dashboard: "/" + (location.pathname.split("/")[1] || "lovelace"), default_design: "nullglow", default_mode: "auto" };
+    }
+    // ── Editor Ende ──
     setConfig(config) {
       // storage: local -> Wahl nur in diesem Browser (Schlüssel nullglow-design:<dashboard>), sonst zwei input_select-Helfer
       this._cfg = { entity: "input_select.kiosk_design", mode_entity: "input_select.kiosk_design_mode", ...config };
@@ -6706,6 +7046,58 @@ ha-tile-info {
       cards: [{ type: "custom:nullglow-radar-card", zoom: 8, past: 90, future: 120, step: 10, height: 430 }] };
   }
 
+  // Karte im Design: Akzentfarbe als weicher Schimmer (soft-light) über der Karte — Fotos/Knöpfe bleiben farbig.
+  // HA zeichnet die Karte als MapLibre-Canvas in der Tile-Pane; die Farbschicht liegt darüber (z-index). Kein Filter auf
+  // der Pane (würde die Farbschicht mit entfärben).
+  const MAP_TINT = `.leaflet-tile-pane::after { content: ""; position: absolute; left: -50000px; top: -50000px; width: 100000px; height: 100000px;
+  background: rgb(var(--rgb-ng-acc, 124, 255, 178)); mix-blend-mode: soft-light; opacity: .9; pointer-events: none; z-index: 1000; }
+`;
+
+  // ---------- Klingel: Kamera groß (optional) — doorbell: { enabled, event, camera } ----------
+  // Klingel-Sensor: event.* mit device_class doorbell (Ring, Reolink, UniFi …) oder binary_sensor „…ding/doorbell/klingel“
+  function doorbellAuto(hass, inv) {
+    const ids = Object.keys(hass.states);
+    const event = ids.find((id) => DOMAIN(id) === "event" && hass.states[id].attributes.device_class === "doorbell")
+      || ids.find((id) => DOMAIN(id) === "binary_sensor" && /(_ding|doorbell|klingel)/i.test(id) && hass.states[id].attributes.device_class !== "motion") || null;
+    return { event, camera: event ? inv.sameDevice(event, (x) => DOMAIN(x) === "camera")[0] || null : null };
+  }
+  function doorbellCfg(cfg, hass, inv) {
+    if (!cfg.doorbell?.enabled) return null;
+    const auto = doorbellAuto(hass, inv);
+    const event = cfg.doorbell.event || auto.event, camera = cfg.doorbell.camera || auto.camera;
+    return event && camera && hass.states[event] && hass.states[camera] ? { event, camera } : null;
+  }
+  function doorbellPopup(d) {
+    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#klingel", name: "Es hat geklingelt", icon: "mdi:doorbell-video",
+      width_desktop: "100%", margin_top_desktop: "0px", bg_opacity: 94, auto_close: 120000, close_by_clicking_outside: true,
+      cards: [{ type: "picture-entity", entity: d.camera, camera_view: "live", show_name: false, show_state: false, aspect_ratio: "16:9",
+        tap_action: { action: "none" },
+        card_mod: { style: "ha-card { max-width: calc((100vh - 220px) * 16 / 9); margin: 0 auto; }\n" } }] };
+  }
+  // Wächter: ein Abo je Browser (nur die Klingel-Entitäten); klingelt es, während ein Nullglow-Dashboard offen ist -> #klingel
+  function doorbellWatch(hass, base, d) {
+    const W = (window.__ngDoorbell = window.__ngDoorbell || { dash: {}, last: {} });
+    W.dash[base] = d;
+    W.feed = (m) => {   // Nachricht von subscribe_entities (auch zum Testen aufrufbar)
+      Object.entries(m.a || {}).forEach(([id, v]) => { W.last[id] = v.s; });   // Anfangszustand: nie auslösen
+      Object.entries(m.c || {}).forEach(([id, v]) => {
+        const s = v["+"]?.s, prev = W.last[id];
+        if (s === undefined) return;
+        W.last[id] = s;
+        const cur = W.dash["/" + (location.pathname.split("/")[1] || "lovelace")];
+        if (!cur || cur.event !== id || prev === undefined || prev === s || [prev, s].some((x) => x === "unavailable" || x === "unknown")) return;
+        if (DOMAIN(id) !== "event" && s !== "on") return;
+        history.pushState(null, "", location.pathname + location.search + "#klingel");
+        window.dispatchEvent(new Event("location-changed"));
+      });
+    };
+    const ids = [...new Set(Object.values(W.dash).filter(Boolean).map((x) => x.event))].sort();
+    if (!hass.connection || ids.join() === W.ids) return;
+    W.ids = ids.join();
+    Promise.resolve(W.unsub).then((u) => typeof u === "function" && u()).catch(() => {});
+    W.unsub = ids.length ? hass.connection.subscribeMessage((m) => W.feed(m), { type: "subscribe_entities", entity_ids: ids }) : null;
+  }
+
   // Gruppen der Übersicht: Schlüssel, Name, Symbol, Standardbreite (Spalten) — Reihenfolge = Standard
   const HOME_PARTS = [
     { key: "uhr", name: "Uhr & Wetter", icon: "mdi:clock-outline", width: 1 },
@@ -6771,15 +7163,19 @@ ha-tile-info {
     const climRooms = inv.shown.filter((r) => r.temperature || r.climate.length);
     if (climRooms.length) {
       const cards = [heading("Klima", "mdi:thermometer", on.klima ? `${base}/klima` : null)];
+      // Verlauf 24 h hinter der Kachel (Standard an, climate_graph: false = aus) — nur mit Temperatur-Sensor (Statistik)
+      const graph = cfg.climate_graph !== false && has("nullglow-spark-card");
       climRooms.forEach((r) => {
         const t = r.temperature;
-        cards.push({ type: "custom:mushroom-template-card", entity: t || r.climate[0],
+        const tile = { type: "custom:mushroom-template-card", entity: t || r.climate[0],
           primary: r.name,
           secondary: t ? `${num1(t)} °C` : `{% set x = state_attr('${r.climate[0]}', 'current_temperature') %}{{ ('%.1f' | format(x | float)) | replace('.', ',') if is_number(x) else '–' }} °C`,
           icon: r.icon, icon_color: t ? tempColor(t) : "grey",
           tap_action: { action: "navigate", navigation_path: r.hash },
-          grid_options: { columns: 6 },
-          card_mod: { style: `ha-card { --ng-state: ${heatCool(r.climate)}; }\n` } });
+          card_mod: { style: `ha-card { --ng-state: ${heatCool(r.climate)}; }\n` } };
+        cards.push(graph && t
+          ? { type: "custom:nullglow-spark-card", entity: t, color_scale: "room", min_span: 2, grid_options: { columns: 6 }, card: tile }
+          : { ...tile, grid_options: { columns: 6 } });
       });
       S.push("klima", { type: "grid", cards });
     }
@@ -6796,6 +7192,11 @@ ha-tile-info {
     if (inv.persons.length || inv.locks.length || inv.garages.length || contacts.length) {
       const cards = [heading("Zuhause", "mdi:home-account")];
       inv.persons.forEach((p) => cards.push({ type: "custom:mushroom-person-card", entity: p, icon_type: "entity-picture", grid_options: { columns: 6 } }));
+      // optional (person_map: true): Karte „Wo sind alle?“ — nur Personen mit Standort (GPS aus der HA-App)
+      const located = inv.persons.filter((p) => hass.states[p]?.attributes?.latitude != null);
+      if (cfg.person_map && located.length) cards.push({ type: "map", entities: located, theme_mode: "auto", hours_to_show: 0,
+        auto_fit: true, fit_zones: true, default_zoom: 14, grid_options: { columns: 12, rows: 3 },
+        ...(cfg.map_tint !== false ? { card_mod: { style: { "ha-map $": MAP_TINT } } } : {}) });
       inv.locks.forEach((l) => cards.push({ type: "tile", entity: l, grid_options: { columns: 6 },
         card_mod: { style: "ha-card { --ng-state: {{ 'warn' if is_state(config.entity, 'unlocked') else 'off' }}; }\n" } }));
       inv.garages.forEach((g) => cards.push({ type: "tile", entity: g, features: [{ type: "cover-open-close" }], grid_options: { columns: 6 } }));
@@ -7094,12 +7495,14 @@ ha-tile-info {
         energie: () => viewEnergie(energy, hass), kameras: () => viewKameras(inv, cfg), kalender: () => viewKalender(inv),
         sauger: () => viewSauger(inv, hass), maeher: () => viewMaeher(inv, hass),
       };
+      const door = doorbellCfg(cfg, hass, inv);   // Klingel-Pop-up auf jeder Seite
+      doorbellWatch(hass, base, door);
       return {
         title: cfg.title || "Nullglow",
         views: views.map((v) => {
           const r = build[v.key]();
           return { title: v.title, path: v.key, icon: v.icon, theme: design, type: "sections", max_columns: 4,
-            dense_section_placement: true, sections: [...r.sections, navSection(views, base, r.extra || [])] };
+            dense_section_placement: true, sections: [...r.sections, navSection(views, base, [...(r.extra || []), ...(door ? [doorbellPopup(door)] : [])])] };
         }),
       };
     }
@@ -7337,13 +7740,16 @@ ha-tile-info {
           helper: "Pop-up = alle Lampen des Raums einzeln (dimmen, Farbe, Szenen); Halten schaltet dann den Raum an/aus",
           selector: { select: { mode: "dropdown", options: [
             { value: "toggle", label: "Licht an/aus (Standard)" }, { value: "popup", label: "Pop-up mit den Lampen des Raums" }] } } },
+        { name: "climate_graph", label: "Temperatur-Verlauf in den Klima-Kacheln",
+          helper: "zeigt die letzten 24 Stunden als Linie hinter der Kachel (farbig nach Temperatur)", selector: { boolean: {} } },
         { name: "contacts", label: `Fenster & Türen auf der Übersicht (${nCon})`, helper: "Zusammengefasst = eine Kachel „Alles zu“ / „2 offen · …“, Antippen zeigt alle nach Etage",
           selector: { select: { mode: "dropdown", options: [
             { value: "auto", label: "Automatisch (ab 7 zusammengefasst)" }, { value: "list", label: "Einzeln" },
             { value: "compact", label: "Zusammengefasst" }, { value: "off", label: "Nicht anzeigen" }] } } },
       ], { hide_labels: c.hide_labels || [], short_names: c.short_names !== false, covers: c.covers || "auto", contacts: c.contacts || "auto",
-        light_tap: c.light_tap || "toggle" }, (v) => {
+        light_tap: c.light_tap || "toggle", climate_graph: c.climate_graph !== false }, (v) => {
         if (v.contacts && v.contacts !== "auto") c.contacts = v.contacts; else delete c.contacts;
+        if (v.climate_graph === false) c.climate_graph = false; else delete c.climate_graph;
         if (v.light_tap === "popup") c.light_tap = "popup"; else delete c.light_tap;
         if (v.hide_labels?.length) c.hide_labels = v.hide_labels; else delete c.hide_labels;
         if (v.short_names === false) c.short_names = false; else delete c.short_names;
@@ -7418,13 +7824,28 @@ ha-tile-info {
       }
 
       // 6. Wetter, Personen, Kameras, Kalender
+      this._doorAuto = doorbellAuto(hass, inv);
+      const door = doorbellCfg(c, hass, inv);
+      this._doorHelp = c.doorbell?.enabled
+        ? (door ? `aktiv: ${door.event} → ${door.camera} — beim Klingeln öffnet sich die Kamera groß (2 Min, auf jeder Seite)`
+          : "keine Klingel oder Kamera gefunden — unten wählen")
+        : `beim Klingeln öffnet sich die Kamera groß auf jeder Seite (2 Min)${this._doorAuto.event ? ` — erkannt: ${this._doorAuto.event}` : ""}`;
       box = this._panel("more", "6 · Design, Wetter, Personen, Kameras, Kalender", "mdi:tune-variant", designs(hass)[c.design] || designs(hass).nullglow || "Nullglow");
       box.appendChild(this._form([
         { name: "weather", label: "Wetter", helper: `leer = ${inv.weather || "keins gefunden"}`, selector: { entity: { filter: { domain: "weather" } } } },
         { name: "persons", label: "Personen", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "person" } } } },
+        { name: "person_map", label: "Karte mit Personen auf der Übersicht", helper: "zeigt, wo alle gerade sind (Standort aus der HA-App) — unter den Personen im Bereich Zuhause",
+          selector: { boolean: {} } },
+        ...(c.person_map ? [{ name: "map_tint", label: "Karte in den Design-Farben", helper: "aus = normale Kartenfarben", selector: { boolean: {} } }] : []),
         { name: "cameras", label: "Kameras", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
         { name: "live_cameras", label: "Live-Kameras auf der Übersicht (optional)", helper: "eine oder mehrere; Stream nur, solange die Übersicht offen ist — Größe und Platz unter „3 · Übersicht anordnen“",
           selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
+        { name: "doorbell_on", label: "Klingel: Kamera groß anzeigen", helper: this._doorHelp, selector: { boolean: {} } },
+        ...(c.doorbell?.enabled ? [
+          { name: "doorbell_event", label: "Klingel-Sensor", helper: `leer = automatisch: ${this._doorAuto.event || "keiner gefunden"}`,
+            selector: { entity: { filter: { domain: ["event", "binary_sensor"] } } } },
+          { name: "doorbell_camera", label: "Kamera für das Klingel-Fenster", helper: `leer = automatisch: ${this._doorAuto.camera || "keine gefunden"}`,
+            selector: { entity: { filter: { domain: "camera" } } } }] : []),
         { name: "cameras_live", label: "Kameras-Seite live", helper: "aus = Standbild, das sich alle paar Sekunden erneuert (Antippen = live)", selector: { boolean: {} } },
         { name: "calendars", label: "Kalender", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "calendar" } } } },
         { name: "screen_switch", label: "Steckdose des Wandmonitors (optional)", helper: "ist sie aus, pausiert das Nordlicht im Hintergrund",
@@ -7436,13 +7857,22 @@ ha-tile-info {
           selector: { select: { mode: "dropdown", options: [
             { value: "auto", label: "Wie Gerät / HA-Profil" }, { value: "dark", label: "Immer dunkel" },
             { value: "light", label: "Immer hell" }, { value: "sun", label: "Nach Sonne (tagsüber hell)" }] } } },
-      ], { design: c.design || "nullglow", mode: c.mode || "auto", weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], live_cameras: c.live_cameras || [], cameras_live: !!c.cameras_live, calendars: c.calendars || [], title: c.title,
+      ], { design: c.design || "nullglow", mode: c.mode || "auto", weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], live_cameras: c.live_cameras || [], cameras_live: !!c.cameras_live, person_map: !!c.person_map, map_tint: c.map_tint !== false, calendars: c.calendars || [], title: c.title,
+        doorbell_on: !!c.doorbell?.enabled, doorbell_event: c.doorbell?.event, doorbell_camera: c.doorbell?.camera,
         screen_switch: c.screen_switch }, (v) => {
         for (const k of ["weather", "title", "screen_switch"]) { if (v[k]) c[k] = v[k]; else delete c[k]; }
         if (v.design && v.design !== "nullglow") c.design = v.design; else delete c.design;
         if (v.mode && v.mode !== "auto") c.mode = v.mode; else delete c.mode;
         for (const k of ["persons", "cameras", "calendars", "live_cameras"]) { if (v[k]?.length) c[k] = v[k]; else delete c[k]; }
         if (v.cameras_live) c.cameras_live = true; else delete c.cameras_live;
+        const wasMap = !!c.person_map;
+        if (v.person_map) c.person_map = true; else delete c.person_map;
+        if (v.map_tint === false) c.map_tint = false; else delete c.map_tint;
+        if (wasMap !== !!v.person_map) { this._emit(); this._build(); return; }   // Schalter „Design-Farben“ ein-/ausblenden
+        const wasDoor = !!c.doorbell?.enabled;
+        if (v.doorbell_on) c.doorbell = { enabled: true, ...(v.doorbell_event ? { event: v.doorbell_event } : {}), ...(v.doorbell_camera ? { camera: v.doorbell_camera } : {}) };
+        else delete c.doorbell;
+        if (wasDoor !== !!v.doorbell_on) { this._emit(); this._build(); return; }   // Felder für Sensor/Kamera ein-/ausblenden
         this._emit();
       }));
 
