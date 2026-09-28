@@ -6721,6 +6721,187 @@ window.__NULLGLOW_THEMES = {
   window.customCards.push({ type: "nullglow-covers-card", name: t("Nullglow Rollläden"), description: t("Viele Rollläden als eine Kachel: Zustand, Balken je Rollladen, Alle auf/zu") });
 })();
 
+// ───── nullglow-lights-card.js ─────
+(() => {
+  if (customElements.get("nullglow-lights-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "nullglow-lights-card: rooms oder entities angeben": "nullglow-lights-card: rooms or entities required", "Licht": "Lights",
+    "Aus": "Off", "Alle aus": "All off", "Wirklich?": "Sure?", "alles aus": "all off", "{n} an": "{n} on",
+    "{n} Raum": "{n} room", "{n} Räume": "{n} rooms", "{n} nicht erreichbar": "{n} unavailable", "Nullglow Licht": "Nullglow Lights",
+    "Alle Lichter als eine Kachel: Balken je Raum in Lichtfarbe, Alle aus": "All lights as one tile: one bar per room in the light colour, all off",
+    "Lampen": "Lights", "Titel": "Title", "Symbol": "Icon", "Antippen öffnet": "Tap opens",
+    "je Lampe ein Balken (Räume mit mehreren Lampen: rooms in YAML)": "one bar per light (rooms with several lights: rooms in YAML)",
+    "z. B. #lichter für ein Bubble-Pop-up (optional)": "e.g. #lights for a Bubble pop-up (optional)",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const WARM = [255, 196, 130];   // Lampen ohne Farbangabe: warmweiß (wie die Licht-Kacheln)
+  const STYLE = `
+    :host { display: block; height: 100%; container: nglit / inline-size; }
+    .card { position: relative; height: 100%; box-sizing: border-box; padding: 12px 14px; border-radius: var(--ha-card-border-radius, 20px);
+      background: var(--ha-card-background, rgba(var(--rgb-ng-txt, 255, 255, 255), .045));
+      box-shadow: var(--ha-card-box-shadow, inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .09));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, none); backdrop-filter: var(--ha-card-backdrop-filter, none);
+      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "ic t btns" "bars bars bars";
+      align-items: center; align-content: center; column-gap: 12px; row-gap: 10px; transition: box-shadow .6s ease; }
+    .card.on { box-shadow: var(--ha-card-box-shadow, inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .09)),
+      inset 0 0 0 1px rgba(var(--lc), .35), 0 0 30px -12px rgba(var(--lc), calc(.7 * var(--ng-glow-k, 1))); }
+    .ic { grid-area: ic; } .mid { grid-area: t; } .btns { grid-area: btns; } .bars { grid-area: bars; }
+    .card.tap { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .ic { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; flex: none;
+      background: rgba(var(--rgb-ng-txt, 255, 255, 255), .06); color: var(--ng-txt-dim, #93a79d); --mdc-icon-size: 22px; }
+    .on .ic { background: rgba(var(--lc), .18); color: rgb(var(--lc)); }
+    .mid { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .mid b { font-size: 15px; font-weight: 600; color: var(--ng-txt, #e8f5ee); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mid span { font-size: 12px; color: var(--ng-txt-dim, #93a79d); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bars { display: flex; align-items: flex-end; gap: 5px; height: 26px; min-width: 0; overflow: hidden; }
+    .bars i { flex: 1 1 0; max-width: 56px; min-width: 3px; height: 100%; border-radius: 3px; position: relative; overflow: hidden;
+      background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); }
+    .bars i::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--p, 0%); border-radius: 3px;
+      background: rgb(var(--c, 255, 196, 130)); opacity: .9; box-shadow: 0 0 8px rgba(var(--c, 255, 196, 130), .6);
+      transition: height .6s cubic-bezier(.22,1,.36,1), background .6s; }
+    .bars i.na::after { background: var(--ng-txt-mute, #5f6f68); height: 100%; opacity: .25; box-shadow: none; }
+    .btns { display: flex; gap: 6px; }
+    .btns button { border: 0; font: inherit; font-size: 13px; font-weight: 500; min-height: 40px; padding: 0 12px; border-radius: 999px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px; color: var(--ng-txt, #e8f5ee); background: rgba(var(--rgb-ng-txt, 255, 255, 255), .06);
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.1)); -webkit-tap-highlight-color: transparent; white-space: nowrap;
+      transition: background .2s cubic-bezier(.22,1,.36,1), color .2s; }
+    .btns button[disabled] { opacity: .35; cursor: default; }
+    .btns button ha-icon { --mdc-icon-size: 18px; }
+    .btns button.arm { background: var(--ng-warn, #ffd166); color: #1a1405; box-shadow: none; }
+    .btns button:active { transform: scale(.96); }
+    @container nglit (max-width: 300px) { .btns .lbl { display: none; } .btns button { padding: 0 11px; } }
+  `;
+
+  class NullglowLightsCard extends HTMLElement {
+    // ── Editor ──
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static getConfigForm() {
+      const en = this._ngEn(), tr = (x) => (en ? EN[x] ?? x : x);
+      const labels = { entities: "Lampen", title: "Titel", icon: "Symbol", tap: "Antippen öffnet" };
+      const helpers = { entities: "je Lampe ein Balken (Räume mit mehreren Lampen: rooms in YAML)", tap: "z. B. #lichter für ein Bubble-Pop-up (optional)" };
+      return {
+        schema: [
+          { name: "entities", selector: { entity: { multiple: true, filter: { domain: "light" } } } },
+          { type: "grid", name: "", schema: [{ name: "title", selector: { text: {} } }, { name: "icon", selector: { icon: {} } }] },
+          { name: "tap", selector: { text: {} } },
+        ],
+        computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => (helpers[s.name] ? tr(helpers[s.name]) : undefined),
+      };
+    }
+    static async getStubConfig(hass) {
+      return { entities: Object.keys(hass?.states || {}).filter((id) => id.startsWith("light.") && !id.includes("_segment_")).slice(0, 12),
+        title: this._ngEn() ? "Lights" : "Licht" };
+    }
+    // ── Editor Ende ──
+    setConfig(config) {
+      const rooms = config?.rooms?.length ? config.rooms.map((r) => ({ name: r.name, lights: [].concat(r.lights || r.entities || []) }))
+        : (config?.entities || []).map((e) => ({ name: null, lights: [e] }));
+      if (!rooms.length || !rooms.some((r) => r.lights.length)) throw new Error(t("nullglow-lights-card: rooms oder entities angeben"));
+      this._cfg = { title: t("Licht"), icon: "mdi:lightbulb-group", ...config };
+      this._rooms = rooms.filter((r) => r.lights.length);
+      this._all = [...new Set(this._rooms.flatMap((r) => r.lights))];
+      if (!this.shadowRoot) this.attachShadow({ mode: "open" });
+      const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
+      card.className = `card ${this._cfg.tap ? "tap" : ""}`;
+      card.innerHTML = `
+        <div class="ic"><ha-icon icon="${esc(this._cfg.icon)}"></ha-icon></div>
+        <div class="mid"><b>${esc(this._cfg.title)}</b><span class="sum">–</span></div>
+        <div class="bars">${this._rooms.map(() => "<i></i>").join("")}</div>
+        <div class="btns"><button class="off" title="${t("Alle aus")}"><ha-icon icon="mdi:lightbulb-group-off"></ha-icon><span class="lbl">${t("Aus")}</span></button></div>`;
+      this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
+      this.shadowRoot.appendChild(card);
+      this._card = card;
+      this._bars = [...card.querySelectorAll(".bars i")];
+      card.addEventListener("click", () => this._open());
+      card.querySelector(".off").addEventListener("click", (ev) => { ev.stopPropagation(); this._press(ev.currentTarget); });
+      this._key = null;
+    }
+
+    set hass(h) {
+      ngH = h;
+      this._hass = h;
+      if (!this._rooms) return;
+      // je Raum: an/aus, Helligkeit (Mittel der eingeschalteten), Farbe (Mittel), erreichbar
+      const vals = this._rooms.map((r) => {
+        const st = r.lights.map((id) => h.states[id]).filter(Boolean);
+        const ok = st.filter((s) => !["unavailable", "unknown"].includes(s.state));
+        if (!ok.length) return null;
+        const on = ok.filter((s) => s.state === "on");
+        const col = on.map((s) => s.attributes.rgb_color || WARM);
+        const rgb = col.length ? [0, 1, 2].map((k) => Math.round(col.reduce((a, c) => a + c[k], 0) / col.length)) : null;
+        const br = on.map((s) => (typeof s.attributes.brightness === "number" ? s.attributes.brightness / 255 : 1));
+        return { on: on.length, p: br.length ? Math.round((br.reduce((a, b) => a + b, 0) / br.length) * 100) : 0, rgb,
+          name: r.name || h.states[r.lights[0]]?.attributes?.friendly_name || r.lights[0] };
+      });
+      const key = JSON.stringify(vals) + ngLang();
+      if (key === this._key) return;
+      this._key = key;
+      const ok = vals.filter(Boolean), lamps = ok.reduce((a, v) => a + v.on, 0), rooms = ok.filter((v) => v.on).length;
+      const multi = this._rooms.some((r) => r.lights.length > 1);
+      const parts = lamps ? [t("{n} an", { n: lamps })] : [t("alles aus")];
+      if (lamps && multi) parts.push(t(rooms === 1 ? "{n} Raum" : "{n} Räume", { n: rooms }));
+      if (ok.length < vals.length) parts.push(t("{n} nicht erreichbar", { n: vals.length - ok.length }));
+      this._card.querySelector(".sum").textContent = parts.join(" · ");
+      // Mischfarbe aller eingeschalteten Räume fürs Symbol/Glühen
+      const on = ok.filter((v) => v.rgb);
+      const mix = on.length ? [0, 1, 2].map((k) => Math.round(on.reduce((a, v) => a + v.rgb[k], 0) / on.length)) : null;
+      this._card.classList.toggle("on", !!mix);
+      if (mix) this._card.style.setProperty("--lc", mix.join(", ")); else this._card.style.removeProperty("--lc");
+      this._card.querySelector(".off").disabled = !lamps;
+      vals.forEach((v, i) => {
+        const el = this._bars[i];
+        el.className = v ? "" : "na";
+        el.style.setProperty("--p", v && v.on ? `${Math.max(v.p, 12)}%` : "0%");
+        if (v?.rgb) el.style.setProperty("--c", v.rgb.join(", ")); else el.style.removeProperty("--c");
+        el.title = v ? `${v.name}${v.on ? ` · ${v.p} %` : ""}` : this._rooms[i].name || this._rooms[i].lights[0];
+      });
+    }
+
+    _press(b) {
+      if (!b.classList.contains("arm")) {   // erst scharf schalten, dann ausführen
+        b.classList.add("arm");
+        const lbl = b.querySelector(".lbl");
+        lbl.textContent = t("Wirklich?");
+        clearTimeout(this._armT);
+        this._armT = setTimeout(() => { b.classList.remove("arm"); lbl.textContent = t("Aus"); }, 4000);
+        return;
+      }
+      clearTimeout(this._armT);
+      b.classList.remove("arm");
+      b.querySelector(".lbl").textContent = t("Aus");
+      const ids = this._all.filter((id) => this._hass.states[id]?.state === "on");
+      if (ids.length) this._hass.callService("light", "turn_off", { entity_id: ids });
+    }
+
+    _open() {
+      const tp = this._cfg.tap;
+      if (!tp) return;
+      if (tp.startsWith("#")) {   // Bubble-Pop-up
+        history.pushState(null, "", location.pathname + location.search + tp);
+        window.dispatchEvent(new Event("location-changed"));
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+      } else {
+        history.pushState(null, "", tp);
+        window.dispatchEvent(new Event("location-changed"));
+      }
+    }
+
+    getCardSize() { return 2; }
+    getGridOptions() { return { columns: 12, rows: 2, min_rows: 2 }; }
+  }
+
+  customElements.define("nullglow-lights-card", NullglowLightsCard);
+  window.customCards = window.customCards || [];
+  window.customCards.push({ type: "nullglow-lights-card", name: t("Nullglow Licht"), description: t("Alle Lichter als eine Kachel: Balken je Raum in Lichtfarbe, Alle aus") });
+})();
+
 // ───── nullglow-contacts-card.js ─────
 (() => {
   if (customElements.get("nullglow-contacts-card")) return;
@@ -6867,6 +7048,1187 @@ window.__NULLGLOW_THEMES = {
   customElements.define("nullglow-contacts-card", NullglowContactsCard);
   window.customCards = window.customCards || [];
   window.customCards.push({ type: "nullglow-contacts-card", name: t("Nullglow Fenster & Türen"), description: t("Viele Kontakte als eine Kachel: offen/zu, ein Punkt je Kontakt") });
+})();
+
+// ───── nullglow-media-card.js ─────
+(() => {
+  if (customElements.get("nullglow-media-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "Spielt": "Playing", "Pausiert": "Paused", "Lädt …": "Buffering …", "Bereit": "Idle", "An": "On", "Aus": "Off",
+    "Standby": "Standby", "Nicht erreichbar": "Unavailable", "Unbekannt": "Unknown", "Kein Mediaplayer": "No media player", "Nichts läuft": "Nothing playing",
+    "Zurück": "Previous", "Weiter": "Next", "Wiedergabe/Pause": "Play/pause", "Einschalten": "Turn on", "Ausschalten": "Turn off",
+    "Stumm": "Mute", "Lautstärke {v} %": "Volume {v}%", "Quelle": "Source", "Details": "Details",
+    "Nullglow Medien": "Nullglow Media",
+    "Mediaplayer mit Cover als Hintergrund, Akzentfarbe aus dem Cover": "Media player with the cover as background, accent colour taken from the cover",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  // supported_features-Bits von media_player
+  const F = { PAUSE: 1, VOL_SET: 4, VOL_MUTE: 8, PREV: 16, NEXT: 32, ON: 128, OFF: 256, SOURCE: 2048, PLAY: 16384 };
+  const RUN = ["playing", "buffering"];
+  const STATE = { playing: "Spielt", paused: "Pausiert", buffering: "Lädt …", idle: "Bereit", on: "An", off: "Aus",
+    standby: "Standby", unavailable: "Nicht erreichbar", unknown: "Unbekannt" };
+  const eco = () => document.documentElement.dataset.ngEco === "1";
+  const fmt = (s) => { s = Math.max(0, Math.floor(s || 0)); const h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, x = String(s % 60).padStart(2, "0");
+    return h ? `${h}:${String(m).padStart(2, "0")}:${x}` : `${m}:${x}`; };
+
+  // Farben: HSL-Umrechnung für Akzent aus dem Cover
+  const rgb2hsl = (r, g, b) => {
+    r /= 255; g /= 255; b /= 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn;
+    if (!d) return [0, 0, l];
+    const h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return [(h * 60 + 360) % 360, d / (1 - Math.abs(2 * l - 1)), l];
+  };
+  // App ohne Bild -> Logo + Markenfarbe statt Note (Treffer über app_name/app_id, Teilstring, klein geschrieben)
+  const APPS = [
+    [/youtube/, "mdi:youtube", [255, 0, 51]], [/netflix/, "mdi:netflix", [229, 9, 20]], [/spotify/, "mdi:spotify", [30, 215, 96]],
+    [/twitch/, "mdi:twitch", [145, 70, 255]], [/plex/, "mdi:plex", [229, 160, 13]], [/kodi/, "mdi:kodi", [23, 178, 231]],
+    [/disney/, "mdi:shimmer", [17, 60, 207]], [/prime video|amazon video|primevideo/, "mdi:play-box", [0, 168, 225]],
+    [/apple tv|com\.apple\.tv/, "mdi:apple", [200, 200, 210]], [/apple music|com\.apple\.music/, "mdi:apple", [250, 45, 72]],
+    [/soundcloud/, "mdi:soundcloud", [255, 85, 0]], [/deezer/, "mdi:music-circle", [162, 56, 255]], [/tidal/, "mdi:music-circle", [0, 255, 255]],
+    [/audible/, "mdi:book-music", [247, 153, 28]], [/tunein|radio/, "mdi:radio", [28, 203, 176]], [/\bard\b|\bzdf\b|mediathek/, "mdi:television-classic", [0, 120, 200]],
+  ];
+  const appLook = (a) => {
+    const n = String(a.app_name || a.app_id || "").toLowerCase();
+    if (!n) return null;
+    const hit = APPS.find(([re]) => re.test(n));
+    return hit ? { icon: hit[1], rgb: hit[2] } : null;
+  };
+  const hsl2rgb = (h, s, l) => {
+    const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2;
+    const v = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+    return v.map((q) => Math.round((q + m) * 255));
+  };
+  // Kräftigste, halbwegs helle Farbe: 24×24 verkleinern, Pixel nach Farbton (20°-Fächer) gewichtet sammeln (Sättigung²,
+  // mittlere Helligkeit bevorzugt), bester Fächer gemittelt. Zu wenig Buntes (Graustufen-Cover) → null = Theme-Akzent.
+  const COL = new Map();   // Bild-URL → Promise<[r, g, b] | null>
+  const vivid = (url) => {
+    if (COL.has(url)) return COL.get(url);
+    const p = new Promise((res) => {
+      const img = new Image();
+      try { if (new URL(url, location.href).origin !== location.origin) img.crossOrigin = "anonymous"; } catch (e) { /* relativ */ }
+      img.onload = () => {
+        try {
+          const N = 24, c = document.createElement("canvas");
+          c.width = c.height = N;
+          const x = c.getContext("2d", { willReadFrequently: true });
+          x.drawImage(img, 0, 0, N, N);
+          const d = x.getImageData(0, 0, N, N).data, bins = [];
+          for (let i = 0; i < d.length; i += 4) {
+            if (d[i + 3] < 128) continue;
+            const [h, s, l] = rgb2hsl(d[i], d[i + 1], d[i + 2]);
+            if (l < 0.12 || l > 0.9 || s < 0.22) continue;
+            const w = s * s * (1 - Math.abs(l - 0.52) * 1.4);
+            if (w <= 0) continue;
+            const b = (bins[Math.floor(h / 20)] ||= [0, 0, 0, 0]);
+            b[0] += w; b[1] += d[i] * w; b[2] += d[i + 1] * w; b[3] += d[i + 2] * w;
+          }
+          const best = bins.reduce((a, b) => (b && (!a || b[0] > a[0]) ? b : a), null);
+          res(best && best[0] > N * N * 0.012 ? [best[1], best[2], best[3]].map((v) => Math.round(v / best[0])) : null);
+        } catch (e) { res(null); }   // CORS / verunreinigtes Canvas → Theme-Akzent
+      };
+      img.onerror = () => res(null);
+      img.src = url;
+    });
+    COL.set(url, p);
+    if (COL.size > 60) COL.delete(COL.keys().next().value);
+    return p;
+  };
+
+  const STYLE = `
+    :host { display: block; height: 100%; container: ngmc / inline-size; }
+    :host([hidden]) { display: none !important; }
+    .card { position: relative; height: 100%; box-sizing: border-box; overflow: hidden; isolation: isolate;
+      border-radius: var(--ha-card-border-radius, 20px); color: var(--ng-txt, #e8f5ee);
+      background: var(--ha-card-background, rgba(var(--rgb-ng-txt, 255, 255, 255), .045));
+      box-shadow: var(--ha-card-box-shadow, inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .09));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, none); backdrop-filter: var(--ha-card-backdrop-filter, none);
+      --mc-rgb: var(--rgb-ng-acc, 124, 255, 178); --mc-ink: var(--ng-acc-ink, #04140d); --art: 100px;
+      transition: box-shadow .9s ease; }
+    .card.run { box-shadow: var(--ha-card-box-shadow, inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .09)),
+      inset 0 0 0 1px rgba(var(--mc-rgb), .28), 0 0 34px -14px rgba(var(--mc-rgb), calc(.7 * var(--ng-glow-k, 1))); }
+    /* Hintergrund: Cover weichgezeichnet (zwei Ebenen zum Überblenden) + Schleier in Hintergrundfarbe des Designs */
+    .bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; border-radius: inherit; }
+    .bg i { position: absolute; inset: -25%; background: center / cover no-repeat; opacity: 0;
+      filter: blur(var(--mc-blur, 24px)) saturate(1.5); transition: opacity 1s ease; }
+    .bg i.on { opacity: .62; }
+    .bg::after { content: ""; position: absolute; inset: 0;
+      background: linear-gradient(100deg, rgba(var(--rgb-ng-bg, 5, 7, 10), .5), rgba(var(--rgb-ng-bg, 5, 7, 10), .26) 70%, rgba(var(--rgb-ng-bg, 5, 7, 10), .38)); }
+    .large .bg i { --mc-blur: 34px; }
+    .body { position: relative; z-index: 1; height: 100%; box-sizing: border-box; display: grid; min-width: 0; }
+    .art { grid-area: art; width: var(--art); height: var(--art); align-self: center; border-radius: 14px; overflow: hidden; position: relative;
+      cursor: pointer; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .07); display: grid; place-items: center;
+      box-shadow: 0 8px 22px -10px rgba(var(--rgb-ng-bg, 5, 7, 10), .8), inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .1);
+      color: var(--ng-txt-dim, #93a79d); --mdc-icon-size: 34px; -webkit-tap-highlight-color: transparent; }
+    .run .art { box-shadow: 0 8px 26px -8px rgba(var(--mc-rgb), calc(.55 * var(--ng-glow-k, 1))), inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .12); }
+    .art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .art img[hidden] { display: none; }
+    .art.app { color: rgb(var(--mc-rgb)); --mdc-icon-size: 52px;
+      background: radial-gradient(circle at 50% 42%, rgba(var(--mc-rgb), .24), rgba(var(--mc-rgb), .06) 72%);
+      box-shadow: 0 8px 26px -8px rgba(var(--mc-rgb), calc(.55 * var(--ng-glow-k, 1))), inset 0 0 0 1px rgba(var(--mc-rgb), .3); }
+    .large .art.app { --mdc-icon-size: 76px; }
+    .card.applook .bg { background: radial-gradient(90% 160% at 0% 50%, rgba(var(--mc-rgb), .2), transparent 65%); }
+    .info { grid-area: info; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 1px;
+      text-shadow: 0 1px 10px rgba(var(--rgb-ng-bg, 5, 7, 10), .55); }
+    .who { display: flex; align-items: center; gap: 6px; min-width: 0; height: 20px; font-size: 11px; font-weight: 600;
+      letter-spacing: .06em; text-transform: uppercase; color: var(--ng-txt-dim, #93a79d); }
+    .who .nm { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .eq { flex: none; display: none; align-items: flex-end; gap: 2px; height: 10px; }
+    .run .eq { display: inline-flex; }
+    .eq i { width: 2px; height: 100%; border-radius: 1px; background: rgb(var(--mc-rgb)); transform-origin: bottom;
+      animation: ngmq 1.1s ease-in-out infinite; transition: background-color .9s ease; }
+    .eq i:nth-child(2) { animation-delay: -.45s; } .eq i:nth-child(3) { animation-delay: -.8s; }
+    @keyframes ngmq { 0%, 100% { transform: scaleY(.3); } 50% { transform: scaleY(1); } }
+    .chips { display: flex; gap: 4px; min-width: 0; overflow-x: auto; scrollbar-width: none; text-transform: none; letter-spacing: 0; }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip { flex: none; max-width: 120px; border: 0; font: inherit; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 999px;
+      cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ng-txt-dim, #93a79d);
+      background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); -webkit-tap-highlight-color: transparent;
+      transition: background-color .3s ease, color .3s ease, box-shadow .9s ease; }
+    .chip.sel { color: var(--ng-txt, #e8f5ee); background: rgba(var(--mc-rgb), .2); box-shadow: inset 0 0 0 1px rgba(var(--mc-rgb), .55); }
+    .txt { min-width: 0; cursor: pointer; display: flex; flex-direction: column; gap: 1px; -webkit-tap-highlight-color: transparent; }
+    .t { font-size: 15px; font-weight: 650; line-height: 1.25; color: var(--ng-txt, #e8f5ee); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .s, .a { font-size: 12px; line-height: 1.3; color: var(--ng-txt-dim, #93a79d); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card .a, .card .src, .card .pw, .card .vol, .card .t0, .card .t1, .card .sp { display: none; }
+    .ctl { grid-area: ctl; display: flex; align-items: center; gap: 6px; min-width: 0; }
+    .btn { flex: none; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+      color: var(--ng-txt, #e8f5ee); background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); --mdc-icon-size: 20px;
+      box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .08); -webkit-tap-highlight-color: transparent;
+      transition: background-color .2s ease, transform .15s ease; }
+    .btn[hidden] { display: none; }
+    .btn:active { transform: scale(.92); }
+    .btn:disabled { opacity: .35; cursor: default; }
+    .btn.main { width: 42px; height: 42px; --mdc-icon-size: 24px; color: var(--mc-ink); background: rgb(var(--mc-rgb));
+      box-shadow: 0 0 18px -4px rgba(var(--mc-rgb), calc(.75 * var(--ng-glow-k, 1)));
+      transition: background-color .9s ease, box-shadow .9s ease, color .9s ease, transform .15s ease; }
+    .btn.on { color: rgb(var(--mc-rgb)); background: rgba(var(--mc-rgb), .16); }
+    .tm { margin-left: auto; padding-left: 4px; font-size: 11px; color: var(--ng-txt-dim, #93a79d); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .prog { grid-area: prog; display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .prog[hidden] { display: none; }
+    .bar { flex: 1; min-width: 0; position: relative; height: 3px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .12); }
+    .bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: inherit; background: rgb(var(--mc-rgb));
+      box-shadow: 0 0 10px rgba(var(--mc-rgb), calc(.8 * var(--ng-glow-k, 1))); transition: background-color .9s ease, box-shadow .9s ease; }
+    .empty .art, .empty .ctl, .empty .prog { visibility: hidden; }
+    .empty.rest .art { visibility: visible; opacity: .55; }
+    .empty.rest .info { opacity: .7; }
+
+    /* Kompakt (Übersicht): Cover links, Text rechts, Knöpfe darunter; Fortschritt als Linie an der Unterkante */
+    .compact .body { padding: 10px 12px 10px 10px; grid-template-columns: var(--art) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto;
+      grid-template-areas: "art info" "art ctl"; column-gap: 12px; row-gap: 4px; }
+    .compact .prog { position: absolute; left: 0; right: 0; bottom: 0; }
+    .compact .bar { height: 3px; }
+    .compact .who { height: 16px; }
+    .compact .btn { width: 32px; height: 32px; --mdc-icon-size: 19px; }
+    .compact .btn.main { width: 38px; height: 38px; --mdc-icon-size: 22px; }
+    @container ngmc (min-width: 520px) {
+      .compact .body { grid-template-columns: var(--art) minmax(0, 1fr) auto; grid-template-rows: minmax(0, 1fr); grid-template-areas: "art info ctl"; column-gap: 14px; }
+      .compact .tm { order: -1; margin: 0 4px 0 0; }
+      .compact .btn { width: 36px; height: 36px; } .compact .btn.main { width: 44px; height: 44px; --mdc-icon-size: 26px; }
+    }
+    @container ngmc (max-width: 300px) { .compact .tm { display: none; } }
+    @container ngmc (min-width: 520px) and (max-width: 619px) { .compact .tm { display: none; } }
+
+    /* Groß (Medien-Seite): größeres Cover, Titel zweizeilig, Fortschritt mit Zeiten, Lautstärke + Ein/Aus + Quelle */
+    .large .body { padding: 16px 18px 14px; grid-template-columns: var(--art) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto;
+      grid-template-areas: "art info" "prog prog" "ctl ctl"; column-gap: 18px; row-gap: 10px; }
+    .large .art { border-radius: 16px; --mdc-icon-size: 48px; }
+    .large .info { gap: 3px; }
+    .large .t { font-size: 20px; line-height: 1.22; white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .large .s { font-size: 14px; color: var(--ng-txt, #e8f5ee); opacity: .86; }
+    .large .a { display: block; font-size: 12.5px; }
+    .large .tm { display: none; }
+    .large .t0, .large .t1 { display: block; flex: none; font-size: 11px; color: var(--ng-txt-dim, #93a79d); font-variant-numeric: tabular-nums; min-width: 34px; }
+    .large .t1 { text-align: right; }
+    .large .bar { height: 5px; border-radius: 3px; }
+    .large .btn { width: 40px; height: 40px; --mdc-icon-size: 22px; }
+    .large .btn.main { width: 52px; height: 52px; --mdc-icon-size: 30px; }
+    .large .pw { display: grid; }
+    .large .pw[hidden] { display: none; }
+    .large .vol { display: flex; align-items: center; gap: 6px; flex: 1 1 auto; min-width: 0; max-width: 240px; }
+    .large .vol[hidden] { display: none; }
+    .large .vol.nr { flex: none; }
+    .large .src { display: block; position: relative; align-self: flex-start; max-width: 100%; margin-top: 6px; }
+    .large .src[hidden] { display: none; }
+    .src select { appearance: none; -webkit-appearance: none; max-width: 100%; font: inherit; font-size: 12px; font-weight: 500; cursor: pointer;
+      color: var(--ng-txt, #e8f5ee); background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); border: 0; border-radius: 999px;
+      padding: 6px 28px 6px 12px; box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .1); text-overflow: ellipsis; }
+    .src option { color: var(--ng-txt, #e8f5ee); background: var(--ng-bg, #05070a); }
+    .src ha-icon { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); --mdc-icon-size: 16px; pointer-events: none; color: var(--ng-txt-dim, #93a79d); }
+    input[type=range] { -webkit-appearance: none; appearance: none; flex: 1; min-width: 50px; height: 30px; margin: 0; background: transparent; cursor: pointer; --v: 0%; }
+    input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px;
+      background: linear-gradient(90deg, rgb(var(--mc-rgb)) var(--v), rgba(var(--rgb-ng-txt, 255, 255, 255), .14) var(--v)); }
+    input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .14); }
+    input[type=range]::-moz-range-progress { height: 6px; border-radius: 3px; background: rgb(var(--mc-rgb)); }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; margin-top: -6px; border-radius: 50%;
+      background: rgb(var(--mc-rgb)); box-shadow: 0 0 0 3px rgba(var(--rgb-ng-bg, 5, 7, 10), .55), 0 0 12px rgba(var(--mc-rgb), calc(.6 * var(--ng-glow-k, 1))); }
+    input[type=range]::-moz-range-thumb { width: 18px; height: 18px; border: 0; border-radius: 50%; background: rgb(var(--mc-rgb));
+      box-shadow: 0 0 0 3px rgba(var(--rgb-ng-bg, 5, 7, 10), .55); }
+    .large .ctl { gap: 8px; }
+    .large .sp { display: block; flex: 1 1 0; }
+
+    /* Stromsparen: keine Übergänge, keine Animation */
+    .eco, .eco * { transition: none !important; animation: none !important; }
+  `;
+
+  class NullglowMediaCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
+    }
+    static async _ngEnergy(hass) {   // Vorschlag aus dem Energie-Dashboard (Erkennung der Flow-Card)
+      try { return (await customElements.get("nullglow-flow-card")?.getStubConfig?.(hass)) || {}; } catch (e) { return {}; }
+    }
+    static _ngFind(hass, test) {
+      return Object.keys(hass?.states || {}).filter((id) => test(id, hass.states[id].attributes || {}));
+    }
+
+    static getConfigForm() {
+      return this._ngForm([
+        { name: "entities", selector: { entity: { multiple: true, filter: { domain: "media_player" } } } },
+        { type: "grid", name: "", schema: [
+          { name: "size", selector: { select: { mode: "dropdown", options: [
+            { value: "compact", label: "Kompakt (Übersicht)" }, { value: "large", label: "Groß (Medien-Seite)" }] } } },
+          { name: "hide_idle", selector: { boolean: {} } }] },
+      ], { entities: "Mediaplayer", size: "Größe", hide_idle: "Ausblenden, wenn nichts läuft" },
+      { entities: "leer = alle Mediaplayer; es zeigt der, der gerade spielt", hide_idle: "Karte verschwindet, solange nichts spielt oder pausiert" },
+      { "Mediaplayer": "Media players", "Größe": "Size", "Ausblenden, wenn nichts läuft": "Hide when nothing is playing",
+        "Kompakt (Übersicht)": "Compact (overview)", "Groß (Medien-Seite)": "Large (media page)",
+        "leer = alle Mediaplayer; es zeigt der, der gerade spielt": "empty = all media players; shows the one that is playing",
+        "Karte verschwindet, solange nichts spielt oder pausiert": "Card disappears while nothing is playing or paused" });
+    }
+    static async getStubConfig(hass) {
+      const first = this._ngFind(hass, (id) => id.startsWith("media_player."))[0];
+      return { entities: first ? [first] : [], size: "large" };
+    }
+    // ── Editor Ende ──
+    setConfig(config) {
+      const c = { size: "compact", hide_idle: false, ...config };
+      c.entities = (c.entities?.length ? c.entities : c.entity ? [c.entity] : []).map((e) => (typeof e === "string" ? e : e?.entity)).filter(Boolean);
+      c.size = c.size === "large" ? "large" : "compact";
+      this._cfg = c;
+      if (!this.shadowRoot) this.attachShadow({ mode: "open" });
+      const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
+      card.className = `card ${c.size}`;
+      card.innerHTML = `
+        <div class="bg"><i></i><i></i></div>
+        <div class="body">
+          <div class="art" title="${t("Details")}"><ha-icon icon="mdi:music-note"></ha-icon><img alt="" hidden></div>
+          <div class="info">
+            <div class="who"><span class="eq"><i></i><i></i><i></i></span><span class="nm"></span><div class="chips"></div></div>
+            <div class="txt" title="${t("Details")}"><div class="t"></div><div class="s"></div><div class="a"></div></div>
+            <div class="src" hidden><select aria-label="${t("Quelle")}"></select><ha-icon icon="mdi:chevron-down"></ha-icon></div>
+          </div>
+          <div class="prog" hidden><span class="t0"></span><div class="bar"><i></i></div><span class="t1"></span></div>
+          <div class="ctl">
+            <button class="btn" data-a="media_previous_track" title="${t("Zurück")}"><ha-icon icon="mdi:skip-previous"></ha-icon></button>
+            <button class="btn main" data-a="play" title="${t("Wiedergabe/Pause")}"><ha-icon icon="mdi:play"></ha-icon></button>
+            <button class="btn" data-a="media_next_track" title="${t("Weiter")}"><ha-icon icon="mdi:skip-next"></ha-icon></button>
+            <span class="tm"></span>
+            <span class="sp"></span>
+            <div class="vol"><button class="btn mute" data-a="mute" title="${t("Stumm")}"><ha-icon icon="mdi:volume-high"></ha-icon></button>
+              <input type="range" min="0" max="100" step="1"></div>
+            <button class="btn pw" data-a="power" title="${t("Ausschalten")}"><ha-icon icon="mdi:power"></ha-icon></button>
+          </div>
+        </div>`;
+      this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
+      this.shadowRoot.appendChild(card);
+      const q = (s) => card.querySelector(s);
+      this._card = card;
+      this._el = { body: q(".body"), bg: [...card.querySelectorAll(".bg i")], art: q(".art"), img: q(".art img"), ph: q(".art ha-icon"),
+        nm: q(".nm"), chips: q(".chips"), t: q(".t"), s: q(".s"), a: q(".a"), src: q(".src"), sel: q(".src select"),
+        prog: q(".prog"), fill: q(".bar i"), t0: q(".t0"), t1: q(".t1"), tm: q(".tm"), vol: q(".vol"), rng: q("input[type=range]"),
+        btn: Object.fromEntries([...card.querySelectorAll(".btn")].map((b) => [b.dataset.a, b])) };
+      const E = this._el;
+      E.img.addEventListener("error", () => { E.img.hidden = true; E.ph.style.display = ""; });
+      E.img.addEventListener("load", () => { E.ph.style.display = "none"; });
+      const more = () => this._cur && this.dispatchEvent(new CustomEvent("hass-more-info", { detail: { entityId: this._cur }, bubbles: true, composed: true }));
+      E.art.addEventListener("click", more);
+      q(".txt").addEventListener("click", more);
+      E.chips.addEventListener("click", (ev) => {
+        const b = ev.target.closest(".chip");
+        if (!b) return;
+        ev.stopPropagation();
+        this._sel = b.dataset.id;
+        this._key = null;
+        if (this._hass) this.hass = this._hass;
+      });
+      Object.values(E.btn).forEach((b) => b.addEventListener("click", (ev) => { ev.stopPropagation(); this._press(b.dataset.a); }));
+      // Lautstärke: nur beim Loslassen senden; solange gezogen wird, keine Updates von HA übernehmen
+      E.rng.addEventListener("pointerdown", () => { this._drag = true; });
+      E.rng.addEventListener("input", () => E.rng.style.setProperty("--v", `${E.rng.value}%`));
+      E.rng.addEventListener("change", () => {
+        this._drag = false;
+        if (this._cur) this._hass.callService("media_player", "volume_set", { entity_id: this._cur, volume_level: Number(E.rng.value) / 100 });
+      });
+      E.rng.addEventListener("pointerup", () => setTimeout(() => { this._drag = false; }, 400));
+      E.sel.addEventListener("change", () => {
+        if (this._cur && E.sel.value) this._hass.callService("media_player", "select_source", { entity_id: this._cur, source: E.sel.value });
+      });
+      this._ro?.disconnect();
+      this._ro = new ResizeObserver(() => this._fit());
+      if (this.isConnected) this._ro.observe(E.body);
+      this._key = null; this._bgUrl = undefined; this._bgI = 0; this._raw = null; this._artPx = 0;
+    }
+
+    connectedCallback() {
+      this._vis ||= () => this._timer();
+      this._edit ||= () => { this._key = null; if (this._hass) this.hass = this._hass; };   // Nullglow „Kacheln bearbeiten“ an/aus
+      document.addEventListener("visibilitychange", this._vis);
+      window.addEventListener("nullglow-edit", this._edit);
+      if (this._el) this._ro?.observe(this._el.body);
+      this._timer();
+    }
+    disconnectedCallback() {
+      document.removeEventListener("visibilitychange", this._vis);
+      window.removeEventListener("nullglow-edit", this._edit);
+      clearInterval(this._tm); this._tm = null;
+      this._ro?.disconnect();
+    }
+
+    _ids(h) {
+      return this._cfg.entities.length ? this._cfg.entities : Object.keys(h.states).filter((id) => id.startsWith("media_player."));
+    }
+    _isLight() {   // helles Design? (--ng-is-light), höchstens alle 2 s nachsehen
+      const now = Date.now();
+      if (now - (this._lightT || 0) > 2000) { this._lightT = now; this._light = getComputedStyle(this).getPropertyValue("--ng-is-light").trim() === "1"; }
+      return this._light;
+    }
+
+    set hass(h) {
+      ngH = h;
+      this._hass = h;
+      if (!this._cfg) return;
+      const st = this._ids(h).map((id) => h.states[id]).filter(Boolean);
+      const act = st.filter((s) => RUN.includes(s.state) || s.state === "paused");
+      let cur = act.find((s) => s.entity_id === this._sel) || act.find((s) => RUN.includes(s.state)) || act[0];
+      const idle = !cur;
+      const hide = idle && !!this._cfg.hide_idle && !this.preview && !this.editMode && !window.__ngEdit?.on;
+      if (hide !== this.hidden) {   // hui-card blendet die Karte samt Grid-Zelle aus (wie bei Bedingungen)
+        this.hidden = hide;
+        this.dispatchEvent(new CustomEvent("card-visibility-changed", { detail: { value: !hide }, bubbles: true, composed: true }));
+      }
+      if (hide) { this._cur = null; this._timer(); return; }
+      const rest = idle && this._cfg.idle === "rest";
+      if (idle && !rest) cur = st[0];
+      const a = cur?.attributes || {};
+      const light = this._isLight(), e = eco();
+      const key = JSON.stringify([cur?.entity_id, cur?.state, a.media_title, a.media_artist, a.media_album_name, a.media_series_title, a.app_name,
+        a.source, a.source_list, a.entity_picture, a.media_duration, a.media_position, a.media_position_updated_at, a.volume_level,
+        a.is_volume_muted, a.supported_features, a.friendly_name, act.map((s) => [s.entity_id, s.attributes.friendly_name]), ngLang(), light, e]);
+      if (key === this._key) return;
+      this._key = key;
+      this._render(cur, act, light, e);
+    }
+
+    _render(cur, act, light, e) {
+      const E = this._el, card = this._card;
+      card.classList.toggle("eco", e);
+      card.classList.toggle("empty", !cur);
+      const rest = !cur && this._cfg.idle === "rest" && this._ids(this._hass || { states: {} }).length > 0;
+      card.classList.toggle("rest", rest);
+      if (!cur) {
+        this._cur = null;
+        E.nm.textContent = ""; E.t.textContent = rest ? t("Nichts läuft") : t("Kein Mediaplayer"); E.s.textContent = ""; E.a.textContent = "";
+        E.ph.setAttribute("icon", "mdi:play-circle-outline"); E.img.hidden = true; E.img.removeAttribute("src"); E.ph.style.display = "";
+        card.classList.remove("run", "applook"); E.art.classList.remove("app"); this._appRgb = null; this._setBg(null, light); this._timer();
+        return;
+      }
+      const a = cur.attributes || {}, st = cur.state, f = Number(a.supported_features) || 0, na = ["unavailable", "unknown"].includes(st);
+      const run = RUN.includes(st), off = ["off", "standby"].includes(st);
+      this._cur = cur.entity_id; this._a = a; this._st = st;
+      card.classList.toggle("run", run);
+      const name = a.friendly_name || cur.entity_id;
+      E.chips.innerHTML = act.length > 1 ? act.map((s) => `<button class="chip ${s.entity_id === cur.entity_id ? "sel" : ""}" data-id="${esc(s.entity_id)}"
+        title="${esc(s.attributes.friendly_name || s.entity_id)}">${esc(s.attributes.friendly_name || s.entity_id)}</button>`).join("") : "";
+      // Texte: Titel, Interpret (· Album im Kompaktmodus), Album/Serie/App/Quelle
+      const artist = a.media_artist || a.media_series_title || "", album = a.media_album_name || "";
+      const extra = [a.app_name, a.source].find((x) => x && x !== a.media_title) || "";
+      const title = a.media_title || (off || na || st === "idle" ? t(STATE[st] || st) : extra || name);
+      const large = this._cfg.size === "large";
+      E.t.textContent = title;
+      // Kopfzeile: Playername (+ Zustand, wenn er nicht schon Titel ist) oder Chips, wenn mehrere aktiv sind
+      E.nm.textContent = act.length > 1 ? "" : st === "playing" || !a.media_title ? name : `${name} · ${t(STATE[st] || st)}`;
+      E.nm.style.display = act.length > 1 ? "none" : "";
+      E.t.title = title;
+      E.s.textContent = large ? artist || (album ? "" : extra) : [artist, album].filter(Boolean).join(" · ") || (title !== extra ? extra : "");
+      E.a.textContent = large ? album || (artist ? extra : "") : "";
+      // Cover + Hintergrund
+      const pic = a.entity_picture ? (/^(https?:|data:|blob:)/.test(a.entity_picture) ? a.entity_picture : (this._hass.hassUrl ? this._hass.hassUrl(a.entity_picture) : a.entity_picture)) : null;
+      const app = !pic && !off && !na ? appLook(a) : null;   // kein Bild, aber bekannte App: Logo + Markenfarbe
+      E.ph.setAttribute("icon", app?.icon || a.icon || { tv: "mdi:television", speaker: "mdi:speaker", receiver: "mdi:audio-video" }[a.device_class] || "mdi:music-note");
+      E.art.classList.toggle("app", !!app);
+      card.classList.toggle("applook", !!app);
+      this._appRgb = app?.rgb || null;
+      if (pic) { if (E.img.getAttribute("src") !== pic) { E.img.hidden = false; E.img.src = pic; } }
+      else { E.img.hidden = true; E.img.removeAttribute("src"); E.ph.style.display = ""; }
+      this._setBg(pic, light);
+      // Knöpfe nach supported_features
+      const B = E.btn, show = (b, v) => { b.hidden = !v; b.disabled = na; };
+      const power = off && f & F.ON;
+      show(B.media_previous_track, f & F.PREV);
+      show(B.media_next_track, f & F.NEXT);
+      B.media_previous_track.disabled = B.media_next_track.disabled = na || off;
+      show(B.play, power || f & (F.PLAY | F.PAUSE));
+      B.play.dataset.m = power ? "turn_on" : "media_play_pause";
+      B.play.querySelector("ha-icon").setAttribute("icon", power ? "mdi:power" : run ? (f & F.PAUSE ? "mdi:pause" : "mdi:stop") : "mdi:play");
+      B.play.title = power ? t("Einschalten") : t("Wiedergabe/Pause");
+      show(B.power, off ? !power && f & F.ON : f & F.OFF);   // aus: Einschalten sitzt schon im großen Knopf
+      B.power.title = off ? t("Einschalten") : t("Ausschalten");
+      B.power.classList.toggle("on", !off && !na);
+      // Lautstärke + Stumm
+      const vol = typeof a.volume_level === "number" ? a.volume_level : null;
+      E.vol.hidden = !(f & (F.VOL_SET | F.VOL_MUTE)) || off;
+      E.rng.style.display = f & F.VOL_SET && vol !== null ? "" : "none";
+      E.vol.classList.toggle("nr", E.rng.style.display === "none");
+      show(B.mute, f & F.VOL_MUTE);
+      B.mute.classList.toggle("on", !!a.is_volume_muted);
+      B.mute.querySelector("ha-icon").setAttribute("icon", a.is_volume_muted ? "mdi:volume-off" : vol === null || vol > 0.5 ? "mdi:volume-high" : vol > 0.15 ? "mdi:volume-medium" : "mdi:volume-low");
+      if (vol !== null && !this._drag) {
+        const v = Math.round(vol * 100);
+        E.rng.value = String(v); E.rng.style.setProperty("--v", `${v}%`);
+        E.rng.title = t("Lautstärke {v} %", { v: v.toLocaleString(numLoc()) });
+      }
+      E.rng.disabled = na;
+      // Quelle
+      const list = Array.isArray(a.source_list) ? a.source_list : [];
+      E.src.hidden = !(f & F.SOURCE && list.length) || off;
+      if (!E.src.hidden) {
+        const opts = list.includes(a.source) || !a.source ? list : [a.source, ...list];
+        const k = JSON.stringify(opts);
+        if (this._srcK !== k) { this._srcK = k; E.sel.innerHTML = opts.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join(""); }
+        E.sel.value = a.source || "";
+        E.sel.disabled = na;
+      }
+      // Fortschritt
+      E.prog.hidden = !(Number(a.media_duration) > 0) || off || na;
+      this._tick();
+      this._timer();
+      if (!this._artPx) this._fit();
+    }
+
+    // Cover als Hintergrund: zwei Ebenen überblenden; Akzentfarbe aus dem Bild (gemerkt je URL)
+    _setBg(url, light) {
+      if (url !== this._bgUrl) {
+        this._bgUrl = url;
+        const [x, y] = this._bgI ? [this._el.bg[1], this._el.bg[0]] : this._el.bg;
+        if (url) { y.style.backgroundImage = `url(${JSON.stringify(url)})`; y.classList.add("on"); this._bgI ^= 1; }
+        x.classList.remove("on");
+        if (!url) { this._raw = null; this._acc(light); }
+        else vivid(url).then((rgb) => { if (this._bgUrl === url) { this._raw = rgb; this._acc(this._isLight()); } });
+      } else this._acc(light);
+    }
+    _acc(light) {
+      const cs = this._card.style, raw = this._raw || this._appRgb;
+      if (!raw) { cs.removeProperty("--mc-rgb"); cs.removeProperty("--mc-ink"); return; }
+      const [h, s, l] = rgb2hsl(...raw);
+      // dunkles Design: hell und kräftig; helles Design: dunkler, damit Balken/Knopf auf hellem Glas lesbar bleiben
+      const S = Math.min(1, Math.max(s, 0.55)), L = light ? Math.min(Math.max(l, 0.3), 0.42) : Math.min(Math.max(l, 0.6), 0.72);
+      cs.setProperty("--mc-rgb", hsl2rgb(h, S, L).join(", "));
+      cs.setProperty("--mc-ink", `rgb(${hsl2rgb(h, 0.4, light ? 0.97 : 0.1).join(", ")})`);
+    }
+
+    // Coverkante an die Kartenhöhe anpassen (Sections geben die Höhe vor)
+    _fit() {
+      const b = this._el?.body;
+      if (!b || !b.clientHeight) return;
+      const cs = getComputedStyle(b), large = this._cfg.size === "large";
+      let h = b.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      if (large) h -= this._el.prog.offsetHeight + this._el.btn.play.parentElement.offsetHeight + (parseFloat(cs.rowGap) || 0) * 2;
+      const px = Math.round(Math.max(64, Math.min(h, large ? 220 : 150, b.clientWidth * (large ? 0.4 : 0.34))));
+      if (px !== this._artPx) { this._artPx = px; this._card.style.setProperty("--art", `${px}px`); }
+    }
+
+    _pos() {
+      const a = this._a || {}, d = Number(a.media_duration);
+      if (!(d > 0)) return null;
+      let p = Number(a.media_position) || 0;
+      if (this._st === "playing" && a.media_position_updated_at) p += (Date.now() - Date.parse(a.media_position_updated_at)) / 1000;
+      return [Math.max(0, Math.min(p, d)), d];
+    }
+    _tick() {
+      const E = this._el, pd = this._pos();
+      if (!pd) { E.tm.textContent = ""; return; }
+      const [p, d] = pd;
+      E.fill.style.width = `${(p / d) * 100}%`;
+      E.t0.textContent = fmt(p); E.t1.textContent = fmt(d);
+      E.tm.textContent = `${fmt(p)} / ${fmt(d)}`;
+      if (this._tmIv && this._tmIv !== (eco() ? 5000 : 1000)) this._timer();
+    }
+    // Sekundentakt nur, solange etwas spielt, die Karte eingehängt und die Seite sichtbar ist
+    _timer() {
+      const want = this.isConnected && !this.hidden && this._cur && this._st === "playing" && document.visibilityState !== "hidden" && this._pos();
+      const iv = eco() ? 5000 : 1000;
+      if (!want) { clearInterval(this._tm); this._tm = null; this._tmIv = 0; return; }
+      if (this._tm && this._tmIv === iv) return;
+      clearInterval(this._tm);
+      this._tmIv = iv;
+      this._tm = setInterval(() => this._tick(), iv);
+    }
+
+    _press(act) {
+      if (!this._cur || !this._hass) return;
+      const id = { entity_id: this._cur }, a = this._a || {};
+      if (act === "play") this._hass.callService("media_player", this._el.btn.play.dataset.m || "media_play_pause", id);
+      else if (act === "mute") this._hass.callService("media_player", "volume_mute", { ...id, is_volume_muted: !a.is_volume_muted });
+      else if (act === "power") this._hass.callService("media_player", ["off", "standby"].includes(this._st) ? "turn_on" : "turn_off", id);
+      else this._hass.callService("media_player", act, id);
+    }
+
+    getCardSize() { return this._cfg?.size === "large" ? 4 : 2; }
+    getGridOptions() { return this._cfg?.size === "large" ? { columns: 12, rows: 4 } : { columns: 12, rows: 2, min_rows: 2 }; }
+  }
+
+  customElements.define("nullglow-media-card", NullglowMediaCard);
+  window.customCards = window.customCards || [];
+  window.customCards.push({ type: "nullglow-media-card", name: t("Nullglow Medien"), description: t("Mediaplayer mit Cover als Hintergrund, Akzentfarbe aus dem Cover") });
+})();
+
+// ───── nullglow-hints-card.js ─────
+(() => {
+  if (customElements.get("nullglow-hints-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "Regen": "Rain", "Regen gleich": "Rain soon", "Regen in {n} Std": "Rain in {n} h",
+    "Fenster offen": "window open", "{n} Fenster offen": "{n} windows open",
+    "Niemand zu Hause": "Nobody home", "1 Licht an": "1 light on", "{n} Lichter an": "{n} lights on",
+    "{x} aufgeschlossen": "{x} unlocked", "{x} offen": "{x} open",
+    "Heute": "Today", "Morgen": "Tomorrow",
+    "Akku schwach": "Battery low", "{n} Akkus schwach": "{n} batteries low",
+    "Gerät offline": "Device offline", "{n} Geräte offline": "{n} devices offline",
+    "Update verfügbar": "Update available", "{n} Updates verfügbar": "{n} updates available",
+    "Aus": "Off", "Licht ausschalten?": "Turn light off?", "{n} Lichter ausschalten?": "Turn {n} lights off?",
+    "Ja": "Yes", "Nein": "No", "Nicht mehr anzeigen:": "Stop showing:", "Für {x} nicht mehr anzeigen": "Stop showing for {x}",
+    "Alle ausblenden": "Hide all", "Ausblenden": "Hide", "Schließen": "Close",
+    "Keine Hinweise – alles in Ordnung": "No hints – all good",
+    "Nullglow Hinweise": "Nullglow Hints",
+    "Zeigt nur, was Aufmerksamkeit braucht: Regen bei offenem Fenster, Müll, Akkus, Offline-Geräte, Updates, niemand zu Hause":
+      "Shows only what needs attention: rain with open windows, waste pickup, batteries, offline devices, updates, nobody home",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  const HOUR = 3600e3;
+  const RAIN = ["rainy", "pouring", "lightning-rainy", "snowy-rainy", "hail"];
+  const OFF_DOM = ["light", "switch", "cover", "climate", "lock", "media_player", "vacuum", "lawn_mower", "camera", "fan"];
+  const OFF_SENSOR = ["temperature", "humidity", "battery", "power"];
+  // Müll-Stichworte: STRICT nur als ganzes Wort (+ übliche Endung wie „-tonne“) — „Bio“ ≠ „Biologie“, „Müll“ ≠ „Müller“;
+  // PREFIX genügt am Wortanfang („Wertstoffhof“, „Schadstoffmobil“)
+  const W_STRICT = ["Müll", "Bio", "Papier", "Glas", "Plastik", "Tonne", "waste", "trash", "bin", "bins"];
+  const W_PREFIX = ["Restmüll", "Hausmüll", "Biomüll", "Biotonne", "Altpapier", "Papiertonne", "Blaue Tonne", "Gelbe Tonne",
+    "Gelber Sack", "Gelbe Säcke", "Wertstoff", "Wertstoffe", "Sperrmüll", "Abfall", "Grünschnitt", "Schadstoff", "garbage", "recycling", "compost"];
+  const W_END = "(?:tonnen?|abfuhr|sack|säcke|müll|abfall|container|sammlung|entsorgung|abholung|day|s|n)?";
+  const reEsc = (s) => String(s).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+  const wasteRe = (extra = []) => new RegExp(`(?<![\\p{L}\\p{N}])(?:(?:${W_STRICT.map(reEsc).join("|")})${W_END}(?![\\p{L}])|(?:${
+    [...W_PREFIX, ...extra.filter((k) => String(k).trim())].map(reEsc).join("|")}))`, "iu");
+
+  const RE_WIN = /(^|[\s_-])(fensterkontakt|fenster|window|kontakt|contact|sensor|öffnung|opening)(?=$|[\s_-])/giu;
+  const RE_BAT = /(^|\s)(batteriestand|batterie|battery level|battery|akku|low)(?=$|\s)/giu;
+  const RE_LOCK = /(^|\s)(türschloss|schloss|smart lock|lock)(?=$|\s)/giu;
+  const clean = (s, re) => String(s || "").replace(re, " ").replace(/\s{2,}/g, " ").replace(/^[\s·:_-]+|[\s·:_-]+$/g, "").trim();
+  const list = (names, max = 3) => names.slice(0, max).join(", ") + (names.length > max ? ", …" : "");
+  const slug = (s) => String(s || "").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+  const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const dayDiff = (s) => { const [y, m, d] = s.split("-").map(Number); const b = new Date(); b.setHours(0, 0, 0, 0); return Math.round((new Date(y, m - 1, d) - b) / 864e5); };
+  const normDash = (d) => String(d || location.pathname.split("/")[1] || "lovelace").replace(/^\/+|\/+$/g, "").split("/")[0] || "lovelace";
+  const storeKey = (d) => `nullglow-hints-ignore:${normDash(d)}`;
+  const readLocal = (d) => { try { const v = JSON.parse(localStorage.getItem(storeKey(d)) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
+  const pct = (v) => `${Math.round(v).toLocaleString(numLoc())}${ngLang() === "de" ? " " : ""}%`;
+
+  const STYLE = `
+    :host { display: block; }
+    :host([hidden]) { display: none !important; }
+    .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+    .pill { --hc: var(--rgb-ng-txt, 255, 255, 255); position: relative; display: inline-flex; align-items: center; gap: 10px;
+      height: 40px; box-sizing: border-box; max-width: min(520px, 100%); min-width: 0; padding: 0 6px 0 6px; border-radius: 999px;
+      background: var(--ha-card-background, rgba(var(--rgb-ng-txt, 255, 255, 255), .045));
+      box-shadow: var(--ha-card-box-shadow, inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .09));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, none); backdrop-filter: var(--ha-card-backdrop-filter, none);
+      color: var(--ng-txt, #e8f5ee); font-size: 13.5px; line-height: 1.2; -webkit-tap-highlight-color: transparent; }
+    .pill::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+      box-shadow: inset 0 0 0 1px rgba(var(--hc), .34); }
+    .pill.tap { cursor: pointer; }
+    .lvl-warn { --hc: var(--rgb-ng-warn, 255, 209, 102); }
+    .lvl-crit { --hc: var(--rgb-ng-danger, 255, 107, 107); }
+    .lvl-info { --hc: var(--rgb-ng-info, 107, 227, 255); }
+    .lvl-dim::before { box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .10); }
+    .lvl-ok { --hc: var(--rgb-ng-acc, 124, 255, 178); }
+    .lvl-ok::before { box-shadow: none; }
+    .ic { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; --mdc-icon-size: 17px;
+      background: rgba(var(--hc), .16); color: rgb(var(--hc)); }
+    .lvl-dim .ic, .lvl-ok .ic { background: rgba(var(--rgb-ng-txt, 255, 255, 255), .07); color: var(--ng-txt-dim, #93a79d); }
+    .lvl-crit .ic { box-shadow: 0 0 12px rgba(var(--hc), calc(.45 * var(--ng-glow-k, 1))); }
+    .tx { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 4px; }
+    .tx b { font-weight: 600; }
+    .tx span { color: var(--ng-txt-dim, #93a79d); }
+    .lvl-dim .tx b, .lvl-ok .tx b { color: var(--ng-txt-dim, #93a79d); font-weight: 500; }
+    button { font: inherit; border: 0; margin: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .x { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; padding: 0;
+      background: transparent; color: var(--ng-txt-mute, var(--ng-txt-dim, #93a79d)); --mdc-icon-size: 16px; }
+    .x:hover { background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); color: var(--ng-txt, #e8f5ee); }
+    .act { flex: none; height: 28px; padding: 0 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600; white-space: nowrap;
+      background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); color: var(--ng-txt, #e8f5ee); }
+    .act.yes { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .18); color: var(--ng-acc, #7cffb2);
+      box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .45); }
+    .cq { white-space: nowrap; font-weight: 600; }
+    /* Mini-Menü „nicht mehr anzeigen“ (klappt die Pille auf) */
+    .pill.menu { height: auto; min-height: 40px; flex-wrap: wrap; padding: 6px 6px 6px 6px; gap: 6px 8px; border-radius: 20px;
+      max-width: min(760px, 100%); }
+    .mt { font-size: 12.5px; color: var(--ng-txt-dim, #93a79d); white-space: nowrap; margin-right: 2px; }
+    .chip { height: 28px; padding: 0 11px; border-radius: 999px; font-size: 12.5px; white-space: nowrap; max-width: 260px;
+      overflow: hidden; text-overflow: ellipsis; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .07); color: var(--ng-txt, #e8f5ee);
+      box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .10); }
+    .chip:hover { background: rgba(var(--rgb-ng-txt, 255, 255, 255), .12); }
+    .chip.all { background: rgba(var(--hc), .14); color: rgb(var(--hc)); box-shadow: inset 0 0 0 1px rgba(var(--hc), .40); font-weight: 600; }
+    .lvl-dim .chip.all { color: var(--ng-txt, #e8f5ee); }
+    /* Neu: einmal kurz aufleuchten, keine Dauer-Animation */
+    .pill.new { animation: ngIn .45s cubic-bezier(.22,1,.36,1) both; }
+    .pill.new::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+      box-shadow: 0 0 22px 1px rgba(var(--hc), calc(.55 * var(--ng-glow-k, 1))), inset 0 0 0 1px rgba(var(--hc), .7);
+      animation: ngGlow 2.2s ease-out .15s 1; }
+    @keyframes ngIn { from { opacity: 0; transform: translateY(-4px) scale(.98); } }
+    @keyframes ngGlow { 20% { opacity: 1; } 100% { opacity: 0; } }
+    :host(.eco) .pill, :host(.eco) .pill::after, :host(.eco) .bar { animation: none !important; transition: none !important; }
+    /* Schwebend: feste Leiste oben mittig, nimmt keinen Platz, Klicks gehen daneben durch */
+    :host([floating]) { height: 0; overflow: visible; }
+    :host([floating]) .bar { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 5;
+      width: max-content; max-width: calc(100vw - 32px); justify-content: center; pointer-events: none;
+      animation: ngIn .35s cubic-bezier(.22,1,.36,1) both; }
+    :host([floating]) .pill { pointer-events: auto; background: rgba(var(--rgb-ng-bg, 10, 16, 13), .78);
+      -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4);
+      box-shadow: var(--ng-shadow-lg, 0 12px 32px -14px rgba(0, 0, 0, .55)), inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .10); }
+    /* Über der Navigation: eine Reihe, flacher, bei Platzmangel seitlich wischbar (wie Benachrichtigungen über dem Dock) */
+    :host([floating="bottom"]) .bar { top: auto; bottom: var(--ng-hints-bottom, 78px); flex-wrap: nowrap; overflow-x: auto; overflow-y: visible;
+      max-width: min(1400px, calc(100vw - 32px)); pointer-events: auto; scrollbar-width: none; align-items: flex-end; }
+    :host([floating="bottom"]) .bar::-webkit-scrollbar { display: none; }
+    :host([floating="bottom"]) .pill { flex: none; height: 34px; max-width: 470px; }
+    :host([floating="bottom"]) .pill.menu { height: auto; max-width: min(760px, calc(100vw - 32px)); }
+    @keyframes ngUp { from { opacity: 0; transform: translate(-50%, 6px); } }
+    :host([floating="bottom"]) .bar { animation-name: ngUp; }
+  `;
+
+  class NullglowHintsCard extends HTMLElement {
+    // ── Editor (tools/add-card-editors.py) ──
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (typeof o.title === "string") o.title = tr(o.title);
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select,
+          options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        if (sel?.object?.fields) o.selector = { ...sel, object: { ...sel.object, fields: Object.fromEntries(
+          Object.entries(sel.object.fields).map(([k, f]) => [k, { ...f, ...(f.label ? { label: tr(f.label) } : {}) }])) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
+    }
+
+    static getConfigForm() {
+      const bool = (name) => ({ name, selector: { boolean: {} } });
+      return this._ngForm([
+        { type: "expandable", name: "rules", title: "Regeln", schema: [
+          { type: "grid", name: "", schema: ["rain", "waste", "battery", "offline", "updates", "away"].map(bool) } ] },
+        { type: "grid", name: "", schema: [
+          { name: "battery_threshold", selector: { number: { min: 1, max: 100, mode: "box", unit_of_measurement: "%" } } },
+          { name: "weather", selector: { entity: { filter: { domain: "weather" } } } } ] },
+        { name: "floating", selector: { select: { mode: "dropdown", options: [
+          { value: "", label: "Im Raster (nimmt Platz, nur wenn es Hinweise gibt)" }, { value: "top", label: "Schwebend oben" },
+          { value: "bottom", label: "Schwebend über der Navigation" }] } } },
+        { name: "ignore", selector: { entity: { multiple: true } } },
+        { name: "ignore_labels", selector: { label: { multiple: true } } },
+        { type: "expandable", name: "waste", title: "Müllabfuhr", schema: [
+          { name: "calendar", selector: { entity: { filter: { domain: "calendar" } } } },
+          { name: "calendars", selector: { entity: { multiple: true, filter: { domain: "calendar" } } } },
+          { name: "keywords", selector: { text: { multiple: true } } } ] },
+        { type: "expandable", name: "tap", title: "Antippen öffnet", schema: [
+          { type: "grid", name: "", schema: ["rain", "waste", "battery", "away", "offline", "updates"].map((name) => ({ name, selector: { text: {} } })) } ] },
+        { name: "dashboard", selector: { text: {} } },
+      ], { rain: "Regen & Fenster", waste: "Müllabfuhr", battery: "Akkus", offline: "Geräte offline", updates: "Updates",
+        away: "Niemand zu Hause", battery_threshold: "Akku-Warnung unter", weather: "Wetter", floating: "Anzeige",
+        ignore: "Nie warnen für", ignore_labels: "Labels ignorieren", calendar: "Müll-Kalender (jeder Termin)",
+        calendars: "Kalender durchsuchen", keywords: "Weitere Stichworte", dashboard: "Dashboard-Schlüssel" },
+      { weather: "leer = erstes Wetter-Objekt", floating: "schwebend braucht keinen Platz (Wandbildschirm)",
+        ignore_labels: "leer = Label „no_hints“", calendars: "leer = alle Kalender (nur ohne Waste-Collection-Sensoren)",
+        keywords: "z. B. Grünschnitt", dashboard: "für die lokale Ausblendliste, leer = aus der Adresse" },
+      { "Regeln": "Rules", "Müllabfuhr": "Waste pickup", "Antippen öffnet": "Tap opens", "Regen & Fenster": "Rain & windows",
+        "Akkus": "Batteries", "Geräte offline": "Devices offline", "Updates": "Updates", "Niemand zu Hause": "Nobody home",
+        "Akku-Warnung unter": "Battery warning below", "Wetter": "Weather", "Anzeige": "Display", "Im Raster (nimmt Platz, nur wenn es Hinweise gibt)": "In the grid (takes space only when there are hints)",
+        "Schwebend oben": "Floating at the top", "Schwebend über der Navigation": "Floating above the navigation",
+        "Nie warnen für": "Never warn for", "Labels ignorieren": "Ignore labels", "Müll-Kalender (jeder Termin)": "Waste calendar (every event)",
+        "Kalender durchsuchen": "Calendars to scan", "Weitere Stichworte": "Extra keywords", "Dashboard-Schlüssel": "Dashboard key",
+        "leer = erstes Wetter-Objekt": "empty = first weather entity", "schwebend braucht keinen Platz (Wandbildschirm)": "floating takes no space (wall display)",
+        "leer = Label „no_hints“": "empty = label “no_hints”", "leer = alle Kalender (nur ohne Waste-Collection-Sensoren)": "empty = all calendars (only without Waste Collection sensors)",
+        "z. B. Grünschnitt": "e.g. green waste", "für die lokale Ausblendliste, leer = aus der Adresse": "for the local hide list, empty = from the URL" });
+    }
+    static async getStubConfig() {
+      return { rules: { rain: true, waste: true, battery: true, offline: true, updates: true, away: true } };
+    }
+    // ── Editor Ende ──
+
+    // Lokale Ausblendliste (für Assistent/Wartung): lesen und leeren
+    static getLocalIgnore(dashboard) { return readLocal(dashboard); }
+    static clearLocalIgnore(dashboard) {
+      try { localStorage.removeItem(storeKey(dashboard)); } catch (e) { /* gesperrt */ }
+      window.dispatchEvent(new CustomEvent("nullglow-hint-ignore", { detail: { entities: [], dashboard: normDash(dashboard), cleared: true } }));
+    }
+
+    setConfig(config) {
+      const c = config || {};
+      this._cfg = { ...c, rules: { rain: true, waste: true, battery: true, offline: true, updates: true, away: true, ...(c.rules || {}) },
+        battery_threshold: Number(c.battery_threshold ?? 15), waste: c.waste || {}, tap: c.tap || {},
+        ignore: [].concat(c.ignore || []), ignore_labels: [].concat(c.ignore_labels?.length ? c.ignore_labels : ["no_hints"]) };
+      this._dash = normDash(c.dashboard);
+      this._re = wasteRe([].concat(this._cfg.waste.keywords || []));
+      if (!this.shadowRoot) {
+        this.attachShadow({ mode: "open" });
+        this.shadowRoot.innerHTML = `<style>${STYLE}</style><div class="bar"></div>`;
+        this._bar = this.shadowRoot.querySelector(".bar");
+        this._bar.addEventListener("click", (e) => this._click(e));
+      }
+      const fl = this._cfg.floating;
+      if (fl) this.setAttribute("floating", fl === "bottom" ? "bottom" : "top"); else this.removeAttribute("floating");
+      this._hints = []; this._key = null; this._lastSig = null; this._cal = this._cal || [];
+      if (this._fcFor) this._unsubFc();
+      if (this._run) this._loadCal();   // Müll-Einstellungen könnten sich geändert haben (Editor)
+      if (this._hass) this._eval(true);
+    }
+
+    set preview(v) { this._preview = !!v; this._key = null; this._render(); }
+    get preview() { return !!this._preview; }
+
+    set hass(h) {
+      ngH = h;
+      this._hass = h;
+      if (this.isConnected && !this._run) this._start();
+      // Drosseln: höchstens alle 2 s auswerten (hass kommt in großen Installationen mehrmals pro Sekunde)
+      const wait = 2000 - (Date.now() - (this._lastEval || 0));
+      if (wait <= 0) this._eval();
+      else if (!this._tm) this._tm = setTimeout(() => { this._tm = null; this._eval(); }, wait);
+    }
+
+    connectedCallback() {
+      if (!this._onIgn) {
+        this._onIgn = (e) => { if (e.composedPath?.()[0] !== this && normDash(e.detail?.dashboard) === this._dash) this._eval(true); };
+        this._onStore = (e) => { if (e.key === storeKey(this._dash)) this._eval(true); };
+      }
+      window.addEventListener("nullglow-hint-ignore", this._onIgn);
+      window.addEventListener("storage", this._onStore);
+      if (this._hass && !this._run) { this._start(); this._eval(true); }   // _eval abonniert die Vorhersage
+    }
+    disconnectedCallback() {
+      window.removeEventListener("nullglow-hint-ignore", this._onIgn);
+      window.removeEventListener("storage", this._onStore);
+      this._run = false;
+      clearInterval(this._tick); clearInterval(this._calT); clearTimeout(this._tm); this._tm = null;
+      Object.values(this._armT || {}).forEach(clearTimeout);
+      this._unsubFc();
+    }
+
+    _start() {
+      this._run = true;
+      // Minutentakt: Zeitregeln (1 h offline, 10 Uhr, Tageswechsel); Kalender alle 30 min
+      this._tick = setInterval(() => { if (this._calDay !== new Date().toDateString()) this._loadCal(); this._eval(true); }, 60e3);
+      this._calT = setInterval(() => this._loadCal(), 30 * 60e3);
+      this._loadCal();
+    }
+
+    _weatherId(h) {
+      if (this._cfg.weather) return this._cfg.weather;
+      if (!this._wId || !h.states[this._wId]) this._wId = Object.keys(h.states).find((id) => id.startsWith("weather.")) || null;
+      return this._wId;
+    }
+
+    // ---- Stündliche Vorhersage (für „Regen in 1 Std“) ----
+    _subFc() {
+      const h = this._hass, w = this._weatherId(h);
+      if (!this._cfg.rules.rain || !w || !h.connection?.subscribeMessage || this._fcFor === w) return;
+      this._unsubFc();
+      this._fcFor = w;
+      try {
+        const p = h.connection.subscribeMessage((m) => { this._fc = Array.isArray(m?.forecast) ? m.forecast : null; this._eval(true); },
+          { type: "weather/subscribe_forecast", forecast_type: "hourly", entity_id: w });
+        this._fcUnsub = p;
+        Promise.resolve(p).catch(() => { this._fc = null; });   // Wetterdienst ohne Stundenwerte
+      } catch (e) { this._fc = null; }
+    }
+    _unsubFc() {
+      const p = this._fcUnsub;
+      this._fcUnsub = null; this._fcFor = null; this._fc = null;
+      if (p) Promise.resolve(p).then((u) => typeof u === "function" && u()).catch(() => {});
+    }
+
+    // ---- Kalender (Müll): heute + morgen, zwischengespeichert ----
+    async _loadCal() {
+      const h = this._hass;
+      if (!h?.callApi || !this._cfg.rules.waste || this._calBusy) return;
+      this._calDay = new Date().toDateString();
+      const W = this._cfg.waste, ids = Object.keys(h.states), ign = this._ignTest(h);
+      const wcs = ids.some((id) => id.startsWith("sensor.") && h.states[id].attributes?.daysTo !== undefined);
+      const full = W.calendar ? [W.calendar] : [];
+      const scan = W.calendars ? [].concat(W.calendars) : (!wcs && !full.length ? ids.filter((id) => id.startsWith("calendar.")) : []);
+      const cals = [...full.map((id) => [id, true]), ...scan.filter((id) => !full.includes(id)).map((id) => [id, false])]
+        .filter(([id]) => h.states[id] && h.states[id].state !== "unavailable" && !ign(id)).slice(0, 20);
+      if (!cals.length) { this._cal = []; return; }
+      this._calBusy = true;
+      const d0 = new Date(); d0.setHours(0, 0, 0, 0);
+      const d2 = new Date(d0); d2.setDate(d2.getDate() + 2);
+      const q = `start=${encodeURIComponent(d0.toISOString())}&end=${encodeURIComponent(d2.toISOString())}`;
+      const out = [];
+      await Promise.all(cals.map(async ([id, all]) => {
+        try {
+          for (const ev of (await h.callApi("GET", `calendars/${id}?${q}`)) || []) {
+            const s = String(ev.summary || "").trim();
+            if (!s || (!all && !this._re.test(s))) continue;
+            const st = ev.start || {}, date = st.date && !st.dateTime ? st.date : st.dateTime ? ymd(new Date(st.dateTime)) : null;
+            if (date) out.push({ cal: id, summary: s, date });
+          }
+        } catch (e) { /* Kalender nicht lesbar */ }
+      }));
+      this._calBusy = false;
+      this._cal = out;
+      this._eval(true);
+    }
+
+    // ---- Ausblenden ----
+    _ignTest(h) {
+      const set = new Set([...this._cfg.ignore, ...readLocal(this._dash)]);
+      const labs = new Set(this._cfg.ignore_labels.flatMap((l) => [String(l), slug(l)]));
+      const E = h.entities || {}, D = h.devices || {};
+      return (id) => {
+        if (set.has(id)) return true;
+        const e = E[id];
+        if (!e) return false;
+        const d = e.device_id && D[e.device_id];
+        return [...(e.labels || []), ...((d && d.labels) || [])].some((l) => labs.has(l) || labs.has(slug(l)));
+      };
+    }
+    _ignore(ids) {
+      const cur = readLocal(this._dash);
+      try { localStorage.setItem(storeKey(this._dash), JSON.stringify([...new Set([...cur, ...ids])])); } catch (e) { /* gesperrt */ }
+      this.dispatchEvent(new CustomEvent("nullglow-hint-ignore", { detail: { entities: ids, dashboard: this._dash }, bubbles: true, composed: true }));
+      this._eval(true);
+    }
+
+    // ---- Auswertung ----
+    _eval(force) {
+      const h = this._hass;
+      if (!h || !this._cfg) return;
+      if (this.isConnected) this._subFc();   // no-op, solange das Wetter-Objekt gleich bleibt
+      const sig = [h.states, h.entities, h.devices, ngLang()];   // unverändert → nichts zu tun
+      if (!force && this._lastSig && sig.every((x, i) => x === this._lastSig[i])) return;
+      this._lastSig = sig;
+      this._lastEval = Date.now();
+      const c = this._ctx(h), R = this._cfg.rules, hints = [];
+      for (const [k, fn] of [["rain", this._rain], ["away", this._away], ["waste", this._waste], ["battery", this._battery],
+        ["updates", this._updates], ["offline", this._offline]]) {
+        if (!R[k]) continue;
+        try { const x = fn.call(this, h, c); if (x) hints.push({ rule: k, sep: " · ", rest: "", tap: null, action: null, ...x }); }
+        catch (e) { console.warn("nullglow-hints-card", k, e); }
+      }
+      this._hints = hints;
+      this._render();
+    }
+
+    // Ein Durchlauf über alle Zustände, nach Domäne sortiert
+    _ctx(h) {
+      const S = h.states, isIgn = this._ignTest(h), by = {};
+      const want = ["binary_sensor", "sensor", "light", "lock", "cover", "person", "update"];
+      for (const id in S) {
+        const dom = id.slice(0, id.indexOf("."));
+        if (want.includes(dom)) (by[dom] || (by[dom] = [])).push(S[id]);
+      }
+      const E = h.entities || {}, D = h.devices || {};
+      const dev = (id) => { const e = E[id]; return e?.device_id ? D[e.device_id] : null; };
+      const area = (id) => { const e = E[id], d = dev(id); return h.areas?.[e?.area_id || d?.area_id]?.name; };
+      const fn = (s) => s.attributes.friendly_name || s.entity_id.split(".")[1];
+      const windows = (by.binary_sensor || []).filter((s) => {
+        const a = s.attributes;
+        return s.state === "on" && (a.device_class === "window"
+          || (a.device_class === "opening" && /fenster|window/i.test(`${s.entity_id} ${a.friendly_name || ""}`))) && !isIgn(s.entity_id);
+      }).map((s) => ({ id: s.entity_id, name: clean(fn(s), RE_WIN) || area(s.entity_id) || fn(s) }));
+      return { S, by, isIgn, dev, fn, windows };
+    }
+
+    _more(id) { return id ? { more: id } : null; }
+    _tapFor(rule, fallback) { const x = this._cfg.tap[rule]; return x ? { nav: x } : fallback; }
+
+    // 1) Regen + Fenster offen
+    _rain(h, c) {
+      if (!c.windows.length) return null;
+      const ws = h.states[this._weatherId(h)];
+      if (!ws) return null;
+      let head = null;
+      if (RAIN.includes(ws.state)) head = t("Regen");
+      else if (Array.isArray(this._fc)) {
+        const now = Date.now();
+        const hit = this._fc.filter((f) => Date.parse(f.datetime) + HOUR > now).slice(0, 2)
+          .find((f) => (f.precipitation_probability ?? 0) >= 60 || (f.precipitation ?? 0) > 0.2 || RAIN.includes(f.condition));
+        if (hit) {
+          const m = (Date.parse(hit.datetime) - now) / 60e3;
+          head = m < 30 ? t("Regen gleich") : t("Regen in {n} Std", { n: Math.max(1, Math.round(m / 60)) });
+        }
+      }
+      if (!head) return null;
+      const n = c.windows.length;
+      return { lvl: "warn", icon: "mdi:weather-pouring", head, ents: c.windows,
+        rest: `${t(n === 1 ? "Fenster offen" : "{n} Fenster offen", { n })} (${list(c.windows.map((w) => w.name))})`,
+        tap: this._tapFor("rain", this._more(c.windows[0].id)) };
+    }
+
+    // 6) Niemand zu Hause, aber Lichter/Schloss/Tor/Fenster offen
+    _away(h, c) {
+      const ps = (c.by.person || []).filter((s) => !["unknown", "unavailable"].includes(s.state));
+      if (!ps.length || ps.some((s) => s.state === "home")) return null;
+      const lights = (c.by.light || []).filter((s) => s.state === "on" && !s.entity_id.includes("_segment_")
+        && !s.attributes.is_hue_group && !Array.isArray(s.attributes.entity_id) && !c.isIgn(s.entity_id));
+      const locks = (c.by.lock || []).filter((s) => ["unlocked", "open"].includes(s.state) && !c.isIgn(s.entity_id));
+      const gates = (c.by.cover || []).filter((s) => ["garage", "gate"].includes(s.attributes.device_class)
+        && ["open", "opening"].includes(s.state) && !c.isIgn(s.entity_id));
+      if (!lights.length && !locks.length && !gates.length && !c.windows.length) return null;
+      const parts = [];
+      if (lights.length) parts.push(t(lights.length === 1 ? "1 Licht an" : "{n} Lichter an", { n: lights.length }));
+      locks.forEach((s) => parts.push(t("{x} aufgeschlossen", { x: clean(c.fn(s), RE_LOCK) || c.fn(s) })));
+      gates.forEach((s) => parts.push(t("{x} offen", { x: c.fn(s) })));
+      if (c.windows.length) parts.push(t(c.windows.length === 1 ? "Fenster offen" : "{n} Fenster offen", { n: c.windows.length }));
+      const E = (s) => ({ id: s.entity_id, name: c.fn(s) });
+      return { lvl: "warn", icon: "mdi:home-export-outline", head: t("Niemand zu Hause"), rest: parts.join(", "),
+        ents: [...lights.map(E), ...locks.map(E), ...gates.map(E), ...c.windows],
+        action: lights.length ? { ents: lights.map((s) => s.entity_id) } : null,
+        tap: this._tapFor("away", null) };
+    }
+
+    // 2) Müllabfuhr heute (bis 10 Uhr) oder morgen
+    _waste(h, c) {
+      const early = new Date().getHours() < 10, days = [[], []], ents = [], seen = new Set();
+      const add = (d, name, id, entName) => {
+        if (!(d === 1 || (d === 0 && early))) return;
+        const k = `${d}|${String(name).toLowerCase()}`;
+        if (!seen.has(k)) { seen.add(k); days[d].push(name); }
+        if (!ents.some((e) => e.id === id)) ents.push({ id, name: entName });
+      };
+      // a) Waste Collection Schedule: sensor.* mit daysTo
+      for (const s of c.by.sensor || []) {
+        const a = s.attributes;
+        if (a.daysTo === undefined || a.daysTo === null || ["unavailable", "unknown"].includes(s.state) || c.isIgn(s.entity_id)) continue;
+        const types = Array.isArray(a.types) ? a.types.filter(Boolean) : [];
+        const nm = types.length ? types.join(", ") : c.fn(s);
+        add(Number(a.daysTo), nm, s.entity_id, c.fn(s));
+      }
+      // b) + c) Kalender (Müll-Kalender bzw. Stichwortsuche) — Daten aus _loadCal
+      for (const ev of this._cal || []) {
+        if (c.isIgn(ev.cal)) continue;
+        add(dayDiff(ev.date), ev.summary, ev.cal, h.states[ev.cal] ? c.fn(h.states[ev.cal]) : ev.cal);
+      }
+      if (!days[0].length && !days[1].length) return null;
+      const lab = [t("Heute"), t("Morgen")], parts = [0, 1].filter((d) => days[d].length);
+      const first = parts[0], second = parts[1];
+      return { lvl: "info", icon: "mdi:trash-can-outline", head: lab[first], sep: ": ",
+        rest: list(days[first], 4) + (second !== undefined ? ` · ${lab[second]}: ${list(days[second], 4)}` : ""),
+        ents, tap: this._tapFor("waste", this._more(ents[0]?.id)) };
+    }
+
+    // 3) Akkus schwach
+    _battery(h, c) {
+      const thr = this._cfg.battery_threshold, E = h.entities || {}, items = [], devs = new Set();
+      for (const s of [...(c.by.sensor || []), ...(c.by.binary_sensor || [])]) {
+        if (s.attributes.device_class !== "battery") continue;
+        const id = s.entity_id;
+        let v;
+        if (id.startsWith("sensor.")) { v = parseFloat(s.state); if (!isFinite(v) || v >= thr) continue; }
+        else if (s.state === "on") v = null;
+        else continue;
+        if (E[id]?.hidden || c.isIgn(id)) continue;
+        const d = c.dev(id);
+        items.push({ id, v, dev: E[id]?.device_id, name: d?.name_by_user || d?.name || clean(c.fn(s), RE_BAT) || c.fn(s) });
+      }
+      items.sort((a, b) => (a.v ?? thr) - (b.v ?? thr));
+      const uniq = items.filter((x) => !x.dev || (!devs.has(x.dev) && devs.add(x.dev)));   // ein Gerät nur einmal
+      if (!uniq.length) return null;
+      const crit = uniq.some((x) => x.v !== null && x.v <= 5), one = uniq.length === 1;
+      return { lvl: crit ? "crit" : "warn", icon: crit ? "mdi:battery-alert-variant-outline" : "mdi:battery-low",
+        head: one ? t("Akku schwach") : t("{n} Akkus schwach", { n: uniq.length }),
+        rest: one ? `${uniq[0].name}${uniq[0].v !== null ? ` ${pct(uniq[0].v)}` : ""}` : list(uniq.map((x) => x.name), 4),
+        ents: uniq.map((x) => ({ id: x.id, name: x.name })), tap: this._tapFor("battery", this._more(uniq[0].id)) };
+    }
+
+    // 5) Updates (nur Admins)
+    _updates(h, c) {
+      if (!h.user?.is_admin) return null;
+      const ups = (c.by.update || []).filter((s) => s.state === "on" && !c.isIgn(s.entity_id));
+      if (!ups.length) return null;
+      const nm = (s) => s.attributes.title || clean(c.fn(s), /(^|\s)(update|firmware)(?=$|\s)/giu) || c.fn(s);
+      return { lvl: "info", icon: "mdi:package-up", head: ups.length === 1 ? t("Update verfügbar") : t("{n} Updates verfügbar", { n: ups.length }),
+        rest: list(ups.map(nm)), ents: ups.map((s) => ({ id: s.entity_id, name: nm(s) })),
+        tap: { nav: this._cfg.tap.updates || "/config/updates" } };
+    }
+
+    // 4) Geräte > 1 h offline (alle sichtbaren Entitäten nicht erreichbar, mind. eine „wichtige“)
+    _offline(h, c) {
+      const E = h.entities || {}, D = h.devices || {}, S = h.states, now = Date.now(), by = new Map();
+      for (const id in E) {
+        const e = E[id], s = S[id];
+        if (!s || !e.device_id || e.hidden || e.entity_category || e.disabled_by) continue;
+        let g = by.get(e.device_id);
+        if (!g) by.set(e.device_id, (g = { ids: [], key: [], ok: false, old: true }));
+        g.ids.push(id);
+        if (s.state !== "unavailable") { g.ok = true; continue; }
+        if (now - Date.parse(s.last_changed) < HOUR) g.old = false;   // erst seit kurzem weg
+        const dom = id.slice(0, id.indexOf("."));
+        if (OFF_DOM.includes(dom) || (dom === "sensor" && OFF_SENSOR.includes(s.attributes.device_class))) g.key.push(id);
+      }
+      const devs = [];
+      for (const [did, g] of by) {
+        if (g.ok || !g.old || !g.key.length || D[did]?.disabled_by || g.ids.some(c.isIgn)) continue;
+        devs.push({ id: g.key[0], name: D[did]?.name_by_user || D[did]?.name || c.fn(S[g.key[0]]) });
+      }
+      if (!devs.length) return null;
+      devs.sort((a, b) => a.name.localeCompare(b.name, numLoc()));
+      return { lvl: "dim", icon: "mdi:lan-disconnect", head: devs.length === 1 ? t("Gerät offline") : t("{n} Geräte offline", { n: devs.length }),
+        rest: list(devs.map((d) => d.name)), ents: devs, tap: this._tapFor("offline", this._more(devs[0].id)) };
+    }
+
+    // ---- Darstellung ----
+    _setVisible(v) {
+      if (this._cfg.floating) { if (this.hidden) this.hidden = false; return; }   // schwebend: Host bleibt, Leiste ist fixed
+      if (this.hidden === !v) return;
+      this.hidden = !v;
+      this.dispatchEvent(new CustomEvent("card-visibility-changed", { detail: { value: v }, bubbles: true, composed: true }));
+    }
+
+    _render() {
+      if (!this._bar) return;
+      const hs = this._hints || [];
+      const eco = document.documentElement.dataset.ngEco === "1";
+      const key = JSON.stringify(hs.map((x) => [x.rule, x.lvl, x.icon, x.head, x.rest, x.ents.map((e) => e.id), !!x.action, !!x.tap]))
+        + `|${this._menu}|${this._confirm}|${ngLang()}|${this._preview}|${eco}`;
+      if (key === this._key) return;
+      this._key = key;
+      this.classList.toggle("eco", eco);
+      const sig = (x) => `${x.rule}:${x.ents.map((e) => e.id).sort().join(",")}`;
+      const seen = this._seen || new Set();
+      this._seen = new Set(hs.map(sig));
+      if (this._menu && !hs.some((x) => x.rule === this._menu)) this._menu = null;
+      if (this._confirm && !hs.some((x) => x.rule === this._confirm && x.action)) this._confirm = null;
+      const empty = !hs.length && this._preview && !this._cfg.floating
+        ? `<div class="pill lvl-ok"><span class="ic"><ha-icon icon="mdi:check"></ha-icon></span><span class="tx"><b>${esc(t("Keine Hinweise – alles in Ordnung"))}</b></span></div>` : "";
+      this._setVisible(hs.length > 0 || !!empty);
+      this._bar.innerHTML = hs.map((x) => (this._menu === x.rule ? this._menuHtml(x) : this._pill(x, !eco && !seen.has(sig(x))))).join("") + empty;
+    }
+
+    _pill(x, isNew) {
+      const conf = this._confirm === x.rule && x.action;
+      const n = x.action?.ents.length || 0;
+      const act = !x.action ? "" : conf
+        ? `<span class="cq">${esc(n === 1 ? t("Licht ausschalten?") : t("{n} Lichter ausschalten?", { n }))}</span>
+           <button class="act yes" data-act="yes">${esc(t("Ja"))}</button><button class="act" data-act="no">${esc(t("Nein"))}</button>`
+        : `<button class="act" data-act="off">${esc(t("Aus"))}</button>`;
+      return `<div class="pill lvl-${x.lvl}${isNew ? " new" : ""}${x.tap ? " tap" : ""}" data-rule="${x.rule}" data-act="tap"${x.tap ? ' role="button"' : ""}>
+        <span class="ic"><ha-icon icon="${x.icon}"></ha-icon></span>
+        ${conf ? "" : `<span class="tx"><b>${esc(x.head)}</b>${x.rest ? `<span>${esc(x.sep)}${esc(x.rest)}</span>` : ""}</span>`}
+        ${act}
+        ${x.ents.length && !conf ? `<button class="x" data-act="x" title="${esc(t("Ausblenden"))}" aria-label="${esc(t("Ausblenden"))}"><ha-icon icon="mdi:close"></ha-icon></button>` : ""}
+      </div>`;
+    }
+
+    _menuHtml(x) {
+      const one = x.ents.length === 1;
+      const chips = one
+        ? `<button class="chip" data-act="ign" data-ent="${esc(x.ents[0].id)}">${esc(t("Für {x} nicht mehr anzeigen", { x: x.ents[0].name }))}</button>`
+        : `<span class="mt">${esc(t("Nicht mehr anzeigen:"))}</span>` + x.ents.slice(0, 8).map((e) =>
+          `<button class="chip" data-act="ign" data-ent="${esc(e.id)}" title="${esc(t("Für {x} nicht mehr anzeigen", { x: e.name }))}">${esc(e.name)}</button>`).join("")
+          + `<button class="chip all" data-act="ign" data-ent="*">${esc(t("Alle ausblenden"))}</button>`;
+      return `<div class="pill menu lvl-${x.lvl}" data-rule="${x.rule}">
+        <span class="ic"><ha-icon icon="mdi:eye-off-outline"></ha-icon></span>${chips}
+        <button class="x" data-act="cancel" title="${esc(t("Schließen"))}" aria-label="${esc(t("Schließen"))}"><ha-icon icon="mdi:close"></ha-icon></button>
+      </div>`;
+    }
+
+    // Zustand (Menü/Rückfrage) läuft nach einer Weile von selbst ab
+    _arm(prop, ms) {
+      this._armT = this._armT || {};
+      clearTimeout(this._armT[prop]);
+      this._armT[prop] = setTimeout(() => { this[prop] = null; this._render(); }, ms);
+    }
+
+    _click(e) {
+      const el = e.composedPath().find((n) => n.dataset?.act);
+      if (!el) return;
+      const rule = el.closest(".pill")?.dataset.rule, x = (this._hints || []).find((y) => y.rule === rule);
+      if (!x) return;
+      e.stopPropagation();
+      switch (el.dataset.act) {
+        case "tap": this._tap(x.tap); return;
+        case "x": this._menu = rule; this._confirm = null; this._arm("_menu", 20000); break;
+        case "cancel": this._menu = null; break;
+        case "ign": this._menu = null; this._ignore(el.dataset.ent === "*" ? x.ents.map((y) => y.id) : [el.dataset.ent]); return;
+        case "off": this._confirm = rule; this._arm("_confirm", 8000); break;
+        case "no": this._confirm = null; break;
+        case "yes":   // genau die Lichter aus dem Hinweis — erst nach der zweiten Berührung
+          this._confirm = null;
+          this._hass?.callService("light", "turn_off", { entity_id: x.action.ents });
+          break;
+        default: return;
+      }
+      this._render();
+    }
+
+    _tap(tp) {
+      if (!tp) return;
+      if (tp.more) {
+        const ev = new Event("hass-more-info", { bubbles: true, composed: true });
+        ev.detail = { entityId: tp.more };
+        this.dispatchEvent(ev);
+        return;
+      }
+      const p = String(tp.nav);
+      if (p.startsWith("#")) {   // Bubble-Pop-up
+        history.pushState(null, "", location.pathname + location.search + p);
+        window.dispatchEvent(new Event("location-changed"));
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+      } else {
+        history.pushState(null, "", p);
+        window.dispatchEvent(new Event("location-changed"));
+      }
+    }
+
+    getCardSize() { return this._hints?.length ? 1 : 0; }
+    getGridOptions() { return { columns: "full", rows: "auto" }; }
+  }
+
+  customElements.define("nullglow-hints-card", NullglowHintsCard);
+  window.customCards = window.customCards || [];
+  window.customCards.push({ type: "nullglow-hints-card", name: t("Nullglow Hinweise"),
+    description: t("Zeigt nur, was Aufmerksamkeit braucht: Regen bei offenem Fenster, Müll, Akkus, Offline-Geräte, Updates, niemand zu Hause") });
 })();
 
 // ───── nullglow-design-card.js ─────
@@ -7255,16 +8617,61 @@ window.__NULLGLOW_THEMES = {
     "Wie Gerät / HA-Profil": "Like device / HA profile", "Immer dunkel": "Always dark", "Immer hell": "Always light",
     "Nach Sonne (tagsüber hell)": "By the sun (light during the day)",
     // Assistent: Tipps
-    "7 · Handy & Wandmonitor": "7 · Phone & wall display",
+    "9 · Handy & Wandmonitor": "9 · Phone & wall display",
     "<b>Handy:</b> läuft in der HA-App, Seiten unten per Leiste wechseln (wischbar).": "<b>Phone:</b> runs in the HA app, switch pages with the bar at the bottom (swipeable).",
     "<b>Wandmonitor (Full HD):</b> Dashboard-Adresse mit <code>?kiosk</code> öffnen (braucht Kiosk Mode) — ohne Kopfzeile und Seitenleiste. Bei 1920×1080 mit 125 % Zoom sieht es aus wie im Original. Hochkant geht auch (die Leiste zeigt dann nur Symbole).":
       "<b>Wall display (Full HD):</b> open the dashboard URL with <code>?kiosk</code> (needs Kiosk Mode) — no header and no sidebar. At 1920×1080 with 125 % zoom it looks like the original. Portrait works too (the bar then shows icons only).",
-    "<b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist.":
-      "<b>Tap the clock:</b> design and light/dark for this device only — the default stays what is set here.",
+    "<b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist. Als Admin findest du dort auch <b>Kacheln bearbeiten</b>: Kacheln und ganze Gruppen per Ziehen anordnen, breiter machen, ausblenden, umbenennen — auf jeder Seite.":
+      "<b>Tap the clock:</b> design and light/dark for this device only — the default stays what is set here. As an admin you also find <b>Edit tiles</b> there: drag tiles and whole groups around, make them wider, hide or rename them — on every page.",
+    "Tipp: Uhr antippen": "Tip: tap the clock", "Zeigen": "Show me", "Verstanden": "Got it",
+    "Design und Hell/Dunkel für dieses Gerät.": "Design and light/dark for this device.",
+    "Design, Hell/Dunkel und <b>Kacheln bearbeiten</b>: Kacheln und Gruppen per Ziehen anordnen, Breite, ausblenden, umbenennen.":
+      "Design, light/dark and <b>Edit tiles</b>: drag tiles and groups around, change width, hide, rename.",
+    "ziehen, Gruppen anordnen, ausblenden": "drag, arrange groups, hide",
     "<b>Livebilder am Wandmonitor:</b> Browser-Cache begrenzen, z. B. Chromium mit <code>--disk-cache-size=67108864</code> (64 MB) starten.":
       "<b>Live video on the wall display:</b> limit the browser cache, e.g. start Chromium with <code>--disk-cache-size=67108864</code> (64 MB).",
     "Ändern kannst du alles später über <b>Dashboard bearbeiten</b>; „Kontrolle übernehmen“ macht daraus ein normales, frei bearbeitbares Dashboard (dann ohne automatische Aktualisierung).":
       "You can change everything later via <b>Edit dashboard</b>; “Take control” turns it into a normal, freely editable dashboard (then without automatic updates).",
+    // Direkt auf der Kachel bearbeiten
+    "Nur Administratoren können das Dashboard ändern.": "Only administrators can change the dashboard.",
+    "Dieses Dashboard ist keine Nullglow-Vorlage.": "This dashboard is not a Nullglow dashboard.",
+    "Antippen: bearbeiten · Halten und ziehen: verschieben": "Tap: edit · Hold and drag: move",
+    "{n}× geändert · noch nicht gespeichert": "{n} changes · not saved yet", "Kacheln": "Tiles", "Gruppen": "Groups", "Uhr": "Clock",
+    "Ziehen: verschieben · Antippen: Breite, ausblenden": "Drag: move · Tap: width, hide", "Gruppe auf der Übersicht": "Group on the overview",
+    "Gruppe ausblenden": "Hide group", "Wetter als eigene Gruppe": "Weather as its own group", "Wetter zurück zur Uhr": "Weather back to the clock",
+    "Medien als eigene Gruppe": "Media as its own group",
+    "Alle Lichter": "All lights", "Gruppe auf dieser Seite": "Group on this page", "Grundriss": "Floor plan", "Statistik": "Statistics", "Monatsbilanz": "Monthly balance", "Leistung 24 h": "Power 24 h",
+    "An": "On", "Auto": "Auto", "Bei der Uhr": "With the clock", "Eigene Gruppe": "Own group", "Musik & TV": "Music & TV", "Unter dem Wetter": "Under the weather", "Darstellung": "Layout", "Je Raum": "Per room", "Raum antippen": "Tap a room", "An/aus": "On/off", "Raum-Pop-up": "Room pop-up", "Temperatur-Verlauf": "Temperature history", "Zusammen": "Combined", "Karte „Wo sind alle?“": "Map “Where is everyone?”", "Hinweis-Leiste": "Hint bar", "Oben": "Top", "Schwebend": "Floating", "Mehr (Geräte, Räume, Energie …): Dashboard bearbeiten → Assistent": "More (devices, rooms, energy …): edit dashboard → wizard", "Licht auf der Übersicht ({n} Räume)": "Lights on the overview ({n} rooms)",
+    "Zusammengefasst = eine Kachel mit Balken je Raum und „Aus“, Antippen öffnet alle Räume nach Etage": "Combined = one tile with a bar per room and “Off”, tap opens all rooms by floor",
+    "Je Raum eine Kachel (Standard)": "One tile per room (default)", "Medien zurück zur Uhr": "Media back to the clock",
+    "Ausgeblendete Gruppen": "Hidden groups", "Anzeigen": "Show", "Verwerfen": "Discard", "Speichere …": "Saving …", "Fertig": "Done", "Umbenennen": "Rename", "Originalname": "Original name",
+    "Raum · Änderung gilt überall im Dashboard": "Room · change applies everywhere in the dashboard",
+    "Früher": "Earlier", "Später": "Later", "Raum ausblenden": "Hide room", "Ausblenden": "Hide", "Abbrechen": "Cancel", "Schließen": "Close",
+    "Kacheln bearbeiten": "Edit tiles", "umbenennen, verschieben, ausblenden": "rename, move, hide",
+    "8 · Direkt bearbeitet": "8 · Edited on the tiles", "{a} Namen · {b} ausgeblendet": "{a} names · {b} hidden", "nichts": "nothing",
+    "Auf dem Dashboard: <b>Uhr antippen → Kacheln bearbeiten</b> (nur Administratoren). Kachel antippen: umbenennen, ausblenden; halten und ziehen: verschieben. Namen gelten nur in diesem Dashboard.":
+      "On the dashboard: <b>tap the clock → Edit tiles</b> (administrators only). Tap a tile: rename, hide; hold and drag: move. Names only apply in this dashboard.",
+    "Ausgeblendete Kacheln": "Hidden tiles", "entfernen = wieder anzeigen": "remove = show again",
+    "Reihenfolge der Kacheln zurücksetzen": "Reset tile order",
+    // Medien
+    "Medien": "Media", "Läuft gerade": "Now playing", "Alle Player": "All players", "{n} Medien-Player": "{n} media players", "Medien-Karte fehlt": "media card missing",
+    "Musik/TV auf der Übersicht, solange etwas läuft": "Music/TV on the overview while something is playing",
+    "mit Cover — die Karte färbt sich in den Farben des Covers": "with cover art — the card takes on the colors of the cover",
+    "Medien-Player": "Media players", "leer = alle (Seite „Medien“ und Übersicht)": "empty = all (“Media” page and overview)",
+    // Hinweise
+    "7 · Hinweise": "7 · Hints", "aus": "off", "schwebend": "floating", "oben auf der Übersicht": "top of the overview",
+    "Eine Leiste, die nur erscheint, wenn etwas zu tun ist: Fenster offen bei Regen, Müll morgen, Akkus schwach, Geräte offline, Updates, niemand zu Hause aber Licht an. Das × an einem Hinweis blendet ihn für einzelne Geräte aus — hier unter „Nie warnen für“ wieder entfernen.":
+      "A bar that only appears when something needs attention: windows open while it rains, bins tomorrow, low batteries, devices offline, updates, nobody home but lights on. The × on a hint hides it for single devices — remove them again here under “Never warn for”.",
+    "Regen & offene Fenster": "Rain & open windows", "Müll heute/morgen": "Bins today/tomorrow", "Akkus schwach": "Low batteries",
+    "Geräte offline": "Devices offline", "Updates verfügbar": "Updates available", "Niemand zu Hause, Licht an / Tür offen": "Nobody home, lights on / door open",
+    "Anzeige": "Display", "Oben auf der Übersicht (Standard)": "Top of the overview (default)",
+    "Schwebend über der Navigation, auf jeder Seite (Wandmonitor)": "Floating above the navigation on every page (wall display)", "Aus": "Off",
+    "Akku-Warnung unter (%)": "Battery warning below (%)", "Müll-Kalender (jeder Termin zählt)": "Waste calendar (every event counts)",
+    "leer = automatisch: Waste Collection Schedule, sonst Stichworte (Restmüll, Gelbe Tonne, Papier, Bio …) in allen Kalendern":
+      "empty = automatic: Waste Collection Schedule, otherwise keywords (waste, recycling, paper, bio …) in all calendars",
+    "Weitere Müll-Stichworte": "Extra waste keywords", "z. B. Grünschnitt, Wertstoffhof": "e.g. green waste, recycling centre",
+    "Nie warnen für": "Never warn for", "z. B. Geräte, die immer wenig Akku melden": "e.g. devices that always report a low battery",
+    "Auf diesem Gerät zusätzlich ausgeblendet: {n}": "Additionally hidden on this device: {n}", "zurückholen": "restore",
   };
   let ngH = null;   // zuletzt bekanntes hass (generate/Editor setzen es) — Sprache für t()
   const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
@@ -7340,9 +8747,10 @@ window.__NULLGLOW_THEMES = {
     const hideL = new Set(cfg.hide_labels || []);
     const labelled = (x) => !!x?.labels?.some((l) => hideL.has(l));
     const areaHidden = (aid) => hideL.size > 0 && labelled((hass.areas || {})[aid]);
+    const hiddenE = new Set(cfg.hidden || []);   // direkt auf der Kachel ausgeblendet
     const visible = (id) => {
       const e = ents[id];
-      if (!st[id] || (e && (e.hidden || e.entity_category))) return false;
+      if (!st[id] || hiddenE.has(id) || (e && (e.hidden || e.entity_category))) return false;
       if (!hideL.size || !e) return true;
       if (labelled(e) || labelled(devs[e.device_id])) return false;
       return !areaHidden(e.area_id || devs[e.device_id]?.area_id);
@@ -7399,7 +8807,7 @@ window.__NULLGLOW_THEMES = {
         if (tag) r.name = `${r.name} · ${tag}`;
       });
     }
-    const pick = (domain, list) => (list && list.length ? list.filter((id) => st[id]) : ids.filter((id) => DOMAIN(id) === domain));
+    const pick = (domain, list) => (list && list.length ? list.filter((id) => st[id] && !hiddenE.has(id)) : ids.filter((id) => DOMAIN(id) === domain));
     const onDevice = (id, test) => {
       const d = ents[id]?.device_id;
       return d ? Object.values(ents).filter((e) => e.device_id === d && st[e.entity_id] && test(e.entity_id)).map((e) => e.entity_id) : [];
@@ -7413,6 +8821,7 @@ window.__NULLGLOW_THEMES = {
       persons: pick("person", cfg.persons),
       cameras: cfg.cameras?.length ? pick("camera", cfg.cameras) : pick("camera").filter((id) => !robotCams.has(id) && !/_map$|_karte$/.test(id)),
       calendars: pick("calendar", cfg.calendars),
+      media: pick("media_player", cfg.media_players),
       vacuums: ids.filter((id) => DOMAIN(id) === "vacuum"),
       mowers: ids.filter((id) => DOMAIN(id) === "lawn_mower"),
       locks: ids.filter((id) => DOMAIN(id) === "lock"),
@@ -7647,6 +9056,7 @@ ha-tile-info {
     { key: "energie", title: "Energie", icon: "mdi:lightning-bolt" },
     { key: "kameras", title: "Kameras", icon: "mdi:cctv" },
     { key: "kalender", title: "Kalender", icon: "mdi:calendar-month" },
+    { key: "medien", title: "Medien", icon: "mdi:play-circle-outline" },
     { key: "sauger", title: "Sauger", icon: "mdi:robot-vacuum" },
     { key: "maeher", title: "Mäher", icon: "mdi:robot-mower" },
   ];
@@ -7660,6 +9070,7 @@ ha-tile-info {
       energie: !!energy,
       kameras: inv.cameras.length > 0,
       kalender: inv.calendars.length > 0,
+      medien: inv.media.length > 0 && has("nullglow-media-card"),
       sauger: inv.vacuums.length > 0,
       maeher: inv.mowers.length > 0,
     };
@@ -7737,6 +9148,29 @@ ha-tile-info {
       width_desktop: "980px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 180000, cards };
   }
 
+  function lightsPopup(inv, cfg) {
+    const groups = new Map();
+    inv.shown.filter((r) => r.lights.length).forEach((r) => {
+      const k = r.floor ? r.floor.id : "_";
+      if (!groups.has(k)) groups.set(k, { name: r.floor ? r.floor.name : t("Weitere"), icon: r.floor?.icon, level: r.floor ? r.floor.level : 99, rooms: [] });
+      groups.get(k).rooms.push(r);
+    });
+    const rank = (l) => (l < 0 ? 100 - l : l);   // EG, OG, DG …, dann Keller
+    const gs = [...groups.values()].sort((a, b) => rank(a.level) - rank(b.level));
+    const tapPop = cfg.light_tap === "popup", cards = [];
+    gs.forEach((g) => {
+      cards.push({ type: "custom:nullglow-lights-card", rooms: g.rooms.map((r) => ({ name: r.name, lights: r.lights })),
+        title: gs.length === 1 ? t("Alle Lichter") : g.name,
+        icon: g.icon || (g.level < 0 ? "mdi:home-floor-negative-1" : g.level <= 3 ? `mdi:home-floor-${g.level}` : "mdi:home-roof"),
+        grid_options: { columns: 12, rows: 2 } });
+      const tiles = g.rooms.map((r) => (r.light ? lightTile(r.light, r.name, r.icon, r.hash, 4, tapPop) : roomLightsButton(r, r.hash, 4, tapPop)));
+      cards.push({ type: "grid", columns: 3, square: false, cards: tiles,
+        card_mod: { style: "#root { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; }\n" } });
+    });
+    return { type: "custom:bubble-card", card_type: "pop-up", hash: "#lichter", name: t("Licht"), icon: "mdi:lightbulb-group",
+      width_desktop: "980px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 180000, cards };
+  }
+
   // Fenster-/Türkontakt: nur Anzeige, offen = Amber (Status)
   const CONTACT_WORD = /^(?:fenster(?:kontakt)?|t(?:ü|ue)r(?:kontakt)?|kontakt|window|door|contact|sensor)\b[\s:·|/–—-]*/i;
   function contactTile(eid, name, hass, columns = 6) {
@@ -7779,10 +9213,16 @@ ha-tile-info {
   }
 
   // Uhr antippen: Design + Hell/Dunkel für dieses Gerät (nullglow-design-card, Browser-Speicher)
-  function designPopup(base, design, mode) {
+  function designPopup(base, design, mode, admin) {
+    const go = { action: "navigate", navigation_path: "#ng-bearbeiten" };
     return { type: "custom:bubble-card", card_type: "pop-up", hash: "#design", name: "Design", icon: "mdi:palette",
       width_desktop: "900px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 60000,
-      cards: [{ type: "custom:nullglow-design-card", storage: "local", dashboard: base, default_design: design, default_mode: mode }] };
+      cards: [{ type: "custom:nullglow-design-card", storage: "local", dashboard: base, default_design: design, default_mode: mode },
+        ...(admin ? [{ type: "custom:bubble-card", card_type: "button", button_type: "name", name: t("Kacheln bearbeiten"), icon: "mdi:pencil-outline",
+          show_state: false, tap_action: go, button_action: { tap_action: go }, grid_options: { columns: 12, rows: 1 },
+          styles: ".bubble-button-card-container { border-radius: 20px !important; box-shadow: inset 0 0 0 1.5px var(--ng-acc), 0 0 22px -8px var(--ng-acc) !important; }\n"
+            + ".bubble-icon { color: var(--ng-acc) !important; }\n"
+            + ".bubble-name::after { content: '  ·  " + t("ziehen, Gruppen anordnen, ausblenden") + "'; opacity: .6; font-weight: 400; }\n" }] : [])] };
   }
 
   function radarPopup() {
@@ -7850,6 +9290,8 @@ ha-tile-info {
   // Gruppen der Übersicht: Schlüssel, Name, Symbol, Standardbreite (Spalten) — Reihenfolge = Standard
   const HOME_PARTS = [
     { key: "uhr", name: "Uhr & Wetter", icon: "mdi:clock-outline", width: 1 },
+    { key: "wetter", name: "Wetter", icon: "mdi:weather-partly-cloudy", width: 1 },   // nur mit split_weather (sonst in „uhr“)
+    { key: "media", name: "Medien", icon: "mdi:play-circle-outline", width: 1 },      // nur mit split_media (sonst in „uhr“)
     { key: "energie", name: "Energie", icon: "mdi:lightning-bolt", width: 2 },
     { key: "kameras", name: "Kameras", icon: "mdi:cctv", width: 1 },
     { key: "licht", name: "Licht", icon: "mdi:lightbulb-group", width: 1 },
@@ -7869,14 +9311,97 @@ ha-tile-info {
       // Kameras nebeneinander: eine Section über w Spalten hat 12·w Rasterspalten
       const cc = Math.min(3, Math.max(1, Math.round(+L.cam_cols || 1)));
       if (p.key === "kameras" && cc > 1) sec.cards = sec.cards.map((c) => (c.type === "picture-entity" ? { ...c, grid_options: { columns: (12 * w) / cc } } : c));
+      if (sec.cards?.length) sec.cards = [{ ...sec.cards[0], view_layout: { ...(sec.cards[0].view_layout || {}), ng_group: p.key } }, ...sec.cards.slice(1)];
       return sec;
     });
+  }
+  // Gruppen auf den anderen Seiten (Übersicht hat home_layout): jede Section ist eine Gruppe. Schlüssel aus dem Inhalt
+  // (Raum, sonst Kartentyp + erste Entität — sprachunabhängig), Name aus der Überschrift. Marker an der ersten Karte wie auf der Übersicht.
+  const GROUP_TYPE_NAMES = { "nullglow-power-card": "Leistung 24 h", "nullglow-month-card": "Monatsbilanz", "nullglow-flow-card": "Energiefluss",
+    "nullglow-media-card": "Medien", "nullglow-mower-map-card": "Garten", "nullglow-mower-stats-card": "Statistik", "calendar": "Kalender",
+    "calendar-card-pro": "Termine", "nullglow-floorplan-card": "Grundriss" };
+  function applyViewLayout(view, sections, L, hass) {
+    L = L || {};
+    const used = new Set(), order = L.order || [], hide = new Set(L.hide || []), width = L.width || {};
+    const names = ((window.__ngGroupNames = window.__ngGroupNames || {})[view] = {});
+    const items = sections.map((sec, i) => {
+      const cards = Array.isArray(sec.cards) ? sec.cards : [];
+      if (!cards.length) return { sec, i };
+      const room = cards.map((c) => c.view_layout?.ng_edit).find((m) => m?.kind === "room");
+      const h = cards.find((c) => c.type === "heading");
+      const c0 = cards.find((c) => c.type !== "heading") || cards[0], inner = c0.card || c0;   // Verlauf-Hülle: Karte steckt innen
+      const e0 = inner.entity || (Array.isArray(inner.entities) ? inner.entities[0] : null), ent = e0?.entity || e0;
+      let key = room ? room.id : String(inner.type || "karte").replace("custom:", "").replace("nullglow-", "") + (typeof ent === "string" ? ":" + ent : "");
+      for (let n = 2; used.has(key); n++) key = key.replace(/#\d+$/, "") + "#" + n;
+      used.add(key);
+      const name = String(h?.heading || (typeof inner.name === "string" && !/[{]/.test(inner.name) ? inner.name : "")
+        || (typeof ent === "string" && hass.states[ent]?.attributes?.friendly_name) || inner.title
+        || t(GROUP_TYPE_NAMES[String(inner.type || "").replace("custom:", "")] || "") || key);
+      names[key] = name;
+      return { sec, i, key, name, w0: sec.column_span || 1 };
+    });
+    const first = items.findIndex((x) => x.key);
+    const rank = (x) => (!x.key ? (x.i < first ? -1e6 + x.i : 1e6 + x.i) : order.includes(x.key) ? order.indexOf(x.key) : 1000 + x.i);
+    return items.filter((x) => !x.key || !hide.has(x.key)).sort((a, b) => rank(a) - rank(b)).map((x) => {
+      if (!x.key) return x.sec;
+      const sec = { ...x.sec }, w = Math.min(4, Math.max(1, Math.round(+width[x.key] || x.w0)));
+      if (w > 1) sec.column_span = w; else delete sec.column_span;
+      sec.cards = [{ ...sec.cards[0], view_layout: { ...(sec.cards[0].view_layout || {}), ng_group: x.key, ng_view: view, ng_name: x.name, ng_w: x.w0 } },
+        ...sec.cards.slice(1)];
+      return sec;
+    });
+  }
+  // Nur Abweichungen vom Standard behalten (Assistent und Bearbeiten-Modus)
+  function tidyLayout(n) {
+    if (n.order && n.order.join() === HOME_PARTS.map((p) => p.key).filter((k) => n.order.includes(k)).join()) delete n.order;
+    for (const [k, w] of Object.entries(n.width || {})) if (+w === HOME_PARTS.find((p) => p.key === k)?.width) delete n.width[k];
+    if (n.width && !Object.keys(n.width).length) delete n.width;
+    if (n.hide && !n.hide.length) delete n.hide;
+    if (!(+n.cam_cols > 1)) delete n.cam_cols;
+    for (const [flag, key] of SPLITS) {
+      if (n[flag]) continue;   // wieder bei der Uhr: Einträge der Gruppe verfallen
+      delete n[flag];
+      if (n.order) n.order = n.order.filter((k) => k !== key);
+      if (n.width) delete n.width[key];
+      if (n.hide) n.hide = n.hide.filter((k) => k !== key);
+      if (n.order && !n.order.length) delete n.order;
+      if (n.width && !Object.keys(n.width).length) delete n.width;
+      if (n.hide && !n.hide.length) delete n.hide;
+    }
+    return n;
+  }
+  const SPLITS = [["split_weather", "wetter"], ["split_media", "media"]];
+  // Wetter/Medien ab-/zurücktrennen: abgetrennt stehen sie direkt hinter der Uhr (bzw. dem Wetter), auch bei eigener Reihenfolge
+  function splitPart(n, key, on) {
+    const flag = SPLITS.find(([, k]) => k === key)[0];
+    if (!on) { delete n[flag]; return tidyLayout(n); }
+    n[flag] = true;
+    if (n.order && !n.order.includes(key)) {
+      const i = Math.max(n.order.indexOf("uhr"), key === "media" ? n.order.indexOf("wetter") : -1);
+      n.order.splice(i + 1, 0, key);
+    }
+    return n;
+  }
+  const groupName = (key, layout) => t(key === "uhr" && !layout?.split_weather ? "Uhr & Wetter" : key === "uhr" ? "Uhr" : HOME_PARTS.find((p) => p.key === key)?.name || key);
+
+  // Hinweis-Leiste (nullglow-hints-card): hints: { mode: top (Standard) | float | off, rules, battery_threshold, waste, ignore }
+  function hintsCard(cfg, base, on, contactsPopup) {
+    const h = cfg.hints || {};
+    if (h.mode === "off" || !has("nullglow-hints-card")) return null;
+    return { type: "custom:nullglow-hints-card", dashboard: base, ...(h.mode === "float" ? { floating: "bottom" } : {}),
+      ...(h.rules ? { rules: h.rules } : {}), ...(h.battery_threshold ? { battery_threshold: h.battery_threshold } : {}),
+      ...(h.waste ? { waste: h.waste } : {}), ...(h.ignore?.length ? { ignore: h.ignore } : {}),
+      tap: { battery: "#wartung", ...(contactsPopup ? { rain: "#fenster" } : {}), ...(on.kalender ? { waste: `${base}/kalender` } : {}) },
+      grid_options: { columns: "full", rows: "auto" } };
   }
 
   // Lücken füllt HA weiter auf (dense): Reihenfolge bleibt, kleine Gruppen rücken ggf. in eine Lücke davor
   function viewHome(inv, energy, base, on, hass, cfg, design) {
     const { parts, extra } = homeParts(inv, energy, base, on, hass, cfg, design);
-    return { sections: applyHomeLayout(parts, cfg.home_layout), extra };
+    const sections = applyHomeLayout(parts, cfg.home_layout);
+    // Hinweise oben über die ganze Breite (leer = Karte unsichtbar); schwebend kommt sie auf jede Seite (generate)
+    const hc = (cfg.hints || {}).mode !== "float" && hintsCard(cfg, base, on, extra.some((p) => p.hash === "#fenster"));
+    return { sections: hc ? [{ type: "grid", column_span: 4, cards: [hc] }, ...sections] : sections, extra };
   }
 
   function homeParts(inv, energy, base, on, hass, cfg, design) {
@@ -7884,13 +9409,20 @@ ha-tile-info {
     const S = { push: (key, sec) => P.push({ key, sec }) };
     const withDesign = has("nullglow-design-card");
     const top = [clockCard(withDesign ? "#design" : null)];
+    const split = !!(cfg.home_layout?.split_weather && inv.weather), wx = split ? [] : top;
     if (inv.weather) {
-      top.push({ type: "weather-forecast", entity: inv.weather, name: t("Heute"), forecast_type: "daily", show_current: true, show_forecast: true,
+      wx.push({ type: "weather-forecast", entity: inv.weather, name: t("Heute"), forecast_type: "daily", show_current: true, show_forecast: true,
         tap_action: { action: "navigate", navigation_path: "#regenradar" },
         card_mod: { style: ".state, .name { white-space: normal !important; }\n" } });
-      top.push({ type: "custom:nullglow-hourly-card", entity: inv.weather, hours: 8 });
+      wx.push({ type: "custom:nullglow-hourly-card", entity: inv.weather, hours: 8 });
     }
+    const media = cfg.media_home !== false && inv.media.length && has("nullglow-media-card")
+      ? { type: "custom:nullglow-media-card", entities: inv.media, hide_idle: true, size: "compact", grid_options: { columns: 12, rows: 2 } } : null;
+    const splitM = !!(media && cfg.home_layout?.split_media);
+    if (media && !splitM) top.push(media);
     S.push("uhr", { type: "grid", cards: top });
+    if (split) S.push("wetter", { type: "grid", cards: wx });
+    if (splitM) S.push("media", { type: "grid", cards: [{ ...media, hide_idle: false, idle: "rest" }] });   // eigene Gruppe: Platz halten, Layout springt nicht
     if (energy) S.push("energie", { type: "grid", cards: [heading(t("Energie"), "mdi:lightning-bolt", on.energie ? `${base}/energie` : null),
       { type: "custom:nullglow-flow-card", height: 388, grid_options: { columns: "full" }, ...energy }] });
 
@@ -7900,11 +9432,16 @@ ha-tile-info {
       ...live.map((c) => camCard(c, true, live.length > 1))] });
 
     const lightRooms = inv.shown.filter((r) => r.lights.length);
+    const lightsCompact = cfg.lights === "compact" && has("nullglow-lights-card") && lightRooms.length > 0;
     if (lightRooms.length) {
       const cards = [heading(t("Licht"), "mdi:lightbulb-group", on.licht ? `${base}/licht` : null)];
       const tapPop = cfg.light_tap === "popup";   // Standard: Antippen schaltet den Raum an/aus
-      lightRooms.forEach((r) => cards.push(r.light ? lightTile(r.light, r.name, r.icon, r.hash, 6, tapPop) : roomLightsButton(r, r.hash, 6, tapPop)));
-      cards.push(allOff());
+      if (lightsCompact) cards.push({ type: "custom:nullglow-lights-card", rooms: lightRooms.map((r) => ({ name: r.name, lights: r.lights })),
+        title: t("Alle Lichter"), tap: "#lichter", grid_options: { columns: 12, rows: 2 } });   // „Aus“ steckt in der Sammelkachel
+      else {
+        lightRooms.forEach((r) => cards.push(markRoom(r.light ? lightTile(r.light, r.name, r.icon, r.hash, 6, tapPop) : roomLightsButton(r, r.hash, 6, tapPop), r)));
+        cards.push(allOff());
+      }
       cards.push({ type: "custom:nullglow-care-card", mode: "summary", tap_hash: "#wartung", battery: { warn: 30, crit: 15 },
         grid_options: { columns: 6, rows: 1 } });
       S.push("licht", { type: "grid", cards });
@@ -7922,9 +9459,9 @@ ha-tile-info {
           icon: r.icon, icon_color: t ? tempColor(t) : "grey",
           tap_action: { action: "navigate", navigation_path: r.hash },
           card_mod: { style: `ha-card { --ng-state: ${heatCool(r.climate)}; }\n` } };
-        cards.push(graph && t
+        cards.push(markRoom(graph && t
           ? { type: "custom:nullglow-spark-card", entity: t, color_scale: "room", min_span: 2, grid_options: { columns: 6 }, card: tile }
-          : { ...tile, grid_options: { columns: 6 } });
+          : { ...tile, grid_options: { columns: 6 } }, r));
       });
       S.push("klima", { type: "grid", cards });
     }
@@ -7962,8 +9499,9 @@ ha-tile-info {
       cards: [{ type: "custom:nullglow-care-card", mode: "full", battery: { warn: 30, crit: 15 } }] }];
     inv.shown.forEach((r) => { const p = roomPopup(r, hass, inv); if (p) pops.push(p); });
     if (compact) pops.push(coversPopup(inv));
+    if (lightsCompact) pops.push(lightsPopup(inv, cfg));
     if (cCompact) pops.push(contactsPopup(inv, hass));
-    if (withDesign) pops.push(designPopup(base, design, ["dark", "light", "sun"].includes(cfg.mode) ? cfg.mode : "auto"));
+    if (withDesign) pops.push(designPopup(base, design, ["dark", "light", "sun"].includes(cfg.mode) ? cfg.mode : "auto", !!hass.user?.is_admin));
     return { parts: P, extra: pops };
   }
 
@@ -7971,7 +9509,7 @@ ha-tile-info {
     const S = [];
     inv.shown.filter((r) => r.lights.length).forEach((r) => {
       const cards = [heading(r.name, r.icon)];
-      if (r.light && r.lights.length > 1) cards.push(lightTile(r.light, t("{n} · alle", { n: r.name }), r.icon, null, 12));
+      if (r.light && r.lights.length > 1) cards.push(markRoom(lightTile(r.light, t("{n} · alle", { n: r.name }), r.icon, null, 12), r));
       r.lights.forEach((l) => { // lange Namen bekommen die ganze Breite (Bubble lässt sie sonst durchlaufen)
         const n = inv.niceName(l, [r.name, r.areaName]);
         cards.push(lightTile(l, n, null, null, r.lights.length === 1 || n.length > 13 ? 12 : 6));
@@ -7986,7 +9524,7 @@ ha-tile-info {
   function viewKlima(inv, hass) {
     const S = [];
     inv.shown.filter((r) => r.temperature || r.climate.length).forEach((r) => {
-      const cards = [roomTempCard(r)];
+      const cards = [markRoom(roomTempCard(r), r)];
       climateKinds(hass, r.climate).forEach((c) => cards.push(climateCard(c, hass)));
       S.push({ type: "grid", cards });
     });
@@ -8062,6 +9600,17 @@ ha-tile-info {
 
   function viewKameras(inv, cfg) {
     return { sections: inv.cameras.map((c) => ({ type: "grid", column_span: 2, cards: [camCard(c, !!cfg.cameras_live)] })) };
+  }
+
+  // Medien: oben groß, was gerade läuft (mehrere aktive = Chips zum Wechseln), darunter alle Player klein
+  function viewMedien(inv, hass) {
+    const all = inv.media.filter((m) => hass.states[m]?.state !== "unavailable");
+    return { sections: [
+      { type: "grid", column_span: 2, cards: [heading(t("Läuft gerade"), "mdi:play-circle-outline"),
+        { type: "custom:nullglow-media-card", entities: inv.media, size: "large", grid_options: { columns: "full", rows: 4 } }] },
+      { type: "grid", column_span: 2, cards: [heading(t("Alle Player"), "mdi:speaker-multiple"),
+        ...all.map((m) => ({ type: "custom:nullglow-media-card", entity: m, size: "compact", grid_options: { columns: 12, rows: 2 } }))] },
+    ] };
   }
 
   function viewKalender(inv) {
@@ -8277,6 +9826,856 @@ ha-tile-info {
   setInterval(ensureMode, 1000);
 
   // ---------- Strategie ----------
+  // ---------- Direkt auf der Kachel bearbeiten ----------
+  // Jede bearbeitbare Kachel trägt view_layout.ng_edit = { id, kind: "entity" | "room", room } (view_layout lassen alle
+  // Karten zu und ignorieren es in Sections). Gespeichert wird nur in der Dashboard-Einstellung (strategy):
+  //   names: { <entity>: "Name" }   hidden: [<entity>]   tile_order: [<entity> …] (relative Reihenfolge, überall gleich)
+  // Raum-Kacheln (Licht/Klima der Übersicht, „· alle“, Klima-Seite) ändern stattdessen rooms.<id>.name/hide bzw. room_order.
+  const markRoom = (card, r) => ({ ...card, view_layout: { ...(card.view_layout || {}), ng_edit: { id: `room:${r.id}`, kind: "room", room: r.id } } });
+  const LABEL = { "custom:bubble-card": "name", tile: "name", "custom:mushroom-person-card": "name", "picture-entity": "name",
+    "custom:mushroom-climate-card": "name", "custom:mushroom-vacuum-card": "name", "custom:mushroom-template-card": "primary" };
+  const labelKey = (c) => { const k = LABEL[c?.type]; return k && !(k === "primary" && /[{]/.test(String(c.primary || ""))) ? k : null; };
+  const editCard = (c) => (c?.type === "custom:nullglow-spark-card" && c.card ? c.card : c);   // Verlauf-Hülle: Name steht innen
+  function applyEdits(sections, cfg) {
+    const names = cfg.names || {}, order = cfg.tile_order || [];
+    return sections.map((sec) => {
+      if (!Array.isArray(sec.cards)) return sec;
+      let cards = sec.cards.map((c) => {
+        if (c.view_layout?.ng_edit) return c;
+        const inner = editCard(c), id = inner?.entity;
+        if (!id || !labelKey(inner)) return c;
+        const named = names[id] ? (c === inner ? { ...c, [labelKey(c)]: names[id] } : { ...c, card: { ...inner, [labelKey(inner)]: names[id] } }) : c;
+        return { ...named, view_layout: { ...(c.view_layout || {}), ng_edit: { id, kind: "entity" } } };
+      });
+      // Reihenfolge: nur die Kacheln aus tile_order tauschen ihre Plätze untereinander, alles andere bleibt stehen
+      const slots = cards.map((c, i) => [i, order.indexOf(c.view_layout?.ng_edit?.id)]).filter(([, k]) => k !== -1);
+      if (slots.length > 1) {
+        const sorted = [...slots].sort((a, b) => a[1] - b[1]).map(([i]) => cards[i]);
+        const next = [...cards];
+        slots.forEach(([i], k) => { next[i] = sorted[k]; });
+        cards = next;
+      }
+      return { ...sec, cards };
+    });
+  }
+
+  // Einstellung des gerade offenen Dashboards lesen/ändern/speichern (nur Admins; HA baut das Dashboard danach neu)
+  async function saveStrategy(patch) {
+    const hass = document.querySelector("home-assistant")?.hass;
+    if (!hass?.user?.is_admin) throw new Error(t("Nur Administratoren können das Dashboard ändern."));
+    const seg = location.pathname.split("/")[1] || "lovelace", url_path = seg === "lovelace" ? null : seg;
+    const conf = await hass.callWS({ type: "lovelace/config", url_path, force: true });
+    if (!conf?.strategy || conf.strategy.type !== "custom:nullglow") throw new Error(t("Dieses Dashboard ist keine Nullglow-Vorlage."));
+    const s = clone(conf.strategy);
+    patch(s);
+    for (const k of ["names", "rooms", "hints"]) if (s[k] && typeof s[k] === "object" && !Array.isArray(s[k]) && !Object.keys(s[k]).length) delete s[k];
+    for (const k of ["hidden", "tile_order", "room_order"]) if (Array.isArray(s[k]) && !s[k].length) delete s[k];
+    await hass.callWS({ type: "lovelace/config/save", url_path, config: { ...conf, strategy: s } });
+  }
+  window.__ngSaveStrategy = saveStrategy;
+
+  // Rahmen, Menü und Leiste liegen in Seiten-Koordinaten (scrollen nativ mit), nur die Leiste steht fest oben.
+  // Verschieben (Ziehen oder Früher/Später) ist sofort sichtbar (CSS order im Section-Grid) und wird erst bei „Fertig“
+  // gespeichert — eine Speicherung statt einer je Schritt (HA baut das Dashboard danach komplett neu).
+  const EDIT_CSS = `
+    :host { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 7; pointer-events: none; font-family: var(--ng-font, inherit); }
+    .bar { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: auto; display: flex; align-items: center; gap: 12px;
+      padding: 8px 8px 8px 18px; border-radius: 999px; font-size: 14px; color: var(--ng-txt, #e8f5ee); white-space: nowrap;
+      background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .82);
+      backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+      box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .45), 0 12px 40px -12px rgba(0, 0, 0, .6); }
+    .bar ha-icon { --mdc-icon-size: 18px; color: var(--ng-acc, #7cffb2); }
+    .bar .msg { color: var(--ng-txt-dim, #93a79d); }
+    .bar .msg.on { color: var(--ng-txt, #e8f5ee); }
+    button { font: inherit; font-size: 14px; border: 0; cursor: pointer; border-radius: 999px; min-height: 36px; padding: 0 14px;
+      display: inline-flex; align-items: center; gap: 6px; color: var(--ng-txt, #e8f5ee); background: rgba(var(--rgb-ng-txt, 255, 255, 255), .07); }
+    button[hidden] { display: none; }
+    button:hover { background: rgba(var(--rgb-ng-txt, 255, 255, 255), .12); }
+    button.pri { background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); font-weight: 600; }
+    button[disabled] { opacity: .35; cursor: default; }
+    button ha-icon { --mdc-icon-size: 18px; }
+    .bar button ha-icon { color: inherit; }
+    .box { position: absolute; pointer-events: auto; cursor: grab; border-radius: 18px; box-sizing: border-box; transition: opacity .15s;
+      user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
+      box-shadow: inset 0 0 0 2px rgba(var(--rgb-ng-acc, 124, 255, 178), .55), 0 0 18px -6px rgba(var(--rgb-ng-acc, 124, 255, 178), .6);
+      background: rgba(var(--rgb-ng-acc, 124, 255, 178), .05); }
+    .box:hover, .box.sel { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .14); box-shadow: inset 0 0 0 2px var(--ng-acc, #7cffb2), 0 0 24px -4px rgba(var(--rgb-ng-acc, 124, 255, 178), .8); }
+    .box i { position: absolute; top: -9px; right: -9px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+      background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); }
+    .box i ha-icon { --mdc-icon-size: 14px; }
+    .box.edge i { top: 4px; right: 4px; }
+    .box.grp { border-radius: 26px; }
+    .box .lbl { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 14px 5px 8px; border-radius: 999px; font-size: 13px; font-weight: 600; white-space: nowrap; pointer-events: none;
+      background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); box-shadow: 0 6px 18px -6px rgba(0, 0, 0, .6); }
+    .box .lbl ha-icon { --mdc-icon-size: 16px; }
+    .seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .06); }
+    .seg[hidden] { display: none; }
+    .seg button { min-height: 30px; padding: 0 12px; background: transparent; }
+    .seg button.on { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .2); color: var(--ng-acc, #7cffb2); font-weight: 600; }
+    .menu .wrow span { flex: 1; text-align: center; align-self: center; }
+    .menu .wrow button { flex: none; width: 44px; padding: 0; }
+    .menu .hl { display: flex; align-items: center; gap: 8px; } .menu .hl span { flex: 1; }
+    .menu .opt { display: flex; flex-direction: column; gap: 4px; margin-top: 2px; }
+    .menu .opt small { margin: 0; }
+    .seg2 { display: flex; gap: 2px; padding: 3px; border-radius: 14px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .06); }
+    .seg2 button { flex: 1; min-height: 32px; padding: 0 6px; border-radius: 11px; font-size: 13px; background: transparent; justify-content: center; }
+    .seg2 button.on { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .2); color: var(--ng-acc, #7cffb2); font-weight: 600; opacity: 1; }
+    .menu .st { color: var(--ng-txt-dim, #93a79d); font-size: 12px; }
+    .menu .st:empty, .menu .err:empty { display: none; }
+    .menu .hl button { flex: none; }
+    .box.under { visibility: hidden; pointer-events: none; }
+    .boxes.dragging .box:not(.drag) { opacity: 0; pointer-events: none; }
+    .box.drag { cursor: grabbing; transition: none; background: rgba(var(--rgb-ng-acc, 124, 255, 178), .10);
+      box-shadow: inset 0 0 0 2px var(--ng-acc, #7cffb2), 0 22px 44px -14px rgba(0, 0, 0, .75), 0 0 28px -6px rgba(var(--rgb-ng-acc, 124, 255, 178), .7); }
+    .menu { position: absolute; pointer-events: auto; width: 280px; padding: 14px; border-radius: 20px; display: flex; flex-direction: column; gap: 8px;
+      color: var(--ng-txt, #e8f5ee); box-sizing: border-box;
+      background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .9);
+      backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.12)), 0 20px 50px -14px rgba(0, 0, 0, .7); }
+    .menu b { font-size: 15px; font-weight: 600; } .menu small { color: var(--ng-txt-dim, #93a79d); font-size: 12px; margin-top: -4px; }
+    .menu .row { display: flex; gap: 8px; } .menu .row button { flex: 1; justify-content: center; }
+    .menu input { font: inherit; font-size: 15px; padding: 9px 12px; border-radius: 12px; border: 0; outline: 0; color: var(--ng-txt, #e8f5ee);
+      background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.12)); }
+    .menu input:focus { box-shadow: inset 0 0 0 1.5px var(--ng-acc, #7cffb2); }
+    .menu .err { color: var(--ng-danger, #ff6b6b); font-size: 12px; }
+    .bar .cnt { display: none; font-variant-numeric: tabular-nums; }
+    @media (max-width: 600px) { .bar .msg, .bar > ha-icon, .bar .tx { display: none; } .bar .cnt { display: inline; } .bar { gap: 6px; padding-left: 8px; }
+      .bar button { padding: 0 11px; } .seg button { padding: 0 10px; } }
+  `;
+  const EDIT_TOKENS = ["--ng-acc", "--rgb-ng-acc", "--ng-acc-ink", "--ng-txt", "--rgb-ng-txt", "--ng-txt-dim", "--ng-line", "--ng-glass-2",
+    "--rgb-ng-bg", "--ng-danger", "--ng-font"];
+  const ngEdit = (window.__ngEdit = window.__ngEdit || { on: false });
+  const FLIP_MS = 180, FLIP_EASE = "cubic-bezier(.2, .8, .2, 1)";
+  function editStart() {
+    const hass = document.querySelector("home-assistant")?.hass, base = "/" + (location.pathname.split("/")[1] || "lovelace");
+    if (!hass?.user?.is_admin || window.__nullglowModes[base] === undefined) return;
+    if (ngEdit.on) return;
+    Object.assign(ngEdit, { on: true, base, pend: [], moves: 0, grids: new Set(), drag: null, press: null, busy: false,
+      mode: "tiles", lay: { width: {}, hide: [] }, prev: new Map(), hasGroups: false });
+    const host = document.createElement("div");
+    host.id = "ng-edit";
+    const root = host.attachShadow({ mode: "open" });
+    root.innerHTML = `<style>${EDIT_CSS}</style><div class="bar"><ha-icon icon="mdi:pencil"></ha-icon>
+      <div class="seg" hidden><button data-m="tiles" class="on">${esc(t("Kacheln"))}</button><button data-m="groups">${esc(t("Gruppen"))}</button></div>
+      <span class="msg"></span>
+      <button class="cfg" hidden title="${esc(t("Übersicht"))}"><ha-icon icon="mdi:cog-outline"></ha-icon></button>
+      <button class="hid" hidden title="${esc(t("Ausgeblendete Gruppen"))}"><ha-icon icon="mdi:eye-off-outline"></ha-icon><span></span></button>
+      <button class="undo" hidden><ha-icon icon="mdi:undo"></ha-icon><span class="tx">${esc(t("Verwerfen"))}</span></button>
+      <button class="pri done"><ha-icon icon="mdi:check"></ha-icon>${esc(t("Fertig"))}<span class="cnt"></span></button></div><div class="boxes"></div>`;
+    document.body.appendChild(host);
+    ngEdit.host = host; ngEdit.root = root;
+    root.querySelector(".done").addEventListener("click", editDone);
+    root.querySelector(".undo").addEventListener("click", () => { discardOrder(); closeMenu(); });
+    root.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.m)));
+    root.querySelector(".hid").addEventListener("click", openHiddenMenu);
+    root.querySelector(".cfg").addEventListener("click", openCfgMenu);
+    ngEdit.key = (ev) => { if (ev.key === "Escape") { if (ngEdit.drag) return; if (root.querySelector(".menu")) closeMenu(); else editStop(); } };
+    ngEdit.resize = () => placeBoxes();
+    ngEdit.scroll = () => clipBoxes();
+    window.addEventListener("keydown", ngEdit.key);
+    window.addEventListener("resize", ngEdit.resize);
+    window.addEventListener("scroll", ngEdit.scroll, { passive: true });
+    ngEdit.timer = setInterval(placeBoxes, 500);
+    updateBar();
+    window.dispatchEvent(new Event("nullglow-edit"));
+    setTimeout(placeBoxes, 300);   // Media-Karte taucht ggf. erst auf
+    placeBoxes();
+  }
+  // Beenden ohne Speichern: Vorschau-Reihenfolge verwerfen
+  function editStop() {
+    if (!ngEdit.on) return;
+    if (ngEdit.drag) endDrag();
+    discardOrder(true);
+    ngEdit.on = false;
+    clearInterval(ngEdit.timer);
+    window.removeEventListener("keydown", ngEdit.key);
+    window.removeEventListener("resize", ngEdit.resize);
+    window.removeEventListener("scroll", ngEdit.scroll);
+    ngEdit.host?.remove();
+    ngEdit.host = ngEdit.root = null;
+    window.dispatchEvent(new Event("nullglow-edit"));
+  }
+  const hasPending = () => !!(ngEdit.pend.length || Object.keys(ngEdit.lay?.width || {}).length || ngEdit.lay?.hide.length);
+  function setMode(m) {
+    if (ngEdit.drag || ngEdit.mode === m) return;
+    closeMenu(true);
+    ngEdit.mode = m;
+    ngEdit.root.querySelector(".boxes").replaceChildren();   // Rahmen je Modus anders aufgebaut
+    placeBoxes();
+    updateBar();
+  }
+  async function editDone() {
+    if (!hasPending()) { editStop(); return; }
+    const msg = ngEdit.root.querySelector(".msg");
+    ngEdit.root.querySelectorAll(".bar button").forEach((b) => { b.disabled = true; });
+    msg.textContent = t("Speichere …"); msg.classList.add("on");
+    try { await saveEdits(() => {}); editStop(); }
+    catch (e) { msg.textContent = String(e?.message || e); ngEdit.root?.querySelectorAll(".bar button").forEach((b) => { b.disabled = false; }); }
+  }
+  function updateBar() {
+    const root = ngEdit.root;
+    if (!root) return;
+    const n = hasPending() ? ngEdit.moves : 0, msg = root.querySelector(".msg"), grp = ngEdit.mode === "groups";
+    msg.textContent = n ? t("{n}× geändert · noch nicht gespeichert", { n }) : grp ? t("Ziehen: verschieben · Antippen: Breite, ausblenden") : t("Antippen: bearbeiten · Halten und ziehen: verschieben");
+    root.querySelector(".seg").hidden = !ngEdit.hasGroups && !grp;
+    root.querySelectorAll(".seg button").forEach((b) => b.classList.toggle("on", b.dataset.m === ngEdit.mode));
+    const hid = hiddenGroups(), hb = root.querySelector(".hid");
+    hb.hidden = !grp || !hid.length;
+    root.querySelector(".cfg").hidden = !grp || curView() !== "home" || !groupSettings(null).length;
+    hb.querySelector("span").textContent = hid.length;
+    msg.classList.toggle("on", !!n);
+    root.querySelector(".cnt").textContent = n ? ` · ${n}` : "";   // am Handy ist das die einzige Anzeige
+    root.querySelector(".undo").hidden = !n;
+  }
+
+  // Speichern: offene Reihenfolge + Änderung aus dem Menü in einem Rutsch
+  function applyPending(s) {
+    for (const g of ngEdit.pend) {
+      if (g.kind === "group") {   // sichtbare Gruppen in neuer Reihenfolge, ausgeblendete dahinter
+        const L = layoutOf(s, g.view || "home"), rest = (L.order || (g.view === "home" ? HOME_PARTS.map((p) => p.key) : [])).filter((k) => !g.ids.includes(k));
+        L.order = [...g.ids, ...rest];
+      } else if (g.kind === "room") {   // Räume: gemeinsame Raum-Reihenfolge (wie im Assistenten)
+        const all = window.__ngLastRooms || [];
+        const cur = (s.room_order && s.room_order.length ? s.room_order : all).filter((r) => all.includes(r));
+        all.forEach((r) => { if (!cur.includes(r)) cur.push(r); });
+        const rid = g.ids.map((x) => x.replace(/^room:/, ""));
+        const at = rid.map((r) => cur.indexOf(r)).filter((k) => k !== -1).sort((a, b) => a - b);
+        at.forEach((k, n) => { cur[k] = rid[n]; });
+        s.room_order = cur;
+      } else {
+        const o = (s.tile_order || []).filter((x) => !g.ids.includes(x));
+        const first = (s.tile_order || []).findIndex((x) => g.ids.includes(x));
+        o.splice(first === -1 ? o.length : Math.min(first, o.length), 0, ...g.ids);
+        s.tile_order = o;
+      }
+    }
+    const lay = ngEdit.lay || { width: {}, hide: [] }, split = (x) => [x.slice(0, x.indexOf("|")), x.slice(x.indexOf("|") + 1)];
+    for (const [x, w] of Object.entries(lay.width)) { const [v, k] = split(x), L = layoutOf(s, v); L.width = { ...(L.width || {}), [k]: w }; }
+    for (const x of lay.hide) { const [v, k] = split(x), L = layoutOf(s, v); L.hide = [...new Set([...(L.hide || []), k])]; }
+  }
+  // Seiten-Layouts aufräumen (leere Teile weg)
+  function tidyLayouts(st) {
+    for (const [v, L] of Object.entries(st.layouts || {})) {
+      if (L.width) for (const k of Object.keys(L.width)) if (!(+L.width[k] >= 1)) delete L.width[k];
+      for (const k of ["order", "hide"]) if (Array.isArray(L[k]) && !L[k].length) delete L[k];
+      if (L.width && !Object.keys(L.width).length) delete L.width;
+      if (!Object.keys(L).length) delete st.layouts[v];
+    }
+    if (st.layouts && !Object.keys(st.layouts).length) delete st.layouts;
+  }
+  async function saveEdits(fn) {
+    await saveStrategy((s) => {
+      applyPending(s); fn(s);
+      if (s.home_layout) { tidyLayout(s.home_layout); if (!Object.keys(s.home_layout).length) delete s.home_layout; }
+      tidyLayouts(s);
+    });
+    // HA baut das Dashboard neu; wiederverwendete Elemente verlieren die Vorschau erst, wenn die neue Fassung steht
+    const grids = [...ngEdit.grids], prev = [...ngEdit.prev.values()], was = window.__ngLastCfg;
+    ngEdit.pend = []; ngEdit.moves = 0; ngEdit.grids = new Set(); ngEdit.lay = { width: {}, hide: [] }; ngEdit.prev = new Map();
+    updateBar();
+    let n = 0;
+    const iv = setInterval(() => {
+      if (window.__ngLastCfg === was && ++n < 60) return;
+      clearInterval(iv);
+      setTimeout(() => {
+        grids.forEach((g) => { if (g.isConnected) [...g.children].forEach((w) => { w.style.order = ""; }); });
+        prev.forEach((w) => { w.style.gridColumn = ""; w.style.display = ""; });
+      }, 400);
+    }, 100);
+  }
+
+  // Bearbeitbare Kacheln der sichtbaren Seite (ohne Pop-ups) mit Position in Seiten-Koordinaten; Section = Nachbarn fürs Verschieben
+  const cardRect = (el) => {   // größte Fläche der Karte (Bubble-Karten sind als Element flach, der Inhalt ragt heraus)
+    const card = el.firstElementChild || el.shadowRoot?.firstElementChild;
+    let r = el.getBoundingClientRect();
+    for (const x of [card, ...(card?.shadowRoot ? [...card.shadowRoot.children] : [])]) {
+      const b = x?.getBoundingClientRect?.();
+      if (b && b.width * b.height > r.width * r.height) r = b;
+    }
+    return r;
+  };
+  const docRect = (r) => ({ left: r.left + scrollX, top: r.top + scrollY, width: r.width, height: r.height });
+  const groupKey = (el) => el.localName === "hui-section" && el.config?.cards?.[0]?.view_layout?.ng_group;
+  function editGroups(view) {
+    const out = [];
+    deepEach(view, (el) => {
+      dockOf(el);
+      const key = groupKey(el);
+      if (!key) return;
+      let wrap = el;   // Kind des Rasters der Übersicht (div.section in div.content)
+      while (wrap.parentElement && getComputedStyle(wrap.parentElement).display !== "grid") wrap = wrap.parentElement;
+      const r = wrap.getBoundingClientRect();
+      if (!wrap.parentElement || !r.width || !r.height) return;
+      const m = el.config.cards[0].view_layout;
+      out.push({ el, wrap, r: docRect(r), meta: { id: key, kind: "group", view: m.ng_view || "home", name: m.ng_name, w0: m.ng_w },
+        config: el.config, section: wrap.parentElement });
+    });
+    ngEdit.hasGroups = out.length > 0;
+    return out;
+  }
+  function dockOf(el) {
+    if (el.localName !== "hui-card" || el.config?.card_type !== "horizontal-buttons-stack") return;   // Navigation (fest unten)
+    let bar = null;
+    deepEach(el, (x) => { if (!bar && x.classList?.contains("horizontal-buttons-stack-card")) bar = x; });
+    const r = bar?.getBoundingClientRect();
+    if (r?.height) ngEdit.dock = r;
+  }
+  function editCards() {
+    const out = [];
+    const view = deepFind(document, "hui-view-container") || document;
+    ngEdit.dock = null;
+    if (ngEdit.mode === "groups") return editGroups(view);
+    let groups = false;
+    deepEach(view, (el) => {
+      if (!groups && groupKey(el)) groups = true;
+      dockOf(el);
+      if (el.localName !== "hui-card" || !el.config?.view_layout?.ng_edit) return;
+      const r = cardRect(el);
+      if (!r.width || !r.height) return;
+      if (el.closest?.("bubble-card") || el.getRootNode()?.host?.closest?.("bubble-card")) return;
+      // Section = nächster hui-grid-section/hui-section darüber; Wrapper = Kind des Section-Grids (dort greift CSS order)
+      let sec = el;
+      while (sec && !["hui-grid-section", "hui-section"].includes(sec.localName)) sec = sec.parentElement || sec.getRootNode()?.host;
+      let wrap = el;
+      while (wrap.parentElement && getComputedStyle(wrap.parentElement).display !== "grid") wrap = wrap.parentElement;
+      if (!wrap.parentElement) wrap = el;
+      out.push({ el, wrap, r: docRect(r), meta: el.config.view_layout.ng_edit, config: el.config, section: sec || el.parentElement });
+    });
+    if (groups !== ngEdit.hasGroups) { ngEdit.hasGroups = groups; updateBar(); }
+    return out;
+  }
+  // Nachbarn gleicher Art in derselben Section, in angezeigter Reihenfolge
+  function siblings(c) {
+    const sib = (ngEdit.cards || []).filter((x) => x.section === c.section && x.meta.kind === c.meta.kind);
+    const p = ngEdit.pend.find((g) => g.section === c.section && g.kind === c.meta.kind);
+    return p ? [...sib].sort((a, b) => p.ids.indexOf(a.meta.id) - p.ids.indexOf(b.meta.id)) : sib;
+  }
+  // Reihenfolge ids für diese Nachbarn anzeigen (CSS order über alle Kinder des Grids; andere Karten behalten ihren Platz)
+  function showOrder(sib, ids) {
+    const grid = sib[0].wrap.parentElement;
+    if (!grid || sib.some((x) => x.wrap.parentElement !== grid)) return false;
+    const kids = [...grid.children];
+    const cur = kids.map((w, i) => [w, w.style.order === "" ? i : +w.style.order]).sort((a, b) => a[1] - b[1]).map(([w]) => w);
+    const byId = new Map(sib.map((x) => [x.meta.id, x.wrap]));
+    const pos = sib.map((x) => cur.indexOf(x.wrap)).sort((a, b) => a - b);
+    pos.forEach((p, k) => { cur[p] = byId.get(ids[k]); });
+    cur.forEach((w, i) => { w.style.order = i; });
+    ngEdit.grids.add(grid);
+    return true;
+  }
+  // Umstellen mit Gleit-Animation der übrigen Kacheln (FLIP)
+  function flip(wraps, change, skip, settled) {
+    const before = new Map(wraps.map((w) => [w, w.getBoundingClientRect()]));
+    wraps.forEach((w) => w.getAnimations?.().forEach((a) => a.cancel()));
+    change();
+    const after = new Map(wraps.map((w) => [w, w.getBoundingClientRect()]));
+    settled?.();   // Endlage messen, bevor die Animationen laufen
+    for (const w of wraps) {
+      if (w === skip) continue;
+      const a = before.get(w), b = after.get(w), dx = a.left - b.left, dy = a.top - b.top;
+      if (Math.abs(dx) + Math.abs(dy) > 0.5) w.animate?.([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }], { duration: FLIP_MS, easing: FLIP_EASE });
+    }
+  }
+  function setPending(c, ids) {
+    const g = ngEdit.pend.find((x) => x.section === c.section && x.kind === c.meta.kind);
+    if (g) g.ids = ids; else ngEdit.pend.push({ section: c.section, kind: c.meta.kind, view: c.meta.view, ids });
+    ngEdit.moves++;
+    updateBar();
+  }
+  function discardOrder(quiet) {
+    const prev = [...(ngEdit.prev?.values() || [])].filter((w) => w.isConnected);
+    const grids = [...new Set([...(ngEdit.grids || []), ...prev.map((w) => w.parentElement)])].filter((g) => g?.isConnected);
+    const kids = grids.flatMap((g) => [...g.children]);
+    const undo = () => { kids.forEach((w) => { w.style.order = ""; }); prev.forEach((w) => { w.style.gridColumn = ""; w.style.display = ""; }); };
+    if (kids.length) (quiet ? (f) => f() : (f) => flip(kids, f))(undo); else undo();
+    ngEdit.pend = []; ngEdit.moves = 0; ngEdit.grids = new Set(); ngEdit.lay = { width: {}, hide: [] }; ngEdit.prev = new Map();
+    updateBar();
+    if (!quiet) { placeBoxes(); setTimeout(placeBoxes, FLIP_MS + 40); }
+  }
+
+  function placeBoxes() {
+    if (!ngEdit.on || !ngEdit.root || ngEdit.drag) return;
+    const base = "/" + (location.pathname.split("/")[1] || "lovelace");
+    if (base !== ngEdit.base) { editStop(); return; }
+    // Farben des Designs (liegen am View-Container, nicht an <body>)
+    const hv = deepFind(document, "hui-view-container");
+    if (hv) { const cs = getComputedStyle(hv); EDIT_TOKENS.forEach((k) => { const v = cs.getPropertyValue(k).trim(); if (v) ngEdit.host.style.setProperty(k, v); }); }
+    const list = editCards();
+    ngEdit.cards = list;
+    const wrap = ngEdit.root.querySelector(".boxes");
+    while (wrap.children.length > list.length) wrap.lastChild.remove();
+    list.forEach((c, i) => {
+      let b = wrap.children[i];
+      const grp = c.meta.kind === "group";
+      if (!b) {
+        b = document.createElement("div"); b.className = grp ? "box grp" : "box";
+        b.innerHTML = grp ? `<b class="lbl"><ha-icon icon="mdi:drag"></ha-icon><span></span></b>` : `<i><ha-icon icon="mdi:pencil"></ha-icon></i>`;
+        boxEvents(b); wrap.appendChild(b);
+      }
+      if (grp) b.querySelector(".lbl span").textContent = c.meta.view === "home" ? groupName(c.meta.id, layoutNow()) : c.meta.name || c.meta.id;
+      b.dataset.i = i;
+      b.classList.toggle("sel", ngEdit.sel === c.meta.id && ngEdit.selSec === c.section);
+      b.classList.toggle("edge", !grp && c.r.left + c.r.width + 10 > scrollX + document.documentElement.clientWidth);   // Stift nicht über den Rand (sonst Quer-Scrollen)
+      Object.assign(b.style, { left: `${c.r.left}px`, top: `${c.r.top}px`, width: `${c.r.width}px`, height: `${c.r.height}px` });
+    });
+    clipBoxes();
+  }
+  // Rahmen, die unter der Navigation lägen, ausblenden — sonst fangen sie deren Tipper ab
+  function clipBoxes() {
+    const dock = ngEdit.dock, wrap = ngEdit.root?.querySelector(".boxes");
+    if (!wrap) return;
+    [...wrap.children].forEach((b) => {
+      const c = ngEdit.cards?.[+b.dataset.i];
+      if (!c) return;
+      const cut = dock && c && !b.classList.contains("drag") && c.r.left - scrollX < dock.left + dock.width && c.r.left + c.r.width - scrollX > dock.left
+        ? c.r.top + c.r.height - scrollY - (dock.top - 12) : 0;
+      b.classList.toggle("under", cut >= c.r.height - 20);
+      b.style.clipPath = cut > 0 ? `inset(-40px -40px ${cut}px -40px)` : "";
+    });
+  }
+
+  // Antippen = Menü · Maus: drücken und ziehen · Finger: kurz halten, dann ziehen (sonst scrollt die Seite normal)
+  const HOLD_MS = 280;
+  function boxEvents(b) {
+    b.addEventListener("contextmenu", (ev) => ev.preventDefault());
+    b.addEventListener("touchmove", (ev) => { if (ngEdit.drag) ev.preventDefault(); }, { passive: false });
+    b.addEventListener("pointerdown", (ev) => {
+      if (ev.button > 0 || ngEdit.busy || ngEdit.drag) return;
+      const c = ngEdit.cards?.[+b.dataset.i];
+      if (!c) return;
+      const p = (ngEdit.press = { b, c, id: ev.pointerId, touch: ev.pointerType === "touch", x0: ev.clientX, y0: ev.clientY, x: ev.clientX, y: ev.clientY });
+      if (p.touch) p.timer = setTimeout(() => { if (ngEdit.press === p) { navigator.vibrate?.(12); startDrag(p); } }, HOLD_MS);
+      else try { b.setPointerCapture?.(ev.pointerId); } catch (e) { /* künstliches Ereignis */ }
+    });
+    b.addEventListener("pointermove", (ev) => {
+      const p = ngEdit.press;
+      if (!p || p.b !== b || p.id !== ev.pointerId) return;
+      p.x = ev.clientX; p.y = ev.clientY;
+      if (ngEdit.drag) { ngEdit.drag.x = p.x; ngEdit.drag.y = p.y; dragMove(); return; }
+      const dist = Math.hypot(p.x - p.x0, p.y - p.y0);
+      if (p.touch && dist > 10) { clearTimeout(p.timer); ngEdit.press = null; }   // Finger wischt: Seite scrollt
+      else if (!p.touch && dist > 5) startDrag(p);
+    });
+    const up = (ev, cancel) => {
+      const p = ngEdit.press;
+      if (!p || p.b !== b || p.id !== ev.pointerId) return;
+      clearTimeout(p.timer);
+      ngEdit.press = null;
+      if (ngEdit.drag) endDrag();
+      else if (!cancel) openMenu(p.c);
+    };
+    b.addEventListener("pointerup", (ev) => up(ev, false));
+    b.addEventListener("pointercancel", (ev) => up(ev, true));
+  }
+  function measure(sib) { return new Map(sib.map((x) => [x.meta.id, docRect(x.wrap.getBoundingClientRect())])); }
+  function startDrag(p) {
+    closeMenu(true);
+    const c = p.c, sib = siblings(c);
+    const d = { c, id: c.meta.id, wrap: c.wrap, box: p.b, sib, ids: sib.map((x) => x.meta.id), x: p.x, y: p.y, last: null };
+    d.orig = d.ids.join("\n");
+    d.rects = measure(sib);
+    const w = d.rects.get(d.id);
+    d.gx = p.x + scrollX - w.left; d.gy = p.y + scrollY - w.top;   // Griffpunkt auf der Kachel
+    d.off = { x: c.r.left - w.left, y: c.r.top - w.top };           // Rahmen relativ zum Wrapper
+    Object.assign(d.wrap.style, { zIndex: 5, position: "relative", willChange: "transform" });
+    ngEdit.drag = d;
+    ngEdit.root.querySelector(".boxes").classList.add("dragging");
+    p.b.classList.add("drag");
+    const tick = () => {   // Auto-Scroll am oberen/unteren Rand
+      if (ngEdit.drag !== d) return;
+      const top = 80, bottom = innerHeight - 120;
+      const v = d.y < top ? -Math.min(18, (top - d.y) / 4 + 2) : d.y > bottom ? Math.min(18, (d.y - bottom) / 4 + 2) : 0;
+      if (v) { const y0 = scrollY; scrollBy(0, v); if (scrollY !== y0) dragMove(); }
+      d.raf = requestAnimationFrame(tick);
+    };
+    d.raf = requestAnimationFrame(tick);
+    dragMove();
+  }
+  function dragMove() {
+    const d = ngEdit.drag;
+    if (!d) return;
+    const X = d.x + scrollX, Y = d.y + scrollY;
+    const inR = (r) => r && X >= r.left && X <= r.left + r.width && Y >= r.top && Y <= r.top + r.height;
+    const hit = d.sib.find((x) => x.meta.id !== d.id && inR(d.rects.get(x.meta.id)));
+    if (hit && hit.meta.id !== d.last) {
+      const ids = d.ids.filter((x) => x !== d.id);
+      ids.splice(d.ids.indexOf(hit.meta.id), 0, d.id);
+      d.wrap.style.transform = "none";
+      let ok = false;
+      flip([...d.wrap.parentElement.children], () => { ok = showOrder(d.sib, ids); }, d.wrap, () => { if (ok) { d.ids = ids; d.rects = measure(d.sib); } });
+      d.last = hit.meta.id;
+    } else if (!hit) d.last = null;
+    const w = d.rects.get(d.id), tx = X - d.gx - w.left, ty = Y - d.gy - w.top;
+    d.wrap.style.transform = `translate(${tx}px, ${ty}px)`;
+    Object.assign(d.box.style, { left: `${w.left + tx + d.off.x}px`, top: `${w.top + ty + d.off.y}px` });
+  }
+  function endDrag() {
+    const d = ngEdit.drag;
+    if (!d) return;
+    ngEdit.drag = null;
+    cancelAnimationFrame(d.raf);
+    const from = d.wrap.style.transform;
+    d.wrap.style.transform = "";
+    if (from && from !== "none") d.wrap.animate?.([{ transform: from }, { transform: "none" }], { duration: FLIP_MS, easing: FLIP_EASE });
+    setTimeout(() => Object.assign(d.wrap.style, { zIndex: "", position: "", willChange: "" }), FLIP_MS + 20);
+    d.box.classList.remove("drag");
+    ngEdit.root?.querySelector(".boxes").classList.remove("dragging");
+    if (d.ids.join("\n") !== d.orig) setPending(d.c, d.ids);
+    placeBoxes();
+    setTimeout(placeBoxes, FLIP_MS + 40);
+  }
+
+  function closeMenu(quiet) { ngEdit.root?.querySelector(".menu")?.remove(); ngEdit.sel = ngEdit.selSec = null; if (!quiet) placeBoxes(); }
+  function openMenu(c) {
+    if (c.meta.kind === "group") { openGroupMenu(c); return; }
+    const hass = document.querySelector("home-assistant").hass, root = ngEdit.root, m = c.meta, room = m.kind === "room";
+    root.querySelector(".menu")?.remove();
+    ngEdit.sel = m.id; ngEdit.selSec = c.section;
+    const inner = editCard(c.config), key = labelKey(inner);
+    const cur = room ? (inner.name || inner.primary || "") : (key && inner[key]) || hass.states[m.id]?.attributes?.friendly_name || m.id;
+    const label = room ? String(cur).replace(/ · .*$/, "") : String(cur);
+    const sib = siblings(c), pos = sib.findIndex((x) => x.meta.id === m.id);
+    const menu = document.createElement("div");
+    menu.className = "menu";
+    menu.innerHTML = `<b>${esc(label)}</b><small>${esc(room ? t("Raum · Änderung gilt überall im Dashboard") : m.id)}</small>
+      <input class="name" value="${esc(label)}" placeholder="${esc(t("Name"))}">
+      <div class="row"><button class="pri save"><ha-icon icon="mdi:content-save-outline"></ha-icon>${esc(t("Umbenennen"))}</button>
+        ${!room && (window.__ngLastCfg?.names || {})[m.id] ? `<button class="orig" title="${esc(t("Originalname"))}"><ha-icon icon="mdi:backup-restore"></ha-icon></button>` : ""}</div>
+      <div class="row"><button class="up" ${pos > 0 ? "" : "disabled"}><ha-icon icon="mdi:arrow-left"></ha-icon>${esc(t("Früher"))}</button>
+        <button class="down" ${pos >= 0 && pos < sib.length - 1 ? "" : "disabled"}>${esc(t("Später"))}<ha-icon icon="mdi:arrow-right"></ha-icon></button></div>
+      <div class="row"><button class="hide"><ha-icon icon="mdi:eye-off-outline"></ha-icon>${esc(room ? t("Raum ausblenden") : t("Ausblenden"))}</button></div>
+      <div class="row"><button class="close">${esc(t("Schließen"))}</button></div><div class="err"></div>`;
+    root.appendChild(menu);
+    // neben die Kachel, im Bild halten (Seiten-Koordinaten: scrollt mit der Kachel)
+    const VW = document.documentElement.clientWidth;   // ohne Scrollleiste (innerWidth zählt sie mit -> Quer-Scrollen)
+    const W = Math.min(280, VW - 16), H = menu.offsetHeight || 300, r = { ...c.r, left: c.r.left - scrollX, top: c.r.top - scrollY };
+    menu.style.width = `${W}px`;
+    let x = r.left + r.width + 12, y = r.top;
+    if (x + W > VW - 8) x = r.left - W - 12;
+    if (x < 8) { x = Math.max(8, Math.min(VW - W - 8, r.left)); y = r.top + r.height + 10; }   // kein Platz daneben: darunter
+    if (y + H > innerHeight - 8) y = Math.max(8, innerHeight - H - 8);
+    y = Math.max(y, barBottom());
+    Object.assign(menu.style, { left: `${x + scrollX}px`, top: `${y + scrollY}px` });
+    const input = menu.querySelector("input.name");
+    const err = menu.querySelector(".err");
+    const run = async (fn) => {
+      ngEdit.busy = true;
+      menu.querySelectorAll("button").forEach((b) => { b.disabled = true; });
+      try { await saveEdits(fn); closeMenu(); } catch (e) { err.textContent = String(e?.message || e); menu.querySelectorAll("button").forEach((b) => { b.disabled = false; }); }
+      ngEdit.busy = false;
+    };
+    const rename = () => {
+      const v = input.value.trim();
+      run((s) => {
+        if (room) { s.rooms = s.rooms || {}; const o = { ...(s.rooms[m.room] || {}) }; if (v) o.name = v; else delete o.name; if (Object.keys(o).length) s.rooms[m.room] = o; else delete s.rooms[m.room]; }
+        else { s.names = { ...(s.names || {}) }; if (v && v !== hass.states[m.id]?.attributes?.friendly_name) s.names[m.id] = v; else delete s.names[m.id]; }
+      });
+    };
+    menu.querySelector(".save").addEventListener("click", rename);
+    input.addEventListener("keydown", (ev) => { if (ev.key === "Enter") rename(); });
+    menu.querySelector(".orig")?.addEventListener("click", () => run((s) => { if (s.names) delete s.names[m.id]; }));
+    // Früher/Später: sofort sichtbar, Menü bleibt offen (gespeichert wird bei „Fertig“)
+    const move = (dlt) => {
+      const ids = sib.map((x) => x.meta.id), j = pos + dlt;
+      [ids[pos], ids[j]] = [ids[j], ids[pos]];
+      let ok = false;
+      flip([...c.wrap.parentElement.children], () => { ok = showOrder(sib, ids); });
+      if (!ok) return;
+      setPending(c, ids);
+      placeBoxes();
+      const again = ngEdit.cards.find((x) => x.meta.id === m.id && x.section === c.section);
+      setTimeout(() => { placeBoxes(); const k = ngEdit.cards.find((x) => x.meta.id === m.id && x.section === c.section); if (k && ngEdit.sel === m.id) openMenu(k); }, FLIP_MS + 40);
+      if (again) openMenu(again);
+    };
+    menu.querySelector(".up").addEventListener("click", () => move(-1));
+    menu.querySelector(".down").addEventListener("click", () => move(1));
+    menu.querySelector(".hide").addEventListener("click", () => run((s) => {
+      if (room) { s.rooms = s.rooms || {}; s.rooms[m.room] = { ...(s.rooms[m.room] || {}), hide: true }; }
+      else s.hidden = [...new Set([...(s.hidden || []), m.id])];
+    }));
+    menu.querySelector(".close").addEventListener("click", () => closeMenu());
+    placeBoxes();
+    if (matchMedia("(hover: hover)").matches) setTimeout(() => input.focus(), 30);   // am Handy keine Tastatur aufspringen lassen
+  }
+  // Menü neben/unter ein Rechteck (Seiten-Koordinaten) setzen, im Bild halten
+  const barBottom = () => (ngEdit.root?.querySelector(".bar")?.getBoundingClientRect().bottom || 0) + 8;   // Menüs nie unter der Leiste
+  function placeMenu(menu, rr) {
+    const VW = document.documentElement.clientWidth, W = Math.min(280, VW - 16), r = { ...rr, left: rr.left - scrollX, top: rr.top - scrollY };
+    menu.style.width = `${W}px`;
+    const H = menu.offsetHeight || 300;
+    let x = r.left + r.width + 12, y = r.top;
+    if (x + W > VW - 8) x = r.left - W - 12;
+    if (x < 8) { x = Math.max(8, Math.min(VW - W - 8, r.left + (r.width - W) / 2)); y = r.top + 56; }   // kein Platz daneben: in die Gruppe
+    if (y + H > innerHeight - 8) y = Math.max(8, innerHeight - H - 8);
+    y = Math.max(y, barBottom());
+    Object.assign(menu.style, { left: `${x + scrollX}px`, top: `${y + scrollY}px` });
+  }
+  // Layout einer Seite (Übersicht: home_layout, sonst layouts.<seite>); Vorschau-Schlüssel „seite|gruppe“
+  const viewLayout = (view) => (view === "home" ? window.__ngLastCfg?.home_layout : window.__ngLastCfg?.layouts?.[view]) || {};
+  const layoutNow = () => viewLayout("home");
+  const fk = (c) => `${c.meta.view || "home"}|${c.meta.id}`;
+  const curView = () => ngEdit.cards?.find((c) => c.meta.kind === "group")?.meta.view
+    || ((x) => (x && isNaN(+x) ? x : "home"))(location.pathname.split("/")[2]);
+  const nameOf = (view, key) => (view === "home" ? groupName(key, layoutNow()) : window.__ngGroupNames?.[view]?.[key] || key);
+  function layoutOf(st, view) {   // beschreibbares Layout einer Seite in der Dashboard-Einstellung
+    if (view === "home") return (st.home_layout = { ...(st.home_layout || {}) });
+    st.layouts = { ...(st.layouts || {}) };
+    return (st.layouts[view] = { ...(st.layouts[view] || {}) });
+  }
+  // Einstellungen im Gruppen-Menü: [Beschriftung, aktueller Wert, [[Wert, Text] …], (strategy, Wert) => ändern]. Speichern sofort
+  // (ändert den Aufbau, keine Vorschau möglich). key = Gruppe, null = Übersicht allgemein (⚙ in der Leiste).
+  function groupSettings(key) {
+    const cfg = window.__ngLastCfg || {}, L = cfg.home_layout || {}, info = window.__ngLastInfo || {}, out = [];
+    const opt = (label, value, options, set) => out.push([label, value, options, set]);
+    const layout = (st) => (st.home_layout = clone(st.home_layout || {}));
+    const onOff = [["on", t("An")], ["off", t("Aus")]];
+    if (key === null) {
+      if (info.hints) opt(t("Hinweis-Leiste"), cfg.hints?.mode === "float" ? "float" : cfg.hints?.mode === "off" ? "off" : "top",
+        [["top", t("Oben")], ["float", t("Schwebend")], ["off", t("Aus")]],
+        (st, v) => { const h = { ...(st.hints || {}) }; if (v === "top") delete h.mode; else h.mode = v; if (Object.keys(h).length) st.hints = h; else delete st.hints; });
+      return out;
+    }
+    if (["uhr", "wetter"].includes(key) && info.weather)
+      opt(t("Wetter"), L.split_weather ? "own" : "clock", [["clock", t("Bei der Uhr")], ["own", t("Eigene Gruppe")]],
+        (st, v) => { st.home_layout = splitPart(layout(st), "wetter", v === "own"); });
+    if (["uhr", "media"].includes(key) && info.media)
+      opt(t("Musik & TV"), cfg.media_home === false ? "off" : L.split_media ? "own" : "clock",
+        [["clock", t("Unter dem Wetter")], ["own", t("Eigene Gruppe")], ["off", t("Aus")]],
+        (st, v) => { if (v === "off") st.media_home = false; else delete st.media_home; st.home_layout = splitPart(layout(st), "media", v === "own"); });
+    if (key === "licht") {
+      if (info.lightsCard) opt(t("Darstellung"), cfg.lights === "compact" ? "compact" : "rooms", [["rooms", t("Je Raum")], ["compact", t("Zusammengefasst")]],
+        (st, v) => { if (v === "compact") st.lights = "compact"; else delete st.lights; });
+      opt(t("Raum antippen"), cfg.light_tap === "popup" ? "popup" : "toggle", [["toggle", t("An/aus")], ["popup", t("Raum-Pop-up")]],
+        (st, v) => { if (v === "popup") st.light_tap = "popup"; else delete st.light_tap; });
+    }
+    if (key === "klima") opt(t("Temperatur-Verlauf"), cfg.climate_graph === false ? "off" : "on", onOff,
+      (st, v) => { if (v === "off") st.climate_graph = false; else delete st.climate_graph; });
+    if (key === "rolllaeden") opt(t("Darstellung"), cfg.covers || "auto", [["auto", t("Auto")], ["list", t("Einzeln")], ["compact", t("Zusammengefasst")]],
+      (st, v) => { if (v !== "auto") st.covers = v; else delete st.covers; });
+    if (key === "zuhause") {
+      if (info.contacts) opt(t("Fenster & Türen"), cfg.contacts || "auto", [["auto", t("Auto")], ["list", t("Einzeln")], ["compact", t("Zusammen")], ["off", t("Aus")]],
+        (st, v) => { if (v !== "auto") st.contacts = v; else delete st.contacts; });
+      if (info.persons) opt(t("Karte „Wo sind alle?“"), cfg.person_map ? "on" : "off", onOff,
+        (st, v) => { if (v === "on") st.person_map = true; else delete st.person_map; });
+    }
+    if (key === "kameras" && info.cams > 1) opt(t("Kameras nebeneinander"), String(Math.min(3, Math.max(1, +L.cam_cols || 1))), [["1", "1"], ["2", "2"], ["3", "3"]],
+      (st, v) => { const n = layout(st); if (+v > 1) n.cam_cols = +v; else delete n.cam_cols; });
+    return out;
+  }
+  const settingsHtml = (list) => list.map(([label, value, options], i) => `<div class="opt"><small>${esc(label)}</small><div class="seg2">${options.map(([v, l]) =>
+    `<button data-i="${i}" data-v="${esc(v)}" class="${v === value ? "on" : ""}">${esc(l)}</button>`).join("")}</div></div>`).join("");
+  // Einstellung speichern, auf den Neuaufbau warten, Menü mit neuem Stand wieder öffnen
+  function bindSettings(menu, list, key) {
+    menu.querySelectorAll(".seg2 button").forEach((b) => b.addEventListener("click", async () => {
+      if (b.classList.contains("on") || ngEdit.busy) return;
+      const [, , , set] = list[+b.dataset.i], v = b.dataset.v, st = menu.querySelector(".st"), was = window.__ngLastCfg;
+      ngEdit.busy = true;
+      menu.querySelectorAll("button").forEach((x) => { x.disabled = true; });
+      b.classList.add("on");
+      if (st) st.textContent = t("Speichere …");
+      try { await saveEdits((strategy) => set(strategy, v)); }
+      catch (e) { if (st) st.textContent = String(e?.message || e); menu.querySelectorAll("button").forEach((x) => { x.disabled = false; }); ngEdit.busy = false; return; }
+      for (let i = 0; i < 50 && window.__ngLastCfg === was; i++) await new Promise((r) => setTimeout(r, 100));
+      await new Promise((r) => setTimeout(r, 500));
+      ngEdit.busy = false;
+      if (!ngEdit.on) return;
+      closeMenu(true); placeBoxes();
+      const k = key && ngEdit.cards?.find((x) => x.meta.id === key);
+      if (k) openGroupMenu(k); else if (key === null) openCfgMenu(); else updateBar();
+    }));
+  }
+  // ⚙ in der Leiste (Gruppen-Modus): Einstellungen der ganzen Übersicht + Hinweis auf den Assistenten
+  function openCfgMenu() {
+    const root = ngEdit.root;
+    if (root.querySelector(".menu.cm")) { closeMenu(); return; }
+    root.querySelector(".menu")?.remove();
+    const list = groupSettings(null), menu = document.createElement("div");
+    menu.className = "menu cm";
+    menu.innerHTML = `<b>${esc(t("Übersicht"))}</b>${settingsHtml(list)}
+      <small>${esc(t("Mehr (Geräte, Räume, Energie …): Dashboard bearbeiten → Assistent"))}</small>
+      <div class="row"><button class="close">${esc(t("Schließen"))}</button></div><div class="st"></div>`;
+    root.appendChild(menu);
+    const bar = root.querySelector(".bar").getBoundingClientRect(), W = Math.min(280, document.documentElement.clientWidth - 16);
+    Object.assign(menu.style, { width: `${W}px`, left: `${scrollX + Math.max(8, bar.left + (bar.width - W) / 2)}px`, top: `${scrollY + bar.bottom + 8}px` });
+    bindSettings(menu, list, null);
+    menu.querySelector(".close").addEventListener("click", () => closeMenu());
+  }
+  const groupWidth = (c) => +(ngEdit.lay.width[fk(c)] ?? viewLayout(c.meta.view).width?.[c.meta.id] ?? c.meta.w0
+    ?? HOME_PARTS.find((p) => p.key === c.meta.id)?.width ?? 1);
+  function hiddenGroups() {
+    if (ngEdit.mode !== "groups") return [];
+    const v = curView(), pend = (ngEdit.lay?.hide || []).filter((x) => x.startsWith(v + "|")).map((x) => x.slice(v.length + 1));
+    return [...new Set([...(viewLayout(v).hide || []), ...pend])];
+  }
+  // Gruppe: Breite, Früher/Später (sofort sichtbar, gespeichert bei „Fertig“), Ausblenden, Einstellungen der Gruppe (speichern sofort)
+  function openGroupMenu(c) {
+    const root = ngEdit.root, key = c.meta.id, home = c.meta.view === "home", L = viewLayout(c.meta.view);
+    root.querySelector(".menu")?.remove();
+    ngEdit.sel = key; ngEdit.selSec = c.section;
+    const sib = siblings(c), pos = sib.findIndex((x) => x.meta.id === key), w = groupWidth(c);
+    const WL = ["", t("1 Spalte"), t("2 Spalten"), t("3 Spalten"), t("ganze Breite")];
+    const cols = +getComputedStyle(c.wrap).getPropertyValue("--column-count") || 4;   // Handy: eine Spalte -> keine Breite
+    const opts = home ? groupSettings(key) : [];
+    const menu = document.createElement("div");
+    menu.className = "menu";
+    menu.innerHTML = `<b>${esc(home ? groupName(key, L) : c.meta.name || key)}</b><small>${esc(home ? t("Gruppe auf der Übersicht") : t("Gruppe auf dieser Seite"))}</small>
+      ${cols < 2 ? "" : `<div class="row wrow"><button class="nar" ${w > 1 ? "" : "disabled"}><ha-icon icon="mdi:minus"></ha-icon></button><span>${esc(WL[w])}</span>
+        <button class="wid" ${w < 4 ? "" : "disabled"}><ha-icon icon="mdi:plus"></ha-icon></button></div>`}
+      <div class="row"><button class="up" ${pos > 0 ? "" : "disabled"}><ha-icon icon="mdi:arrow-left"></ha-icon>${esc(t("Früher"))}</button>
+        <button class="down" ${pos >= 0 && pos < sib.length - 1 ? "" : "disabled"}>${esc(t("Später"))}<ha-icon icon="mdi:arrow-right"></ha-icon></button></div>
+      <div class="row"><button class="hide"><ha-icon icon="mdi:eye-off-outline"></ha-icon>${esc(t("Gruppe ausblenden"))}</button></div>
+      ${settingsHtml(opts)}
+      <div class="row"><button class="close">${esc(t("Schließen"))}</button></div><div class="st"></div><div class="err"></div>`;
+    root.appendChild(menu);
+    placeMenu(menu, c.r);
+    const kids = () => [...c.wrap.parentElement.children];
+    const again = () => {   // nach dem Umbau: Rahmen neu, Menü an die neue Stelle
+      placeBoxes();
+      setTimeout(() => { placeBoxes(); const k = ngEdit.cards.find((x) => x.meta.id === key && x.meta.view === c.meta.view); if (k && ngEdit.sel === key) openGroupMenu(k); }, FLIP_MS + 40);
+    };
+    const width = (d) => {
+      const n = Math.min(4, Math.max(1, w + d));
+      ngEdit.lay.width[fk(c)] = n;
+      ngEdit.prev.set(fk(c), c.wrap);
+      flip(kids(), () => { c.wrap.style.gridColumn = `span min(${n}, var(--column-count, 4))`; });
+      ngEdit.moves++; updateBar(); again();
+    };
+    menu.querySelector(".nar")?.addEventListener("click", () => width(-1));
+    menu.querySelector(".wid")?.addEventListener("click", () => width(1));
+    const move = (dlt) => {
+      const ids = sib.map((x) => x.meta.id), j = pos + dlt;
+      [ids[pos], ids[j]] = [ids[j], ids[pos]];
+      let ok = false;
+      flip(kids(), () => { ok = showOrder(sib, ids); });
+      if (!ok) return;
+      setPending(c, ids); again();
+    };
+    menu.querySelector(".up").addEventListener("click", () => move(-1));
+    menu.querySelector(".down").addEventListener("click", () => move(1));
+    menu.querySelector(".hide").addEventListener("click", () => {
+      ngEdit.lay.hide = [...new Set([...ngEdit.lay.hide, fk(c)])];
+      ngEdit.prev.set(fk(c), c.wrap);
+      flip(kids(), () => { c.wrap.style.display = "none"; });
+      ngEdit.moves++; closeMenu(); updateBar(); setTimeout(placeBoxes, FLIP_MS + 40);
+    });
+    bindSettings(menu, opts, key);
+    menu.querySelector(".close").addEventListener("click", () => closeMenu());
+    placeBoxes();
+  }
+  // Ausgeblendete Gruppen zurückholen: gerade erst ausgeblendet -> nur Vorschau zurück, gespeichert -> sofort speichern
+  function openHiddenMenu() {
+    const root = ngEdit.root, hid = hiddenGroups(), view = curView();
+    if (root.querySelector(".menu.hm")) { closeMenu(); return; }
+    root.querySelector(".menu")?.remove();
+    const menu = document.createElement("div");
+    menu.className = "menu hm";
+    menu.innerHTML = `<b>${esc(t("Ausgeblendete Gruppen"))}</b>${hid.map((k) => `<div class="hl"><span>${esc(nameOf(view, k))}</span>
+      <button data-k="${esc(k)}"><ha-icon icon="mdi:eye-outline"></ha-icon>${esc(t("Anzeigen"))}</button></div>`).join("")}<div class="err"></div>`;
+    root.appendChild(menu);
+    const bar = root.querySelector(".bar").getBoundingClientRect();
+    placeMenu(menu, { left: bar.left + scrollX + (bar.width - 280) / 2, top: bar.bottom + scrollY + 8, width: 280, height: 0 });
+    const W = Math.min(280, document.documentElement.clientWidth - 16);
+    Object.assign(menu.style, { left: `${scrollX + Math.max(8, bar.left + (bar.width - W) / 2)}px`, top: `${scrollY + bar.bottom + 8}px` });
+    menu.querySelectorAll("button[data-k]").forEach((b) => b.addEventListener("click", async () => {
+      const k = b.dataset.k, fkey = `${view}|${k}`;
+      if (ngEdit.lay.hide.includes(fkey)) {
+        ngEdit.lay.hide = ngEdit.lay.hide.filter((x) => x !== fkey);
+        const w = ngEdit.prev.get(fkey);
+        if (w?.isConnected) flip([...w.parentElement.children], () => { w.style.display = ""; });
+        ngEdit.moves = Math.max(0, ngEdit.moves - 1);
+        closeMenu(); updateBar(); setTimeout(placeBoxes, FLIP_MS + 40);
+        return;
+      }
+      ngEdit.busy = true;
+      try { await saveEdits((s) => { const n = layoutOf(s, view); n.hide = (n.hide || []).filter((x) => x !== k); }); closeMenu(); }
+      catch (e) { menu.querySelector(".err").textContent = String(e?.message || e); }
+      ngEdit.busy = false;
+    }));
+  }
+  // Erste Besuche: Sprechblase unter der Uhr „Tipp: Uhr antippen“ (+ pulsierender Ring). Je Gerät höchstens 3×, weg nach 25 s,
+  // „Verstanden“ oder sobald das Uhr-Pop-up einmal offen war. Admins erfahren dabei von „Kacheln bearbeiten“.
+  const TIP_KEY = "nullglow-tip-clock";
+  const tipGet = () => { try { return localStorage.getItem(TIP_KEY) || ""; } catch (e) { return "done"; } };
+  const tipSet = (v) => { try { localStorage.setItem(TIP_KEY, v); } catch (e) { /* privat */ } };
+  let tipShown = false;
+  function clockTip() {
+    if (tipShown || document.getElementById("ng-tip")) return;
+    const base = "/" + (location.pathname.split("/")[1] || "lovelace"), seen = tipGet();
+    if (window.__nullglowModes?.[base] === undefined || seen === "done" || +seen >= 3 || window.__ngEdit?.on || location.hash) return;
+    let clock = null;
+    const view = deepFind(document, "hui-view-container");
+    if (view) deepEach(view, (el) => { if (!clock && el.localName === "hui-card" && el.config?.tap_action?.navigation_path === "#design") clock = el; });
+    const r = clock && cardRect(clock);
+    if (!r?.width || r.top > innerHeight) return;
+    tipShown = true;
+    tipSet(String((+seen || 0) + 1));
+    const admin = !!document.querySelector("home-assistant")?.hass?.user?.is_admin;
+    const host = document.createElement("div");
+    host.id = "ng-tip";
+    const root = host.attachShadow({ mode: "open" });
+    const W = Math.min(340, document.documentElement.clientWidth - 16);
+    const ring = { left: r.left + scrollX - 10, top: r.top + scrollY - 8, width: Math.min(r.width, 420) + 20, height: r.height + 16 };
+    root.innerHTML = `<style>
+      :host { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 6; font-family: var(--ng-font, inherit); }
+      .ring { position: absolute; border-radius: 22px; pointer-events: none; box-shadow: 0 0 0 2px var(--ng-acc, #7cffb2);
+        animation: ngtip 1.8s ease-in-out infinite; }
+      @keyframes ngtip { 50% { box-shadow: 0 0 0 2px var(--ng-acc, #7cffb2), 0 0 0 10px rgba(var(--rgb-ng-acc, 124, 255, 178), 0), 0 0 34px -4px var(--ng-acc, #7cffb2); } }
+      .tip { position: absolute; box-sizing: border-box; padding: 14px 16px; border-radius: 20px; color: var(--ng-txt, #e8f5ee); font-size: 14px; line-height: 1.45;
+        background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .9);
+        backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4);
+        box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .5), 0 18px 44px -14px rgba(0, 0, 0, .7); transition: opacity .4s; }
+      .tip::before { content: ""; position: absolute; top: -7px; left: 34px; width: 14px; height: 14px; transform: rotate(45deg);
+        background: rgba(var(--rgb-ng-bg, 10, 14, 18), .95); box-shadow: -1px -1px 0 0 rgba(var(--rgb-ng-acc, 124, 255, 178), .5); }
+      b.h { display: flex; align-items: center; gap: 8px; font-size: 15px; margin-bottom: 4px; color: var(--ng-acc, #7cffb2); }
+      b.h ha-icon { --mdc-icon-size: 20px; }
+      p { margin: 0 0 12px; color: var(--ng-txt-dim, #93a79d); } p b { color: var(--ng-txt, #e8f5ee); }
+      .row { display: flex; gap: 8px; justify-content: flex-end; }
+      button { font: inherit; font-size: 14px; border: 0; cursor: pointer; border-radius: 999px; min-height: 36px; padding: 0 16px;
+        color: var(--ng-txt, #e8f5ee); background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); }
+      button.pri { background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); font-weight: 600; }
+      .off { opacity: 0; }
+    </style><div class="ring" style="left:${ring.left}px;top:${ring.top}px;width:${ring.width}px;height:${ring.height}px"></div>
+    <div class="tip" style="left:${Math.max(8, Math.min(r.left + scrollX, scrollX + document.documentElement.clientWidth - W - 8))}px;top:${r.bottom + scrollY + 14}px;width:${W}px">
+      <b class="h"><ha-icon icon="mdi:gesture-tap"></ha-icon>${esc(t("Tipp: Uhr antippen"))}</b>
+      <p>${admin ? t("Design, Hell/Dunkel und <b>Kacheln bearbeiten</b>: Kacheln und Gruppen per Ziehen anordnen, Breite, ausblenden, umbenennen.") : esc(t("Design und Hell/Dunkel für dieses Gerät."))}</p>
+      <div class="row"><button class="ok">${esc(t("Verstanden"))}</button><button class="pri go">${esc(t("Zeigen"))}</button></div></div>`;
+    const hv = deepFind(document, "hui-view-container");   // Farben des Designs
+    if (hv) { const cs = getComputedStyle(hv); EDIT_TOKENS.forEach((k) => { const v = cs.getPropertyValue(k).trim(); if (v) host.style.setProperty(k, v); }); }
+    document.body.appendChild(host);
+    const close = (done) => {
+      if (done) tipSet("done");
+      window.removeEventListener("location-changed", onNav); window.removeEventListener("hashchange", onNav);
+      root.querySelector(".tip")?.classList.add("off");
+      setTimeout(() => host.remove(), 400);
+    };
+    const onNav = () => { if (location.hash === "#design") close(true); else if (!location.pathname.startsWith(base)) close(false); };
+    window.addEventListener("location-changed", onNav); window.addEventListener("hashchange", onNav);
+    root.querySelector(".ok").addEventListener("click", () => close(true));
+    root.querySelector(".go").addEventListener("click", () => {
+      close(true);
+      history.pushState(null, "", location.pathname + location.search + "#design");
+      window.dispatchEvent(new Event("location-changed")); window.dispatchEvent(new HashChangeEvent("hashchange"));
+    });
+    setTimeout(() => close(false), 25000);
+  }
+  window.__ngClockTip = (again) => { if (again) tipShown = false; clockTip(); };   // again: zum Testen erneut zeigen
+
+  // × an einem Hinweis: dauerhaft in der Dashboard-Einstellung (nur Admins); die Karte merkt es sich ohnehin lokal
+  window.addEventListener("nullglow-hint-ignore", (ev) => {
+    const base = "/" + (location.pathname.split("/")[1] || "lovelace"), ids = ev.detail?.entities || [];
+    if (!ids.length || window.__nullglowModes[base] === undefined || !document.querySelector("home-assistant")?.hass?.user?.is_admin) return;
+    saveStrategy((s) => { s.hints = { ...(s.hints || {}), ignore: [...new Set([...(s.hints?.ignore || []), ...ids])] }; }).catch(() => {});
+  });
+  // Start: Uhr-Pop-up → „Kacheln bearbeiten“ navigiert zu #ng-bearbeiten
+  const editHash = () => {
+    if (location.hash !== "#ng-bearbeiten") return;
+    history.replaceState(null, "", location.pathname + location.search);
+    setTimeout(editStart, 350);   // Pop-up schließt sich erst
+  };
+  window.addEventListener("location-changed", editHash);
+  window.addEventListener("hashchange", editHash);
+
   class NullglowDashboardStrategy extends HTMLElement {
     static async generate(config, hass) {
       ngH = hass;
@@ -8297,17 +10696,25 @@ ha-tile-info {
         solarPeak: energy.solar_peak || 800, monitor: cfg.screen_switch || null } : { solar: [], grid: [], monitor: cfg.screen_switch || null } };
       const build = {
         home: () => viewHome(inv, energy, base, on, hass, cfg, design), licht: () => viewLicht(inv, hass), klima: () => viewKlima(inv, hass),
-        energie: () => viewEnergie(energy, hass), kameras: () => viewKameras(inv, cfg), kalender: () => viewKalender(inv),
+        energie: () => viewEnergie(energy, hass), kameras: () => viewKameras(inv, cfg), kalender: () => viewKalender(inv), medien: () => viewMedien(inv, hass),
         sauger: () => viewSauger(inv, hass), maeher: () => viewMaeher(inv, hass),
       };
       const door = doorbellCfg(cfg, hass, inv);   // Klingel-Pop-up auf jeder Seite
       doorbellWatch(hass, base, door);
+      window.__ngLastCfg = cfg; window.__ngLastRooms = inv.rooms.map((r) => r.id); window.__ngLastWeather = !!inv.weather;
+      window.__ngLastMedia = cfg.media_home !== false && !!inv.media.length && has("nullglow-media-card");
+      window.__ngLastInfo = { weather: !!inv.weather, media: !!inv.media.length && has("nullglow-media-card"), lightsCard: has("nullglow-lights-card"),
+        contacts: inv.shown.reduce((a, r) => a + r.contacts.length, 0), persons: inv.persons.length, hints: has("nullglow-hints-card"),
+        cams: (cfg.live_cameras || []).filter((c) => hass.states[c]).length };   // fürs Bearbeiten auf der Kachel
+      const floatHints = (cfg.hints || {}).mode === "float" ? hintsCard(cfg, base, on, false) : null;
+      if (on.home && has("nullglow-design-card")) setTimeout(clockTip, 3500);   // Tipp „Uhr antippen“ (erste Besuche)
       return {
         title: cfg.title || "Nullglow",
         views: views.map((v) => {
           const r = build[v.key]();
+          if (v.key !== "home") r.sections = applyViewLayout(v.key, r.sections, (cfg.layouts || {})[v.key], hass);
           return { title: t(v.title), path: v.key, icon: v.icon, theme: design, type: "sections", max_columns: 4,
-            dense_section_placement: true, sections: [...r.sections, navSection(views, base, [...(r.extra || []), ...(door ? [doorbellPopup(door)] : [])])] };
+            dense_section_placement: true, sections: [...applyEdits(r.sections, cfg), navSection(views, base, [...(r.extra || []), ...(door ? [doorbellPopup(door)] : []), ...(floatHints ? [floatHints] : [])])] };
         }),
       };
     }
@@ -8474,7 +10881,8 @@ ha-tile-info {
         home: t("Uhr, Wetter, Energie, Licht, Klima, Rollläden, Personen, Termine"),
         licht: t("{n} Lampen", { n: inv.lightsAll.length }), klima: t("{n} Räume mit Temperatur", { n: inv.shown.filter((r) => r.temperature || r.climate.length).length }),
         energie: energy ? t("aus dem Energie-Dashboard") : t("kein Solar/Netz gefunden"), kameras: t("{n} Kameras", { n: inv.cameras.length }),
-        kalender: t("{n} Kalender", { n: inv.calendars.length }), sauger: inv.vacuums.length ? t("{n} Saugroboter", { n: inv.vacuums.length }) : t("kein Saugroboter"),
+        kalender: t("{n} Kalender", { n: inv.calendars.length }),
+        medien: has("nullglow-media-card") ? t("{n} Medien-Player", { n: inv.media.length }) : t("Medien-Karte fehlt"), sauger: inv.vacuums.length ? t("{n} Saugroboter", { n: inv.vacuums.length }) : t("kein Saugroboter"),
         maeher: inv.mowers.length ? t("{n} Mähroboter", { n: inv.mowers.length }) : t("kein Mähroboter"),
       };
       box = this._panel("views", t("2 · Seiten"), "mdi:view-dashboard-outline", t("{n} aktiv", { n: VIEWS.filter((v) => avail[v.key] && (c.views?.[v.key] ?? true)).length }));
@@ -8490,12 +10898,7 @@ ha-tile-info {
       const rank = (k) => { const i = (L.order || []).indexOf(k); return i === -1 ? 100 + HOME_PARTS.findIndex((p) => p.key === k) : i; };
       const keys = HOME_PARTS.map((p) => p.key).filter((k) => present.includes(k)).sort((a, b) => rank(a) - rank(b));
       const setLayout = (fn) => {
-        const n = clone(L); fn(n);
-        if (n.order && n.order.join() === HOME_PARTS.map((p) => p.key).filter((k) => n.order.includes(k)).join()) delete n.order;
-        for (const [k, w] of Object.entries(n.width || {})) if (+w === HOME_PARTS.find((p) => p.key === k)?.width) delete n.width[k];
-        if (n.width && !Object.keys(n.width).length) delete n.width;
-        if (n.hide && !n.hide.length) delete n.hide;
-        if (!(+n.cam_cols > 1)) delete n.cam_cols;
+        const n = clone(L); fn(n); tidyLayout(n);
         if (Object.keys(n).length) c.home_layout = n; else delete c.home_layout;
         this._emit(); this._build();
       };
@@ -8507,7 +10910,7 @@ ha-tile-info {
         const w = +(L.width || {})[k] || p.width, nCam = (c.live_cameras || []).filter((x) => hass.states[x]).length;
         const row = document.createElement("div");
         row.className = `row lay ${off ? "off" : ""}`;
-        row.innerHTML = `<ha-icon class="ic" icon="${p.icon}"></ha-icon><div class="t"><b>${esc(t(p.name))}</b></div>
+        row.innerHTML = `<ha-icon class="ic" icon="${p.icon}"></ha-icon><div class="t"><b>${esc(groupName(k, L))}</b></div>
           ${k === "kameras" && nCam > 1 ? `<select data-a="cams" title="${t("Kameras nebeneinander")}">${[1, 2, 3].map((n) =>
             `<option value="${n}" ${(+L.cam_cols || 1) === n ? "selected" : ""}>${t("{n} je Reihe", { n })}</option>`).join("")}</select>` : ""}
           <select data-a="width" title="${t("Breite")}">${WOPT.map(([v, t]) => `<option value="${v}" ${w === v ? "selected" : ""}>${t}</option>`).join("")}</select>
@@ -8522,6 +10925,16 @@ ha-tile-info {
           if (s.dataset.a === "width") n.width = { ...(n.width || {}), [k]: +s.value }; else n.cam_cols = +s.value;
         })));
         box.appendChild(row);
+      });
+      const canMedia = c.media_home !== false && inv.media.length && has("nullglow-media-card");
+      [[inv.weather, "wetter", "split_weather", t("Wetter zurück zur Uhr"), t("Wetter als eigene Gruppe")],
+        [canMedia, "media", "split_media", t("Medien zurück zur Uhr"), t("Medien als eigene Gruppe")]].forEach(([ok, key, flag, back, own]) => {
+        if (!ok) return;
+        const nt = document.createElement("div");
+        nt.className = "note";
+        nt.innerHTML = `<button class="split">${esc(L[flag] ? back : own)}</button>`;
+        nt.querySelector("button").addEventListener("click", () => setLayout((n) => splitPart(n, key, !n[flag])));
+        box.appendChild(nt);
       });
       if (!present.includes("kameras")) box.insertAdjacentHTML("beforeend", `<div class="note">${t("Kameras auf der Übersicht: unter <b>6 · … Kameras</b> „Live-Kameras auf der Übersicht“ wählen — dann erscheinen sie hier zum Anordnen.")}</div>`);
       if (c.home_layout) {
@@ -8539,6 +10952,10 @@ ha-tile-info {
         { name: "covers", label: t("Rollläden auf der Übersicht ({n})", { n: nCov }), helper: t("Zusammengefasst = eine Kachel mit Alle auf/zu, Antippen öffnet alle nach Etage"),
           selector: { select: { mode: "dropdown", options: [
             { value: "auto", label: t("Automatisch (ab 7 zusammengefasst)") }, { value: "list", label: t("Einzeln") }, { value: "compact", label: t("Zusammengefasst") }] } } },
+        ...(has("nullglow-lights-card") ? [{ name: "lights", label: t("Licht auf der Übersicht ({n} Räume)", { n: inv.shown.filter((r) => r.lights.length).length }),
+          helper: t("Zusammengefasst = eine Kachel mit Balken je Raum und „Aus“, Antippen öffnet alle Räume nach Etage"),
+          selector: { select: { mode: "dropdown", options: [
+            { value: "rooms", label: t("Je Raum eine Kachel (Standard)") }, { value: "compact", label: t("Zusammengefasst") }] } } }] : []),
         { name: "light_tap", label: t("Licht-Kachel auf der Übersicht antippen"),
           helper: t("Pop-up = alle Lampen des Raums einzeln (dimmen, Farbe, Szenen); Halten schaltet dann den Raum an/aus"),
           selector: { select: { mode: "dropdown", options: [
@@ -8550,7 +10967,8 @@ ha-tile-info {
             { value: "auto", label: t("Automatisch (ab 7 zusammengefasst)") }, { value: "list", label: t("Einzeln") },
             { value: "compact", label: t("Zusammengefasst") }, { value: "off", label: t("Nicht anzeigen") }] } } },
       ], { hide_labels: c.hide_labels || [], short_names: c.short_names !== false, covers: c.covers || "auto", contacts: c.contacts || "auto",
-        light_tap: c.light_tap || "toggle", climate_graph: c.climate_graph !== false }, (v) => {
+        light_tap: c.light_tap || "toggle", climate_graph: c.climate_graph !== false, lights: c.lights || "rooms" }, (v) => {
+        if (v.lights === "compact") c.lights = "compact"; else delete c.lights;
         if (v.contacts && v.contacts !== "auto") c.contacts = v.contacts; else delete c.contacts;
         if (v.climate_graph === false) c.climate_graph = false; else delete c.climate_graph;
         if (v.light_tap === "popup") c.light_tap = "popup"; else delete c.light_tap;
@@ -8653,6 +11071,8 @@ ha-tile-info {
             selector: { entity: { filter: { domain: "camera" } } } }] : []),
         { name: "cameras_live", label: t("Kameras-Seite live"), helper: t("aus = Standbild, das sich alle paar Sekunden erneuert (Antippen = live)"), selector: { boolean: {} } },
         { name: "calendars", label: t("Kalender"), helper: t("leer = alle"), selector: { entity: { multiple: true, filter: { domain: "calendar" } } } },
+        { name: "media_home", label: t("Musik/TV auf der Übersicht, solange etwas läuft"), helper: t("mit Cover — die Karte färbt sich in den Farben des Covers"), selector: { boolean: {} } },
+        { name: "media_players", label: t("Medien-Player"), helper: t("leer = alle (Seite „Medien“ und Übersicht)"), selector: { entity: { multiple: true, filter: { domain: "media_player" } } } },
         { name: "screen_switch", label: t("Steckdose des Wandmonitors (optional)"), helper: t("ist sie aus, pausiert das Nordlicht im Hintergrund"),
           selector: { entity: { filter: { domain: ["switch", "light", "input_boolean", "binary_sensor"] } } } },
         { name: "title", label: t("Titel des Dashboards"), selector: { text: {} } },
@@ -8662,13 +11082,14 @@ ha-tile-info {
           selector: { select: { mode: "dropdown", options: [
             { value: "auto", label: t("Wie Gerät / HA-Profil") }, { value: "dark", label: t("Immer dunkel") },
             { value: "light", label: t("Immer hell") }, { value: "sun", label: t("Nach Sonne (tagsüber hell)") }] } } },
-      ], { design: c.design || "nullglow", mode: c.mode || "auto", weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], live_cameras: c.live_cameras || [], cameras_live: !!c.cameras_live, person_map: !!c.person_map, map_tint: c.map_tint !== false, calendars: c.calendars || [], title: c.title,
+      ], { design: c.design || "nullglow", mode: c.mode || "auto", weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], live_cameras: c.live_cameras || [], cameras_live: !!c.cameras_live, person_map: !!c.person_map, map_tint: c.map_tint !== false, calendars: c.calendars || [], title: c.title, media_home: c.media_home !== false, media_players: c.media_players || [],
         doorbell_on: !!c.doorbell?.enabled, doorbell_event: c.doorbell?.event, doorbell_camera: c.doorbell?.camera,
         screen_switch: c.screen_switch }, (v) => {
         for (const k of ["weather", "title", "screen_switch"]) { if (v[k]) c[k] = v[k]; else delete c[k]; }
         if (v.design && v.design !== "nullglow") c.design = v.design; else delete c.design;
         if (v.mode && v.mode !== "auto") c.mode = v.mode; else delete c.mode;
-        for (const k of ["persons", "cameras", "calendars", "live_cameras"]) { if (v[k]?.length) c[k] = v[k]; else delete c[k]; }
+        for (const k of ["persons", "cameras", "calendars", "live_cameras", "media_players"]) { if (v[k]?.length) c[k] = v[k]; else delete c[k]; }
+        if (v.media_home === false) c.media_home = false; else delete c.media_home;
         if (v.cameras_live) c.cameras_live = true; else delete c.cameras_live;
         const wasMap = !!c.person_map;
         if (v.person_map) c.person_map = true; else delete c.person_map;
@@ -8681,11 +11102,74 @@ ha-tile-info {
         this._emit();
       }));
 
-      // 7. Tipps
-      box = this._panel("tips", t("7 · Handy & Wandmonitor"), "mdi:monitor-cellphone");
+      // 7. Hinweise (nullglow-hints-card) — nur Abweichungen speichern
+      const H = c.hints || {}, RULES = ["rain", "waste", "battery", "offline", "updates", "away"];
+      const setHints = (fn) => {
+        const n = clone(H); fn(n);
+        if (n.rules) { for (const k of Object.keys(n.rules)) if (n.rules[k] !== false) delete n.rules[k]; if (!Object.keys(n.rules).length) delete n.rules; }
+        if (n.waste) { for (const k of Object.keys(n.waste)) if (!n.waste[k] || (Array.isArray(n.waste[k]) && !n.waste[k].length)) delete n.waste[k]; if (!Object.keys(n.waste).length) delete n.waste; }
+        if (!n.mode || n.mode === "top") delete n.mode;
+        if (!(+n.battery_threshold) || +n.battery_threshold === 15) delete n.battery_threshold;
+        if (!n.ignore?.length) delete n.ignore;
+        if (Object.keys(n).length) c.hints = n; else delete c.hints;
+        this._emit();
+      };
+      box = this._panel("hints", t("7 · Hinweise"), "mdi:bell-badge-outline", H.mode === "off" ? t("aus") : H.mode === "float" ? t("schwebend") : t("oben auf der Übersicht"));
+      box.insertAdjacentHTML("beforeend", `<div class="note">${t("Eine Leiste, die nur erscheint, wenn etwas zu tun ist: Fenster offen bei Regen, Müll morgen, Akkus schwach, Geräte offline, Updates, niemand zu Hause aber Licht an. Das × an einem Hinweis blendet ihn für einzelne Geräte aus — hier unter „Nie warnen für“ wieder entfernen.")}</div>`);
+      const HLAB = { rain: t("Regen & offene Fenster"), waste: t("Müll heute/morgen"), battery: t("Akkus schwach"), offline: t("Geräte offline"),
+        updates: t("Updates verfügbar"), away: t("Niemand zu Hause, Licht an / Tür offen") };
+      const hform = this._form([
+        { name: "mode", label: t("Anzeige"), selector: { select: { mode: "dropdown", options: [
+          { value: "top", label: t("Oben auf der Übersicht (Standard)") }, { value: "float", label: t("Schwebend über der Navigation, auf jeder Seite (Wandmonitor)") },
+          { value: "off", label: t("Aus") }] } } },
+        { type: "grid", name: "", schema: RULES.map((k) => ({ name: k, label: HLAB[k], selector: { boolean: {} } })) },
+        { name: "battery_threshold", label: t("Akku-Warnung unter (%)"), selector: { number: { min: 5, max: 50, mode: "box" } } },
+        { name: "waste_calendar", label: t("Müll-Kalender (jeder Termin zählt)"),
+          helper: t("leer = automatisch: Waste Collection Schedule, sonst Stichworte (Restmüll, Gelbe Tonne, Papier, Bio …) in allen Kalendern"),
+          selector: { entity: { filter: { domain: "calendar" } } } },
+        { name: "waste_keywords", label: t("Weitere Müll-Stichworte"), helper: t("z. B. Grünschnitt, Wertstoffhof"), selector: { text: { multiple: true } } },
+        { name: "ignore", label: t("Nie warnen für"), helper: t("z. B. Geräte, die immer wenig Akku melden"), selector: { entity: { multiple: true } } },
+      ], { mode: H.mode || "top", ...Object.fromEntries(RULES.map((k) => [k, H.rules?.[k] !== false])),
+        battery_threshold: H.battery_threshold || 15, waste_calendar: H.waste?.calendar, waste_keywords: H.waste?.keywords || [], ignore: H.ignore || [] },
+      (v) => setHints((n) => {
+        n.mode = v.mode; n.rules = Object.fromEntries(RULES.map((k) => [k, v[k] !== false])); n.battery_threshold = v.battery_threshold;
+        n.waste = { calendar: v.waste_calendar, keywords: v.waste_keywords }; n.ignore = v.ignore;
+      }));
+      box.appendChild(hform);
+      const HC = customElements.get("nullglow-hints-card"), dkey = "/" + (location.pathname.split("/")[1] || "lovelace");
+      const local = HC?.getLocalIgnore?.(dkey) || [];
+      if (local.length) {
+        box.insertAdjacentHTML("beforeend", `<div class="note">${t("Auf diesem Gerät zusätzlich ausgeblendet: {n}", { n: local.length })} <button class="reset hl">${t("zurückholen")}</button></div>`);
+        box.querySelector("button.hl").addEventListener("click", () => { HC.clearLocalIgnore(dkey); this._build(); });
+      }
+
+      // 8. Direkt auf der Kachel bearbeitet: Überblick + zurücksetzen
+      const nNames = Object.keys(c.names || {}).length, nHidden = (c.hidden || []).length, nOrder = (c.tile_order || []).length;
+      box = this._panel("edited", t("8 · Direkt bearbeitet"), "mdi:pencil-outline",
+        nNames + nHidden + nOrder ? t("{a} Namen · {b} ausgeblendet", { a: nNames, b: nHidden }) : t("nichts"));
+      box.insertAdjacentHTML("beforeend", `<div class="note">${t("Auf dem Dashboard: <b>Uhr antippen → Kacheln bearbeiten</b> (nur Administratoren). Kachel antippen: umbenennen, ausblenden; halten und ziehen: verschieben. Namen gelten nur in diesem Dashboard.")}</div>`);
+      if (nNames) {
+        Object.entries(c.names).forEach(([id, n]) => {
+          const row = document.createElement("div");
+          row.className = "row";
+          row.innerHTML = `<ha-icon class="ic" icon="mdi:rename-outline"></ha-icon><div class="t"><b>${esc(n)}</b><small>${esc(hass.states[id]?.attributes?.friendly_name || id)}</small></div>
+            <button title="${t("Originalname")}"><ha-icon icon="mdi:backup-restore"></ha-icon></button>`;
+          row.querySelector("button").addEventListener("click", () => { delete c.names[id]; if (!Object.keys(c.names).length) delete c.names; this._emit(); this._build(); });
+          box.appendChild(row);
+        });
+      }
+      box.appendChild(this._form([{ name: "hidden", label: t("Ausgeblendete Kacheln"), helper: t("entfernen = wieder anzeigen"), selector: { entity: { multiple: true } } }],
+        { hidden: c.hidden || [] }, (v) => { if (v.hidden?.length) c.hidden = v.hidden; else delete c.hidden; this._emit(); }));
+      if (nOrder) {
+        box.insertAdjacentHTML("beforeend", `<div class="note"><button class="reset ord">${t("Reihenfolge der Kacheln zurücksetzen")}</button></div>`);
+        box.querySelector("button.ord").addEventListener("click", () => { delete c.tile_order; this._emit(); this._build(); });
+      }
+
+      // 9. Tipps
+      box = this._panel("tips", t("9 · Handy & Wandmonitor"), "mdi:monitor-cellphone");
       box.insertAdjacentHTML("beforeend", `<div class="note">${t("<b>Handy:</b> läuft in der HA-App, Seiten unten per Leiste wechseln (wischbar).")}<br>
         ${t("<b>Wandmonitor (Full HD):</b> Dashboard-Adresse mit <code>?kiosk</code> öffnen (braucht Kiosk Mode) — ohne Kopfzeile und Seitenleiste. Bei 1920×1080 mit 125 % Zoom sieht es aus wie im Original. Hochkant geht auch (die Leiste zeigt dann nur Symbole).")}<br>
-        ${t("<b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist.")}<br>
+        ${t("<b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist. Als Admin findest du dort auch <b>Kacheln bearbeiten</b>: Kacheln und ganze Gruppen per Ziehen anordnen, breiter machen, ausblenden, umbenennen — auf jeder Seite.")}<br>
         ${t("<b>Livebilder am Wandmonitor:</b> Browser-Cache begrenzen, z. B. Chromium mit <code>--disk-cache-size=67108864</code> (64 MB) starten.")}<br>
         ${t("Ändern kannst du alles später über <b>Dashboard bearbeiten</b>; „Kontrolle übernehmen“ macht daraus ein normales, frei bearbeitbares Dashboard (dann ohne automatische Aktualisierung).")}</div>`);
     }

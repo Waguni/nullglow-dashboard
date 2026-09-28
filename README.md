@@ -22,11 +22,32 @@ setup wizard. Works on your **phone** (HA app) and on a **Full HD wall monitor**
 | **Climate** | big temperature per room with a coloured 24 h curve, heating and air conditioning |
 | **Energy** | particle energy flow (solar, grid, battery, consumers), grid per phase, solar with forecast, power 24 h, monthly balance with costs |
 | **Cameras**, **Calendar** | all cameras / calendars |
+| **Media** | what's playing right now (cover, progress, volume, source) + all players |
 | **Vacuum**, **Mower** | map, controls, battery, wear (only if you have one) |
 
-Plus: **tap the clock** to pick a design, light/dark and the **glass slider** (clear ↔ frosted) for *this* device —
-wall monitor and phone may look different. Room pop-ups, a background that follows the weather and an **aurora**
-that grows with your solar power. Pages without matching devices simply don't appear.
+Plus room pop-ups, a background that follows the weather and an **aurora** that grows with your solar power. Pages
+without matching devices simply don't appear.
+
+## 👆 Tap the clock — make it yours
+
+Everything you can change right on the dashboard starts with **one tap on the big clock** of the overview
+(the first time you open the dashboard, a small hint points at it):
+
+- **Design, light/dark, glass** (clear ↔ frosted) and **power saving** — for *this* device, so the wall monitor and
+  your phone can look different.
+- **Edit tiles** (admins) — then, right on the dashboard:
+  - **Drag tiles** where you want them. On a phone: hold a tile briefly, then drag — a normal swipe still scrolls.
+  - Switch to **Groups** to move **whole blocks** — energy, lights, calendar, cameras … — **on every page**, make them
+    wider or narrower (1–4 columns) or hide them.
+  - **Tap a group** for its settings: lights per room or as one tile, blinds and windows combined, temperature graphs,
+    weather or music as a group of their own, cameras side by side. ⚙ holds the hint bar.
+  - **Tap a tile** to rename or hide it.
+  - **Done** saves everything in one go, **Discard** undoes it.
+
+![Edit tiles and groups](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/edit.jpg?v=2.3.0)
+
+Everything can be undone in the setup wizard (*Edit dashboard*), which also holds the device choices (energy sensors,
+calendars, people, cameras, rooms).
 
 **Language:** follows your Home Assistant profile — English or German (other languages fall back to English).
 Room and device names come from your own setup.
@@ -82,6 +103,21 @@ wall monitor).
 - **Many blinds / window contacts:** 7 or more become *one* tile with a bar/dot per device; tap opens them grouped by floor.
 - **People map:** optional map of everyone's location, tinted in your design colour.
 - **Glass slider:** make all tiles clearer or more frosted — per device.
+- **Smart hints:** a bar that only appears when something needs you — windows open while it rains (or will soon),
+  bins today/tomorrow (Waste Collection Schedule, a waste calendar or keywords like *Restmüll*, *Gelbe Tonne*, *recycling*),
+  low batteries, devices offline, updates, nobody home but lights on / door unlocked (with a one-tap *Off*). The **×** hides a
+  hint for single devices (e.g. one that always reports a low battery). At the top of the overview or floating above the
+  navigation (wall displays).
+- **All lights as one tile** (optional, wizard → rooms → *Lights on the overview*: *Combined*): one tile with a bar per room in
+  the real light colour (height = brightness) and *Off* (asks once), tap opens all rooms by floor. Handy for big homes.
+- **Media:** while music or TV is playing, a card with the cover appears under the weather — the card takes on the colors of
+  the cover. Without cover art (e.g. YouTube cast to a Chromecast only reports title and channel) it shows the app's logo in
+  its brand color instead — YouTube, Netflix, Spotify, Twitch, Plex, Kodi and a few more. Switch it off in the wizard; the
+  *Media* page is always there when you have media players.
+- **Edit tiles directly** (see *Tap the clock* above): moves and widths show up instantly and are saved together with
+  *Done*; group settings apply right away. Names only apply in this dashboard. Hidden groups come back via the eye button
+  in the edit bar, hidden tiles in the wizard (step 8). Weather and music can become groups of their own (tap the clock
+  group); a separate music group keeps its place and shows a calm *Nothing playing* while idle, so the layout never jumps.
 - **Power saving** for slow PCs and old tablets: tap the clock → *Power saving* **Off / On / Auto**. It turns off the
   aurora and the weather colors, stops the tile animations and runs the energy flow at 15 instead of 30 fps. *Auto*
   (default) switches it on by itself when the device is too slow (measured once on the dashboard), has very weak hardware
