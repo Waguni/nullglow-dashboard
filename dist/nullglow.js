@@ -7046,11 +7046,11 @@ ha-tile-info {
       cards: [{ type: "custom:nullglow-radar-card", zoom: 8, past: 90, future: 120, step: 10, height: 430 }] };
   }
 
-  // Karte im Design: Akzentfarbe als weicher Schimmer (soft-light) über der Karte — Fotos/Knöpfe bleiben farbig.
+  // Karte im Design: Farbton der Karte durch die Akzentfarbe ersetzt (mix-blend-mode: color, Helligkeit bleibt) — Fotos/Knöpfe bleiben farbig.
   // HA zeichnet die Karte als MapLibre-Canvas in der Tile-Pane; die Farbschicht liegt darüber (z-index). Kein Filter auf
   // der Pane (würde die Farbschicht mit entfärben).
   const MAP_TINT = `.leaflet-tile-pane::after { content: ""; position: absolute; left: -50000px; top: -50000px; width: 100000px; height: 100000px;
-  background: rgb(var(--rgb-ng-acc, 124, 255, 178)); mix-blend-mode: soft-light; opacity: .9; pointer-events: none; z-index: 1000; }
+  background: rgb(var(--rgb-ng-acc, 124, 255, 178)); mix-blend-mode: color; opacity: .75; pointer-events: none; z-index: 1000; }
 `;
 
   // ---------- Klingel: Kamera groß (optional) — doorbell: { enabled, event, camera } ----------
