@@ -6356,16 +6356,19 @@ window.__NULLGLOW_THEMES = {
   }
 
   // ---------- Bausteine ----------
-  function lightTile(eid, name, icon, hold, columns = 6) {
+  // hold = Raum-Pop-up (#hash); tapPopup (Option light_tap: popup) = Antippen öffnet das Pop-up, Halten schaltet
+  function lightTile(eid, name, icon, hold, columns = 6, tapPopup = false) {
     const s = `hass.states[${q(eid)}]`;
     const col = `((${s} && ${s}.attributes.rgb_color) || [${WARM}]).join(',')`;
     const on = `(${s} && ${s}.state === 'on')`;
-    const holdAct = hold ? { action: "navigate", navigation_path: hold } : { action: "more-info" };
+    const pop = hold ? { action: "navigate", navigation_path: hold } : null;
+    const tapAct = tapPopup && pop ? pop : { action: "toggle" };
+    const holdAct = tapPopup && pop ? { action: "toggle" } : pop || { action: "more-info" };
     return {
       type: "custom:bubble-card", card_type: "button", button_type: "slider", entity: eid, name, ...(icon ? { icon } : {}),
       show_state: true, use_accent_color: true, tap_to_slide: false, slider_live_update: false,
-      button_action: { tap_action: { action: "toggle" }, hold_action: holdAct },
-      tap_action: { action: "toggle" }, hold_action: holdAct,
+      button_action: { tap_action: tapAct, hold_action: holdAct },
+      tap_action: tapAct, hold_action: holdAct,
       grid_options: { columns, rows: 1 },
       styles: [
         `.bubble-button-card-container { border-radius: 20px !important; \${(() => { const c = ${col}; return ${on} ? 'box-shadow: inset 0 0 0 1px rgba(' + c + ',.5), 0 0 30px -10px rgba(' + c + ',.7) !important;' : 'box-shadow: inset 0 0 0 1px var(--ng-line) !important;'; })()} }`,
@@ -6377,16 +6380,18 @@ window.__NULLGLOW_THEMES = {
   }
 
   // Raum mit mehreren Lampen ohne Gruppe: Knopf schaltet alle Lampen des Raums
-  function roomLightsButton(room, hold, columns = 6) {
+  function roomLightsButton(room, hold, columns = 6, tapPopup = false) {
     const list = q(room.lights);
     const cnt = `${list}.filter((e) => hass.states[e] && hass.states[e].state === 'on').length`;
+    const toggle = { action: "perform-action", perform_action: "light.toggle", target: { entity_id: room.lights } };
+    const pop = hold ? { action: "navigate", navigation_path: hold } : null;
+    const tapAct = tapPopup && pop ? pop : toggle, holdAct = tapPopup && pop ? toggle : pop || { action: "none" };
     return {
       type: "custom:bubble-card", card_type: "button", button_type: "name", name: room.name, icon: room.icon,
       show_state: false,
-      tap_action: { action: "perform-action", perform_action: "light.toggle", target: { entity_id: room.lights } },
-      button_action: { tap_action: { action: "perform-action", perform_action: "light.toggle", target: { entity_id: room.lights } },
-        hold_action: hold ? { action: "navigate", navigation_path: hold } : { action: "none" } },
-      hold_action: hold ? { action: "navigate", navigation_path: hold } : { action: "none" },
+      tap_action: tapAct,
+      button_action: { tap_action: tapAct, hold_action: holdAct },
+      hold_action: holdAct,
       grid_options: { columns, rows: 1 },
       styles: [
         `.bubble-button-card-container { border-radius: 20px !important; \${${cnt} ? 'box-shadow: inset 0 0 0 1px rgba(${WARM},.5), 0 0 30px -10px rgba(${WARM},.7) !important; background: rgba(${WARM},.12) !important;' : 'box-shadow: inset 0 0 0 1px var(--ng-line) !important;'} }`,
@@ -6701,8 +6706,41 @@ ha-tile-info {
       cards: [{ type: "custom:nullglow-radar-card", zoom: 8, past: 90, future: 120, step: 10, height: 430 }] };
   }
 
+  // Gruppen der Übersicht: Schlüssel, Name, Symbol, Standardbreite (Spalten) — Reihenfolge = Standard
+  const HOME_PARTS = [
+    { key: "uhr", name: "Uhr & Wetter", icon: "mdi:clock-outline", width: 1 },
+    { key: "energie", name: "Energie", icon: "mdi:lightning-bolt", width: 2 },
+    { key: "kameras", name: "Kameras", icon: "mdi:cctv", width: 1 },
+    { key: "licht", name: "Licht", icon: "mdi:lightbulb-group", width: 1 },
+    { key: "klima", name: "Klima", icon: "mdi:thermometer", width: 1 },
+    { key: "rolllaeden", name: "Rollläden", icon: "mdi:window-shutter", width: 1 },
+    { key: "zuhause", name: "Zuhause", icon: "mdi:home-account", width: 1 },
+    { key: "termine", name: "Termine", icon: "mdi:calendar-heart", width: 1 },
+  ];
+  // home_layout: { order: [key…], width: {key: 1–4}, hide: [key…], cam_cols: 1–3 } — nur Abweichungen vom Standard
+  function applyHomeLayout(parts, layout) {
+    const L = layout || {}, order = L.order || [], hide = new Set(L.hide || []), width = L.width || {};
+    const rank = (k) => { const i = order.indexOf(k); return i === -1 ? 100 + HOME_PARTS.findIndex((p) => p.key === k) : i; };
+    return parts.filter((p) => !hide.has(p.key)).sort((a, b) => rank(a.key) - rank(b.key)).map((p) => {
+      const w = Math.min(4, Math.max(1, Math.round(+width[p.key] || HOME_PARTS.find((h) => h.key === p.key).width)));
+      const sec = { ...p.sec };
+      if (w > 1) sec.column_span = w; else delete sec.column_span;
+      // Kameras nebeneinander: eine Section über w Spalten hat 12·w Rasterspalten
+      const cc = Math.min(3, Math.max(1, Math.round(+L.cam_cols || 1)));
+      if (p.key === "kameras" && cc > 1) sec.cards = sec.cards.map((c) => (c.type === "picture-entity" ? { ...c, grid_options: { columns: (12 * w) / cc } } : c));
+      return sec;
+    });
+  }
+
+  // Lücken füllt HA weiter auf (dense): Reihenfolge bleibt, kleine Gruppen rücken ggf. in eine Lücke davor
   function viewHome(inv, energy, base, on, hass, cfg, design) {
-    const S = [];
+    const { parts, extra } = homeParts(inv, energy, base, on, hass, cfg, design);
+    return { sections: applyHomeLayout(parts, cfg.home_layout), extra };
+  }
+
+  function homeParts(inv, energy, base, on, hass, cfg, design) {
+    const P = [];
+    const S = { push: (key, sec) => P.push({ key, sec }) };
     const withDesign = has("nullglow-design-card");
     const top = [clockCard(withDesign ? "#design" : null)];
     if (inv.weather) {
@@ -6711,22 +6749,24 @@ ha-tile-info {
         card_mod: { style: ".state, .name { white-space: normal !important; }\n" } });
       top.push({ type: "custom:nullglow-hourly-card", entity: inv.weather, hours: 8 });
     }
-    S.push({ type: "grid", cards: top });
-    if (energy) S.push({ type: "grid", column_span: 2, cards: [heading("Energie", "mdi:lightning-bolt", on.energie ? `${base}/energie` : null),
+    S.push("uhr", { type: "grid", cards: top });
+    if (energy) S.push("energie", { type: "grid", cards: [heading("Energie", "mdi:lightning-bolt", on.energie ? `${base}/energie` : null),
       { type: "custom:nullglow-flow-card", height: 388, grid_options: { columns: "full" }, ...energy }] });
 
+    // Live-Kameras: Größe über die Breite der Gruppe, nebeneinander über cam_cols (beides applyHomeLayout)
     const live = (cfg.live_cameras || []).filter((c) => hass.states[c]);
-    if (live.length) S.push({ type: "grid", cards: [heading(live.length > 1 ? "Kameras" : "Kamera", "mdi:cctv", on.kameras ? `${base}/kameras` : null),
+    if (live.length) S.push("kameras", { type: "grid", cards: [heading(live.length > 1 ? "Kameras" : "Kamera", "mdi:cctv", on.kameras ? `${base}/kameras` : null),
       ...live.map((c) => camCard(c, true, live.length > 1))] });
 
     const lightRooms = inv.shown.filter((r) => r.lights.length);
     if (lightRooms.length) {
       const cards = [heading("Licht", "mdi:lightbulb-group", on.licht ? `${base}/licht` : null)];
-      lightRooms.forEach((r) => cards.push(r.light ? lightTile(r.light, r.name, r.icon, r.hash) : roomLightsButton(r, r.hash)));
+      const tapPop = cfg.light_tap === "popup";   // Standard: Antippen schaltet den Raum an/aus
+      lightRooms.forEach((r) => cards.push(r.light ? lightTile(r.light, r.name, r.icon, r.hash, 6, tapPop) : roomLightsButton(r, r.hash, 6, tapPop)));
       cards.push(allOff());
       cards.push({ type: "custom:nullglow-care-card", mode: "summary", tap_hash: "#wartung", battery: { warn: 30, crit: 15 },
         grid_options: { columns: 6, rows: 1 } });
-      S.push({ type: "grid", cards });
+      S.push("licht", { type: "grid", cards });
     }
     const climRooms = inv.shown.filter((r) => r.temperature || r.climate.length);
     if (climRooms.length) {
@@ -6741,13 +6781,13 @@ ha-tile-info {
           grid_options: { columns: 6 },
           card_mod: { style: `ha-card { --ng-state: ${heatCool(r.climate)}; }\n` } });
       });
-      S.push({ type: "grid", cards });
+      S.push("klima", { type: "grid", cards });
     }
     const covers = inv.shown.flatMap((r) => r.covers.map((c, i) => [c, r, i]));
     const compact = covers.length && (cfg.covers === "compact" || (cfg.covers !== "list" && covers.length > 6));
-    if (compact) S.push({ type: "grid", cards: [heading("Rollläden", "mdi:window-shutter", "#rolllaeden"),
+    if (compact) S.push("rolllaeden", { type: "grid", cards: [heading("Rollläden", "mdi:window-shutter", "#rolllaeden"),
       { type: "custom:nullglow-covers-card", entities: covers.map(([c]) => c), title: "Alle Rollläden", tap: "#rolllaeden", grid_options: { columns: 12, rows: 2 } }] });
-    else if (covers.length) S.push({ type: "grid", cards: [heading("Rollläden", "mdi:window-shutter"), ...covers.map(([c, r, i]) => {
+    else if (covers.length) S.push("rolllaeden", { type: "grid", cards: [heading("Rollläden", "mdi:window-shutter"), ...covers.map(([c, r, i]) => {
       const n = coverWord(inv.niceName(c, [r.name, r.areaName]), r.name);
       return coverTile(c, r.covers.length === 1 ? r.name : `${r.name} · ${n && n.toLowerCase() !== r.name.toLowerCase() ? n : i + 1}`);
     })] });
@@ -6762,10 +6802,10 @@ ha-tile-info {
       if (cCompact) cards.push({ type: "custom:nullglow-contacts-card", entities: contacts.map(([c]) => c), tap: "#fenster",
         names: Object.fromEntries(contacts.map(([c, r, i]) => [c, contactName(inv, r, c, i)])), grid_options: { columns: 12, rows: 2 } });
       else contacts.forEach(([c, r, i]) => cards.push(contactTile(c, contactName(inv, r, c, i), hass, 6)));
-      S.push({ type: "grid", cards });
+      S.push("zuhause", { type: "grid", cards });
     }
     if (inv.calendars.length && has("calendar-card-pro"))
-      S.push({ type: "grid", cards: [heading("Termine", "mdi:calendar-heart", on.kalender ? `${base}/kalender` : null), calendarPro(inv.calendars, 14, on.kalender ? `${base}/kalender` : null)] });
+      S.push("termine", { type: "grid", cards: [heading("Termine", "mdi:calendar-heart", on.kalender ? `${base}/kalender` : null), calendarPro(inv.calendars, 14, on.kalender ? `${base}/kalender` : null)] });
 
     const pops = [radarPopup(), { type: "custom:bubble-card", card_type: "pop-up", hash: "#wartung", name: "Batterien & Wartung",
       icon: "mdi:battery-heart-variant", width_desktop: "620px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 120000,
@@ -6774,7 +6814,7 @@ ha-tile-info {
     if (compact) pops.push(coversPopup(inv));
     if (cCompact) pops.push(contactsPopup(inv, hass));
     if (withDesign) pops.push(designPopup(base, design, ["dark", "light", "sun"].includes(cfg.mode) ? cfg.mode : "auto"));
-    return { sections: S, extra: pops };
+    return { parts: P, extra: pops };
   }
 
   function viewLicht(inv, hass) {
@@ -7071,8 +7111,30 @@ ha-tile-info {
   NullglowDashboardStrategy.configRequired = true; // Assistent öffnet sich beim Anlegen
 
   // ---------- Einrichtungs-Assistent ----------
+  // Versionen der Fremdkarten: steht nur als lokale Variable in der Datei (`let o="v3.4.1"`) → geladene Datei lesen.
+  // Bubble-Pop-ups der Vorlage (card_type pop-up + cards) gibt es erst ab Bubble Card 3.2 — darunter öffnet sich nichts.
+  const verCache = {};
+  function cardVersion(hass, file) {
+    return (verCache[file] ??= (async () => {
+      const re = new RegExp(`/${file}[^/?#]*\\.js`, "i");
+      let urls = [...performance.getEntriesByType("resource").map((e) => e.name), ...[...document.scripts].map((s) => s.src)];
+      if (!urls.some((u) => re.test(u))) {
+        try { urls = (await hass.callWS({ type: "lovelace/resources" })).map((r) => new URL(r.url, location.origin).href); } catch (e) { urls = []; }
+      }
+      for (const u of new Set(urls.filter((x) => re.test(x)))) {
+        try {
+          const m = (await (await fetch(u, { cache: "force-cache" })).text()).match(/(?:let|var|const)\s+\w+\s*=\s*"v(\d+)\.(\d+)\.(\d+)/);
+          if (m) return m.slice(1, 4).map(Number);
+        } catch (e) { /* nächste Quelle */ }
+      }
+      return null;
+    })());
+  }
+  const older = (v, min) => { for (let i = 0; i < min.length; i++) if ((v[i] || 0) !== min[i]) return (v[i] || 0) < min[i]; return false; };
+
   const NEEDS = [
-    { tag: "bubble-card", name: "Bubble Card", repo: ["Clooos", "Bubble-Card"], must: true },
+    { tag: "bubble-card", name: "Bubble Card", repo: ["Clooos", "Bubble-Card"], must: true, file: "bubble-card", min: [3, 2, 0],
+      why_min: "Pop-ups (Rollläden, Räume, Regenradar …) öffnen sich sonst nicht" },
     { tag: "mushroom-template-card", name: "Mushroom", repo: ["piitaya", "lovelace-mushroom"], must: true },
     { tag: "card-mod", name: "card-mod", repo: ["thomasloven", "lovelace-card-mod"], must: true, test: () => has("card-mod") || !!window.cardMod_patch_state },
     { tag: "calendar-card-pro", name: "Calendar Card Pro", repo: ["alexpfau", "calendar-card-pro"], must: false, why: "Termine" },
@@ -7103,6 +7165,11 @@ ha-tile-info {
     .row button { border: 0; background: none; color: var(--secondary-text-color); cursor: pointer; padding: 6px; border-radius: 50%; }
     .row button[disabled] { opacity: .3; cursor: default; }
     .row button ha-icon { --mdc-icon-size: 20px; }
+    .row select { font: inherit; font-size: 13px; color: var(--primary-text-color); background: var(--secondary-background-color);
+      border: 1px solid var(--divider-color); border-radius: 8px; padding: 4px 6px; max-width: 128px; }
+    @media (max-width: 560px) { .row.lay { flex-wrap: wrap; } .row.lay .t { flex-basis: calc(100% - 40px); } .row.lay select { max-width: 112px; } }
+    button.reset { font: inherit; font-size: 13px; color: var(--primary-color); background: none; border: 1px solid var(--divider-color);
+      border-radius: 8px; padding: 6px 12px; cursor: pointer; }
     .note { font-size: 12px; color: var(--secondary-text-color); margin: 4px 0 10px; line-height: 1.45; }
     .roomform { padding: 4px 0 10px 30px; }
     code { background: var(--secondary-background-color); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
@@ -7163,24 +7230,35 @@ ha-tile-info {
       const c = this._config, hass = this._hass, root = this.shadowRoot;
       const token = (this._tok = (this._tok || 0) + 1);
       const inv = inventory(hass, c);
-      const energy = await energyCfg(c, hass);
+      const [energy, vers] = await Promise.all([energyCfg(c, hass),
+        Promise.all(NEEDS.map((n) => (n.file && has(n.tag) ? cardVersion(hass, n.file) : null)))]);
       if (token !== this._tok) return; // inzwischen neu aufgebaut
       const avail = available(inv, energy);
       root.innerHTML = `<style>${WZ_STYLE}</style><p class="intro"><b>Nullglow einrichten.</b> Das Dashboard baut sich aus deinen
         Bereichen, Geräten und dem Energie-Dashboard selbst — hier nur noch anpassen. Neue Geräte erscheinen später automatisch.</p>`;
 
       // 1. Voraussetzungen
-      const missing = NEEDS.filter((n) => n.must && !(n.test ? n.test() : has(n.tag)));
-      let box = this._panel("req", "1 · Voraussetzungen (HACS)", "mdi:puzzle-check-outline", missing.length ? `${missing.length} fehlt` : "alles da");
-      if (missing.length) this._open.add("req");
-      NEEDS.forEach((n) => {
-        const ok = n.test ? n.test() : has(n.tag);
-        box.insertAdjacentHTML("beforeend", `<div class="req"><ha-icon class="${ok ? "ok" : n.must ? "no" : "opt"}"
-          icon="${ok ? "mdi:check-circle" : n.must ? "mdi:close-circle" : "mdi:minus-circle-outline"}"></ha-icon>
-          <span class="t">${esc(n.name)}${n.must ? "" : ` <small>(optional: ${esc(n.why)})</small>`}</span>
-          ${ok ? "" : `<a href="${hacsLink(n.repo)}" target="_blank" rel="noreferrer">In HACS öffnen</a>`}</div>`);
+      const state = NEEDS.map((n, i) => {
+        const inst = n.test ? n.test() : has(n.tag), v = vers[i];
+        return { inst, v, old: !!(inst && v && n.min && older(v, n.min)) };
       });
-      if (missing.length) box.insertAdjacentHTML("beforeend", '<div class="note">Nach der Installation in HACS die Seite neu laden (Strg+F5 bzw. App neu starten).</div>');
+      const missing = NEEDS.filter((n, i) => n.must && (!state[i].inst || state[i].old));
+      const anyOld = state.some((s) => s.old);
+      const nMiss = NEEDS.filter((n, i) => n.must && !state[i].inst).length, nOld = state.filter((s) => s.old).length;
+      let box = this._panel("req", "1 · Voraussetzungen (HACS)", "mdi:puzzle-check-outline",
+        [nMiss && `${nMiss} fehlt`, nOld && `${nOld} zu alt`].filter(Boolean).join(" · ") || "alles da");
+      if (missing.length) this._open.add("req");
+      NEEDS.forEach((n, i) => {
+        const { inst, v, old } = state[i], ok = inst && !old;
+        const vtxt = v ? ` <small>v${v.join(".")}${old ? ` — mindestens ${n.min.join(".")} nötig: ${esc(n.why_min)}` : ""}</small>`
+          : inst && n.min ? ` <small>(Version nicht erkannt — mindestens ${n.min.join(".")} nötig)</small>` : "";
+        box.insertAdjacentHTML("beforeend", `<div class="req"><ha-icon class="${ok ? "ok" : n.must ? "no" : "opt"}"
+          icon="${ok ? "mdi:check-circle" : old ? "mdi:update" : n.must ? "mdi:close-circle" : "mdi:minus-circle-outline"}"></ha-icon>
+          <span class="t">${esc(n.name)}${vtxt}${n.must ? "" : ` <small>(optional: ${esc(n.why)})</small>`}</span>
+          ${ok ? "" : `<a href="${hacsLink(n.repo)}" target="_blank" rel="noreferrer">${old ? "In HACS aktualisieren" : "In HACS öffnen"}</a>`}</div>`);
+      });
+      if (missing.length) box.insertAdjacentHTML("beforeend", `<div class="note">Nach der ${anyOld ? "Aktualisierung" : "Installation"} in HACS die Seite
+        neu laden (Strg+F5, in der Handy-App den App-Cache leeren).</div>`);
 
       // 2. Seiten
       const info = {
@@ -7197,8 +7275,56 @@ ha-tile-info {
           this._emit();
         }));
 
-      // 3. Räume
-      box = this._panel("rooms", "3 · Räume, Rollläden & Fenster", "mdi:floor-plan", `${inv.shown.length} von ${inv.rooms.length}`);
+      // 3. Übersicht anordnen: Reihenfolge, Breite, ein-/ausblenden — gespeichert werden nur Abweichungen (home_layout)
+      const L = c.home_layout || {};
+      const present = homeParts(inv, energy, "", {}, hass, c, c.design || "nullglow").parts.map((p) => p.key);
+      const rank = (k) => { const i = (L.order || []).indexOf(k); return i === -1 ? 100 + HOME_PARTS.findIndex((p) => p.key === k) : i; };
+      const keys = HOME_PARTS.map((p) => p.key).filter((k) => present.includes(k)).sort((a, b) => rank(a) - rank(b));
+      const setLayout = (fn) => {
+        const n = clone(L); fn(n);
+        if (n.order && n.order.join() === HOME_PARTS.map((p) => p.key).filter((k) => n.order.includes(k)).join()) delete n.order;
+        for (const [k, w] of Object.entries(n.width || {})) if (+w === HOME_PARTS.find((p) => p.key === k)?.width) delete n.width[k];
+        if (n.width && !Object.keys(n.width).length) delete n.width;
+        if (n.hide && !n.hide.length) delete n.hide;
+        if (!(+n.cam_cols > 1)) delete n.cam_cols;
+        if (Object.keys(n).length) c.home_layout = n; else delete c.home_layout;
+        this._emit(); this._build();
+      };
+      box = this._panel("layout", "3 · Übersicht anordnen", "mdi:view-grid-plus-outline", c.home_layout ? "angepasst" : "Standard");
+      box.insertAdjacentHTML("beforeend", `<div class="note">Reihenfolge der Gruppen auf der Übersicht (Pfeile, von links oben nach rechts unten;
+        passt eine kleine Gruppe in eine Lücke davor, rückt sie dort hinein), Auge = ein-/ausblenden, Auswahl = Breite in Spalten.
+        Mehr Breite = größere Kameras. Am Handy steht ohnehin alles untereinander.</div>`);
+      const WOPT = [[1, "1 Spalte"], [2, "2 Spalten"], [3, "3 Spalten"], [4, "ganze Breite"]];
+      keys.forEach((k, i) => {
+        const p = HOME_PARTS.find((h) => h.key === k), off = (L.hide || []).includes(k);
+        const w = +(L.width || {})[k] || p.width, nCam = (c.live_cameras || []).filter((x) => hass.states[x]).length;
+        const row = document.createElement("div");
+        row.className = `row lay ${off ? "off" : ""}`;
+        row.innerHTML = `<ha-icon class="ic" icon="${p.icon}"></ha-icon><div class="t"><b>${esc(p.name)}</b></div>
+          ${k === "kameras" && nCam > 1 ? `<select data-a="cams" title="Kameras nebeneinander">${[1, 2, 3].map((n) =>
+            `<option value="${n}" ${(+L.cam_cols || 1) === n ? "selected" : ""}>${n} je Reihe</option>`).join("")}</select>` : ""}
+          <select data-a="width" title="Breite">${WOPT.map(([v, t]) => `<option value="${v}" ${w === v ? "selected" : ""}>${t}</option>`).join("")}</select>
+          <button data-a="eye" title="${off ? "anzeigen" : "ausblenden"}"><ha-icon icon="${off ? "mdi:eye-off-outline" : "mdi:eye-outline"}"></ha-icon></button>
+          <button data-a="up" ${i ? "" : "disabled"}><ha-icon icon="mdi:arrow-up"></ha-icon></button>
+          <button data-a="down" ${i < keys.length - 1 ? "" : "disabled"}><ha-icon icon="mdi:arrow-down"></ha-icon></button>`;
+        row.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => setLayout((n) => {
+          if (b.dataset.a === "eye") n.hide = off ? (n.hide || []).filter((x) => x !== k) : [...(n.hide || []), k];
+          else { const o = [...keys], j = i + (b.dataset.a === "up" ? -1 : 1); [o[i], o[j]] = [o[j], o[i]]; n.order = o; }
+        })));
+        row.querySelectorAll("select").forEach((s) => s.addEventListener("change", () => setLayout((n) => {
+          if (s.dataset.a === "width") n.width = { ...(n.width || {}), [k]: +s.value }; else n.cam_cols = +s.value;
+        })));
+        box.appendChild(row);
+      });
+      if (!present.includes("kameras")) box.insertAdjacentHTML("beforeend", `<div class="note">Kameras auf der Übersicht: unter
+        <b>6 · … Kameras</b> „Live-Kameras auf der Übersicht“ wählen — dann erscheinen sie hier zum Anordnen.</div>`);
+      if (c.home_layout) {
+        box.insertAdjacentHTML("beforeend", '<div class="note"><button class="reset">Standard wiederherstellen</button></div>');
+        box.querySelector("button.reset").addEventListener("click", () => { delete c.home_layout; this._emit(); this._build(); });
+      }
+
+      // 4. Räume
+      box = this._panel("rooms", "4 · Räume, Rollläden & Fenster", "mdi:floor-plan", `${inv.shown.length} von ${inv.rooms.length}`);
       const nCov = inv.shown.reduce((a, r) => a + r.covers.length, 0), nCon = inv.shown.reduce((a, r) => a + r.contacts.length, 0);
       box.appendChild(this._form([
         { name: "hide_labels", label: "Mit Label ausblenden", helper: "Entitäten, Geräte oder ganze Bereiche mit diesem Label erscheinen nicht (z. B. no_dboard)",
@@ -7207,12 +7333,18 @@ ha-tile-info {
         { name: "covers", label: `Rollläden auf der Übersicht (${nCov})`, helper: "Zusammengefasst = eine Kachel mit Alle auf/zu, Antippen öffnet alle nach Etage",
           selector: { select: { mode: "dropdown", options: [
             { value: "auto", label: "Automatisch (ab 7 zusammengefasst)" }, { value: "list", label: "Einzeln" }, { value: "compact", label: "Zusammengefasst" }] } } },
+        { name: "light_tap", label: "Licht-Kachel auf der Übersicht antippen",
+          helper: "Pop-up = alle Lampen des Raums einzeln (dimmen, Farbe, Szenen); Halten schaltet dann den Raum an/aus",
+          selector: { select: { mode: "dropdown", options: [
+            { value: "toggle", label: "Licht an/aus (Standard)" }, { value: "popup", label: "Pop-up mit den Lampen des Raums" }] } } },
         { name: "contacts", label: `Fenster & Türen auf der Übersicht (${nCon})`, helper: "Zusammengefasst = eine Kachel „Alles zu“ / „2 offen · …“, Antippen zeigt alle nach Etage",
           selector: { select: { mode: "dropdown", options: [
             { value: "auto", label: "Automatisch (ab 7 zusammengefasst)" }, { value: "list", label: "Einzeln" },
             { value: "compact", label: "Zusammengefasst" }, { value: "off", label: "Nicht anzeigen" }] } } },
-      ], { hide_labels: c.hide_labels || [], short_names: c.short_names !== false, covers: c.covers || "auto", contacts: c.contacts || "auto" }, (v) => {
+      ], { hide_labels: c.hide_labels || [], short_names: c.short_names !== false, covers: c.covers || "auto", contacts: c.contacts || "auto",
+        light_tap: c.light_tap || "toggle" }, (v) => {
         if (v.contacts && v.contacts !== "auto") c.contacts = v.contacts; else delete c.contacts;
+        if (v.light_tap === "popup") c.light_tap = "popup"; else delete c.light_tap;
         if (v.hide_labels?.length) c.hide_labels = v.hide_labels; else delete c.hide_labels;
         if (v.short_names === false) c.short_names = false; else delete c.short_names;
         if (v.covers && v.covers !== "auto") c.covers = v.covers; else delete c.covers;
@@ -7270,8 +7402,8 @@ ha-tile-info {
         }
       });
 
-      // 4. Energie
-      box = this._panel("energy", "4 · Energie", "mdi:lightning-bolt", c.energy ? "angepasst" : energy ? "automatisch" : "nicht gefunden");
+      // 5. Energie
+      box = this._panel("energy", "5 · Energie", "mdi:lightning-bolt", c.energy ? "angepasst" : energy ? "automatisch" : "nicht gefunden");
       box.insertAdjacentHTML("beforeend", '<div class="note">Leer lassen = automatisch aus dem Energie-Dashboard. Hier kannst du Punkte zuweisen und benennen — wie in der Energie-Karte.</div>');
       if (customElements.get("nullglow-flow-card-editor")) {
         const ed = document.createElement("nullglow-flow-card-editor");
@@ -7285,13 +7417,13 @@ ha-tile-info {
         box.appendChild(ed);
       }
 
-      // 5. Wetter, Personen, Kameras, Kalender
-      box = this._panel("more", "5 · Design, Wetter, Personen, Kameras, Kalender", "mdi:tune-variant", designs(hass)[c.design] || designs(hass).nullglow || "Nullglow");
+      // 6. Wetter, Personen, Kameras, Kalender
+      box = this._panel("more", "6 · Design, Wetter, Personen, Kameras, Kalender", "mdi:tune-variant", designs(hass)[c.design] || designs(hass).nullglow || "Nullglow");
       box.appendChild(this._form([
         { name: "weather", label: "Wetter", helper: `leer = ${inv.weather || "keins gefunden"}`, selector: { entity: { filter: { domain: "weather" } } } },
         { name: "persons", label: "Personen", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "person" } } } },
         { name: "cameras", label: "Kameras", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
-        { name: "live_cameras", label: "Live-Kameras auf der Übersicht (optional)", helper: "eine oder mehrere; Stream nur, solange die Übersicht offen ist — braucht Platz (ggf. scrollen)",
+        { name: "live_cameras", label: "Live-Kameras auf der Übersicht (optional)", helper: "eine oder mehrere; Stream nur, solange die Übersicht offen ist — Größe und Platz unter „3 · Übersicht anordnen“",
           selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
         { name: "cameras_live", label: "Kameras-Seite live", helper: "aus = Standbild, das sich alle paar Sekunden erneuert (Antippen = live)", selector: { boolean: {} } },
         { name: "calendars", label: "Kalender", helper: "leer = alle", selector: { entity: { multiple: true, filter: { domain: "calendar" } } } },
@@ -7314,8 +7446,8 @@ ha-tile-info {
         this._emit();
       }));
 
-      // 6. Tipps
-      box = this._panel("tips", "6 · Handy & Wandmonitor", "mdi:monitor-cellphone");
+      // 7. Tipps
+      box = this._panel("tips", "7 · Handy & Wandmonitor", "mdi:monitor-cellphone");
       box.insertAdjacentHTML("beforeend", `<div class="note"><b>Handy:</b> läuft in der HA-App, Seiten unten per Leiste wechseln (wischbar).<br>
         <b>Wandmonitor (Full HD):</b> Dashboard-Adresse mit <code>?kiosk</code> öffnen (braucht Kiosk Mode) — ohne Kopfzeile und
         Seitenleiste. Bei 1920×1080 mit 125 % Zoom sieht es aus wie im Original. Hochkant geht auch (die Leiste zeigt dann nur Symbole).<br>

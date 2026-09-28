@@ -65,13 +65,13 @@ für guten Kontrast; Leuchten werden zu weichen Farbschatten, das Nordlicht zum 
 
 - Home Assistant (getestet mit 2026.9) und [HACS](https://hacs.xyz)
 - Aus HACS (Typ „Dashboard“) — ein Klick auf den Link öffnet die Seite direkt in deinem HACS:
-  - **Bubble Card** — [in HACS öffnen](https://my.home-assistant.io/redirect/hacs_repository/?owner=Clooos&repository=Bubble-Card&category=plugin)
+  - **Bubble Card ab Version 3.2** — [in HACS öffnen](https://my.home-assistant.io/redirect/hacs_repository/?owner=Clooos&repository=Bubble-Card&category=plugin)
   - **Mushroom** — [in HACS öffnen](https://my.home-assistant.io/redirect/hacs_repository/?owner=piitaya&repository=lovelace-mushroom&category=plugin)
   - **card-mod** — [in HACS öffnen](https://my.home-assistant.io/redirect/hacs_repository/?owner=thomasloven&repository=lovelace-card-mod&category=plugin)
   - optional **Calendar Card Pro** (Termine) — [in HACS öffnen](https://my.home-assistant.io/redirect/hacs_repository/?owner=alexpfau&repository=calendar-card-pro&category=plugin)
   - optional **Kiosk Mode** (Wandmonitor ohne Kopfzeile) — [in HACS öffnen](https://my.home-assistant.io/redirect/hacs_repository/?owner=NemesisRE&repository=kiosk-mode&category=plugin)
 
-Der Assistent prüft das und zeigt fehlende Teile mit Link an.
+Der Assistent prüft das (auch die Bubble-Card-Version) und zeigt fehlende oder zu alte Teile mit Link an.
 
 ## Installation (ca. 5 Minuten)
 
@@ -84,10 +84,14 @@ Der Assistent prüft das und zeigt fehlende Teile mit Link an.
 5. Der **Einrichtungs-Assistent** öffnet sich — alles ist schon vorausgefüllt:
    1. Voraussetzungen (grüne Haken)
    2. Seiten an/aus
-   3. Räume, Rollläden & Fenster: ausblenden (Auge), sortieren (Pfeile), antippen für Name, Symbol, Hauptlicht, Temperatur-Sensor;
-      **Mit Label ausblenden** (z. B. `no_dboard` an Entität, Gerät oder Bereich), **Namen kürzen**, Rollläden einzeln oder zusammengefasst
-   4. Energie: Punkte zuweisen und **benennen** (Solar, Netz, jeder Verbraucher mit Name und Symbol)
-   5. **Design** (13 Farbvarianten) und **Hell / Dunkel**, Wetter, Personen, Kameras, Kalender, Steckdose des Wandmonitors
+   3. **Übersicht anordnen:** Gruppen (Uhr & Wetter, Energie, Kameras, Licht, Klima, Rollläden, Zuhause, Termine) per Pfeil
+      verschieben, per Auge ausblenden, **Breite** 1–4 Spalten wählen — breitere Kameras-Gruppe = größere Livebilder,
+      dazu „1/2/3 je Reihe“. „Standard wiederherstellen“ setzt alles zurück.
+   4. Räume, Rollläden & Fenster: ausblenden (Auge), sortieren (Pfeile), antippen für Name, Symbol, Hauptlicht, Temperatur-Sensor;
+      **Mit Label ausblenden** (z. B. `no_dboard` an Entität, Gerät oder Bereich), **Namen kürzen**, Rollläden einzeln oder zusammengefasst,
+      **Licht-Kachel antippen:** an/aus (Standard) oder Pop-up mit allen Lampen des Raums
+   5. Energie: Punkte zuweisen und **benennen** (Solar, Netz, jeder Verbraucher mit Name und Symbol)
+   6. **Design** (13 Farbvarianten) und **Hell / Dunkel**, Wetter, Personen, Kameras, Kalender, Steckdose des Wandmonitors
 6. **Speichern** → Namen und Symbol für das Dashboard wählen → fertig.
 
 Ändern kannst du alles später über **⋮ → Dashboard bearbeiten** (öffnet den Assistenten wieder).
@@ -117,6 +121,13 @@ zuweisen, umbenennen und sortieren.
 ## Häufige Fragen
 
 - **„Konfigurationsfehler“ oder leere Kacheln:** fehlt Bubble Card, Mushroom oder card-mod? Danach Browser hart neu laden (Strg+F5).
+- **Kameras größer / Gruppen woanders:** ⋮ → Dashboard bearbeiten → „3 · Übersicht anordnen“. Livebilder erst unter
+  „6 · … Kameras“ bei „Live-Kameras auf der Übersicht“ wählen.
+- **Licht antippen soll die einzelnen Lampen zeigen:** „4 · Räume …“ → „Licht-Kachel auf der Übersicht antippen“ → Pop-up.
+  Dann schaltet langes Drücken den Raum an/aus, Ziehen dimmt wie gewohnt.
+- **Antippen öffnet kein Fenster** (Rollläden, Räume, Regenradar …): Die Fenster kommen von Bubble Card — Version in
+  HACS prüfen, **mindestens 3.2** nötig. Aktualisieren, dann hart neu laden (Strg+F5; in der App den App-Cache leeren).
+  Der Assistent (⋮ → Dashboard bearbeiten) zeigt unter „Voraussetzungen“ die erkannte Version.
 - **„Nullglow“ fehlt bei „Dashboard hinzufügen“:** Browser neu laden; in HACS prüfen, ob Nullglow Dashboard installiert ist.
 - **Viele Rollläden:** ab 7 erscheinen sie auf der Übersicht als *eine* Kachel (Zustand, ein Balken je Rollladen, Alle auf ·
   Stopp · Alle zu mit Rückfrage). Antippen öffnet alle Rollläden **nach Etage** (HA-Etagen) mit Auf/Zu je Etage.
