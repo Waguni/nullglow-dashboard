@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/banner.png" alt="Nullglow Dashboard for Home Assistant" width="100%"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/banner.png?v=2.2.0" alt="Nullglow Dashboard for Home Assistant" width="100%"></p>
 
 <p align="center">
   <a href="https://hacs.xyz"><img src="https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white" alt="HACS Custom"></a>
@@ -37,36 +37,36 @@ Room and device names come from your own setup.
 **Nocturne** (blue), **Glacier** (ice blue), **Chartreuse** (lime), **Neonwave** (magenta), **Graphite** (silver),
 **Nebula** (indigo) and **Dune** (sand) — same tiles and effects, own accent, background and font.
 
-![13 designs](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs.jpg)
+![13 designs](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs.jpg?v=2.2.0)
 
 Every design also comes in **light** ("tinted daylight": soft page colour, white glass, stronger accent). Light/dark:
 *like device / HA profile* (default), *always dark*, *always light* or *by the sun* (light during the day — nice on a
 wall monitor).
 
-![13 designs, light](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs-light.jpg)
+![13 designs, light](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs-light.jpg?v=2.2.0)
 
 ## Screenshots
 
 <sub>All screenshots use demo data.</sub>
 
 **Overview** — clock, weather, energy flow, lights, climate, blinds, people, agenda
-![Overview](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/overview.jpg)
+![Overview](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/overview.jpg?v=2.2.0)
 
 **Energy** — particle flows, phases, solar with forecast, 24 h, monthly balance
-![Energy](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/energy.jpg)
+![Energy](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/energy.jpg?v=2.2.0)
 
 **Lights** and **Climate**
-![Lights](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/lights.jpg)
-![Climate](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/climate.jpg)
+![Lights](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/lights.jpg?v=2.2.0)
+![Climate](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/climate.jpg?v=2.2.0)
 
 **Room pop-up** (long-press a light tile or tap a temperature)
-![Room pop-up](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/room-popup.jpg)
+![Room pop-up](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/room-popup.jpg?v=2.2.0)
 
 **On the phone**
-![Phone](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/phone.jpg)
+![Phone](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/phone.jpg?v=2.2.0)
 
 **Setup wizard** — requirements, pages, layout, rooms, energy, design
-![Setup wizard](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/wizard.jpg)
+![Setup wizard](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/wizard.jpg?v=2.2.0)
 
 ## Features in detail
 
