@@ -36,13 +36,27 @@ Everything you can change right on the dashboard starts with **one tap on the bi
 - **Design, light/dark, glass** (clear ↔ frosted) and **power saving** — for *this* device, so the wall monitor and
   your phone can look different.
 - **Customize dashboard** (admins) — a panel that lists everything you can change; tap a feature to jump straight there
-  (or *Edit*). Then, right on the dashboard:
+  (or *Edit*). The first time, a short tour explains **tiles, groups and pages** (again any time via **?** in the edit bar).
+  Then, right on the dashboard:
   - **Drag tiles** where you want them. On a phone: hold a tile briefly, then drag — a normal swipe still scrolls.
-  - Switch to **Groups** to move **whole blocks** — energy, lights, calendar, cameras … — **on every page**, make them
-    wider or narrower (1–4 columns) or hide them.
-  - **Tap a group** for its settings: lights per room or as one tile, blinds and windows combined, temperature graphs,
+  - Every **group** has a **tab** on top: drag it to move the **whole block** — energy, lights, calendar, cameras … — **on every
+    page**; drag the **right edge** to make it wider or narrower (1–4 columns). Big cards like the **calendar** or the energy flow
+    can be moved and resized like tiles.
+  - **Arrange your pages:** drag a tile or a whole group onto a **tab at the bottom** to move it to that page. Tap the **current
+    tab** to rename it, pick an icon, move it left/right or hide it; **+** next to the tabs adds a **page of your own** (and brings
+    hidden ones back). New devices still sort themselves in automatically. On big screens, **Scrolls** warns you when a page no
+    longer fits without scrolling.
+  - **Tap a group's tab** for its settings: lights per room or as one tile, blinds and windows combined, temperature graphs,
     weather or music as a group of their own, cameras side by side. ⚙ holds the hint bar.
-  - **Tap a tile** to rename or hide it. **Drag its corner** to make it bigger or smaller (width and height).
+  - **Tap a tile** to rename or hide it — and to change what's behind it: **another device** (keeps place and size), what
+    **tapping** does (on/off, details, open a page), its **icon**, a **24 h graph** behind sensors, *"since …"*, **live view**
+    for cameras, *only while playing* for media cards, the **temperature sensor** or **main light** of a room, or **move it to
+    another group**. **Drag its corner** to make it bigger or smaller (width and height).
+  - **Groups:** rename them and pick an icon, choose **which media players, cameras and calendars** they show, set the **consumers
+    of the energy flow** (up to 6, with short names) — and create **groups of your own** (⋯ → *New group*, e.g. "Garden").
+  - **⋯ in the edit bar:** *select several tiles* (hide or move them together), *new group*, **phone / tablet preview** of the
+    page without grabbing your phone. **✨ New devices** lists devices added since last time that aren't on the dashboard yet —
+    one tap adds them to a group.
   - **＋ on every group** adds any entity as a tile — a light, a switch, a sensor, a camera …
   - **Show a group only when it matters:** someone is home, nobody is home, daytime, at night, in the morning, in the
     evening, *when active* (one of its devices is on or running), or only on large / small screens.
@@ -56,7 +70,7 @@ Everything you can change right on the dashboard starts with **one tap on the bi
   - ⚙ in the group view offers **templates**: *Wall display*, *Phone*, *Energy focus*, *Family*, *Minimal*. On a device
     with its own layout, a template only rearranges that device.
 
-![Edit tiles and groups](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/edit.jpg?v=2.3.0)
+![Edit tiles, groups and pages](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/edit.jpg?v=2.5.0)
 
 Everything can be undone in the setup wizard (*Edit dashboard*), which also holds the device choices (energy sensors,
 calendars, people, cameras, rooms) and the same **templates** as a one-click start (*step 3*).
