@@ -20,13 +20,13 @@ setup wizard. Works on your **phone** (HA app) and on a **Full HD wall monitor**
 | **Overview** | big clock with greeting, weather + next hours (tap = **rain radar**), energy flow, lights per room, room temperatures with 24 h graphs, blinds, people (optional map), locks, windows & doors, agenda, batteries & maintenance |
 | **Lights** | every lamp per room as a slider in its real colour, scenes, "all off" |
 | **Climate** | big temperature per room with a coloured 24 h curve, heating and air conditioning |
-| **Energy** | particle energy flow (solar, grid, battery, consumers), grid per phase, solar with forecast, power 24 h, monthly balance with costs |
+| **Energy** | particle energy flow (solar, grid, battery, consumers), grid per phase, solar with forecast, power 24 h, monthly balance with costs — browse past months or the whole year |
 | **Cameras**, **Calendar** | all cameras / calendars |
 | **Media** | what's playing right now (cover, progress, volume, source) + all players |
 | **Vacuum**, **Mower** | map, controls, battery, wear (only if you have one) |
 
-Plus room pop-ups, a background that follows the weather and an **aurora** that grows with your solar power. Pages
-without matching devices simply don't appear.
+Plus a **glass navigation dock** in your design colours, room pop-ups, a background that follows the weather and an
+**aurora** that grows with your solar power. Pages without matching devices simply don't appear.
 
 ## 👆 Tap the clock — make it yours
 
@@ -35,19 +35,31 @@ Everything you can change right on the dashboard starts with **one tap on the bi
 
 - **Design, light/dark, glass** (clear ↔ frosted) and **power saving** — for *this* device, so the wall monitor and
   your phone can look different.
-- **Edit tiles** (admins) — then, right on the dashboard:
+- **Customize dashboard** (admins) — a panel that lists everything you can change; tap a feature to jump straight there
+  (or *Edit*). Then, right on the dashboard:
   - **Drag tiles** where you want them. On a phone: hold a tile briefly, then drag — a normal swipe still scrolls.
   - Switch to **Groups** to move **whole blocks** — energy, lights, calendar, cameras … — **on every page**, make them
     wider or narrower (1–4 columns) or hide them.
   - **Tap a group** for its settings: lights per room or as one tile, blinds and windows combined, temperature graphs,
     weather or music as a group of their own, cameras side by side. ⚙ holds the hint bar.
-  - **Tap a tile** to rename or hide it.
-  - **Done** saves everything in one go, **Discard** undoes it.
+  - **Tap a tile** to rename or hide it. **Drag its corner** to make it bigger or smaller (width and height).
+  - **＋ on every group** adds any entity as a tile — a light, a switch, a sensor, a camera …
+  - **Show a group only when it matters:** someone is home, nobody is home, daytime, at night, in the morning, in the
+    evening, *when active* (one of its devices is on or running), or only on large / small screens.
+  - **📦 Devices without a room:** the most common reason a new dashboard looks empty. Drag a device onto a room tile
+    (or pick the room) — it is assigned in Home Assistant and shows up right away.
+  - **Layout per device type:** phone, tablet and large screen can each get their own arrangement of tiles and groups
+    (automatic by screen width, or set per device) — or all share one. Room order and hidden rooms stay shared.
+  - **Done** saves moves and sizes in one go, **Discard** drops them — and right after saving, **Undo** brings the
+    previous state back. Changes from a menu (rename, hide, add, settings) are saved at once; the edit bar then offers
+    **Undo** for the last one. The wizard keeps the last 8 versions (*step 9*).
+  - ⚙ in the group view offers **templates**: *Wall display*, *Phone*, *Energy focus*, *Family*, *Minimal*. On a device
+    with its own layout, a template only rearranges that device.
 
 ![Edit tiles and groups](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/edit.jpg?v=2.3.0)
 
 Everything can be undone in the setup wizard (*Edit dashboard*), which also holds the device choices (energy sensors,
-calendars, people, cameras, rooms).
+calendars, people, cameras, rooms) and the same **templates** as a one-click start (*step 3*).
 
 **Language:** follows your Home Assistant profile — English or German (other languages fall back to English).
 Room and device names come from your own setup.
@@ -93,6 +105,9 @@ wall monitor).
 
 - **Arrange the overview:** move groups (clock & weather, energy, cameras, lights, climate, blinds, home, agenda), hide
   them, and set each group's **width** (1–4 columns). A wider camera group = bigger live images, 1/2/3 per row.
+- **Monthly balance:** grid cost, savings and self-sufficiency per day; arrows go back to earlier months, *Year* shows one bar
+  per month (tap a month to open it). Past months are loaded once and remembered; after 5 minutes it returns to the current
+  month (wall displays). Costs of earlier periods use today's price.
 - **Energy flow:** solar, grid (per phase, netted like your meter), **home battery** (Anker Solix, Zendure, EcoFlow, …) with
   charge ring, up to 6 consumers + "other"; totals for today / week / month with grid cost and savings; solar forecast.
 - **Doorbell:** optional — when someone rings, the door camera opens full-size for 2 minutes on every page (Ring, Reolink,
@@ -105,7 +120,12 @@ wall monitor).
 - **Glass slider:** make all tiles clearer or more frosted — per device.
 - **Smart hints:** a bar that only appears when something needs you — windows open while it rains (or will soon),
   bins today/tomorrow (Waste Collection Schedule, a waste calendar or keywords like *Restmüll*, *Gelbe Tonne*, *recycling*),
-  low batteries, devices offline, updates, nobody home but lights on / door unlocked (with a one-tap *Off*). The **×** hides a
+  low batteries, devices offline, updates, nobody home but lights on / door unlocked (with a one-tap *Off*). Tapping *devices
+  offline* opens a list by integration with *offline since …*: **snooze** a device for a day or a week (for things that are off on
+  purpose), hide it for good, open it in Home Assistant or **reload its integration** — each with room, model, hub and entities
+  so you know exactly which device it is (this only mutes the offline hint, not its battery or other hints).
+  **Batteries & maintenance** works the same way: tap a battery to snooze or hide it; everything hidden stays listed under
+  *Hidden* with **Bring back**. Both use the same list, so a battery hidden in one is hidden in the other. The **×** hides a
   hint for single devices (e.g. one that always reports a low battery). At the top of the overview or floating above the
   navigation (wall displays).
 - **All lights as one tile** (optional, wizard → rooms → *Lights on the overview*: *Combined*): one tile with a bar per room in
@@ -124,7 +144,8 @@ wall monitor).
   or has "reduce motion" enabled — tapping *Auto* measures again.
 - **Every card on its own:** all Nullglow cards have a visual editor and suggest matching entities — *Add card* → search
   for "Nullglow" (energy flow, power 24 h, monthly balance, phase bars, mini graph behind any tile, hourly weather,
-  batteries & maintenance, rain radar, blinds, windows & doors, mower map/stats, design picker).
+  batteries & maintenance, hints, media, lights, rain radar, blinds, windows & doors, mower map/stats, design picker).
+  Tip for the hints card: `battery_exclude` (like `battery.exclude` of the batteries card) skips phones, watches etc.
 
 ## Requirements
 
@@ -146,8 +167,9 @@ The wizard checks all of this (including the Bubble Card version) and links anyt
 2. Open **Nullglow Dashboard** in HACS → **Download**.
 3. **Reload** your browser (Ctrl+F5; in the app: close it completely and reopen).
 4. **Settings → Dashboards → Add dashboard** → at the bottom under "Custom" pick **Nullglow**.
-5. The **setup wizard** opens with everything pre-filled: requirements, pages, overview layout, rooms/blinds/windows,
-   energy, design & extras (weather, people, cameras, doorbell, calendars, wall-monitor plug).
+5. The **setup wizard** opens with everything pre-filled, in ten steps: requirements, pages, overview layout (with
+   templates), rooms/blinds/windows, energy, design & extras (weather, people, cameras, doorbell, calendars, wall-monitor
+   plug), hints, what you edited on the tiles, versions, and tips for phone & wall display.
 6. **Save** → choose a name and icon → done.
 
 Change anything later via **⋮ → Edit dashboard** (opens the wizard again).
@@ -176,7 +198,8 @@ If the HA **Energy dashboard** is set up (including power sensors), the energy f
 - **Rain radar shows nothing:** it uses the German Weather Service (DWD) and covers Germany plus ~100 km around it.
 - **Want to tweak single tiles:** ⋮ → Edit dashboard → *Take control* turns it into a normal dashboard you can edit freely
   (it then no longer updates itself).
-- **Updates:** come through HACS; the dashboard rebuilds itself with the new features.
+- **Updates:** come through HACS; the dashboard rebuilds itself with the new features. Which version is loaded? The
+  browser console (F12) shows `NULLGLOW v…`.
 
 ## Support
 

@@ -3,6 +3,8 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
+window.__NULLGLOW_VERSION = "2.4.0";
+console.info("%c NULLGLOW %c v2.4.0 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -3505,7 +3507,7 @@ window.__NULLGLOW_THEMES = {
   ];
   const guessIcon = (txt) => (ICON_GUESS.find(([re]) => re.test(txt || "")) || [0, "mdi:power-plug"])[1];
   const NOISE = /\b(shelly\w*|plug\w*|steckdose|smart|switch|sonoff|tasmota|tapo|tplink|kasa|fritz\w*|[0-9a-f]{8,}|leistung|power|energie|energy)\b/gi;
-  // „Waschraum Shelly Waschmaschine1“ -> „Waschmaschine1“, „Schlafzimmer Bett Unterboden“ -> „Bett Unterboden“
+  // „Keller Steckdose Trockner“ -> „Trockner“, „Wohnzimmer Stehlampe Ecke“ -> „Stehlampe Ecke“
   const shortName = (n) => {
     const w = String(n || "").replace(/[_-]+/g, " ").replace(NOISE, " ").trim().split(/\s+/).filter(Boolean);
     if (!w.length) return "";
@@ -4452,7 +4454,9 @@ window.__NULLGLOW_THEMES = {
     "Verbrauch je Tag": "Consumption per day",
     "Solar selbst genutzt": "Solar self-used",
     "aus dem Netz": "from grid",
-    "kWh je Tag": "kWh per day",
+    "kWh je Tag": "kWh per day", "kWh je Monat · Monat antippen": "kWh per month · tap a month", "Verbrauch je Monat": "Consumption per month",
+    "Monat": "Month", "Jahr": "Year", "Jetzt": "Now", "Zurück": "Previous", "Weiter": "Next", "{y} bis heute": "{y} to date",
+    "Keine Daten für diesen Zeitraum": "No data for this period",
     "Nullglow Monat": "Nullglow Month",
     "Monatsbilanz je Tag mit Kosten und Autarkie": "Monthly balance per day with cost and self-sufficiency",
   };
@@ -4462,7 +4466,9 @@ window.__NULLGLOW_THEMES = {
   const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
   // Akzentfarbe des aktiven Designs (Theme-Token --rgb-ng-acc…), Rückfall Nullglow-Grün — für SVG-Attribute, wo var() nicht wirkt
   const accRgb = (el, v = "--rgb-ng-acc", d = "124, 255, 178") => (getComputedStyle(el).getPropertyValue(v).trim() || d);
-  const REFRESH = 15 * 60 * 1000;
+  const REFRESH = 15 * 60 * 1000, HOME_MS = 5 * 60 * 1000;
+  const curKey = () => { const n = new Date(); return `${n.getFullYear()}-${n.getMonth()}`; };
+  const esc = (x) => String(x ?? "").replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
   const STYLE = `
     :host { display: block; height: 100%; }
     .card { padding: 14px 14px 10px; border-radius: var(--ha-card-border-radius, 20px); box-sizing: border-box; height: 100%;
@@ -4470,8 +4476,21 @@ window.__NULLGLOW_THEMES = {
       box-shadow: var(--ha-card-box-shadow, inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .09));
       -webkit-backdrop-filter: var(--ha-card-backdrop-filter, none); backdrop-filter: var(--ha-card-backdrop-filter, none);
       display: flex; flex-direction: column; gap: 10px; }
-    .top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
-    .title { font-size: 15px; font-weight: 500; color: var(--ng-txt, #e8f5ee); }
+    .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin: -4px 0 -2px; }
+    .nav, .rt { display: flex; align-items: center; gap: 4px; min-width: 0; }
+    .rt { gap: 10px; }
+    .title { font-size: 15px; font-weight: 500; color: var(--ng-txt, #e8f5ee); min-width: 5.5em; text-align: center; white-space: nowrap; }
+    button { font: inherit; border: 0; margin: 0; cursor: pointer; color: var(--ng-txt, #e8f5ee); -webkit-tap-highlight-color: transparent; }
+    .ar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; padding: 0; background: transparent; --mdc-icon-size: 20px; }
+    .ar:hover { background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); }
+    .ar[disabled] { opacity: .25; cursor: default; background: transparent; }
+    .now { height: 24px; padding: 0 10px; border-radius: 999px; font-size: 11px; font-weight: 600; margin-left: 4px;
+      background: rgba(var(--rgb-ng-acc, 124, 255, 178), .14); color: var(--ng-acc, #7cffb2); }
+    .seg { display: inline-flex; padding: 2px; gap: 2px; border-radius: 999px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .06); }
+    .seg button { height: 26px; padding: 0 12px; border-radius: 999px; font-size: 11.5px; background: transparent; color: var(--ng-txt-dim, #93a79d); }
+    .seg button.on { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .18); color: var(--ng-acc, #7cffb2); font-weight: 600; }
+    .pick { cursor: pointer; }
+    .pick:hover { fill: rgba(var(--rgb-ng-txt, 255, 255, 255), .04); }
     .proj { font-size: 11px; color: var(--ng-txt-dim, #93a79d); white-space: nowrap; }
     .proj b { color: var(--ng-txt, #e8f5ee); font-weight: 500; font-family: var(--ha-font-family-code, 'JetBrains Mono', monospace); }
     .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
@@ -4487,6 +4506,7 @@ window.__NULLGLOW_THEMES = {
     .legend { display: flex; gap: 14px; font-size: 10px; color: var(--ng-txt-dim, #93a79d); }
     .legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
     .msg { font-size: 12px; color: var(--ng-txt-mute, #5f6f68); padding: 30px 0; text-align: center; }
+    .chart .msg { position: absolute; inset: 0; display: grid; place-items: center; padding: 0; }
   `;
   const num = (x, d = 0) => x.toLocaleString(numLoc(), { minimumFractionDigits: d, maximumFractionDigits: d });
   const dayKey = (d) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
@@ -4543,6 +4563,16 @@ window.__NULLGLOW_THEMES = {
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
       card.className = "card";
       card.innerHTML = `<div class="msg">${t("Monatsbilanz lädt …")}</div>`;
+      card.addEventListener("click", (e) => {
+        const b = e.composedPath().find((x) => x.dataset?.a || x.dataset?.m !== undefined);
+        if (!b || b.disabled) return;
+        if (b.dataset.m !== undefined && !b.dataset.a) this._act("pick", b.dataset.m);
+        else if (b.dataset.a === "mode") { if (!b.classList.contains("on")) this._act("mode", b.dataset.v); }
+        else this._act(b.dataset.a);
+      });
+      const n0 = new Date();
+      this._v = { mode: "month", y: n0.getFullYear(), m: n0.getMonth() };
+      this._cache = new Map(); this._at = 0;
       this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
       this.shadowRoot.appendChild(card);
       this._card = card;
@@ -4552,92 +4582,152 @@ window.__NULLGLOW_THEMES = {
 
     set hass(h) {
       this._hass = h; ngH = h;
-      if (!this._at || Date.now() - this._at > REFRESH) this._fetch();
+      if (!this._at || Date.now() - this._at > REFRESH) { this._at = Date.now(); this._drop(curKey()); this._show(); }
     }
+    disconnectedCallback() { clearTimeout(this._home); }
 
     getCardSize() { return 6; }
     getGridOptions() { return { columns: 12, rows: "auto" }; }
 
-    async _fetch() {
-      if (!this._hass?.callWS || this._loading) return;
-      this._loading = true; this._at = Date.now();
-      const c = this._cfg;
-      try {
-        const start = new Date(); start.setHours(0, 0, 0, 0); start.setDate(1);
-        const [pw, so] = await Promise.all([
-          this._hass.callWS({ type: "recorder/statistics_during_period", start_time: start.toISOString(),
-            statistic_ids: c.grid, period: "hour", types: ["mean"] }),
-          this._hass.callWS({ type: "recorder/statistics_during_period", start_time: start.toISOString(),
-            statistic_ids: [c.solar], period: "hour", types: ["change"] }),
-        ]);
-        const days = new Map();
-        const get = (t) => { const k = dayKey(new Date(t)); if (!days.has(k)) days.set(k, { imp: 0, exp: 0, solar: 0 }); return days.get(k); };
-        const net = new Map(); // Stunde -> Summe der Phasen (W)
-        for (const id of c.grid) for (const p of pw[id] || []) net.set(p.start, (net.get(p.start) || 0) + (p.mean || 0));
-        for (const [t, w] of net) { const d = get(t); if (w > 0) d.imp += w / 1000; else d.exp -= w / 1000; }
-        for (const p of so[c.solar] || []) get(p.start).solar += Math.max(0, p.change || 0);
-        this._days = days;
-      } catch (e) {
-        this._days = null; this._err = true;
+    // ---- Daten: je Monat Tageswerte { imp, exp, solar } (kWh); abgeschlossene Monate bleiben im Speicher + Browser ----
+    _lsKey(k) { return `nullglow-month:${[this._cfg.solar, ...this._cfg.grid].join(",")}:${k}`; }
+    _drop(k) { this._cache.delete(k); }
+    async _month(y, m) {
+      const k = `${y}-${m}`, now = new Date(), past = new Date(y, m + 1, 1) <= new Date(now.getFullYear(), now.getMonth(), 1);
+      if (this._cache.has(k)) return this._cache.get(k);
+      if (past) {   // fertiger Monat: ändert sich nicht mehr
+        try { const v = JSON.parse(localStorage.getItem(this._lsKey(k)) || "null"); if (v) { const d = new Map(v); this._cache.set(k, d); return d; } } catch (e) { /* privat */ }
       }
-      this._loading = false;
+      if (new Date(y, m, 1) > now) { const d = new Map(); this._cache.set(k, d); return d; }   // Zukunft
+      const c = this._cfg, st = new Date(y, m, 1), en = new Date(y, m + 1, 1);
+      const q = (ids, types) => this._hass.callWS({ type: "recorder/statistics_during_period", start_time: st.toISOString(), end_time: en.toISOString(),
+        statistic_ids: ids, period: "hour", types });
+      const job = (async () => {
+        const [pw, so] = await Promise.all([q(c.grid, ["mean"]), q([c.solar], ["change"])]);
+        const days = new Map();
+        const get = (t) => { const k2 = dayKey(new Date(t)); if (!days.has(k2)) days.set(k2, { imp: 0, exp: 0, solar: 0 }); return days.get(k2); };
+        const net = new Map(); // Stunde -> Summe der Phasen (W), saldiert wie der Zähler
+        for (const id of c.grid) for (const p of pw[id] || []) net.set(p.start, (net.get(p.start) || 0) + (p.mean || 0));
+        for (const [t0, w] of net) { const d = get(t0); if (w > 0) d.imp += w / 1000; else d.exp -= w / 1000; }
+        for (const p of so[c.solar] || []) get(p.start).solar += Math.max(0, p.change || 0);
+        if (past) try { localStorage.setItem(this._lsKey(k), JSON.stringify([...days])); } catch (e) { /* voll/privat */ }
+        return days;
+      })();
+      this._cache.set(k, job);
+      try { const d = await job; this._cache.set(k, d); return d; } catch (e) { this._cache.delete(k); throw e; }
+    }
+    // Monatssumme wie in der Monatsansicht (Autarkie aus den Summen)
+    _sum(days, y, m) {
+      let imp = 0, exp = 0, solar = 0, n = 0;
+      for (const [k, d] of days) { const [yy, mm] = k.split("-").map(Number); if (yy !== y || mm !== m) continue; imp += d.imp; exp += d.exp; solar += d.solar; n++; }
+      const used = Math.max(0, solar + imp - exp), self = Math.max(0, Math.min(solar - exp, used));
+      return { imp, exp, solar, used, self, n };
+    }
+    async _show() {
+      if (!this._hass?.callWS) return;
+      const v = this._v, tok = (this._tok = (this._tok || 0) + 1);
+      try {
+        if (v.mode === "year") {
+          const ms = await Promise.all([...Array(12).keys()].map((m) => this._month(v.y, m)));
+          if (tok !== this._tok) return;
+          this._data = { mode: "year", y: v.y, months: ms.map((d, m) => this._sum(d, v.y, m)) };
+        } else {
+          const d = await this._month(v.y, v.m);
+          if (tok !== this._tok) return;
+          this._data = { mode: "month", y: v.y, m: v.m, days: d };
+        }
+        this._err = false;
+      } catch (e) { if (tok === this._tok) { this._err = true; this._data = null; } }
       this._render();
     }
+    // Bedienung: Pfeile, Monat/Jahr, Monat im Jahr antippen, „Jetzt“ — nach 5 Min ohne Bedienung zurück zum laufenden Monat
+    _act(a, arg) {
+      const v = this._v, now = new Date();
+      if (a === "prev" || a === "next") {
+        const d = a === "prev" ? -1 : 1;
+        if (v.mode === "year") v.y += d; else { const t2 = new Date(v.y, v.m + d, 1); v.y = t2.getFullYear(); v.m = t2.getMonth(); }
+      } else if (a === "mode") { v.mode = arg; if (arg === "month" && v.y === now.getFullYear() && v.m > now.getMonth()) v.m = now.getMonth(); }
+      else if (a === "pick") { v.mode = "month"; v.m = +arg; }
+      else if (a === "now") { Object.assign(v, { mode: "month", y: now.getFullYear(), m: now.getMonth() }); }
+      clearTimeout(this._home);
+      if (!this._isNow()) this._home = setTimeout(() => { Object.assign(this._v, { mode: "month", y: new Date().getFullYear(), m: new Date().getMonth() }); this._show(); }, HOME_MS);
+      this._show();
+    }
+    _isNow() { const v = this._v, n = new Date(); return v.mode === "month" && v.y === n.getFullYear() && v.m === n.getMonth(); }
 
     _render() {
-      if (!this._card || !this._days) return;
-      const A = accRgb(this);
-      const c = this._cfg, now = new Date();
-      const nDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      if (!this._card) return;
+      if (!this._data) { if (this._err) { this._card.innerHTML = `<div class="msg">${t("Keine Daten für diesen Zeitraum")}</div>`; this._html = null; } return; }
+      const A = accRgb(this), c = this._cfg, now = new Date(), D = this._data, v = this._v, year = D.mode === "year";
+      const curM = D.y === now.getFullYear() && !year && D.m === now.getMonth(), curY = D.y === now.getFullYear();
       const rows = [];
-      let imp = 0, exp = 0, solar = 0;
-      for (let i = 1; i <= nDays; i++) {
-        const d = this._days.get(dayKey(new Date(now.getFullYear(), now.getMonth(), i))) || null;
-        if (d) { imp += d.imp; exp += d.exp; solar += d.solar; }
-        const used = d ? Math.max(0, d.solar + d.imp - d.exp) : 0;
-        const self = d ? Math.max(0, Math.min(d.solar - d.exp, used)) : 0;
-        rows.push({ i, used, self, future: i > now.getDate() });
+      let tot;
+      if (year) {
+        D.months.forEach((x, m) => rows.push({ i: m + 1, used: x.used, self: x.self, future: curY && m > now.getMonth() || D.y > now.getFullYear(), today: curY && m === now.getMonth(), has: x.n > 0 }));
+        tot = D.months.reduce((a, x) => ({ imp: a.imp + x.imp, self: a.self + x.self, used: a.used + x.used }), { imp: 0, self: 0, used: 0 });
+      } else {
+        const nDays = new Date(D.y, D.m + 1, 0).getDate();
+        for (let i = 1; i <= nDays; i++) {
+          const d = D.days.get(dayKey(new Date(D.y, D.m, i))) || null;
+          const used = d ? Math.max(0, d.solar + d.imp - d.exp) : 0;
+          const self = d ? Math.max(0, Math.min(d.solar - d.exp, used)) : 0;
+          rows.push({ i, used, self, future: curM ? i > now.getDate() : new Date(D.y, D.m, i) > now, today: curM && i === now.getDate(), has: !!d });
+        }
+        tot = this._sum(D.days, D.y, D.m);
       }
-      const usedM = Math.max(0, solar + imp - exp), selfM = Math.max(0, Math.min(solar - exp, usedM));
-      const cost = imp * c.price, saved = selfM * c.price, aut = usedM > 0 ? selfM / usedM : 0;
-      const elapsed = (now.getDate() - 1) + (now.getHours() * 60 + now.getMinutes()) / 1440;
-      const proj = elapsed > 0.5 ? cost / elapsed * nDays : null;
-      const month = now.toLocaleString(numLoc(), { month: "long" });
+      const n = rows.length, empty = !rows.some((r) => r.has);
+      const cost = tot.imp * c.price, saved = tot.self * c.price, aut = tot.used > 0 ? tot.self / tot.used : 0;
+      let proj = null;
+      if (curM) {   // Hochrechnung nur für den laufenden Monat
+        const elapsed = (now.getDate() - 1) + (now.getHours() * 60 + now.getMinutes()) / 1440;
+        proj = elapsed > 0.5 ? cost / elapsed * n : null;
+      }
+      const title = year ? (curY ? t("{y} bis heute", { y: D.y }) : String(D.y))
+        : new Date(D.y, D.m, 1).toLocaleString(numLoc(), { month: "long", ...(D.y !== now.getFullYear() ? { year: "numeric" } : {}) });
+      const nextOff = year ? D.y >= now.getFullYear() : curM || new Date(D.y, D.m + 1, 1) > now;
 
       // Balken (SVG in Kartengröße)
       const box = this._card.querySelector(".chart");
       const W = box ? box.clientWidth : 300, H = box ? box.clientHeight : 140;
-      const pad = { l: 26, r: 4, t: 6, b: 16 };
+      const pad = { l: 30, r: 4, t: 6, b: 16 };
       const maxU = Math.max(1, ...rows.map((r) => r.used));
       const step = Math.pow(10, Math.floor(Math.log10(maxU))); const top = Math.ceil(maxU / step) * step;
-      const cw = (W - pad.l - pad.r) / nDays, bw = Math.max(2, cw * 0.62);
-      const y = (v) => pad.t + (1 - v / top) * (H - pad.t - pad.b);
+      const cw = (W - pad.l - pad.r) / n, bw = Math.max(2, cw * (year ? 0.56 : 0.62));
+      const y = (val) => pad.t + (1 - val / top) * (H - pad.t - pad.b);
       let bars = "";
       for (const r of rows) {
         const x = pad.l + (r.i - 1) * cw + (cw - bw) / 2;
-        if (r.future) { bars += `<rect x="${x.toFixed(1)}" y="${(H - pad.b - 2).toFixed(1)}" width="${bw.toFixed(1)}" height="2" rx="1" style="fill:rgba(var(--rgb-ng-txt, 255, 255, 255), .06)"/>`; continue; }
+        if (year && !r.future) bars += `<rect class="pick" data-m="${r.i - 1}" x="${(pad.l + (r.i - 1) * cw).toFixed(1)}" y="${pad.t}" width="${cw.toFixed(1)}" height="${(H - pad.t).toFixed(1)}" fill="transparent"/>`;
+        if (r.future || !r.has) { bars += `<rect x="${x.toFixed(1)}" y="${(H - pad.b - 2).toFixed(1)}" width="${bw.toFixed(1)}" height="2" rx="1" style="fill:rgba(var(--rgb-ng-txt, 255, 255, 255), .06);pointer-events:none"/>`; continue; }
         const yU = y(r.used), yS = y(r.self);
-        bars += `<rect x="${x.toFixed(1)}" y="${yU.toFixed(1)}" width="${bw.toFixed(1)}" height="${(y(0) - yU).toFixed(1)}" rx="2" style="fill:rgba(var(--rgb-ng-txt, 232, 245, 238), .22)"/>`;
-        if (r.self > 0.01) bars += `<rect x="${x.toFixed(1)}" y="${yS.toFixed(1)}" width="${bw.toFixed(1)}" height="${(y(0) - yS).toFixed(1)}" rx="2" fill="rgba(${A},.85)"/>`;
-        if (r.i === now.getDate()) bars += `<rect x="${(x - 2).toFixed(1)}" y="${(yU - 3).toFixed(1)}" width="${(bw + 4).toFixed(1)}" height="${(y(0) - yU + 3).toFixed(1)}" rx="3" fill="none" stroke="rgba(${A},.6)" stroke-width="1"/>`;
+        bars += `<rect x="${x.toFixed(1)}" y="${yU.toFixed(1)}" width="${bw.toFixed(1)}" height="${(y(0) - yU).toFixed(1)}" rx="2" style="fill:rgba(var(--rgb-ng-txt, 232, 245, 238), .22);pointer-events:none"/>`;
+        if (r.self > 0.01) bars += `<rect x="${x.toFixed(1)}" y="${yS.toFixed(1)}" width="${bw.toFixed(1)}" height="${(y(0) - yS).toFixed(1)}" rx="2" fill="rgba(${A},.85)" style="pointer-events:none"/>`;
+        if (r.today) bars += `<rect x="${(x - 2).toFixed(1)}" y="${(yU - 3).toFixed(1)}" width="${(bw + 4).toFixed(1)}" height="${(y(0) - yU + 3).toFixed(1)}" rx="3" fill="none" stroke="rgba(${A},.6)" stroke-width="1" style="pointer-events:none"/>`;
       }
+      const lab = `font-size="9" style="fill:var(--ng-txt-dim, #93a79d)" font-family="JetBrains Mono, monospace"`;
       let axis = `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(0)}" y2="${y(0)}" style="stroke:rgba(var(--rgb-ng-txt, 255, 255, 255), .12)"/>`;
-      for (const v of [top / 2, top]) axis += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(v)}" y2="${y(v)}" style="stroke:rgba(var(--rgb-ng-txt, 255, 255, 255), .05)" stroke-dasharray="2 3"/>`
-        + `<text x="${pad.l - 4}" y="${y(v) + 3}" text-anchor="end" font-size="9" fill="rgba(147,167,157,.9)" font-family="JetBrains Mono, monospace">${num(v)}</text>`;
-      for (const dd of [1, 8, 15, 22, 29].filter((q) => q <= nDays))
-        axis += `<text x="${pad.l + (dd - 0.5) * cw}" y="${H - 3}" text-anchor="middle" font-size="9" fill="rgba(147,167,157,.9)" font-family="JetBrains Mono, monospace">${dd}${ngLang() === "de" ? "." : ""}</text>`;
+      for (const val of [top / 2, top]) axis += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y(val)}" y2="${y(val)}" style="stroke:rgba(var(--rgb-ng-txt, 255, 255, 255), .05)" stroke-dasharray="2 3"/>`
+        + `<text x="${pad.l - 4}" y="${y(val) + 3}" text-anchor="end" ${lab}>${num(val)}</text>`;
+      if (year) for (let m = 0; m < 12; m++)
+        axis += `<text x="${pad.l + (m + 0.5) * cw}" y="${H - 3}" text-anchor="middle" ${lab}>${new Date(2000, m, 1).toLocaleString(numLoc(), { month: W < 420 ? "narrow" : "short" }).replace(".", "")}</text>`;
+      else for (const dd of [1, 8, 15, 22, 29].filter((q) => q <= n))
+        axis += `<text x="${pad.l + (dd - 0.5) * cw}" y="${H - 3}" text-anchor="middle" ${lab}>${dd}${ngLang() === "de" ? "." : ""}</text>`;
 
       const html = `
-        <div class="top"><span class="title">${month}</span>
-          ${proj !== null ? `<span class="proj">${t("bis Monatsende ≈ {x} Netz", { x: `<b>${num(proj)} €</b>` })}</span>` : ""}</div>
+        <div class="top"><span class="nav"><button class="ar" data-a="prev" title="${t("Zurück")}"><ha-icon icon="mdi:chevron-left"></ha-icon></button>
+            <span class="title">${esc(title)}</span>
+            <button class="ar" data-a="next" title="${t("Weiter")}"${nextOff ? " disabled" : ""}><ha-icon icon="mdi:chevron-right"></ha-icon></button>
+            ${this._isNow() ? "" : `<button class="now" data-a="now">${t("Jetzt")}</button>`}</span>
+          <span class="rt">${proj !== null ? `<span class="proj">${t("bis Monatsende ≈ {x} Netz", { x: `<b>${num(proj)} €</b>` })}</span>` : ""}
+            <span class="seg"><button data-a="mode" data-v="month" class="${year ? "" : "on"}">${t("Monat")}</button><button data-a="mode" data-v="year" class="${year ? "on" : ""}">${t("Jahr")}</button></span></span></div>
         <div class="kpis">
           <div class="kpi"><span class="v">${num(cost, 2)}<small>€</small></span><span class="l">${t("Netzkosten")}</span></div>
           <div class="kpi"><span class="v acc">${num(saved, 2)}<small>€</small></span><span class="l">${t("gespart")}</span></div>
           <div class="kpi"><span class="v acc">${num(aut * 100)}<small>%</small></span><span class="l">${t("Autarkie")}</span></div>
         </div>
-        <div class="chart"><svg viewBox="0 0 ${W} ${H}" aria-label="${t("Verbrauch je Tag")}">${axis}${bars}</svg></div>
+        <div class="chart">${empty ? `<div class="msg">${t("Keine Daten für diesen Zeitraum")}</div>` : ""}<svg viewBox="0 0 ${W} ${H}" aria-label="${t(year ? "Verbrauch je Monat" : "Verbrauch je Tag")}">${axis}${bars}</svg></div>
         <div class="legend"><span><i style="background:rgba(${A},.85)"></i>${t("Solar selbst genutzt")}</span>
-          <span><i style="background:rgba(var(--rgb-ng-txt, 232, 245, 238), .22)"></i>${t("aus dem Netz")}</span><span>${t("kWh je Tag")}</span></div>`;
+          <span><i style="background:rgba(var(--rgb-ng-txt, 232, 245, 238), .22)"></i>${t("aus dem Netz")}</span><span>${t(year ? "kWh je Monat · Monat antippen" : "kWh je Tag")}</span></div>`;
       if (this._html !== html) { this._card.innerHTML = html; this._html = html; if (!box) requestAnimationFrame(() => this._render()); }
     }
   }
@@ -5081,6 +5171,8 @@ window.__NULLGLOW_THEMES = {
     "Braucht Aufmerksamkeit": "Needs attention", "Batterien": "Batteries", "keine": "none", "Verschleiß": "Wear",
     "Nicht erreichbar": "Unavailable", "alle Geräte erreichbar": "all devices reachable",
     "Batterien, Verschleiß, nicht erreichbare Geräte": "Batteries, wear, unavailable devices",
+    "Details": "Details", "1 Tag": "1 day", "1 Woche": "1 week", "Immer ausblenden": "Hide for good", "Ausgeblendet ({n})": "Hidden ({n})",
+    "Zurückholen": "Bring back", "immer": "for good", "bis {d}": "until {d}", "kein Raum": "no room", "schwach": "low",
   };
   let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
   const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
@@ -5103,14 +5195,15 @@ window.__NULLGLOW_THEMES = {
     .sum .p { font-size: 14px; font-weight: 600; color: var(--ng-txt, #e8f5ee); white-space: nowrap; }
     .sum .cnt { display: inline-block; margin-left: 7px; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 600;
       vertical-align: 1px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); }
-    .lvl-warn .cnt { background: rgba(255,209,102,.18); color: var(--ng-warn, #ffd166); }
-    .lvl-crit .cnt { background: rgba(255,107,107,.18); color: var(--ng-danger, #ff6b6b); }
+    .lvl-warn .cnt { background: rgba(var(--rgb-ng-warn, 255, 209, 102), .18); color: var(--ng-warn, #ffd166); }
+    .lvl-crit .cnt { background: rgba(var(--rgb-ng-danger, 255, 107, 107), .18); color: var(--ng-danger, #ff6b6b); }
     .sum .s { font-size: 12px; color: var(--ng-txt-dim, #93a79d); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .lvl-ok .ic { color: var(--ng-acc, #7cffb2); background: rgba(var(--rgb-ng-acc, 124, 255, 178), .10); }
-    .lvl-warn .ic { color: var(--ng-warn, #ffd166); background: rgba(255,209,102,.12); }
-    .lvl-crit .ic { color: var(--ng-danger, #ff6b6b); background: rgba(255,107,107,.13); animation: ngpulse 1.8s ease-in-out infinite; }
-    .card.lvl-warn { box-shadow: inset 0 0 0 1px rgba(255,209,102,.35), 0 0 22px -10px rgba(255,209,102,.6); }
-    .card.lvl-crit { box-shadow: inset 0 0 0 1px rgba(255,107,107,.40), 0 0 24px -10px rgba(255,107,107,.7); }
+    .lvl-warn .ic { color: var(--ng-warn, #ffd166); background: rgba(var(--rgb-ng-warn, 255, 209, 102), .12); }
+    .lvl-crit .ic { color: var(--ng-danger, #ff6b6b); background: rgba(var(--rgb-ng-danger, 255, 107, 107), .13); animation: ngpulse 1.8s ease-in-out infinite; }
+    .card.eco .ic { animation: none; }   /* Stromsparmodus: kein Dauer-Pulsieren */
+    .card.lvl-warn { box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-warn, 255, 209, 102), .35), 0 0 22px -10px rgba(var(--rgb-ng-warn, 255, 209, 102), calc(.6 * var(--ng-glow-k, 1))); }
+    .card.lvl-crit { box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-danger, 255, 107, 107), .40), 0 0 24px -10px rgba(var(--rgb-ng-danger, 255, 107, 107), calc(.7 * var(--ng-glow-k, 1))); }
     @keyframes ngpulse { 50% { opacity: .55; } }
     /* ---- full ---- */
     .full { padding: 16px 18px; display: flex; flex-direction: column; gap: 16px; }
@@ -5120,11 +5213,22 @@ window.__NULLGLOW_THEMES = {
     .hero .s { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ng-txt-dim, #93a79d); margin-top: 2px; }
     .grp h3 { margin: 0 0 8px; font-size: 10px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
       color: var(--ng-txt-mute, #5f6f68); font-family: var(--ha-font-family-code, 'JetBrains Mono', monospace); }
-    .rows { display: grid; grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr)); gap: 6px 22px; }
+    .rows { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 6px 22px; }
+    .rows .cell { min-width: 0; }
     .row { display: grid; grid-template-columns: 20px minmax(0, 1fr) 90px 64px; align-items: center; gap: 10px; padding: 6px 0;
       cursor: pointer; -webkit-tap-highlight-color: transparent; border-bottom: 1px solid rgba(var(--rgb-ng-txt, 255, 255, 255), .04); }
     .row ha-icon { --mdc-icon-size: 18px; color: var(--ng-txt-dim, #93a79d); }
-    .row .n { font-size: 13px; color: var(--ng-txt, #e8f5ee); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .row .n { font-size: 13px; color: var(--ng-txt, #e8f5ee); min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+    .row .n b { font-weight: 500; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+    .row .n small { font-size: 11px; color: var(--ng-txt-dim, #93a79d); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .row.open { background: rgba(var(--rgb-ng-txt, 255, 255, 255), .04); border-radius: 12px; }
+    .acts { display: flex; flex-wrap: wrap; gap: 6px; padding: 2px 0 10px 30px; }
+    .acts button, .hl button { font: inherit; border: 0; cursor: pointer; height: 30px; padding: 0 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600;
+      background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); color: var(--ng-txt, #e8f5ee); }
+    .acts button:hover, .hl button:hover { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .18); color: var(--ng-acc, #7cffb2); }
+    .grp h3.tg { cursor: pointer; } .grp h3.tg:hover { color: var(--ng-txt-dim, #93a79d); }
+    .hl { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(var(--rgb-ng-txt, 255, 255, 255), .04); }
+    .hl .n { flex: 1; min-width: 0; font-size: 13px; color: var(--ng-txt-dim, #93a79d); } .hl .n small { display: block; font-size: 11px; }
     .row .v { font-size: 12px; color: var(--ng-txt-dim, #93a79d); text-align: right; white-space: nowrap; }
     .track { height: 6px; border-radius: 999px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .06); overflow: hidden; }
     .fill { height: 100%; border-radius: 999px; transition: width .5s cubic-bezier(.22,1,.36,1); }
@@ -5133,7 +5237,7 @@ window.__NULLGLOW_THEMES = {
     .row.na .n, .row.na .v { color: var(--ng-txt-mute, #5f6f68); }
     .chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; font-size: 12px;
-      background: rgba(255,107,107,.08); color: var(--ng-txt, #e8f5ee); box-shadow: inset 0 0 0 1px rgba(255,107,107,.30);
+      background: rgba(var(--rgb-ng-danger, 255, 107, 107), .08); color: var(--ng-txt, #e8f5ee); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-danger, 255, 107, 107), .30);
       cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .chip ha-icon { --mdc-icon-size: 16px; color: var(--ng-danger, #ff6b6b); }
     .none { font-size: 12px; color: var(--ng-txt-mute, #5f6f68); }
@@ -5144,7 +5248,12 @@ window.__NULLGLOW_THEMES = {
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const batIcon = (v) => (v == null ? "mdi:battery-unknown" : v <= 10 ? "mdi:battery-alert-variant-outline"
     : `mdi:battery-${Math.min(90, Math.max(10, Math.round(v / 10) * 10))}`.replace("battery-100", "battery"));
+  const slug = (s) => String(s || "").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
   const cleanName = (n) => String(n || "").replace(/\s*(Batterie|Battery( level)?|Akku)$/i, "").trim();
+  const normDash = (d) => String(d || location.pathname.split("/")[1] || "lovelace").replace(/^\/+|\/+$/g, "").split("/")[0] || "lovelace";
+  const ignKey = (d) => `nullglow-hints-ignore:${normDash(d)}`, snKey = (d) => `nullglow-hints-snooze:${normDash(d)}`;
+  const rdJ = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k) || "null"); return v ?? def; } catch (e) { return def; } };
+  const wrJ = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* gesperrt */ } };
 
   class NullglowCareCard extends HTMLElement {
     // ── Editor (tools/add-card-editors.py) ──
@@ -5216,6 +5325,9 @@ window.__NULLGLOW_THEMES = {
     setConfig(config) {
       this._cfg = { mode: "full", tap_hash: "#wartung", ...config };
       this._bat = { warn: 30, crit: 15, exclude: [], names: {}, ...(config.battery || {}) };
+      this._ex = [].concat(this._bat.exclude || []).map((x) => { try { return new RegExp(x, "i"); } catch (e) { return null; } }).filter(Boolean);
+      this._labs = new Set([].concat(config.ignore_labels?.length ? config.ignore_labels : ["no_hints"]).flatMap((l) => [String(l), slug(l)]));
+      this._key = null;
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
       this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
@@ -5224,9 +5336,51 @@ window.__NULLGLOW_THEMES = {
       this._card = card;
       card.addEventListener("click", (e) => {
         if (this._cfg.mode === "summary") { this._nav(this._cfg.tap_hash); return; }
-        const t = e.composedPath().find((n) => n.dataset && n.dataset.entity);
-        if (t) this._more(t.dataset.entity);
+        const el = e.composedPath().find((n) => n.dataset && (n.dataset.act || n.dataset.entity));
+        if (!el) return;
+        const id = el.dataset.entity || el.closest?.("[data-entity]")?.dataset.entity, DAY = 864e5;
+        switch (el.dataset.act) {
+          case "row": this._open = this._open === id ? null : id; break;   // Aktionen auf- und zuklappen
+          case "more": this._more(id); return;
+          case "s1": this._snooze(id, DAY); break;
+          case "s7": this._snooze(id, 7 * DAY); break;
+          case "ign": this._hide(id); break;
+          case "back": this._back(id); break;
+          case "hid": this._hidOpen = !this._hidOpen; break;
+          default: if (!el.dataset.act && id) this._more(id); return;
+        }
+        this._update(true);
       });
+      if (this._hass) this._update(true);
+    }
+    connectedCallback() {
+      if (!this._onIgn) this._onIgn = () => this._update(true);
+      window.addEventListener("nullglow-hint-ignore", this._onIgn);
+    }
+    disconnectedCallback() { window.removeEventListener("nullglow-hint-ignore", this._onIgn); clearTimeout(this._tm); this._tm = null; }
+
+    // ---- Ausblenden / zurückstellen (gleiche Listen wie die Hinweis-Karte) ----
+    _dash() { return normDash(this._cfg.dashboard); }
+    _snooze(id, ms) { const sn = rdJ(snKey(this._dash()), {}); sn[id] = Date.now() + ms; wrJ(snKey(this._dash()), sn); this._open = null; this._tell([]); }
+    _hide(id) {
+      const l = rdJ(ignKey(this._dash()), []); if (!l.includes(id)) l.push(id); wrJ(ignKey(this._dash()), l); this._open = null;
+      this._tell([id]);   // Vorlage speichert es dauerhaft (hints.ignore)
+    }
+    _back(id) {
+      wrJ(ignKey(this._dash()), rdJ(ignKey(this._dash()), []).filter((x) => x !== id));
+      const sn = rdJ(snKey(this._dash()), {}); delete sn[id]; wrJ(snKey(this._dash()), sn);
+      if ((this._cfg.ignore || []).includes(id))   // dauerhaft in der Dashboard-Einstellung -> Vorlage nimmt es heraus
+        this.dispatchEvent(new CustomEvent("nullglow-hint-unignore", { detail: { entities: [id], dashboard: this._dash() }, bubbles: true, composed: true }));
+      this._tell([]);
+    }
+    _tell(ids) {   // andere Karten (Hinweise) neu auswerten lassen; mit ids: dauerhaft speichern (erreicht über bubbles/composed auch window)
+      (this.isConnected ? this : window).dispatchEvent(new CustomEvent("nullglow-hint-ignore", { detail: { entities: ids, dashboard: this._dash() }, bubbles: true, composed: true }));
+    }
+    _hiddenMap() {   // id -> Zeitpunkt (zurückgestellt) oder 0 (immer)
+      const now = Date.now(), m = new Map();
+      [...(this._cfg.ignore || []), ...rdJ(ignKey(this._dash()), [])].forEach((id) => m.set(id, 0));
+      Object.entries(rdJ(snKey(this._dash()), {})).forEach(([id, until]) => { if (until > now && !m.has(id)) m.set(id, until); });
+      return m;
     }
 
     _nav(path) {
@@ -5241,17 +5395,27 @@ window.__NULLGLOW_THEMES = {
 
     // ---- Daten sammeln ----
     _collect(h) {
-      const S = h.states, b = this._bat;
-      const ex = (b.exclude || []).map((x) => new RegExp(x, "i"));
-      const bats = [];
+      const S = h.states, b = this._bat, E = h.entities || {}, D = h.devices || {}, A = h.areas || {};
+      const ex = this._ex || [], labs = this._labs || new Set();
+      const bats = [], hidden = [], hm = this._hiddenMap();
       for (const s of Object.values(S)) {
-        if (!s.entity_id.startsWith("sensor.") || s.attributes.device_class !== "battery") continue;
+        if (s.attributes.device_class !== "battery") continue;
+        const bin = s.entity_id.startsWith("binary_sensor.");
+        if (!bin && !s.entity_id.startsWith("sensor.")) continue;
         if (ex.some((r) => r.test(s.entity_id))) continue;
-        const raw = parseFloat(s.state), na = BAD.includes(s.state) || !isFinite(raw);
-        const v = na ? null : Math.round(raw);
-        const lvl = na ? "warn" : v <= b.crit ? "crit" : v <= b.warn ? "warn" : "ok";
-        bats.push({ entity: s.entity_id, name: b.names[s.entity_id] || cleanName(s.attributes.friendly_name), v, na, lvl });
+        const e = E[s.entity_id], dev = e?.device_id && D[e.device_id], aid = e?.area_id || dev?.area_id;
+        if (e?.hidden || [...(e?.labels || []), ...((dev && dev.labels) || [])].some((l) => labs.has(l) || labs.has(slug(l)))) continue;
+        const raw = parseFloat(s.state), na = BAD.includes(s.state) || (!bin && !isFinite(raw));
+        const v = na || bin ? null : Math.round(raw);
+        // binary_sensor: an = schwach (ohne Prozent)
+        const lvl = na ? "warn" : bin ? (s.state === "on" ? "warn" : "ok") : v <= b.crit ? "crit" : v <= b.warn ? "warn" : "ok";
+        // lesbarer Name: Gerät (statt technischer Entität), darunter Raum + Modell
+        const name = b.names[s.entity_id] || (dev ? dev.name_by_user || dev.name : "") || cleanName(s.attributes.friendly_name);
+        const room = aid ? A[aid]?.name || "" : "", model = dev ? [dev.manufacturer, dev.model].filter(Boolean).join(" ") : "";
+        const item = { entity: s.entity_id, name, room, model, v, na, lvl, bin };
+        if (hm.has(s.entity_id)) hidden.push({ ...item, until: hm.get(s.entity_id) }); else bats.push(item);
       }
+      hidden.sort((x, y) => x.name.localeCompare(y.name));
       // Reihenfolge: rot, gelb, offline, ok — innerhalb nach Ladestand
       const ord = (x) => (x.lvl === "crit" ? 0 : x.na ? 2 : x.lvl === "warn" ? 1 : 3);
       bats.sort((x, y) => ord(x) - ord(y) || (x.v ?? 0) - (y.v ?? 0));
@@ -5274,12 +5438,12 @@ window.__NULLGLOW_THEMES = {
       const low = bats.filter((x) => x.lvl !== "ok"), worn = wear.filter((x) => x.lvl !== "ok");
       const crit = bats.some((x) => x.lvl === "crit") || wear.some((x) => x.lvl === "crit");
       const lvl = crit ? "crit" : low.length || worn.length || off.length ? "warn" : "ok";
-      return { bats, wear, off, low, worn, lvl };
+      return { bats, wear, off, low, worn, lvl, hidden };
     }
 
     _summaryText(d) {
       const parts = [];
-      const lowBat = d.low.filter((x) => !x.na).length, naBat = d.low.filter((x) => x.na).length;
+      const lowBat = d.low.filter((x) => !x.na).length, naBat = d.low.filter((x) => x.na).length;   // binary „schwach“ zählt als schwach
       if (lowBat) parts.push(t(lowBat === 1 ? "{n} Batterie schwach" : "{n} Batterien schwach", { n: lowBat }));
       if (d.worn.length) parts.push(t("{n}× Verschleiß", { n: d.worn.length }));
       const offN = d.off.length + naBat;
@@ -5289,11 +5453,23 @@ window.__NULLGLOW_THEMES = {
 
     set hass(h) {
       ngH = h;
-      const d = this._collect(h);
-      const key = JSON.stringify(d) + ngLang();
+      this._hass = h;
+      if (!this._key) { this._update(true); return; }
+      const wait = 2000 - (Date.now() - (this._last || 0));
+      if (wait <= 0) this._update();
+      else if (!this._tm) this._tm = setTimeout(() => { this._tm = null; this._update(); }, wait);
+    }
+    _update(force) {
+      const h = this._hass;
+      if (!h || !this._card) return;
+      const sig = [h.states, h.entities, h.devices];
+      if (!force && this._sig && sig.every((x, i) => x === this._sig[i])) return;   // nichts Neues
+      this._sig = sig; this._last = Date.now();
+      const d = this._collect(h), eco = document.documentElement.dataset.ngEco === "1";
+      const key = JSON.stringify(d) + ngLang() + `|${this._open}|${this._hidOpen}|${eco}`;
       if (key === this._key) return;
       this._key = key;
-      this._card.className = `card lvl-${d.lvl}`;
+      this._card.className = `card lvl-${d.lvl}${eco ? " eco" : ""}`;
       this._card.innerHTML = this._cfg.mode === "summary" ? this._summary(d) : this._full(d);
     }
 
@@ -5301,7 +5477,7 @@ window.__NULLGLOW_THEMES = {
     _top(d) {
       // Batterien vor Verschleiß (Sauger-Erinnerungen sind weniger dringend), innerhalb: Rot vor Gelb vor offline
       const rank = (x) => (x.wear ? 3 : 0) + (x.lvl === "crit" ? 0 : x.na ? 2 : 1);
-      const items = [...d.low.map((x) => ({ ...x, t: x.na ? `${x.name} offline` : `${x.name} ${x.v} %` })),
+      const items = [...d.low.map((x) => ({ ...x, t: x.na ? `${x.name} offline` : x.bin ? `${x.name} ${t("schwach")}` : `${x.name} ${x.v} %` })),
         ...d.worn.map((x) => ({ ...x, wear: true, t: `${x.name} ${x.v} %` }))].sort((a, b) => rank(a) - rank(b) || (a.v ?? 0) - (b.v ?? 0));
       if (items.length) return items[0].t;
       if (d.off.length) return `${d.off[0].name} offline`;
@@ -5315,11 +5491,14 @@ window.__NULLGLOW_THEMES = {
         <div class="t"><span class="p">${t("Wartung")}${n ? `<span class="cnt mono">${n}</span>` : ""}</span><span class="s">${esc(this._top(d))}</span></div></div>`;
     }
 
-    _row(x, icon, value, pct) {
-      const cls = x.na ? "na" : x.lvl === "ok" ? "" : x.lvl;
+    _row(x, icon, value, pct, acts) {
+      const cls = x.na ? "na" : x.lvl === "ok" ? "" : x.lvl, open = acts && this._open === x.entity;
       const fill = x.na ? "" : `<div class="fill" style="width:${Math.max(2, Math.min(100, pct))}%;background:${COL[x.lvl]}"></div>`;
-      return `<div class="row ${cls}" data-entity="${esc(x.entity)}"><ha-icon icon="${icon}"></ha-icon>
-        <span class="n">${esc(x.name)}</span><div class="track">${fill}</div><span class="v mono">${value}</span></div>`;
+      const meta = acts ? [x.room ? `📍 ${x.room}` : "", x.model].filter(Boolean).join(" · ") : "";
+      return `<div class="cell"><div class="row ${cls}${open ? " open" : ""}" data-entity="${esc(x.entity)}"${acts ? ' data-act="row"' : ""}><ha-icon icon="${icon}"></ha-icon>
+        <span class="n"><b>${esc(x.name)}</b>${meta ? `<small>${esc(meta)}</small>` : ""}</span><div class="track">${fill}</div><span class="v mono">${value}</span></div>
+        ${open ? `<div class="acts" data-entity="${esc(x.entity)}"><button data-act="more">${t("Details")}</button><button data-act="s1">${t("1 Tag")}</button>
+          <button data-act="s7">${t("1 Woche")}</button><button data-act="ign">${t("Immer ausblenden")}</button></div>` : ""}</div>`;
     }
 
     _full(d) {
@@ -5327,14 +5506,20 @@ window.__NULLGLOW_THEMES = {
       const col = COL[d.lvl];
       const title = d.lvl === "ok" ? t("Alles in Ordnung") : t("Braucht Aufmerksamkeit");
       const show = (k) => !this._cfg.show || ![].concat(this._cfg.show).length || [].concat(this._cfg.show).includes(k);   // leer = alle
-      const bats = d.bats.map((x) => this._row(x, batIcon(x.v), x.na ? "offline" : `${x.v} %`, x.v ?? 0)).join("");
+      const bats = d.bats.map((x) => (x.bin
+        ? this._row(x, x.lvl === "ok" ? "mdi:battery" : "mdi:battery-alert-variant-outline", x.na ? "offline" : x.lvl === "ok" ? "ok" : t("schwach"), x.lvl === "ok" ? 100 : 12, true)
+        : this._row(x, batIcon(x.v), x.na ? "offline" : `${x.v} %`, x.v ?? 0, true))).join("");
+      const fmt = (u) => new Date(u).toLocaleString(ngLang() === "de" ? "de-DE" : undefined, { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+      const hid = d.hidden.length ? `<div class="grp"><h3 class="tg" data-act="hid">${t("Ausgeblendet ({n})", { n: d.hidden.length })} ${this._hidOpen ? "▴" : "▾"}</h3>
+        ${this._hidOpen ? d.hidden.map((x) => `<div class="hl" data-entity="${esc(x.entity)}"><span class="n">${esc(x.name)}<small>${esc([x.room, x.until ? t("bis {d}", { d: fmt(x.until) }) : t("immer")].filter(Boolean).join(" · "))}</small></span>
+          <button data-act="back">${t("Zurückholen")}</button></div>`).join("") : ""}</div>` : "";
       const wear = d.wear.map((x) => this._row(x, x.lvl === "ok" ? "mdi:progress-wrench" : "mdi:wrench-clock",
         x.na ? "–" : `${x.v} %${x.time ? `<br><small>${esc(x.time)}</small>` : ""}`, x.v ?? 0)).join("");
       const off = d.off.map((x) => `<span class="chip" data-entity="${esc(x.entity)}"><ha-icon icon="mdi:lan-disconnect"></ha-icon>${esc(x.name)}</span>`).join("");
       return `<div class="full">
         <div class="hero"><div class="ic" style="color:${col};background:color-mix(in srgb, ${col} 12%, transparent)"><ha-icon icon="${icon}"></ha-icon></div>
           <div><div class="p">${title}</div><div class="s">${esc(this._summaryText(d))}</div></div></div>
-        ${show("battery") ? `<div class="grp"><h3>${t("Batterien")}</h3><div class="rows">${bats || `<span class="none">${t("keine")}</span>`}</div></div>` : ""}
+        ${show("battery") ? `<div class="grp"><h3>${t("Batterien")}</h3><div class="rows">${bats || `<span class="none">${t("keine")}</span>`}</div></div>${hid}` : ""}
         ${wear && show("wear") ? `<div class="grp"><h3>${esc(this._cfg.wear_title || t("Verschleiß"))}</h3><div class="rows">${wear}</div></div>` : ""}
         ${show("watch") ? `<div class="grp"><h3>${t("Nicht erreichbar")}</h3>${off ? `<div class="chips">${off}</div>` : `<span class="none">${t("alle Geräte erreichbar")}</span>`}</div>` : ""}
       </div>`;
@@ -7311,10 +7496,15 @@ window.__NULLGLOW_THEMES = {
           { name: "size", selector: { select: { mode: "dropdown", options: [
             { value: "compact", label: "Kompakt (Übersicht)" }, { value: "large", label: "Groß (Medien-Seite)" }] } } },
           { name: "hide_idle", selector: { boolean: {} } }] },
-      ], { entities: "Mediaplayer", size: "Größe", hide_idle: "Ausblenden, wenn nichts läuft" },
-      { entities: "leer = alle Mediaplayer; es zeigt der, der gerade spielt", hide_idle: "Karte verschwindet, solange nichts spielt oder pausiert" },
+        { name: "idle", selector: { select: { mode: "dropdown", options: [
+          { value: "", label: "Letzten Player zeigen" }, { value: "rest", label: "Ruhig „Nichts läuft“" }] } } },
+      ], { entities: "Mediaplayer", size: "Größe", hide_idle: "Ausblenden, wenn nichts läuft", idle: "Wenn nichts läuft" },
+      { entities: "leer = alle Mediaplayer; es zeigt der, der gerade spielt", hide_idle: "Karte verschwindet, solange nichts spielt oder pausiert",
+        idle: "nur ohne „Ausblenden“: Platz bleibt, Layout springt nicht" },
       { "Mediaplayer": "Media players", "Größe": "Size", "Ausblenden, wenn nichts läuft": "Hide when nothing is playing",
-        "Kompakt (Übersicht)": "Compact (overview)", "Groß (Medien-Seite)": "Large (media page)",
+        "Kompakt (Übersicht)": "Compact (overview)", "Groß (Medien-Seite)": "Large (media page)", "Wenn nichts läuft": "When nothing is playing",
+        "Letzten Player zeigen": "Show the last player", "Ruhig „Nichts läuft“": "Calm “Nothing playing”",
+        "nur ohne „Ausblenden“: Platz bleibt, Layout springt nicht": "only without “Hide”: keeps its space, the layout does not jump",
         "leer = alle Mediaplayer; es zeigt der, der gerade spielt": "empty = all media players; shows the one that is playing",
         "Karte verschwindet, solange nichts spielt oder pausiert": "Card disappears while nothing is playing or paused" });
     }
@@ -7361,7 +7551,16 @@ window.__NULLGLOW_THEMES = {
         prog: q(".prog"), fill: q(".bar i"), t0: q(".t0"), t1: q(".t1"), tm: q(".tm"), vol: q(".vol"), rng: q("input[type=range]"),
         btn: Object.fromEntries([...card.querySelectorAll(".btn")].map((b) => [b.dataset.a, b])) };
       const E = this._el;
-      E.img.addEventListener("error", () => { E.img.hidden = true; E.ph.style.display = ""; });
+      // Bildfehler (z. B. Proxy kurz 500 beim Titelwechsel): Platzhalter, nach 15 s derselbe Titel noch einmal versuchen
+      E.img.addEventListener("error", () => {
+        E.img.hidden = true; E.ph.style.display = "";
+        const bad = E.img.getAttribute("src");
+        clearTimeout(this._imgRetry);
+        if (bad && !this._retried?.has(bad)) this._imgRetry = setTimeout(() => {
+          (this._retried = this._retried || new Set()).add(bad);
+          if (this.isConnected && E.img.getAttribute("src") === bad) { E.img.hidden = false; E.img.src = bad + (bad.includes("?") ? "&" : "?") + "r=1"; }
+        }, 15000);
+      });
       E.img.addEventListener("load", () => { E.ph.style.display = "none"; });
       const more = () => this._cur && this.dispatchEvent(new CustomEvent("hass-more-info", { detail: { entityId: this._cur }, bubbles: true, composed: true }));
       E.art.addEventListener("click", more);
@@ -7481,7 +7680,7 @@ window.__NULLGLOW_THEMES = {
       E.art.classList.toggle("app", !!app);
       card.classList.toggle("applook", !!app);
       this._appRgb = app?.rgb || null;
-      if (pic) { if (E.img.getAttribute("src") !== pic) { E.img.hidden = false; E.img.src = pic; } }
+      if (pic) { const cur = E.img.getAttribute("src"); if (cur !== pic && cur !== pic + (pic.includes("?") ? "&" : "?") + "r=1") { clearTimeout(this._imgRetry); E.img.hidden = false; E.img.src = pic; } }
       else { E.img.hidden = true; E.img.removeAttribute("src"); E.ph.style.display = ""; }
       this._setBg(pic, light);
       // Knöpfe nach supported_features
@@ -7617,6 +7816,22 @@ window.__NULLGLOW_THEMES = {
     "Heute": "Today", "Morgen": "Tomorrow",
     "Akku schwach": "Battery low", "{n} Akkus schwach": "{n} batteries low",
     "Gerät offline": "Device offline", "{n} Geräte offline": "{n} devices offline",
+    "seit {n} Tagen": "for {n} days",
+    "seit {n} Std.": "for {n} h",
+    "seit {n} Min.": "for {n} min",
+    "Sonstige": "Other",
+    "1 Tag": "1 day",
+    "1 Woche": "1 week",
+    "Immer": "Always",
+    "Integration neu laden": "Reload integration",
+    "In Home Assistant öffnen": "Open in Home Assistant",
+    "Keine Geräte offline": "No devices offline",
+    "Zurückstellen blendet ein Gerät hier aus, bis die Zeit um ist — gedacht für Geräte, die gerade bewusst aus sind. „Immer“ blendet es dauerhaft aus.": "Snoozing hides a device here until the time is up — meant for devices that are switched off on purpose. “Always” hides it for good.",
+    "Alle zurückstellen:": "Snooze all:", "Ausgeblendet ({n})": "Hidden ({n})", "Zurückholen": "Bring back", "kein Raum": "no room", "über {x}": "via {x}", "offline {a} · {d}": "offline {a} · {d}",
+    "{n} zurückgestellt": "{n} snoozed",
+    "Alle zurückholen": "Bring all back",
+    "Lade Integration neu …": "Reloading integration …",
+    "Neu geladen — kommt das Gerät zurück, verschwindet es aus der Liste.": "Reloaded — if the device comes back, it disappears from the list.",
     "Update verfügbar": "Update available", "{n} Updates verfügbar": "{n} updates available",
     "Aus": "Off", "Licht ausschalten?": "Turn light off?", "{n} Lichter ausschalten?": "Turn {n} lights off?",
     "Ja": "Yes", "Nein": "No", "Nicht mehr anzeigen:": "Stop showing:", "Für {x} nicht mehr anzeigen": "Stop showing for {x}",
@@ -7656,6 +7871,13 @@ window.__NULLGLOW_THEMES = {
   const dayDiff = (s) => { const [y, m, d] = s.split("-").map(Number); const b = new Date(); b.setHours(0, 0, 0, 0); return Math.round((new Date(y, m - 1, d) - b) / 864e5); };
   const normDash = (d) => String(d || location.pathname.split("/")[1] || "lovelace").replace(/^\/+|\/+$/g, "").split("/")[0] || "lovelace";
   const storeKey = (d) => `nullglow-hints-ignore:${normDash(d)}`;
+  const snoozeKey = (d) => `nullglow-hints-snooze:${normDash(d)}`;
+  const readSnooze = (d) => { try { const v = JSON.parse(localStorage.getItem(snoozeKey(d)) || "{}"); return v && typeof v === "object" ? v : {}; } catch (e) { return {}; } };
+  const INTEG = { hue: "Philips Hue", alexa_devices: "Alexa", zha: "Zigbee (ZHA)", mqtt: "MQTT", tuya: "Tuya", shelly: "Shelly", esphome: "ESPHome",
+    cast: "Google Cast", sonos: "Sonos", tado: "tado°", matter: "Matter", homekit_controller: "HomeKit", tplink: "TP-Link", unifiprotect: "UniFi Protect" };
+  const integName = (p) => (p ? INTEG[p] || p.replace(/_/g, " ").replace(/(^|\s)\w/g, (c) => c.toUpperCase()) : t("Sonstige"));
+  const ago = (ms) => { const m = Math.round(ms / 60000), h = Math.round(m / 60), d = Math.round(h / 24);
+    return d >= 2 ? t("seit {n} Tagen", { n: d }) : h >= 2 ? t("seit {n} Std.", { n: h }) : t("seit {n} Min.", { n: Math.max(1, m) }); };
   const readLocal = (d) => { try { const v = JSON.parse(localStorage.getItem(storeKey(d)) || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
   const pct = (v) => `${Math.round(v).toLocaleString(numLoc())}${ngLang() === "de" ? " " : ""}%`;
 
@@ -7714,6 +7936,33 @@ window.__NULLGLOW_THEMES = {
     @keyframes ngGlow { 20% { opacity: 1; } 100% { opacity: 0; } }
     :host(.eco) .pill, :host(.eco) .pill::after, :host(.eco) .bar { animation: none !important; transition: none !important; }
     /* Schwebend: feste Leiste oben mittig, nimmt keinen Platz, Klicks gehen daneben durch */
+    .panel { position: fixed; inset: 0; z-index: 8; font-family: var(--ng-font, inherit); display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .panel .bk { position: absolute; inset: 0; background: rgba(var(--rgb-ng-bg, 10, 16, 13), .55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+    .sheet { position: relative; width: min(620px, 100%); max-height: min(78vh, 720px); display: flex; flex-direction: column; gap: 10px; padding: 18px;
+      box-sizing: border-box; border-radius: 24px; color: var(--ng-txt, #e8f5ee);
+      background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 16, 13), .92);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4);
+      box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .12), 0 24px 60px -18px rgba(0, 0, 0, .7); }
+    .ph { display: flex; align-items: center; justify-content: space-between; gap: 10px; } .ph b { font-size: 17px; }
+    .ps { color: var(--ng-txt-dim, #93a79d); font-size: 12.5px; line-height: 1.4; }
+    .pl { overflow: auto; display: flex; flex-direction: column; gap: 6px; margin: 0 -6px; padding: 0 6px; }
+    .pg { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ng-txt-dim, #93a79d); margin: 8px 0 0 4px; }
+    .pr { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 16px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .04);
+      box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .07); }
+    .pr .ic { flex: none; width: 32px; height: 32px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .07); color: var(--ng-txt-dim, #93a79d); }
+    .pt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+    .pt b { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; } .pt small { font-size: 12px; color: var(--ng-txt-dim, #93a79d); overflow-wrap: anywhere; }
+    .pt small .room { color: var(--ng-txt, #e8f5ee); font-weight: 600; } .pt small .room.none { color: var(--ng-warn, #ffd166); font-weight: 500; }
+    .pt small.en { font-style: italic; opacity: .85; }
+    .pb { flex: none; display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; max-width: 55%; }
+    .panel button { height: 30px; padding: 0 11px; border-radius: 999px; font-size: 12.5px; font-weight: 600; white-space: nowrap;
+      background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); color: var(--ng-txt, #e8f5ee); }
+    .panel button:hover { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .18); color: var(--ng-acc, #7cffb2); }
+    .panel button.ico { width: 30px; padding: 0; display: grid; place-items: center; --mdc-icon-size: 16px; }
+    .panel button[disabled] { opacity: .4; }
+    .pa { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; color: var(--ng-txt-dim, #93a79d); } .pa span { margin-right: 4px; }
+    .panel .st { font-size: 12.5px; color: var(--ng-txt-dim, #93a79d); } .panel .st:empty { display: none; }
+    @media (max-width: 520px) { .pr { flex-wrap: wrap; } .pb { max-width: none; width: 100%; justify-content: flex-start; } }
     :host([floating]) { height: 0; overflow: visible; }
     :host([floating]) .bar { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 5;
       width: max-content; max-width: calc(100vw - 32px); justify-content: center; pointer-events: none;
@@ -7764,6 +8013,7 @@ window.__NULLGLOW_THEMES = {
         { name: "floating", selector: { select: { mode: "dropdown", options: [
           { value: "", label: "Im Raster (nimmt Platz, nur wenn es Hinweise gibt)" }, { value: "top", label: "Schwebend oben" },
           { value: "bottom", label: "Schwebend über der Navigation" }] } } },
+        { name: "battery_exclude", selector: { text: { multiple: true } } },
         { name: "ignore", selector: { entity: { multiple: true } } },
         { name: "ignore_labels", selector: { label: { multiple: true } } },
         { type: "expandable", name: "waste", title: "Müllabfuhr", schema: [
@@ -7775,15 +8025,16 @@ window.__NULLGLOW_THEMES = {
         { name: "dashboard", selector: { text: {} } },
       ], { rain: "Regen & Fenster", waste: "Müllabfuhr", battery: "Akkus", offline: "Geräte offline", updates: "Updates",
         away: "Niemand zu Hause", battery_threshold: "Akku-Warnung unter", weather: "Wetter", floating: "Anzeige",
-        ignore: "Nie warnen für", ignore_labels: "Labels ignorieren", calendar: "Müll-Kalender (jeder Termin)",
+        battery_exclude: "Akkus nicht beachten (Teil der Entitäts-ID)", ignore: "Nie warnen für", ignore_labels: "Labels ignorieren", calendar: "Müll-Kalender (jeder Termin)",
         calendars: "Kalender durchsuchen", keywords: "Weitere Stichworte", dashboard: "Dashboard-Schlüssel" },
       { weather: "leer = erstes Wetter-Objekt", floating: "schwebend braucht keinen Platz (Wandbildschirm)",
         ignore_labels: "leer = Label „no_hints“", calendars: "leer = alle Kalender (nur ohne Waste-Collection-Sensoren)",
-        keywords: "z. B. Grünschnitt", dashboard: "für die lokale Ausblendliste, leer = aus der Adresse" },
+        keywords: "z. B. Grünschnitt", battery_exclude: "z. B. pixel_ für Handy-Akkus", dashboard: "für die lokale Ausblendliste, leer = aus der Adresse" },
       { "Regeln": "Rules", "Müllabfuhr": "Waste pickup", "Antippen öffnet": "Tap opens", "Regen & Fenster": "Rain & windows",
         "Akkus": "Batteries", "Geräte offline": "Devices offline", "Updates": "Updates", "Niemand zu Hause": "Nobody home",
         "Akku-Warnung unter": "Battery warning below", "Wetter": "Weather", "Anzeige": "Display", "Im Raster (nimmt Platz, nur wenn es Hinweise gibt)": "In the grid (takes space only when there are hints)",
         "Schwebend oben": "Floating at the top", "Schwebend über der Navigation": "Floating above the navigation",
+        "Akkus nicht beachten (Teil der Entitäts-ID)": "Ignore batteries (part of the entity ID)", "z. B. pixel_ für Handy-Akkus": "e.g. pixel_ for phone batteries",
         "Nie warnen für": "Never warn for", "Labels ignorieren": "Ignore labels", "Müll-Kalender (jeder Termin)": "Waste calendar (every event)",
         "Kalender durchsuchen": "Calendars to scan", "Weitere Stichworte": "Extra keywords", "Dashboard-Schlüssel": "Dashboard key",
         "leer = erstes Wetter-Objekt": "empty = first weather entity", "schwebend braucht keinen Platz (Wandbildschirm)": "floating takes no space (wall display)",
@@ -7809,6 +8060,7 @@ window.__NULLGLOW_THEMES = {
         ignore: [].concat(c.ignore || []), ignore_labels: [].concat(c.ignore_labels?.length ? c.ignore_labels : ["no_hints"]) };
       this._dash = normDash(c.dashboard);
       this._re = wasteRe([].concat(this._cfg.waste.keywords || []));
+      this._batEx = [].concat(c.battery_exclude || []).map((x) => { try { return new RegExp(x, "i"); } catch (e) { return null; } }).filter(Boolean);
       if (!this.shadowRoot) {
         this.attachShadow({ mode: "open" });
         this.shadowRoot.innerHTML = `<style>${STYLE}</style><div class="bar"></div>`;
@@ -7829,6 +8081,7 @@ window.__NULLGLOW_THEMES = {
     set hass(h) {
       ngH = h;
       this._hass = h;
+      if (window.__ngHintsPanel && !this._pnHost && this.isConnected) this._adoptPanel();
       if (this.isConnected && !this._run) this._start();
       // Drosseln: höchstens alle 2 s auswerten (hass kommt in großen Installationen mehrmals pro Sekunde)
       const wait = 2000 - (Date.now() - (this._lastEval || 0));
@@ -7837,6 +8090,7 @@ window.__NULLGLOW_THEMES = {
     }
 
     connectedCallback() {
+      clearTimeout(this._pnGone); this._pnGone = null;
       if (!this._onIgn) {
         this._onIgn = (e) => { if (e.composedPath?.()[0] !== this && normDash(e.detail?.dashboard) === this._dash) this._eval(true); };
         this._onStore = (e) => { if (e.key === storeKey(this._dash)) this._eval(true); };
@@ -7844,8 +8098,10 @@ window.__NULLGLOW_THEMES = {
       window.addEventListener("nullglow-hint-ignore", this._onIgn);
       window.addEventListener("storage", this._onStore);
       if (this._hass && !this._run) { this._start(); this._eval(true); }   // _eval abonniert die Vorhersage
+      setTimeout(() => this._adoptPanel(), 50);
     }
     disconnectedCallback() {
+      if (this._pnHost) this._pnGone = setTimeout(() => { if (window.__ngHintsPanel?.owner === this) this._closePanel(); }, 4000);
       window.removeEventListener("nullglow-hint-ignore", this._onIgn);
       window.removeEventListener("storage", this._onStore);
       this._run = false;
@@ -7921,7 +8177,8 @@ window.__NULLGLOW_THEMES = {
 
     // ---- Ausblenden ----
     _ignTest(h) {
-      const set = new Set([...this._cfg.ignore, ...readLocal(this._dash)]);
+      const now = Date.now(), sn = readSnooze(this._dash);
+      const set = new Set([...this._cfg.ignore, ...readLocal(this._dash), ...Object.keys(sn).filter((k) => sn[k] > now)]);
       const labs = new Set(this._cfg.ignore_labels.flatMap((l) => [String(l), slug(l)]));
       const E = h.entities || {}, D = h.devices || {};
       return (id) => {
@@ -7931,6 +8188,13 @@ window.__NULLGLOW_THEMES = {
         const d = e.device_id && D[e.device_id];
         return [...(e.labels || []), ...((d && d.labels) || [])].some((l) => labs.has(l) || labs.has(slug(l)));
       };
+    }
+    _snooze(ids, ms) {   // zurückstellen: nur in diesem Browser, kommt danach von selbst wieder
+      const sn = readSnooze(this._dash), until = Date.now() + ms, now = Date.now();
+      for (const k of Object.keys(sn)) if (sn[k] <= now) delete sn[k];
+      ids.forEach((id) => { sn[id] = until; });
+      try { localStorage.setItem(snoozeKey(this._dash), JSON.stringify(sn)); } catch (e) { /* gesperrt */ }
+      this._eval(true);
     }
     _ignore(ids) {
       const cur = readLocal(this._dash);
@@ -8067,7 +8331,7 @@ window.__NULLGLOW_THEMES = {
         if (id.startsWith("sensor.")) { v = parseFloat(s.state); if (!isFinite(v) || v >= thr) continue; }
         else if (s.state === "on") v = null;
         else continue;
-        if (E[id]?.hidden || c.isIgn(id)) continue;
+        if (E[id]?.hidden || c.isIgn(id) || this._batEx.some((r) => r.test(id))) continue;
         const d = c.dev(id);
         items.push({ id, v, dev: E[id]?.device_id, name: d?.name_by_user || d?.name || clean(c.fn(s), RE_BAT) || c.fn(s) });
       }
@@ -8106,15 +8370,28 @@ window.__NULLGLOW_THEMES = {
         const dom = id.slice(0, id.indexOf("."));
         if (OFF_DOM.includes(dom) || (dom === "sensor" && OFF_SENSOR.includes(s.attributes.device_class))) g.key.push(id);
       }
-      const devs = [];
+      const devs = [], hid = [];
       for (const [did, g] of by) {
-        if (g.ok || !g.old || !g.key.length || D[did]?.disabled_by || g.ids.some(c.isIgn)) continue;
-        devs.push({ id: g.key[0], name: D[did]?.name_by_user || D[did]?.name || c.fn(S[g.key[0]]) });
+        if (g.ok || !g.old || !g.key.length || D[did]?.disabled_by) continue;
+        // ausgeblendet: das Gerät selbst (device:<id>) oder alle wichtigen Entitäten (ältere Einträge, Labels) — nicht mehr „irgendeine“
+        // Entität, sonst verschwände es z. B., weil nur sein Akku-Hinweis zurückgestellt ist
+        const dk = `device:${did}`;
+        if (c.isIgn(dk) || g.key.every(c.isIgn)) { hid.push({ did, ids: [dk, ...g.key], name: D[did]?.name_by_user || D[did]?.name || c.fn(S[g.key[0]]) }); continue; }
+        const since = Math.max(...g.ids.map((x) => Date.parse(S[x]?.last_changed) || 0));
+        const dev = D[did] || {}, name = dev.name_by_user || dev.name || c.fn(S[g.key[0]]);
+        // Erkennungshilfen: Raum, Hub („über …“), Entitäten ohne Gerätenamen davor
+        const aid = dev.area_id || E[g.key[0]]?.area_id, via = dev.via_device_id && D[dev.via_device_id];
+        const strip = new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*[-–:·]?\\s*`, "i");
+        const enames = [...new Set(g.ids.map((x) => (c.fn(S[x]) || x).replace(strip, "")).filter(Boolean))];
+        devs.push({ id: dk, did, name, since, integ: E[g.key[0]]?.platform || "", ids: g.ids,
+          model: [dev.manufacturer, dev.model].filter(Boolean).join(" "), area: aid ? h.areas?.[aid]?.name || "" : "",
+          via: via ? via.name_by_user || via.name || "" : "", ents: enames.slice(0, 4).join(", ") + (enames.length > 4 ? ` +${enames.length - 4}` : "") });
       }
+      this._offHidden = hid.sort((a, b) => a.name.localeCompare(b.name, numLoc()));   // fürs „Zurückholen“ im Pop-up
       if (!devs.length) return null;
-      devs.sort((a, b) => a.name.localeCompare(b.name, numLoc()));
+      devs.sort((a, b) => a.integ.localeCompare(b.integ) || a.name.localeCompare(b.name, numLoc()));
       return { lvl: "dim", icon: "mdi:lan-disconnect", head: devs.length === 1 ? t("Gerät offline") : t("{n} Geräte offline", { n: devs.length }),
-        rest: list(devs.map((d) => d.name)), ents: devs, tap: this._tapFor("offline", this._more(devs[0].id)) };
+        rest: list(devs.map((d) => d.name)), ents: devs, tap: this._cfg.tap.offline ? { nav: this._cfg.tap.offline } : { panel: "offline" } };
     }
 
     // ---- Darstellung ----
@@ -8143,6 +8420,114 @@ window.__NULLGLOW_THEMES = {
         ? `<div class="pill lvl-ok"><span class="ic"><ha-icon icon="mdi:check"></ha-icon></span><span class="tx"><b>${esc(t("Keine Hinweise – alles in Ordnung"))}</b></span></div>` : "";
       this._setVisible(hs.length > 0 || !!empty);
       this._bar.innerHTML = hs.map((x) => (this._menu === x.rule ? this._menuHtml(x) : this._pill(x, !eco && !seen.has(sig(x))))).join("") + empty;
+      if (this._panel) this._renderPanel();
+    }
+
+    // ---- Pop-up „Geräte offline“: je Gerät seit wann, Integration, zurückstellen (1 Tag / 1 Woche / immer), öffnen, neu laden ----
+    // Pop-up hängt direkt an <body> (Glas-Karten mit backdrop-filter würden „position: fixed“ sonst einfangen), Farben vom Design
+    _panelRoot() {
+      if (!this._pnHost) {
+        const host = (this._pnHost = document.createElement("div"));
+        host.attachShadow({ mode: "open" }).innerHTML = `<style>${STYLE}</style><div class="panel"></div>`;
+        host.shadowRoot.querySelector(".panel").addEventListener("click", (e) => host.__owner?._panelClick(e));
+      }
+      const cs = getComputedStyle(this);
+      for (const k of ["--ng-acc", "--rgb-ng-acc", "--ng-txt", "--rgb-ng-txt", "--ng-txt-dim", "--rgb-ng-bg", "--ng-glass-2", "--ng-warn", "--rgb-ng-warn", "--ng-font"]) {
+        const v = cs.getPropertyValue(k).trim(); if (v) this._pnHost.style.setProperty(k, v);
+      }
+      if (!this._pnHost.isConnected) document.body.appendChild(this._pnHost);
+      this._pnHost.__owner = this;
+      window.__ngHintsPanel = { dash: this._dash, rule: this._panel, host: this._pnHost, owner: this };
+      return this._pnHost.shadowRoot.querySelector(".panel");
+    }
+    _closePanel() {
+      this._pnHost?.remove(); this._panel = null;
+      if (window.__ngHintsPanel?.owner === this) window.__ngHintsPanel = null;
+    }
+    // Neuaufbau des Dashboards (z. B. nach „Immer“ -> gespeichert): offenes Pop-up der alten Karte übernehmen statt schließen
+    _adoptPanel() {
+      const P = window.__ngHintsPanel;
+      if (!P || P.owner === this || P.dash !== this._dash || P.owner?.isConnected || !P.host?.isConnected) return;
+      clearTimeout(P.owner?._pnGone);
+      this._pnHost = P.host; this._panel = P.rule; P.owner = this; P.host.__owner = this;
+      if (this._hass) this._eval(true);   // erst auswerten, dann zeichnet _render das Pop-up mit dem neuen Stand
+    }
+    _renderPanel() {
+      const x = (this._hints || []).find((y) => y.rule === this._panel);
+      const sn = readSnooze(this._dash), now = Date.now(), nSn = Object.entries(sn).filter(([k, v]) => k.startsWith("device:") && v > now).length;
+      const hidList = (this._offHidden || []).filter((d) => !d.ids.some((k) => sn[k] > now));   // zurückgestellte zählt „{n} zurückgestellt“
+      if (!x && !nSn && !hidList.length) { this._closePanel(); return; }
+      const pn = this._panelRoot();
+      const devs = x?.ents || [], admin = !!this._hass?.user?.is_admin;
+      let lastInteg = null;
+      const rows = devs.map((d) => {
+        const head = d.integ !== lastInteg ? `<div class="pg">${esc(integName(d.integ))}</div>` : "";
+        lastInteg = d.integ;
+        return `${head}<div class="pr"><span class="ic"><ha-icon icon="mdi:lan-disconnect"></ha-icon></span>
+          <span class="pt"><b>${esc(d.name)}</b>
+            <small>${d.area ? `<span class="room">📍 ${esc(d.area)}</span> · ` : `<span class="room none">${esc(t("kein Raum"))}</span> · `}${esc(d.model || "")}${d.via ? ` · ${esc(t("über {x}", { x: d.via }))}` : ""}</small>
+            ${d.ents ? `<small class="en">${esc(d.ents)}</small>` : ""}
+            ${d.since ? `<small>${esc(t("offline {a} · {d}", { a: ago(now - d.since), d: new Date(d.since).toLocaleString(numLoc(), { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) }))}</small>` : ""}</span>
+          <span class="pb"><button data-p="s1" data-id="${esc(d.id)}">${esc(t("1 Tag"))}</button><button data-p="s7" data-id="${esc(d.id)}">${esc(t("1 Woche"))}</button>
+          <button data-p="ign" data-id="${esc(d.id)}">${esc(t("Immer"))}</button>
+          ${admin && d.did ? `<button class="ico" data-p="rl" data-did="${esc(d.did)}" title="${esc(t("Integration neu laden"))}"><ha-icon icon="mdi:reload"></ha-icon></button>
+          <button class="ico" data-p="open" data-did="${esc(d.did)}" title="${esc(t("In Home Assistant öffnen"))}"><ha-icon icon="mdi:open-in-new"></ha-icon></button>` : ""}</span></div>`;
+      }).join("");
+      pn.innerHTML = `<div class="bk" data-p="close"></div><div class="sheet">
+        <div class="ph"><b>${esc(devs.length ? t("{n} Geräte offline", { n: devs.length }) : t("Keine Geräte offline"))}</b>
+          <button class="ico" data-p="close" title="${esc(t("Schließen"))}"><ha-icon icon="mdi:close"></ha-icon></button></div>
+        <small class="ps">${esc(t("Zurückstellen blendet ein Gerät hier aus, bis die Zeit um ist — gedacht für Geräte, die gerade bewusst aus sind. „Immer“ blendet es dauerhaft aus."))}</small>
+        ${devs.length > 1 ? `<div class="pa"><span>${esc(t("Alle zurückstellen:"))}</span><button data-p="all1">${esc(t("1 Tag"))}</button><button data-p="all7">${esc(t("1 Woche"))}</button></div>` : ""}
+        <div class="pl">${rows}</div>
+        ${hidList.length ? `<div class="pg">${esc(t("Ausgeblendet ({n})", { n: hidList.length }))}</div>
+          ${hidList.map((d) => `<div class="pr"><span class="pt"><b>${esc(d.name)}</b></span><span class="pb"><button data-p="back" data-did="${esc(d.did)}">${esc(t("Zurückholen"))}</button></span></div>`).join("")}` : ""}
+        ${nSn ? `<div class="pa"><span>${esc(t("{n} zurückgestellt", { n: nSn }))}</span><button data-p="unsn">${esc(t("Alle zurückholen"))}</button></div>` : ""}
+        <div class="st"></div></div>`;
+    }
+    _panelClick(e) {
+      const b = e.composedPath().find((n) => n.dataset?.p);
+      if (!b) return;
+      const x = (this._hints || []).find((y) => y.rule === this._panel), ids = (x?.ents || []).map((d) => d.id);
+      const DAY = 864e5;
+      switch (b.dataset.p) {
+        case "close": this._closePanel(); return;
+        case "s1": this._snooze([b.dataset.id], DAY); return;
+        case "s7": this._snooze([b.dataset.id], 7 * DAY); return;
+        case "all1": this._snooze(ids, DAY); return;
+        case "all7": this._snooze(ids, 7 * DAY); return;
+        case "ign": this._ignore([b.dataset.id]); return;
+        case "unsn": {   // nur Offline-Einträge (device:…) — zurückgestellte Akkus der Batterie-Karte bleiben
+          const sn = readSnooze(this._dash);
+          Object.keys(sn).forEach((k) => { if (k.startsWith("device:")) delete sn[k]; });
+          try { localStorage.setItem(snoozeKey(this._dash), JSON.stringify(sn)); } catch (er) { /* gesperrt */ }
+          window.dispatchEvent(new CustomEvent("nullglow-hint-ignore", { detail: { entities: [], dashboard: this._dash } }));
+          this._eval(true);
+          return;
+        }
+        case "back": {   // Gerät wieder anzeigen: aus allen Listen (Browser + dauerhaft) nehmen — nach Geräte-ID, nicht Position
+          const d = (this._offHidden || []).find((y) => y.did === b.dataset.did);
+          if (!d) return;
+          try {
+            localStorage.setItem(storeKey(this._dash), JSON.stringify(readLocal(this._dash).filter((x) => !d.ids.includes(x))));
+            const sn = readSnooze(this._dash); d.ids.forEach((x) => { delete sn[x]; }); localStorage.setItem(snoozeKey(this._dash), JSON.stringify(sn));
+          } catch (e) { /* gesperrt */ }
+          const perm = d.ids.filter((x) => this._cfg.ignore.includes(x));
+          if (perm.length) this.dispatchEvent(new CustomEvent("nullglow-hint-unignore", { detail: { entities: perm, dashboard: this._dash }, bubbles: true, composed: true }));
+          window.dispatchEvent(new CustomEvent("nullglow-hint-ignore", { detail: { entities: [], dashboard: this._dash } }));
+          this._eval(true);
+          return;
+        }
+        case "open": this._closePanel(); history.pushState(null, "", `/config/devices/device/${b.dataset.did}`); window.dispatchEvent(new Event("location-changed")); return;
+        case "rl": {
+          const st = this._pnHost?.shadowRoot.querySelector(".panel .st");
+          b.disabled = true; if (st) st.textContent = t("Lade Integration neu …");
+          this._hass.callService("homeassistant", "reload_config_entry", {}, { device_id: b.dataset.did })
+            .then(() => { if (st) st.textContent = t("Neu geladen — kommt das Gerät zurück, verschwindet es aus der Liste."); })
+            .catch((er) => { if (st) st.textContent = String(er?.message || er); b.disabled = false; });
+          return;
+        }
+        default: return;
+      }
     }
 
     _pill(x, isNew) {
@@ -8204,6 +8589,7 @@ window.__NULLGLOW_THEMES = {
 
     _tap(tp) {
       if (!tp) return;
+      if (tp.panel) { this._panel = tp.panel; this._renderPanel(); return; }
       if (tp.more) {
         const ev = new Event("hass-more-info", { bubbles: true, composed: true });
         ev.detail = { entityId: tp.more };
@@ -8370,7 +8756,8 @@ window.__NULLGLOW_THEMES = {
     // ── Editor Ende ──
     setConfig(config) {
       // storage: local -> Wahl nur in diesem Browser (Schlüssel nullglow-design:<dashboard>), sonst zwei input_select-Helfer
-      this._cfg = { entity: "input_select.kiosk_design", mode_entity: "input_select.kiosk_design_mode", glass_entity: "input_number.kiosk_glass", ...config };
+      // Helfer nur, wenn angegeben (keine festen Namen — die gibt es nur in der Kiosk-Installation des Autors)
+      this._cfg = { ...config };
       this._local = this._cfg.storage === "local";
       this._lkey = `nullglow-design:${this._cfg.dashboard || "/" + (location.pathname.split("/")[1] || "lovelace")}`;
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
@@ -8434,7 +8821,7 @@ window.__NULLGLOW_THEMES = {
     _render() {
       const m = this._model();
       if (!m) {
-        this.shadowRoot.innerHTML = `<ha-card><div class="hint" style="padding:16px">${t("{e} fehlt — Helfer anlegen und „Eingabeauswahl-Entitäten“ neu laden.", { e: esc(this._cfg.entity) })}</div></ha-card>`;
+        this.shadowRoot.innerHTML = `<ha-card><div class="hint" style="padding:16px">${t("{e} fehlt — Helfer anlegen und „Eingabeauswahl-Entitäten“ neu laden.", { e: esc(this._cfg.entity || "entity: input_select.…") })}</div></ha-card>`;
         return;
       }
       const tiles = m.options.map((o) => {
@@ -8617,16 +9004,16 @@ window.__NULLGLOW_THEMES = {
     "Wie Gerät / HA-Profil": "Like device / HA profile", "Immer dunkel": "Always dark", "Immer hell": "Always light",
     "Nach Sonne (tagsüber hell)": "By the sun (light during the day)",
     // Assistent: Tipps
-    "9 · Handy & Wandmonitor": "9 · Phone & wall display",
+    "10 · Handy & Wandmonitor": "10 · Phone & wall display",
     "<b>Handy:</b> läuft in der HA-App, Seiten unten per Leiste wechseln (wischbar).": "<b>Phone:</b> runs in the HA app, switch pages with the bar at the bottom (swipeable).",
     "<b>Wandmonitor (Full HD):</b> Dashboard-Adresse mit <code>?kiosk</code> öffnen (braucht Kiosk Mode) — ohne Kopfzeile und Seitenleiste. Bei 1920×1080 mit 125 % Zoom sieht es aus wie im Original. Hochkant geht auch (die Leiste zeigt dann nur Symbole).":
       "<b>Wall display (Full HD):</b> open the dashboard URL with <code>?kiosk</code> (needs Kiosk Mode) — no header and no sidebar. At 1920×1080 with 125 % zoom it looks like the original. Portrait works too (the bar then shows icons only).",
-    "<b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist. Als Admin findest du dort auch <b>Kacheln bearbeiten</b>: Kacheln und ganze Gruppen per Ziehen anordnen, breiter machen, ausblenden, umbenennen — auf jeder Seite.":
-      "<b>Tap the clock:</b> design and light/dark for this device only — the default stays what is set here. As an admin you also find <b>Edit tiles</b> there: drag tiles and whole groups around, make them wider, hide or rename them — on every page.",
+    "<b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist. Als Admin findest du dort auch <b>Dashboard gestalten</b>: Kacheln und ganze Gruppen per Ziehen anordnen, breiter machen, ausblenden, umbenennen — auf jeder Seite.":
+      "<b>Tap the clock:</b> design and light/dark for this device only — the default stays what is set here. As an admin you also find <b>Customize dashboard</b> there: drag tiles and whole groups around, make them wider, hide or rename them — on every page.",
     "Tipp: Uhr antippen": "Tip: tap the clock", "Zeigen": "Show me", "Verstanden": "Got it",
     "Design und Hell/Dunkel für dieses Gerät.": "Design and light/dark for this device.",
-    "Design, Hell/Dunkel und <b>Kacheln bearbeiten</b>: Kacheln und Gruppen per Ziehen anordnen, Breite, ausblenden, umbenennen.":
-      "Design, light/dark and <b>Edit tiles</b>: drag tiles and groups around, change width, hide, rename.",
+    "Design, Hell/Dunkel und <b>Dashboard gestalten</b>: Kacheln und Gruppen per Ziehen anordnen, Breite, ausblenden, umbenennen.":
+      "Design, light/dark and <b>Customize dashboard</b>: drag tiles and groups around, change width, hide, rename.",
     "ziehen, Gruppen anordnen, ausblenden": "drag, arrange groups, hide",
     "<b>Livebilder am Wandmonitor:</b> Browser-Cache begrenzen, z. B. Chromium mit <code>--disk-cache-size=67108864</code> (64 MB) starten.":
       "<b>Live video on the wall display:</b> limit the browser cache, e.g. start Chromium with <code>--disk-cache-size=67108864</code> (64 MB).",
@@ -8647,10 +9034,10 @@ window.__NULLGLOW_THEMES = {
     "Ausgeblendete Gruppen": "Hidden groups", "Anzeigen": "Show", "Verwerfen": "Discard", "Speichere …": "Saving …", "Fertig": "Done", "Umbenennen": "Rename", "Originalname": "Original name",
     "Raum · Änderung gilt überall im Dashboard": "Room · change applies everywhere in the dashboard",
     "Früher": "Earlier", "Später": "Later", "Raum ausblenden": "Hide room", "Ausblenden": "Hide", "Abbrechen": "Cancel", "Schließen": "Close",
-    "Kacheln bearbeiten": "Edit tiles", "umbenennen, verschieben, ausblenden": "rename, move, hide",
+    "Dashboard gestalten": "Customize dashboard", "umbenennen, verschieben, ausblenden": "rename, move, hide",
     "8 · Direkt bearbeitet": "8 · Edited on the tiles", "{a} Namen · {b} ausgeblendet": "{a} names · {b} hidden", "nichts": "nothing",
-    "Auf dem Dashboard: <b>Uhr antippen → Kacheln bearbeiten</b> (nur Administratoren). Kachel antippen: umbenennen, ausblenden; halten und ziehen: verschieben. Namen gelten nur in diesem Dashboard.":
-      "On the dashboard: <b>tap the clock → Edit tiles</b> (administrators only). Tap a tile: rename, hide; hold and drag: move. Names only apply in this dashboard.",
+    "Auf dem Dashboard: <b>Uhr antippen → Dashboard gestalten</b> (nur Administratoren). Kachel antippen: umbenennen, ausblenden; halten und ziehen: verschieben. Namen gelten nur in diesem Dashboard.":
+      "On the dashboard: <b>tap the clock → Customize dashboard</b> (administrators only). Tap a tile: rename, hide; hold and drag: move. Names only apply in this dashboard.",
     "Ausgeblendete Kacheln": "Hidden tiles", "entfernen = wieder anzeigen": "remove = show again",
     "Reihenfolge der Kacheln zurücksetzen": "Reset tile order",
     // Medien
@@ -8672,6 +9059,90 @@ window.__NULLGLOW_THEMES = {
     "Weitere Müll-Stichworte": "Extra waste keywords", "z. B. Grünschnitt, Wertstoffhof": "e.g. green waste, recycling centre",
     "Nie warnen für": "Never warn for", "z. B. Geräte, die immer wenig Akku melden": "e.g. devices that always report a low battery",
     "Auf diesem Gerät zusätzlich ausgeblendet: {n}": "Additionally hidden on this device: {n}", "zurückholen": "restore",
+    // Konfiguration: Geräte ohne Raum, Vorlagen, Versionen, Gerätetypen, Bedingungen, + Kachel, Größe
+    "9 · Versionen": "9 · Versions",
+    "Abends": "Evening",
+    "Alle Geräte": "All devices",
+    "Alle Geräte haben einen Raum.": "Every device has a room.",
+    "Alle Gerätetypen teilen sich die Anordnung.": "All device types share the layout.",
+    "Alles auf einen Blick, Hinweise über der Leiste": "Everything at a glance, hints above the bar",
+    "Anordnung je Gerätetyp": "Layout per device type",
+    "Assistent": "Wizard",
+    "Auf eine Raum-Kachel ziehen oder Raum wählen — die Zuordnung gilt in ganz Home Assistant.": "Drag onto a room tile or pick a room — the assignment applies across Home Assistant.",
+    "Das Wichtigste oben, alles kompakt": "The essentials on top, everything compact",
+    "Dieses Gerät ist": "This device is",
+    "Dieses Gerät: {p} (automatisch nach Bildschirmbreite)": "This device: {p} (automatic by screen width)",
+    "Dieses Gerät: {p} (fest eingestellt)": "This device: {p} (set manually)",
+    "Eigene Anordnung auch für: {l}": "Own layout also for: {l}",
+    "Eigene Anordnung für {p}": "Own layout for {p}",
+    "Eigene Anordnung für {p}: Verschieben, Breite, Größe und Ausblenden von Kacheln und Gruppen gelten nur hier. Räume (Reihenfolge, ausblenden) gelten überall.": "Own layout for {p}: moving, width, size and hiding of tiles and groups only apply here. Rooms (order, hiding) apply everywhere.",
+    "Speichere offene Änderungen …": "Saving pending changes …",
+    "Direkt hier auf dem Dashboard — für alle Seiten. Tippe auf eine Funktion, um gleich dort zu starten.": "Right here on the dashboard — on every page. Tap a feature to jump straight to it.",
+    "Bearbeiten": "Edit", "Kacheln verschieben": "Move tiles", "Halten und ziehen": "Hold and drag", "Gruppen & Breite": "Groups & width",
+    "Ganze Blöcke anordnen, 1–4 Spalten": "Arrange whole blocks, 1–4 columns", "Größe ändern": "Resize", "Ecke einer Kachel ziehen": "Drag a tile's corner",
+    "Kacheln hinzufügen": "Add tiles", "Beliebige Entität in eine Gruppe": "Any entity into a group", "Umbenennen & ausblenden": "Rename & hide",
+    "Kachel antippen": "Tap a tile", "Anzeigen wenn …": "Show when …", "Tagsüber, nachts, niemand da …": "Daytime, night, nobody home …",
+    "Layout je Gerät": "Layout per device", "Handy, Tablet, Wandmonitor": "Phone, tablet, wall display", "Auf einen Raum ziehen": "Drag onto a room",
+    "Nichts geht verloren: Rückgängig nach dem Speichern, die letzten {n} Stände im Assistenten.": "Nothing gets lost: undo after saving, the last {n} versions in the wizard.", "Zurück auf automatisch": "Back to automatic",
+    "Hier änderst du die gemeinsame Anordnung. Eigene Anordnung behalten: {l} (ändern auf dem Gerät: Uhr antippen → Dashboard gestalten).": "This changes the shared layout. Keeping their own layout: {l} (change it on the device: tap the clock → Customize dashboard).", "Auf eine Raum-Kachel ziehen": "Drag onto a room tile", "keine": "none", "Hinweise": "Hints",
+    "Eigene Anordnung löschen": "Delete own layout",
+    "Eigene Anordnung: {p}": "Own layout: {p}",
+    "Energie im Fokus": "Energy focus",
+    "Energiefluss groß vorne": "Big energy flow up front",
+    "Entfernen": "Remove",
+    "Familie": "Family",
+    "Geräte ohne Raum": "Devices without a room",
+    "Gerätetyp": "Device type",
+    "Gespeichert": "Saved",
+    "Groß": "Large",
+    "Großer Bildschirm": "Large screen",
+    "Größe: an der Ecke unten rechts ziehen": "Size: drag the bottom-right corner",
+    "Handy": "Phone",
+    "Immer": "Always",
+    "Jemand da": "Someone home",
+    "Kachel hinzufügen": "Add tile",
+    "Kachel hinzufügen · {g}": "Add tile · {g}",
+    "Kachelgrößen zurücksetzen ({n})": "Reset tile sizes ({n})",
+    "Kacheln bearbeitet": "Tiles edited",
+    "Keine frühere Version.": "No earlier version.",
+    "Kleiner Bildschirm": "Small screen",
+    "Löschen": "Delete",
+    "Minimal": "Minimal",
+    "Morgens": "Morning",
+    "Nachts": "At night",
+    "Nichts gefunden": "Nothing found",
+    "Niemand da": "Nobody home",
+    "Nur Uhr, Licht, Klima und Termine": "Only clock, lights, climate and agenda",
+    "Raum …": "Room …",
+    "Rückgängig": "Undo",
+    "Stand vor: {x}": "State before: {x}",
+    "Standardgröße": "Default size",
+    "Stelle wieder her …": "Restoring …",
+    "Suchen: Name oder Entität": "Search: name or entity",
+    "Tablet": "Tablet",
+    "Tagsüber": "Daytime",
+    "Termine und wer zu Hause ist vorne": "Agenda and who's home up front",
+    "Vor jeder Änderung wird der alte Stand gemerkt (die letzten {n}). Wiederherstellen, dann Speichern.": "Before every change the previous state is kept (the last {n}). Restore, then save.",
+    "Vorlage": "Template",
+    "Vorlage übernehmen": "Apply template",
+    "{n} Namen": "{n} names", "{n} ausgeblendet": "{n} hidden", "Reihenfolge": "order", "{n} Größen": "{n} sizes", "{n} Gerätetypen": "{n} device types",
+    "Wandmonitor": "Wall display",
+    "Wenn aktiv": "When active",
+    "Wiederhergestellt": "Restored",
+    "Wiederherstellen": "Restore",
+    "Ziehen: Größe": "Drag: size",
+    "Zugeordnet: {n}": "Assigned: {n}",
+    "ein Klick setzt Anordnung und Darstellung; Geräte, Räume und Namen bleiben.": "one click sets layout and display; devices, rooms and names stay.",
+    "gilt auf Geräten dieses Typs statt der gemeinsamen Anordnung": "used on devices of this type instead of the shared layout",
+    "in „{g}“ · Licht, Schalter, Sensor, Kamera …": "into “{g}” · light, switch, sensor, camera …",
+    "nur: {m}": "only: {m}",
+    "{n} Entitäten": "{n} entities",
+    "{n} Geräte haben noch keinen Raum und fehlen deshalb. Auf dem Dashboard: <b>Uhr antippen → Dashboard gestalten → 📦</b> — dort per Ziehen auf einen Raum zuordnen.": "{n} devices have no room yet and are therefore missing. On the dashboard: <b>tap the clock → Customize dashboard → 📦</b> — drag them onto a room there.",
+    "{n} Geräte ohne Raum": "{n} devices without a room", "1 Gerät ohne Raum": "1 device without a room",
+    "{n} gespeichert": "{n} saved",
+    "Übernehmen": "Apply",
+    "„{n}“ übernehmen? Ersetzt die bisherige Anordnung (auch eigene Anordnungen je Gerätetyp).": "Apply “{n}”? Replaces the current layout (including own layouts per device type).",
+    "Kachel": "Tile", "in „{g}“": "into “{g}”", "Passend": "Suggested", "Schalter": "Switches", "Sensoren": "Sensors",
   };
   let ngH = null;   // zuletzt bekanntes hass (generate/Editor setzen es) — Sprache für t()
   const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
@@ -9214,16 +9685,84 @@ ha-tile-info {
 
   // Uhr antippen: Design + Hell/Dunkel für dieses Gerät (nullglow-design-card, Browser-Speicher)
   function designPopup(base, design, mode, admin) {
-    const go = { action: "navigate", navigation_path: "#ng-bearbeiten" };
     return { type: "custom:bubble-card", card_type: "pop-up", hash: "#design", name: "Design", icon: "mdi:palette",
       width_desktop: "900px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 60000,
       cards: [{ type: "custom:nullglow-design-card", storage: "local", dashboard: base, default_design: design, default_mode: mode },
-        ...(admin ? [{ type: "custom:bubble-card", card_type: "button", button_type: "name", name: t("Kacheln bearbeiten"), icon: "mdi:pencil-outline",
-          show_state: false, tap_action: go, button_action: { tap_action: go }, grid_options: { columns: 12, rows: 1 },
-          styles: ".bubble-button-card-container { border-radius: 20px !important; box-shadow: inset 0 0 0 1.5px var(--ng-acc), 0 0 22px -8px var(--ng-acc) !important; }\n"
-            + ".bubble-icon { color: var(--ng-acc) !important; }\n"
-            + ".bubble-name::after { content: '  ·  " + t("ziehen, Gruppen anordnen, ausblenden") + "'; opacity: .6; font-weight: 400; }\n" }] : [])] };
+        ...(admin ? [{ type: "custom:nullglow-edit-card", grid_options: { columns: 12, rows: "auto" } }] : [])] };
   }
+
+  // Uhr-Pop-up (Admins): Einstieg „Dashboard gestalten“ — zeigt, was alles geht, und springt direkt an die richtige Stelle
+  // (#ng-bearbeiten[-gruppen|-geraete|-geraetetyp], editHash wertet es aus)
+  const EDIT_FEATURES = [
+    ["", "mdi:gesture-tap-hold", "Kacheln verschieben", "Halten und ziehen"],
+    ["gruppen", "mdi:view-dashboard-edit-outline", "Gruppen & Breite", "Ganze Blöcke anordnen, 1–4 Spalten"],
+    ["", "mdi:resize-bottom-right", "Größe ändern", "Ecke einer Kachel ziehen"],
+    ["", "mdi:plus-box-outline", "Kacheln hinzufügen", "Beliebige Entität in eine Gruppe"],
+    ["", "mdi:rename-outline", "Umbenennen & ausblenden", "Kachel antippen"],
+    ["gruppen", "mdi:eye-settings-outline", "Anzeigen wenn …", "Tagsüber, nachts, niemand da …"],
+    ["geraetetyp", "mdi:devices", "Layout je Gerät", "Handy, Tablet, Wandmonitor"],
+  ];
+  const EDIT_CARD_CSS = `
+    :host { display: block; }
+    .c { position: relative; border-radius: 22px; padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 14px; overflow: hidden;
+      color: var(--ng-txt, #e8f5ee); font-family: var(--ng-font, inherit);
+      background: radial-gradient(120% 140% at 0% 0%, rgba(var(--rgb-ng-acc, 124, 255, 178), .16), transparent 55%), rgba(var(--rgb-ng-txt, 255, 255, 255), .035);
+      box-shadow: inset 0 0 0 1.5px rgba(var(--rgb-ng-acc, 124, 255, 178), .55), 0 0 28px -10px rgba(var(--rgb-ng-acc, 124, 255, 178), calc(.7 * var(--ng-glow-k, 1))); }
+    .hd { display: flex; align-items: center; gap: 14px; }
+    .ic { flex: none; width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; --mdc-icon-size: 26px;
+      background: rgba(var(--rgb-ng-acc, 124, 255, 178), .16); color: var(--ng-acc, #7cffb2);
+      box-shadow: 0 0 20px -6px rgba(var(--rgb-ng-acc, 124, 255, 178), calc(.8 * var(--ng-glow-k, 1))); }
+    .tt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+    .tt b { font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
+    .tt small { font-size: 12.5px; color: var(--ng-txt-dim, #93a79d); line-height: 1.35; }
+    button { font: inherit; border: 0; margin: 0; cursor: pointer; color: inherit; -webkit-tap-highlight-color: transparent; }
+    .go { flex: none; height: 44px; padding: 0 18px 0 20px; border-radius: 999px; display: inline-flex; align-items: center; gap: 8px;
+      font-size: 15px; font-weight: 700; background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d);
+      box-shadow: 0 8px 24px -10px rgba(var(--rgb-ng-acc, 124, 255, 178), calc(.9 * var(--ng-glow-k, 1))); transition: transform .15s; }
+    .go:hover { transform: translateX(2px); }
+    .go ha-icon { --mdc-icon-size: 20px; }
+    .ch { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+    .f { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 12px 6px 8px; border-radius: 14px; text-align: left;
+      background: rgba(var(--rgb-ng-txt, 255, 255, 255), .05); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .07); transition: background .15s; }
+    .f:hover { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .12); }
+    .f ha-icon { flex: none; --mdc-icon-size: 20px; color: var(--ng-acc, #7cffb2); width: 32px; height: 32px; display: grid; place-items: center;
+      border-radius: 10px; background: rgba(var(--rgb-ng-acc, 124, 255, 178), .10); }
+    .f span { display: flex; flex-direction: column; min-width: 0; }
+    .f b { font-size: 13px; font-weight: 600; } .f small { font-size: 11px; color: var(--ng-txt-dim, #93a79d); line-height: 1.25; }
+    .f.warn ha-icon { color: var(--ng-warn, #ffd166); background: rgba(var(--rgb-ng-warn, 255, 209, 102), .14); }
+    .f.warn { box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-warn, 255, 209, 102), .45); }
+    .ft { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ng-txt-dim, #93a79d); }
+    .ft ha-icon { --mdc-icon-size: 15px; color: var(--ng-acc, #7cffb2); }
+    @media (max-width: 560px) { .hd { flex-wrap: wrap; } .go { width: 100%; justify-content: center; } .ch { grid-template-columns: 1fr 1fr; }
+      .f small { display: none; } }
+  `;
+  if (!customElements.get("nullglow-edit-card")) customElements.define("nullglow-edit-card", class extends HTMLElement {
+    setConfig() { if (!this.shadowRoot) { this.attachShadow({ mode: "open" }); this.shadowRoot.addEventListener("click", (e) => this._click(e)); } this._render(); }
+    set hass(h) {
+      ngH = h;
+      if (Date.now() - (this._at || 0) < 5000) return;   // Geräte ohne Raum: höchstens alle 5 s zählen
+      this._at = Date.now(); this._render();
+    }
+    getCardSize() { return 3; }
+    _render() {
+      if (!this.shadowRoot) return;
+      const nd = unassigned().length;
+      const html = `<style>${EDIT_CARD_CSS}</style><div class="c">
+        <div class="hd"><span class="ic"><ha-icon icon="mdi:pencil-ruler"></ha-icon></span>
+          <span class="tt"><b>${esc(t("Dashboard gestalten"))}</b><small>${esc(t("Direkt hier auf dem Dashboard — für alle Seiten. Tippe auf eine Funktion, um gleich dort zu starten."))}</small></span>
+          <button class="go" data-f=""><span>${esc(t("Bearbeiten"))}</span><ha-icon icon="mdi:arrow-right"></ha-icon></button></div>
+        <div class="ch">${nd ? `<button class="f warn" data-f="geraete"><ha-icon icon="mdi:package-variant"></ha-icon><span><b>${esc(nd === 1 ? t("1 Gerät ohne Raum") : t("{n} Geräte ohne Raum", { n: nd }))}</b><small>${esc(t("Auf einen Raum ziehen"))}</small></span></button>` : ""}
+          ${EDIT_FEATURES.map(([f, ic, l, d]) => `<button class="f" data-f="${f}"><ha-icon icon="${ic}"></ha-icon><span><b>${esc(t(l))}</b><small>${esc(t(d))}</small></span></button>`).join("")}</div>
+        <div class="ft"><ha-icon icon="mdi:undo-variant"></ha-icon>${esc(t("Nichts geht verloren: Rückgängig nach dem Speichern, die letzten {n} Stände im Assistenten.", { n: VMAX }))}</div></div>`;
+      if (html !== this._html) { this.shadowRoot.innerHTML = html; this._html = html; }
+    }
+    _click(e) {
+      const b = e.composedPath().find((x) => x.dataset?.f !== undefined);
+      if (!b) return;
+      history.pushState(null, "", location.pathname + location.search + "#ng-bearbeiten" + (b.dataset.f ? "-" + b.dataset.f : ""));
+      window.dispatchEvent(new CustomEvent("location-changed", { detail: { replace: false } }));
+    }
+  });
 
   function radarPopup() {
     return { type: "custom:bubble-card", card_type: "pop-up", hash: "#regenradar", name: t("Regenradar"), icon: "mdi:weather-pouring",
@@ -9300,8 +9839,49 @@ ha-tile-info {
     { key: "zuhause", name: "Zuhause", icon: "mdi:home-account", width: 1 },
     { key: "termine", name: "Termine", icon: "mdi:calendar-heart", width: 1 },
   ];
-  // home_layout: { order: [key…], width: {key: 1–4}, hide: [key…], cam_cols: 1–3 } — nur Abweichungen vom Standard
-  function applyHomeLayout(parts, layout) {
+  // Gruppe je nach Lage zeigen (layout.show: { <gruppe>: modus }) — HA wertet die Bedingungen der Section selbst aus
+  const SHOW_MODES = ["home", "away", "day", "night", "morning", "evening", "active", "large", "small"];
+  const IDLE_STATES = ["off", "idle", "unavailable", "unknown", "standby", "docked", "closed", "locked", "paused", "not_home"];
+  function showWhen(mode, sec) {
+    switch (mode) {
+      case "home": return [{ condition: "numeric_state", entity: "zone.home", above: 0 }];
+      case "away": return [{ condition: "numeric_state", entity: "zone.home", below: 1 }];
+      case "day": return [{ condition: "state", entity: "sun.sun", state: "above_horizon" }];
+      case "night": return [{ condition: "state", entity: "sun.sun", state: "below_horizon" }];
+      case "morning": return [{ condition: "time", after: "06:00:00", before: "11:00:00" }];
+      case "evening": return [{ condition: "time", after: "17:00:00", before: "23:59:59" }];
+      case "large": return [{ condition: "screen", media_query: "(min-width: 1024px)" }];
+      case "small": return [{ condition: "screen", media_query: "(max-width: 1023px)" }];
+      case "active": {   // sobald eines der Geräte der Gruppe läuft/an ist
+        const ents = [...new Set((sec.cards || []).flatMap((c) => { const i = c.card || c; return [i.entity, ...(Array.isArray(i.entities) ? i.entities : [])]; })
+          .map((e) => (typeof e === "string" ? e : e?.entity)).filter((e) => typeof e === "string" && e.includes(".")))].slice(0, 12);
+        return ents.length ? [{ condition: "or", conditions: ents.map((e) => ({ condition: "state", entity: e, state_not: IDLE_STATES })) }] : null;
+      }
+      default: return null;
+    }
+  }
+  // Selbst hinzugefügte Kacheln (layout.add: { <gruppe>: [entity…] }): passender Baustein je Domäne
+  function addedTile(eid, hass, key, view) {
+    const d = DOMAIN(eid), name = niceName(hass, eid, [], false);
+    const card = d === "light" ? lightTile(eid, name, null, null, 6)
+      : d === "cover" ? coverTile(eid, name, 12)
+      : d === "camera" ? camCard(eid, false)
+      : d === "media_player" && has("nullglow-media-card") ? { type: "custom:nullglow-media-card", entity: eid, size: "compact", grid_options: { columns: 12, rows: 2 } }
+      : d === "climate" ? climateCard(eid, hass)
+      : { type: "tile", entity: eid, name, grid_options: { columns: 6 },
+        ...(["switch", "fan", "input_boolean", "lock", "siren", "humidifier"].includes(d) ? { tap_action: { action: "toggle" } } : {}) };
+    return { ...card, view_layout: { ...(card.view_layout || {}), ng_edit: { id: eid, kind: "entity", added: key, view } } };
+  }
+  function withExtras(sec, key, L, hass, view) {
+    const add = (L.add || {})[key] || [];
+    if (add.length) sec.cards = [...(sec.cards || []), ...add.filter((e) => hass.states[e]).map((e) => addedTile(e, hass, key, view))];
+    const vis = L.show?.[key] && showWhen(L.show[key], sec);
+    if (vis) sec.visibility = vis; else delete sec.visibility;
+    return sec;
+  }
+
+  // home_layout: { order: [key…], width: {key: 1–4}, hide: [key…], cam_cols: 1–3, show: {key: modus}, add: {key: [entity]} } — nur Abweichungen
+  function applyHomeLayout(parts, layout, hass) {
     const L = layout || {}, order = L.order || [], hide = new Set(L.hide || []), width = L.width || {};
     const rank = (k) => { const i = order.indexOf(k); return i === -1 ? 100 + HOME_PARTS.findIndex((p) => p.key === k) : i; };
     return parts.filter((p) => !hide.has(p.key)).sort((a, b) => rank(a.key) - rank(b.key)).map((p) => {
@@ -9311,6 +9891,7 @@ ha-tile-info {
       // Kameras nebeneinander: eine Section über w Spalten hat 12·w Rasterspalten
       const cc = Math.min(3, Math.max(1, Math.round(+L.cam_cols || 1)));
       if (p.key === "kameras" && cc > 1) sec.cards = sec.cards.map((c) => (c.type === "picture-entity" ? { ...c, grid_options: { columns: (12 * w) / cc } } : c));
+      if (hass) withExtras(sec, p.key, L, hass, "home");
       if (sec.cards?.length) sec.cards = [{ ...sec.cards[0], view_layout: { ...(sec.cards[0].view_layout || {}), ng_group: p.key } }, ...sec.cards.slice(1)];
       return sec;
     });
@@ -9320,9 +9901,37 @@ ha-tile-info {
   const GROUP_TYPE_NAMES = { "nullglow-power-card": "Leistung 24 h", "nullglow-month-card": "Monatsbilanz", "nullglow-flow-card": "Energiefluss",
     "nullglow-media-card": "Medien", "nullglow-mower-map-card": "Garten", "nullglow-mower-stats-card": "Statistik", "calendar": "Kalender",
     "calendar-card-pro": "Termine", "nullglow-floorplan-card": "Grundriss" };
-  function applyViewLayout(view, sections, L, hass) {
+  // Entitäten einer Section (für den Abgleich mit der Fassung ohne ausgeblendete Kacheln)
+  const secEnts = (sec) => {
+    const out = new Set(), add = (c) => {
+      if (!c || typeof c !== "object") return;
+      const e = c.entity?.entity || c.entity; if (typeof e === "string") out.add(e);
+      (Array.isArray(c.entities) ? c.entities : []).forEach((x) => { const y = x?.entity || x; if (typeof y === "string") out.add(y); });
+      if (c.card) add(c.card);
+    };
+    (Array.isArray(sec.cards) ? sec.cards : []).forEach(add);
+    return out;
+  };
+  // full: dieselbe Seite ohne „ausgeblendet“ gebaut — ihre Schlüssel gelten, damit das Ausblenden der ersten Kachel einer Gruppe
+  // deren gespeicherte Breite/Reihenfolge/Bedingung nicht verliert (der Schlüssel hängt an der ersten Entität)
+  function applyViewLayout(view, sections, L, hass, full = null) {
     L = L || {};
     const used = new Set(), order = L.order || [], hide = new Set(L.hide || []), width = L.width || {};
+    let stable = null;
+    if (full) {
+      const fk = new Set(), keyOf = (sec) => {
+        const cards = Array.isArray(sec.cards) ? sec.cards : [];
+        if (!cards.length) return null;
+        const room = cards.map((c) => c.view_layout?.ng_edit).find((m) => m?.kind === "room");
+        const c0 = cards.find((c) => c.type !== "heading") || cards[0], inner = c0.card || c0;
+        const e0 = inner.entity || (Array.isArray(inner.entities) ? inner.entities[0] : null), ent = e0?.entity || e0;
+        let k = room ? room.id : String(inner.type || "karte").replace("custom:", "").replace("nullglow-", "") + (typeof ent === "string" ? ":" + ent : "");
+        for (let n = 2; fk.has(k); n++) k = k.replace(/#\d+$/, "") + "#" + n;
+        fk.add(k);
+        return k;
+      };
+      stable = full.map((sec) => ({ key: keyOf(sec), ents: secEnts(sec), taken: false })).filter((x) => x.key);
+    }
     const names = ((window.__ngGroupNames = window.__ngGroupNames || {})[view] = {});
     const items = sections.map((sec, i) => {
       const cards = Array.isArray(sec.cards) ? sec.cards : [];
@@ -9332,6 +9941,12 @@ ha-tile-info {
       const c0 = cards.find((c) => c.type !== "heading") || cards[0], inner = c0.card || c0;   // Verlauf-Hülle: Karte steckt innen
       const e0 = inner.entity || (Array.isArray(inner.entities) ? inner.entities[0] : null), ent = e0?.entity || e0;
       let key = room ? room.id : String(inner.type || "karte").replace("custom:", "").replace("nullglow-", "") + (typeof ent === "string" ? ":" + ent : "");
+      if (stable && !room) {   // Gegenstück in der vollen Fassung: gleiche Entitäten (mehr sind es dort höchstens)
+        const mine = secEnts(sec);
+        let best = null, bn = 0;
+        for (const x of stable) { if (x.taken) continue; let n = 0; mine.forEach((e) => { if (x.ents.has(e)) n++; }); if (n > bn) { best = x; bn = n; } }
+        if (best && !used.has(best.key)) { best.taken = true; key = best.key; }
+      }
       for (let n = 2; used.has(key); n++) key = key.replace(/#\d+$/, "") + "#" + n;
       used.add(key);
       const name = String(h?.heading || (typeof inner.name === "string" && !/[{]/.test(inner.name) ? inner.name : "")
@@ -9346,6 +9961,7 @@ ha-tile-info {
       if (!x.key) return x.sec;
       const sec = { ...x.sec }, w = Math.min(4, Math.max(1, Math.round(+width[x.key] || x.w0)));
       if (w > 1) sec.column_span = w; else delete sec.column_span;
+      withExtras(sec, x.key, L, hass, view);
       sec.cards = [{ ...sec.cards[0], view_layout: { ...(sec.cards[0].view_layout || {}), ng_group: x.key, ng_view: view, ng_name: x.name, ng_w: x.w0 } },
         ...sec.cards.slice(1)];
       return sec;
@@ -9398,7 +10014,7 @@ ha-tile-info {
   // Lücken füllt HA weiter auf (dense): Reihenfolge bleibt, kleine Gruppen rücken ggf. in eine Lücke davor
   function viewHome(inv, energy, base, on, hass, cfg, design) {
     const { parts, extra } = homeParts(inv, energy, base, on, hass, cfg, design);
-    const sections = applyHomeLayout(parts, cfg.home_layout);
+    const sections = applyHomeLayout(parts, cfg.home_layout, hass);
     // Hinweise oben über die ganze Breite (leer = Karte unsichtbar); schwebend kommt sie auf jede Seite (generate)
     const hc = (cfg.hints || {}).mode !== "float" && hintsCard(cfg, base, on, extra.some((p) => p.hash === "#fenster"));
     return { sections: hc ? [{ type: "grid", column_span: 4, cards: [hc] }, ...sections] : sections, extra };
@@ -9442,7 +10058,8 @@ ha-tile-info {
         lightRooms.forEach((r) => cards.push(markRoom(r.light ? lightTile(r.light, r.name, r.icon, r.hash, 6, tapPop) : roomLightsButton(r, r.hash, 6, tapPop), r)));
         cards.push(allOff());
       }
-      cards.push({ type: "custom:nullglow-care-card", mode: "summary", tap_hash: "#wartung", battery: { warn: 30, crit: 15 },
+      cards.push({ type: "custom:nullglow-care-card", mode: "summary", tap_hash: "#wartung", battery: { warn: 30, crit: 15 }, dashboard: base,
+        ...(cfg.hints?.ignore?.length ? { ignore: cfg.hints.ignore } : {}),
         grid_options: { columns: 6, rows: 1 } });
       S.push("licht", { type: "grid", cards });
     }
@@ -9496,7 +10113,8 @@ ha-tile-info {
 
     const pops = [radarPopup(), { type: "custom:bubble-card", card_type: "pop-up", hash: "#wartung", name: t("Batterien & Wartung"),
       icon: "mdi:battery-heart-variant", width_desktop: "620px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 120000,
-      cards: [{ type: "custom:nullglow-care-card", mode: "full", battery: { warn: 30, crit: 15 } }] }];
+      cards: [{ type: "custom:nullglow-care-card", mode: "full", battery: { warn: 30, crit: 15 }, dashboard: base,
+        ...(cfg.hints?.ignore?.length ? { ignore: cfg.hints.ignore } : {}) }] }];
     inv.shown.forEach((r) => { const p = roomPopup(r, hass, inv); if (p) pops.push(p); });
     if (compact) pops.push(coversPopup(inv));
     if (lightsCompact) pops.push(lightsPopup(inv, cfg));
@@ -9826,6 +10444,76 @@ ha-tile-info {
   setInterval(ensureMode, 1000);
 
   // ---------- Strategie ----------
+  // ---------- Layout je Gerätetyp ----------
+  // profiles: { gross|tablet|handy: { home_layout, layouts, tile_order, tile_size, hidden } } — nur, wenn ein Gerätetyp eine eigene
+  // Anordnung bekommen hat (Bearbeiten-Leiste). Welcher Typ: je Gerät wählbar (Browser-Speicher), sonst nach Bildschirmbreite.
+  const PROFILE_KEYS = ["home_layout", "layouts", "tile_order", "tile_size", "hidden"];
+  const PROFILES = ["gross", "tablet", "handy"];
+  const PROFILE_NAME = { gross: "Großer Bildschirm", tablet: "Tablet", handy: "Handy" };
+  const PROFILE_SHORT = { gross: "Groß", tablet: "Tablet", handy: "Handy" };
+  // Start-Vorlagen: setzen Anordnung + Darstellung, Geräte/Räume/Namen bleiben
+  const PRESETS = {
+    wand: { name: "Wandmonitor", icon: "mdi:monitor-dashboard", desc: "Alles auf einen Blick, Hinweise über der Leiste",
+      cfg: { home_layout: { split_media: true }, covers: "compact", contacts: "compact", hints: { mode: "float" } } },
+    handy: { name: "Handy", icon: "mdi:cellphone", desc: "Das Wichtigste oben, alles kompakt",
+      cfg: { lights: "compact", covers: "compact", contacts: "compact", climate_graph: false,
+        home_layout: { order: ["uhr", "licht", "klima", "termine", "energie", "zuhause", "rolllaeden", "kameras"] } } },
+    energie: { name: "Energie im Fokus", icon: "mdi:solar-power-variant", desc: "Energiefluss groß vorne",
+      cfg: { home_layout: { order: ["energie", "uhr", "licht", "klima", "termine", "zuhause", "rolllaeden", "kameras"], width: { energie: 3 } } } },
+    familie: { name: "Familie", icon: "mdi:account-group", desc: "Termine und wer zu Hause ist vorne",
+      cfg: { person_map: true, home_layout: { order: ["uhr", "termine", "zuhause", "licht", "klima", "energie", "rolllaeden", "kameras"], width: { termine: 2 } } } },
+    minimal: { name: "Minimal", icon: "mdi:circle-outline", desc: "Nur Uhr, Licht, Klima und Termine",
+      cfg: { lights: "compact", climate_graph: false, hints: { mode: "off" },
+        home_layout: { order: ["uhr", "licht", "klima", "termine"], hide: ["energie", "kameras", "rolllaeden", "zuhause"] } } },
+  };
+  const PRESET_KEYS = ["home_layout", "layouts", "tile_order", "tile_size", "lights", "covers", "contacts", "climate_graph", "media_home", "person_map", "light_tap"];
+  // layoutOnly: nur die Anordnung (PROFILE_KEYS) — für ein Gerät mit eigenem Layout, Darstellung gilt ja für alle Geräte
+  function applyPreset(c, key, resetProfiles, layoutOnly = false) {
+    const P = PRESETS[key];
+    if (!P) return c;
+    // selbst hinzugefügte Kacheln (add) und „Anzeigen wenn …“ (show) sind eigene Regeln, keine Anordnung -> bleiben
+    const keep = (L) => Object.fromEntries(["add", "show"].filter((k) => L?.[k]).map((k) => [k, L[k]]));
+    const kept = { home: keep(c.home_layout), ...Object.fromEntries(Object.entries(c.layouts || {}).map(([v, L]) => [v, keep(L)])) };
+    const keys = layoutOnly ? PRESET_KEYS.filter((k) => PROFILE_KEYS.includes(k)) : PRESET_KEYS;
+    keys.forEach((k) => { delete c[k]; });
+    if (resetProfiles) delete c.profiles;
+    const x = Object.fromEntries(Object.entries(clone(P.cfg)).filter(([k]) => !layoutOnly || PROFILE_KEYS.includes(k)));
+    if (x.hints) { c.hints = { ...(c.hints || {}), ...x.hints }; delete x.hints; } else if (c.hints && !layoutOnly) { delete c.hints.mode; if (!Object.keys(c.hints).length) delete c.hints; }
+    Object.assign(c, x);
+    for (const [v, k] of Object.entries(kept)) {
+      if (!Object.keys(k).length) continue;
+      if (v === "home") c.home_layout = { ...(c.home_layout || {}), ...k };
+      else { c.layouts = c.layouts || {}; c.layouts[v] = { ...(c.layouts[v] || {}), ...k }; }
+    }
+    return c;
+  }
+  const profKey = (base) => `nullglow-profile:${base}`;
+  const profileSetting = (base) => { try { return localStorage.getItem(profKey(base)) || "auto"; } catch (e) { return "auto"; } };
+  const autoProfile = () => (innerWidth < 600 ? "handy" : innerWidth < 1200 ? "tablet" : "gross");
+  const deviceProfile = (base) => { const v = profileSetting(base); return PROFILES.includes(v) ? v : autoProfile(); };
+  function effectiveCfg(cfg, prof) {
+    const P = cfg.profiles?.[prof];
+    if (!P) return cfg;
+    const e = { ...cfg };
+    PROFILE_KEYS.forEach((k) => { if (P[k] !== undefined) e[k] = P[k]; else delete e[k]; });
+    return e;
+  }
+  // Dashboard neu erzeugen (anderes Profil, neue Raumzuordnung) — ohne Speichern
+  function regenerate() {
+    const p = deepFind(document, "ha-panel-lovelace");
+    if (typeof p?._fetchConfig === "function") p._fetchConfig(false); else location.reload();
+  }
+  window.__ngRegenerate = regenerate;
+  let profT = null;
+  window.addEventListener("resize", () => {   // Breite über eine Grenze: anderes Profil, falls es eigene gibt
+    clearTimeout(profT);
+    profT = setTimeout(() => {
+      const p = window.__ngProfile, base = "/" + (location.pathname.split("/")[1] || "lovelace");
+      if (!p || p.base !== base || !Object.keys(window.__ngLastCfg0?.profiles || {}).length || window.__ngEdit?.on) return;
+      if (deviceProfile(base) !== p.name) regenerate();
+    }, 500);
+  });
+
   // ---------- Direkt auf der Kachel bearbeiten ----------
   // Jede bearbeitbare Kachel trägt view_layout.ng_edit = { id, kind: "entity" | "room", room } (view_layout lassen alle
   // Karten zu und ignorieren es in Sections). Gespeichert wird nur in der Dashboard-Einstellung (strategy):
@@ -9836,16 +10524,19 @@ ha-tile-info {
     "custom:mushroom-climate-card": "name", "custom:mushroom-vacuum-card": "name", "custom:mushroom-template-card": "primary" };
   const labelKey = (c) => { const k = LABEL[c?.type]; return k && !(k === "primary" && /[{]/.test(String(c.primary || ""))) ? k : null; };
   const editCard = (c) => (c?.type === "custom:nullglow-spark-card" && c.card ? c.card : c);   // Verlauf-Hülle: Name steht innen
-  function applyEdits(sections, cfg) {
-    const names = cfg.names || {}, order = cfg.tile_order || [];
+  // tile_size: „<seite>|<entität>“ (je Seite; ältere Einträge ohne Seite gelten überall). Spalten im Raster der Section (12 je Spalte der Section).
+  const sizeOf = (size, view, id) => (size || {})[`${view}|${id}`] || (size || {})[id];
+  function applyEdits(sections, cfg, view = "home") {
+    const names = cfg.names || {}, order = cfg.tile_order || [], size = cfg.tile_size || {};
+    const sized = (c) => { const z = sizeOf(size, view, c.view_layout?.ng_edit?.id); return z ? { ...c, grid_options: { ...(c.grid_options || {}), columns: z.columns, rows: z.rows } } : c; };
     return sections.map((sec) => {
       if (!Array.isArray(sec.cards)) return sec;
       let cards = sec.cards.map((c) => {
-        if (c.view_layout?.ng_edit) return c;
+        if (c.view_layout?.ng_edit) return sized(c);
         const inner = editCard(c), id = inner?.entity;
         if (!id || !labelKey(inner)) return c;
         const named = names[id] ? (c === inner ? { ...c, [labelKey(c)]: names[id] } : { ...c, card: { ...inner, [labelKey(inner)]: names[id] } }) : c;
-        return { ...named, view_layout: { ...(c.view_layout || {}), ng_edit: { id, kind: "entity" } } };
+        return sized({ ...named, view_layout: { ...(c.view_layout || {}), ng_edit: { id, kind: "entity" } } });
       });
       // Reihenfolge: nur die Kacheln aus tile_order tauschen ihre Plätze untereinander, alles andere bleibt stehen
       const slots = cards.map((c, i) => [i, order.indexOf(c.view_layout?.ng_edit?.id)]).filter(([, k]) => k !== -1);
@@ -9859,19 +10550,59 @@ ha-tile-info {
     });
   }
 
-  // Einstellung des gerade offenen Dashboards lesen/ändern/speichern (nur Admins; HA baut das Dashboard danach neu)
-  async function saveStrategy(patch) {
+  // Einstellung des gerade offenen Dashboards lesen/ändern/speichern (nur Admins; HA baut das Dashboard danach neu).
+  // Hat das Gerät ein eigenes Layout (profiles.<profil>), landen Anordnungs-Schlüssel (PROFILE_KEYS) dort, alles andere für alle.
+  // Jede echte Änderung legt den vorigen Stand in _versions ab (höchstens VMAX) — „Rückgängig“ und Versionen im Assistenten.
+  const VMAX = 8;
+  const bareCfg = (x) => { const c = clone(x); delete c._versions; return c; };
+  // Speichern nacheinander (Warteschlange): zwei gleichzeitige Speicherungen läsen sonst beide den alten Stand und die
+  // spätere überschriebe die frühere. Liefert true, wenn sich etwas geändert hat (dann gibt es eine neue Version).
+  // opts.version === false: keine Version anlegen (z. B. Hinweis ausblenden — soll keine Layout-Versionen verdrängen).
+  let saveQ = Promise.resolve();
+  function saveStrategy(patch, label = "Kacheln", opts = {}) {
+    const run = saveQ.then(() => saveNow(patch, label, opts));
+    saveQ = run.catch(() => {});
+    return run;
+  }
+  async function saveNow(patch, label, opts) {
     const hass = document.querySelector("home-assistant")?.hass;
     if (!hass?.user?.is_admin) throw new Error(t("Nur Administratoren können das Dashboard ändern."));
     const seg = location.pathname.split("/")[1] || "lovelace", url_path = seg === "lovelace" ? null : seg;
     const conf = await hass.callWS({ type: "lovelace/config", url_path, force: true });
     if (!conf?.strategy || conf.strategy.type !== "custom:nullglow") throw new Error(t("Dieses Dashboard ist keine Nullglow-Vorlage."));
-    const s = clone(conf.strategy);
-    patch(s);
-    for (const k of ["names", "rooms", "hints"]) if (s[k] && typeof s[k] === "object" && !Array.isArray(s[k]) && !Object.keys(s[k]).length) delete s[k];
-    for (const k of ["hidden", "tile_order", "room_order"]) if (Array.isArray(s[k]) && !s[k].length) delete s[k];
+    const s = clone(conf.strategy), before = bareCfg(s), prof = window.__ngProfile;
+    if (opts.profile !== false && prof?.own && s.profiles?.[prof.name]) {
+      const P = s.profiles[prof.name], tmp = clone(s);
+      PROFILE_KEYS.forEach((k) => { if (P[k] !== undefined) tmp[k] = clone(P[k]); else delete tmp[k]; });
+      patch(tmp);
+      PROFILE_KEYS.forEach((k) => { if (tmp[k] !== undefined) P[k] = tmp[k]; else delete P[k]; });
+      for (const k of Object.keys(tmp)) if (!PROFILE_KEYS.includes(k) && k !== "profiles") s[k] = tmp[k];
+      for (const k of Object.keys(s)) if (!PROFILE_KEYS.includes(k) && k !== "profiles" && !(k in tmp)) delete s[k];
+    } else patch(s);
+    const tidy = (o) => {
+      for (const k of ["names", "rooms", "hints", "tile_size"]) if (o[k] && typeof o[k] === "object" && !Array.isArray(o[k]) && !Object.keys(o[k]).length) delete o[k];
+      for (const k of ["hidden", "tile_order", "room_order"]) if (Array.isArray(o[k]) && !o[k].length) delete o[k];
+    };
+    tidy(s); Object.values(s.profiles || {}).forEach(tidy);
+    if (s.profiles && !Object.keys(s.profiles).length) delete s.profiles;
+    const vers = (conf.strategy._versions || []).filter((v, i) => i !== opts.drop);
+    const changed = JSON.stringify(bareCfg(s)) !== JSON.stringify(before);
+    if (changed && opts.version !== false)
+      s._versions = [{ at: new Date().toISOString(), by: label, cfg: before }, ...vers].slice(0, VMAX);
+    else if (vers.length) s._versions = vers; else delete s._versions;
     await hass.callWS({ type: "lovelace/config/save", url_path, config: { ...conf, strategy: s } });
+    return changed && opts.version !== false;
   }
+  // Letzten Stand wiederherstellen (Rückgängig) bzw. Version i
+  async function restoreVersion(i = 0) {
+    await saveStrategy((s) => {
+      const v = s._versions?.[i];
+      if (!v) throw new Error(t("Keine frühere Version."));
+      for (const k of Object.keys(s)) if (k !== "_versions") delete s[k];
+      Object.assign(s, clone(v.cfg));
+    }, "Rückgängig", { profile: false, drop: i });
+  }
+  window.__ngRestoreVersion = restoreVersion;
   window.__ngSaveStrategy = saveStrategy;
 
   // Rahmen, Menü und Leiste liegen in Seiten-Koordinaten (scrollen nativ mit), nur die Leiste steht fest oben.
@@ -9940,25 +10671,79 @@ ha-tile-info {
     .menu input:focus { box-shadow: inset 0 0 0 1.5px var(--ng-acc, #7cffb2); }
     .menu .err { color: var(--ng-danger, #ff6b6b); font-size: 12px; }
     .bar .cnt { display: none; font-variant-numeric: tabular-nums; }
+    .bar .prof span, .bar .dev span { font-size: 13px; }
+    .bar .dev { color: var(--ng-warn, #ffd166); }
+    .seg2.wrap { flex-wrap: wrap; } .seg2.wrap button { flex: 1 0 30%; }
+    .box .rs { position: absolute; right: -6px; bottom: -6px; width: 22px; height: 22px; border-radius: 8px 0 14px 0; cursor: nwse-resize;
+      background: linear-gradient(135deg, transparent 45%, var(--ng-acc, #7cffb2) 46%); opacity: .85; touch-action: none; }
+    .box .rs::before { content: ""; position: absolute; inset: -16px 0 0 -16px; }   /* Finger trifft leichter (≈ 38 px), nur nach innen (sonst Quer-Scrollen am Rand) */
+    .box.sizing { box-shadow: inset 0 0 0 2px var(--ng-acc, #7cffb2), 0 0 26px -4px rgba(var(--rgb-ng-acc, 124, 255, 178), .8); }
+    .box .sz { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 4px 10px; border-radius: 999px; font-size: 13px;
+      font-weight: 600; background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); pointer-events: none; }
+    .add { position: absolute; pointer-events: auto; transform: translateX(-100%); height: 28px; min-height: 0; padding: 0 12px 0 8px; gap: 4px;
+      border-radius: 999px; border: 0; cursor: pointer; display: inline-flex; align-items: center; font-size: 13px; font-weight: 600;
+      background: rgba(var(--rgb-ng-bg, 10, 14, 18), .9); color: var(--ng-acc, #7cffb2); z-index: 1;
+      box-shadow: inset 0 0 0 1.5px rgba(var(--rgb-ng-acc, 124, 255, 178), .7), 0 6px 16px -6px rgba(0, 0, 0, .6); }
+    .add:hover { background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); }
+    .add ha-icon { --mdc-icon-size: 16px; color: inherit; }
+    .rsg { position: absolute; pointer-events: none; z-index: 2; border-radius: 18px; box-sizing: border-box;
+      border: 2px dashed var(--ng-acc, #7cffb2); background: rgba(var(--rgb-ng-acc, 124, 255, 178), .12);
+      box-shadow: 0 0 30px -6px rgba(var(--rgb-ng-acc, 124, 255, 178), .7); transition: width .08s, height .08s; }
+    .rsg span { position: absolute; right: 8px; bottom: 8px; padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 600;
+      background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); }
+    .box.sizing { opacity: .35; }
+    .box.flash { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .22); box-shadow: inset 0 0 0 3px var(--ng-acc, #7cffb2), 0 0 34px -2px rgba(var(--rgb-ng-acc, 124, 255, 178), .9); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chips button { min-height: 28px; padding: 0 11px; font-size: 13px; }
+    .chips button.on { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .2); color: var(--ng-acc, #7cffb2); font-weight: 600; }
+    .menu .list { display: flex; flex-direction: column; gap: 4px; max-height: 320px; overflow: auto; margin: 0 -4px; padding: 0 4px; }
+    .menu .it { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 12px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .04);
+      text-align: left; justify-content: flex-start; min-height: 40px; }
+    .menu .it .t { flex: 1; min-width: 0; display: flex; flex-direction: column; } .menu .it .t small { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .menu .it .t span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .menu .grip { flex: none; display: grid; place-items: center; width: 36px; height: 40px; margin: -6px 0 -6px -8px; border-radius: 12px 0 0 12px;
+      cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; color: var(--ng-txt-dim, #93a79d); }
+    .menu .grip:hover { color: var(--ng-acc, #7cffb2); }
+    .menu select { font: inherit; font-size: 13px; color: var(--ng-txt, #e8f5ee); background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); border: 0;
+      border-radius: 10px; padding: 6px 8px; max-width: 130px; box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.12)); }
+    .menu.wide { width: 340px; }
+    .menu.dm .it .t span, .menu.dm .it .t small { white-space: normal; overflow: visible; overflow-wrap: anywhere; }
+    .menu.dm .it .t small.en { opacity: .8; font-style: italic; }
+    .menu.dm .dv { display: flex; flex-direction: column; gap: 4px; }
+    .menu .rb { flex: none; min-height: 32px; padding: 0 8px 0 12px; font-size: 13px; }
+    .menu .rb ha-icon { --mdc-icon-size: 16px; }
+    .menu .rb.on { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .2); color: var(--ng-acc, #7cffb2); }
+    .menu .rooms { display: flex; flex-wrap: wrap; gap: 5px; padding: 2px 4px 8px 34px; }
+    .menu .rooms[hidden] { display: none; }
+    .menu .rooms button { min-height: 30px; padding: 0 12px; font-size: 13px; border-radius: 999px; }
+    .menu .rooms button:hover { background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); }
+    .ghost { position: fixed; pointer-events: none; z-index: 3; padding: 8px 14px; border-radius: 999px; font-size: 14px; font-weight: 600;
+      background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); box-shadow: 0 14px 30px -10px rgba(0, 0, 0, .7); transform: translate(-50%, -130%); }
+    .box.drop { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .25); box-shadow: inset 0 0 0 3px var(--ng-acc, #7cffb2), 0 0 30px -2px rgba(var(--rgb-ng-acc, 124, 255, 178), .9); }
     @media (max-width: 600px) { .bar .msg, .bar > ha-icon, .bar .tx { display: none; } .bar .cnt { display: inline; } .bar { gap: 6px; padding-left: 8px; }
       .bar button { padding: 0 11px; } .seg button { padding: 0 10px; } }
+    @media (max-width: 480px) { .bar { gap: 4px; padding: 5px; max-width: calc(100vw - 16px); box-sizing: border-box; }
+      .bar button { padding: 0 9px; min-height: 34px; } .seg button { padding: 0 8px; } .bar .prof span { display: none; } }
   `;
   const EDIT_TOKENS = ["--ng-acc", "--rgb-ng-acc", "--ng-acc-ink", "--ng-txt", "--rgb-ng-txt", "--ng-txt-dim", "--ng-line", "--ng-glass-2",
-    "--rgb-ng-bg", "--ng-danger", "--ng-font"];
+    "--rgb-ng-bg", "--ng-danger", "--ng-warn", "--ng-font"];
   const ngEdit = (window.__ngEdit = window.__ngEdit || { on: false });
   const FLIP_MS = 180, FLIP_EASE = "cubic-bezier(.2, .8, .2, 1)";
   function editStart() {
     const hass = document.querySelector("home-assistant")?.hass, base = "/" + (location.pathname.split("/")[1] || "lovelace");
     if (!hass?.user?.is_admin || window.__nullglowModes[base] === undefined) return;
     if (ngEdit.on) return;
-    Object.assign(ngEdit, { on: true, base, pend: [], moves: 0, grids: new Set(), drag: null, press: null, busy: false,
-      mode: "tiles", lay: { width: {}, hide: [] }, prev: new Map(), hasGroups: false });
+    document.getElementById("ng-toast")?.remove(); document.getElementById("ng-tip")?.remove();   // nichts über der Leiste
+    Object.assign(ngEdit, { on: true, base, pend: [], moves: 0, grids: new Set(), drag: null, press: null, busy: false, sizing: false, sizeAbort: null,
+      sel: null, selSec: null, canUndo: false, mode: "tiles", lay: { width: {}, hide: [] }, prev: new Map(), hasGroups: false, sizes: {}, sized: new Map(), groupsAll: [] });
     const host = document.createElement("div");
     host.id = "ng-edit";
     const root = host.attachShadow({ mode: "open" });
     root.innerHTML = `<style>${EDIT_CSS}</style><div class="bar"><ha-icon icon="mdi:pencil"></ha-icon>
       <div class="seg" hidden><button data-m="tiles" class="on">${esc(t("Kacheln"))}</button><button data-m="groups">${esc(t("Gruppen"))}</button></div>
       <span class="msg"></span>
+      <button class="dev" hidden title="${esc(t("Geräte ohne Raum"))}"><ha-icon icon="mdi:package-variant"></ha-icon><span></span></button>
+      <button class="prof" title="${esc(t("Anordnung je Gerätetyp"))}"><ha-icon icon="mdi:devices"></ha-icon><span></span></button>
       <button class="cfg" hidden title="${esc(t("Übersicht"))}"><ha-icon icon="mdi:cog-outline"></ha-icon></button>
       <button class="hid" hidden title="${esc(t("Ausgeblendete Gruppen"))}"><ha-icon icon="mdi:eye-off-outline"></ha-icon><span></span></button>
       <button class="undo" hidden><ha-icon icon="mdi:undo"></ha-icon><span class="tx">${esc(t("Verwerfen"))}</span></button>
@@ -9966,17 +10751,23 @@ ha-tile-info {
     document.body.appendChild(host);
     ngEdit.host = host; ngEdit.root = root;
     root.querySelector(".done").addEventListener("click", editDone);
-    root.querySelector(".undo").addEventListener("click", () => { discardOrder(); closeMenu(); });
+    root.querySelector(".undo").addEventListener("click", undoClick);
     root.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.m)));
     root.querySelector(".hid").addEventListener("click", openHiddenMenu);
     root.querySelector(".cfg").addEventListener("click", openCfgMenu);
-    ngEdit.key = (ev) => { if (ev.key === "Escape") { if (ngEdit.drag) return; if (root.querySelector(".menu")) closeMenu(); else editStop(); } };
+    root.querySelector(".dev").addEventListener("click", openDevMenu);
+    root.querySelector(".prof").addEventListener("click", openProfileMenu);
+    ngEdit.key = (ev) => {
+      if (ev.key !== "Escape" || ngEdit.drag) return;
+      if (ngEdit.sizing) ngEdit.sizeAbort?.();   // Größe ziehen abbrechen, Bearbeiten bleibt an
+      else if (root.querySelector(".menu")) closeMenu(); else editStop();
+    };
     ngEdit.resize = () => placeBoxes();
     ngEdit.scroll = () => clipBoxes();
     window.addEventListener("keydown", ngEdit.key);
     window.addEventListener("resize", ngEdit.resize);
     window.addEventListener("scroll", ngEdit.scroll, { passive: true });
-    ngEdit.timer = setInterval(placeBoxes, 500);
+    ngEdit.timer = setInterval(() => { if (!document.hidden) placeBoxes(); }, 1000);   // Nachzügler (Karten laden spät); Scrollen/Größe haben eigene Ereignisse
     updateBar();
     window.dispatchEvent(new Event("nullglow-edit"));
     setTimeout(placeBoxes, 300);   // Media-Karte taucht ggf. erst auf
@@ -9986,8 +10777,11 @@ ha-tile-info {
   function editStop() {
     if (!ngEdit.on) return;
     if (ngEdit.drag) endDrag();
+    ngEdit.sizeAbort?.();
+    ngEdit.devAbort?.();
     discardOrder(true);
     ngEdit.on = false;
+    ngEdit.sel = ngEdit.selSec = null;
     clearInterval(ngEdit.timer);
     window.removeEventListener("keydown", ngEdit.key);
     window.removeEventListener("resize", ngEdit.resize);
@@ -9996,7 +10790,7 @@ ha-tile-info {
     ngEdit.host = ngEdit.root = null;
     window.dispatchEvent(new Event("nullglow-edit"));
   }
-  const hasPending = () => !!(ngEdit.pend.length || Object.keys(ngEdit.lay?.width || {}).length || ngEdit.lay?.hide.length);
+  const hasPending = () => !!(ngEdit.pend.length || Object.keys(ngEdit.lay?.width || {}).length || ngEdit.lay?.hide.length || Object.keys(ngEdit.sizes || {}).length);
   function setMode(m) {
     if (ngEdit.drag || ngEdit.mode === m) return;
     closeMenu(true);
@@ -10006,12 +10800,30 @@ ha-tile-info {
     updateBar();
   }
   async function editDone() {
+    if (ngEdit.busy) return;   // ein Menü speichert gerade
     if (!hasPending()) { editStop(); return; }
     const msg = ngEdit.root.querySelector(".msg");
+    ngEdit.busy = true;
     ngEdit.root.querySelectorAll(".bar button").forEach((b) => { b.disabled = true; });
     msg.textContent = t("Speichere …"); msg.classList.add("on");
-    try { await saveEdits(() => {}); editStop(); }
-    catch (e) { msg.textContent = String(e?.message || e); ngEdit.root?.querySelectorAll(".bar button").forEach((b) => { b.disabled = false; }); }
+    try { const changed = await saveEdits(() => {}); ngEdit.busy = false; editStop(); if (changed) savedToast(); }   // ohne echte Änderung kein „Rückgängig“ (träfe sonst einen älteren Stand)
+    catch (e) { ngEdit.busy = false; msg.textContent = String(e?.message || e); ngEdit.root?.querySelectorAll(".bar button").forEach((b) => { b.disabled = false; }); }
+  }
+  // „Verwerfen“ (offene Vorschau) bzw. „Rückgängig“ (letzte sofort gespeicherte Änderung dieser Sitzung)
+  async function undoClick() {
+    if (ngEdit.busy) return;
+    closeMenu(true);
+    if (hasPending()) { discardOrder(); return; }
+    if (!ngEdit.canUndo) return;
+    const msg = ngEdit.root.querySelector(".msg"), was = window.__ngLastCfg;
+    ngEdit.busy = true; ngEdit.canUndo = false;
+    ngEdit.root.querySelectorAll(".bar button").forEach((b) => { b.disabled = true; });
+    msg.textContent = t("Stelle wieder her …"); msg.classList.add("on");
+    try { await restoreVersion(0); } catch (e) { msg.textContent = String(e?.message || e); }
+    for (let i = 0; i < 50 && window.__ngLastCfg === was; i++) await new Promise((r) => setTimeout(r, 100));
+    ngEdit.busy = false;
+    ngEdit.root?.querySelectorAll(".bar button").forEach((b) => { b.disabled = false; });
+    updateBar(); placeBoxes();
   }
   function updateBar() {
     const root = ngEdit.root;
@@ -10023,10 +10835,20 @@ ha-tile-info {
     const hid = hiddenGroups(), hb = root.querySelector(".hid");
     hb.hidden = !grp || !hid.length;
     root.querySelector(".cfg").hidden = !grp || curView() !== "home" || !groupSettings(null).length;
-    hb.querySelector("span").textContent = hid.length;
+    const nHid = hid.length + condGroups().length + offParts().length;
+    hb.hidden = !grp || !nHid;
+    hb.querySelector("span").textContent = nHid;
+    const nd = grp ? 0 : unassigned().length, db = root.querySelector(".dev");
+    db.hidden = !nd; db.querySelector("span").textContent = nd;
+    const pr = window.__ngProfile, pb = root.querySelector(".prof");
+    pb.querySelector("span").textContent = pr?.own ? t(PROFILE_NAME[pr.name]) : t("Alle Geräte");
+    pb.classList.toggle("pri", !!pr?.own);
     msg.classList.toggle("on", !!n);
     root.querySelector(".cnt").textContent = n ? ` · ${n}` : "";   // am Handy ist das die einzige Anzeige
-    root.querySelector(".undo").hidden = !n;
+    const ub = root.querySelector(".undo");
+    ub.hidden = !n && !ngEdit.canUndo;
+    ub.querySelector(".tx").textContent = n ? t("Verwerfen") : t("Rückgängig");
+    ub.title = n ? t("Verwerfen") : t("Rückgängig");
   }
 
   // Speichern: offene Reihenfolge + Änderung aus dem Menü in einem Rutsch
@@ -10050,6 +10872,10 @@ ha-tile-info {
         s.tile_order = o;
       }
     }
+    for (const [k, z] of Object.entries(ngEdit.sizes || {})) {   // k = „seite|entität“ (hat Vorrang vor alten Einträgen ohne Seite)
+      s.tile_size = { ...(s.tile_size || {}) };
+      if (z) s.tile_size[k] = z; else delete s.tile_size[k];
+    }
     const lay = ngEdit.lay || { width: {}, hide: [] }, split = (x) => [x.slice(0, x.indexOf("|")), x.slice(x.indexOf("|") + 1)];
     for (const [x, w] of Object.entries(lay.width)) { const [v, k] = split(x), L = layoutOf(s, v); L.width = { ...(L.width || {}), [k]: w }; }
     for (const x of lay.hide) { const [v, k] = split(x), L = layoutOf(s, v); L.hide = [...new Set([...(L.hide || []), k])]; }
@@ -10064,15 +10890,18 @@ ha-tile-info {
     }
     if (st.layouts && !Object.keys(st.layouts).length) delete st.layouts;
   }
+  // Menü-Änderungen (Umbenennen, Ausblenden, Hinzufügen, Einstellungen) speichern sofort — HA baut danach neu, deshalb gehen offene
+  // Verschiebungen mit. Danach bietet die Leiste „Rückgängig“ (eine Stufe) an. Liefert true, wenn sich etwas geändert hat.
   async function saveEdits(fn) {
-    await saveStrategy((s) => {
+    const changed = await saveStrategy((s) => {
       applyPending(s); fn(s);
       if (s.home_layout) { tidyLayout(s.home_layout); if (!Object.keys(s.home_layout).length) delete s.home_layout; }
       tidyLayouts(s);
     });
+    if (ngEdit.on) ngEdit.canUndo = changed || ngEdit.canUndo;
     // HA baut das Dashboard neu; wiederverwendete Elemente verlieren die Vorschau erst, wenn die neue Fassung steht
-    const grids = [...ngEdit.grids], prev = [...ngEdit.prev.values()], was = window.__ngLastCfg;
-    ngEdit.pend = []; ngEdit.moves = 0; ngEdit.grids = new Set(); ngEdit.lay = { width: {}, hide: [] }; ngEdit.prev = new Map();
+    const grids = [...ngEdit.grids], prev = [...ngEdit.prev.values()], was = window.__ngLastCfg, sized = [...(ngEdit.sized || new Map()).entries()];
+    ngEdit.pend = []; ngEdit.moves = 0; ngEdit.grids = new Set(); ngEdit.lay = { width: {}, hide: [] }; ngEdit.prev = new Map(); ngEdit.sizes = {}; ngEdit.sized = new Map();
     updateBar();
     let n = 0;
     const iv = setInterval(() => {
@@ -10081,8 +10910,10 @@ ha-tile-info {
       setTimeout(() => {
         grids.forEach((g) => { if (g.isConnected) [...g.children].forEach((w) => { w.style.order = ""; }); });
         prev.forEach((w) => { w.style.gridColumn = ""; w.style.display = ""; });
+        sized.forEach(([w, o]) => { if (w.isConnected) { w.setAttribute("style", o.style || ""); w.className = o.cls; } o.inner?.forEach(([e, st]) => { if (st) e.setAttribute("style", st); else e.removeAttribute("style"); }); });
       }, 400);
     }, 100);
+    return changed;
   }
 
   // Bearbeitbare Kacheln der sichtbaren Seite (ohne Pop-ups) mit Position in Seiten-Koordinaten; Section = Nachbarn fürs Verschieben
@@ -10126,6 +10957,8 @@ ha-tile-info {
     const view = deepFind(document, "hui-view-container") || document;
     ngEdit.dock = null;
     if (ngEdit.mode === "groups") return editGroups(view);
+    const hadGroups = ngEdit.hasGroups;
+    ngEdit.groupsAll = editGroups(view);   // setzt hasGroups selbst -> Vergleich mit dem vorigen Stand
     let groups = false;
     deepEach(view, (el) => {
       if (!groups && groupKey(el)) groups = true;
@@ -10142,7 +10975,8 @@ ha-tile-info {
       if (!wrap.parentElement) wrap = el;
       out.push({ el, wrap, r: docRect(r), meta: el.config.view_layout.ng_edit, config: el.config, section: sec || el.parentElement });
     });
-    if (groups !== ngEdit.hasGroups) { ngEdit.hasGroups = groups; updateBar(); }
+    ngEdit.hasGroups = groups;
+    if (groups !== hadGroups) updateBar();
     return out;
   }
   // Nachbarn gleicher Art in derselben Section, in angezeigter Reihenfolge
@@ -10187,15 +11021,17 @@ ha-tile-info {
     const prev = [...(ngEdit.prev?.values() || [])].filter((w) => w.isConnected);
     const grids = [...new Set([...(ngEdit.grids || []), ...prev.map((w) => w.parentElement)])].filter((g) => g?.isConnected);
     const kids = grids.flatMap((g) => [...g.children]);
-    const undo = () => { kids.forEach((w) => { w.style.order = ""; }); prev.forEach((w) => { w.style.gridColumn = ""; w.style.display = ""; }); };
+    const sized = [...(ngEdit.sized || new Map()).entries()].filter(([w]) => w.isConnected);
+    const undo = () => { kids.forEach((w) => { w.style.order = ""; }); prev.forEach((w) => { w.style.gridColumn = ""; w.style.display = ""; });
+      sized.forEach(([w, o]) => { w.setAttribute("style", o.style || ""); w.className = o.cls; o.inner?.forEach(([e, st]) => { if (st) e.setAttribute("style", st); else e.removeAttribute("style"); }); }); };
     if (kids.length) (quiet ? (f) => f() : (f) => flip(kids, f))(undo); else undo();
-    ngEdit.pend = []; ngEdit.moves = 0; ngEdit.grids = new Set(); ngEdit.lay = { width: {}, hide: [] }; ngEdit.prev = new Map();
+    ngEdit.pend = []; ngEdit.moves = 0; ngEdit.grids = new Set(); ngEdit.lay = { width: {}, hide: [] }; ngEdit.prev = new Map(); ngEdit.sizes = {}; ngEdit.sized = new Map();
     updateBar();
     if (!quiet) { placeBoxes(); setTimeout(placeBoxes, FLIP_MS + 40); }
   }
 
   function placeBoxes() {
-    if (!ngEdit.on || !ngEdit.root || ngEdit.drag) return;
+    if (!ngEdit.on || !ngEdit.root || ngEdit.drag || ngEdit.sizing) return;
     const base = "/" + (location.pathname.split("/")[1] || "lovelace");
     if (base !== ngEdit.base) { editStop(); return; }
     // Farben des Designs (liegen am View-Container, nicht an <body>)
@@ -10203,6 +11039,7 @@ ha-tile-info {
     if (hv) { const cs = getComputedStyle(hv); EDIT_TOKENS.forEach((k) => { const v = cs.getPropertyValue(k).trim(); if (v) ngEdit.host.style.setProperty(k, v); }); }
     const list = editCards();
     ngEdit.cards = list;
+    if (ngEdit.profOwn !== !!window.__ngProfile?.own) { ngEdit.profOwn = !!window.__ngProfile?.own; updateBar(); }   // nach Neuaufbau
     const wrap = ngEdit.root.querySelector(".boxes");
     while (wrap.children.length > list.length) wrap.lastChild.remove();
     list.forEach((c, i) => {
@@ -10210,14 +11047,29 @@ ha-tile-info {
       const grp = c.meta.kind === "group";
       if (!b) {
         b = document.createElement("div"); b.className = grp ? "box grp" : "box";
-        b.innerHTML = grp ? `<b class="lbl"><ha-icon icon="mdi:drag"></ha-icon><span></span></b>` : `<i><ha-icon icon="mdi:pencil"></ha-icon></i>`;
-        boxEvents(b); wrap.appendChild(b);
+        b.innerHTML = grp ? `<b class="lbl"><ha-icon icon="mdi:drag"></ha-icon><span></span></b>` : `<i><ha-icon icon="mdi:pencil"></ha-icon></i><u class="rs" title="${esc(t("Ziehen: Größe"))}"></u>`;
+        boxEvents(b); if (!grp) resizeEvents(b); wrap.appendChild(b);
       }
       if (grp) b.querySelector(".lbl span").textContent = c.meta.view === "home" ? groupName(c.meta.id, layoutNow()) : c.meta.name || c.meta.id;
       b.dataset.i = i;
       b.classList.toggle("sel", ngEdit.sel === c.meta.id && ngEdit.selSec === c.section);
       b.classList.toggle("edge", !grp && c.r.left + c.r.width + 10 > scrollX + document.documentElement.clientWidth);   // Stift nicht über den Rand (sonst Quer-Scrollen)
       Object.assign(b.style, { left: `${c.r.left}px`, top: `${c.r.top}px`, width: `${c.r.width}px`, height: `${c.r.height}px` });
+    });
+    // „+“ oben rechts an jeder Gruppe (Kachel-Modus): beliebige Entität als Kachel dazu
+    let adds = ngEdit.root.querySelector(".adds");
+    if (!adds) { adds = document.createElement("div"); adds.className = "adds"; ngEdit.root.appendChild(adds); }
+    const gl = ngEdit.mode === "tiles" ? (ngEdit.groupsAll || []) : [];
+    while (adds.children.length > gl.length) adds.lastChild.remove();
+    gl.forEach((g, i) => {
+      let a = adds.children[i];
+      if (!a) {
+        a = document.createElement("button"); a.className = "add"; a.innerHTML = `<ha-icon icon="mdi:plus"></ha-icon><span>${esc(t("Kachel"))}</span>`;
+        a.addEventListener("click", (ev) => { ev.stopPropagation(); const x = ngEdit.groupsAll?.[+a.dataset.i]; if (x) openAddMenu(x); });
+        adds.appendChild(a);
+      }
+      a.dataset.i = i; a.title = t("Kachel hinzufügen · {g}", { g: g.meta.view === "home" ? groupName(g.meta.id, layoutNow()) : g.meta.name || g.meta.id });
+      Object.assign(a.style, { left: `${g.r.left + g.r.width - 6}px`, top: `${g.r.top - 16}px` });   // auf der Oberkante rechts: keine Kachel, kein Griff darunter
     });
     clipBoxes();
   }
@@ -10241,7 +11093,7 @@ ha-tile-info {
     b.addEventListener("contextmenu", (ev) => ev.preventDefault());
     b.addEventListener("touchmove", (ev) => { if (ngEdit.drag) ev.preventDefault(); }, { passive: false });
     b.addEventListener("pointerdown", (ev) => {
-      if (ev.button > 0 || ngEdit.busy || ngEdit.drag) return;
+      if (ev.button > 0 || ngEdit.busy || ngEdit.drag || ngEdit.sizing || ev.target.closest?.(".rs")) return;
       const c = ngEdit.cards?.[+b.dataset.i];
       if (!c) return;
       const p = (ngEdit.press = { b, c, id: ev.pointerId, touch: ev.pointerType === "touch", x0: ev.clientX, y0: ev.clientY, x: ev.clientX, y: ev.clientY });
@@ -10344,7 +11196,8 @@ ha-tile-info {
         ${!room && (window.__ngLastCfg?.names || {})[m.id] ? `<button class="orig" title="${esc(t("Originalname"))}"><ha-icon icon="mdi:backup-restore"></ha-icon></button>` : ""}</div>
       <div class="row"><button class="up" ${pos > 0 ? "" : "disabled"}><ha-icon icon="mdi:arrow-left"></ha-icon>${esc(t("Früher"))}</button>
         <button class="down" ${pos >= 0 && pos < sib.length - 1 ? "" : "disabled"}>${esc(t("Später"))}<ha-icon icon="mdi:arrow-right"></ha-icon></button></div>
-      <div class="row"><button class="hide"><ha-icon icon="mdi:eye-off-outline"></ha-icon>${esc(room ? t("Raum ausblenden") : t("Ausblenden"))}</button></div>
+      <div class="row"><button class="hide"><ha-icon icon="${m.added ? "mdi:delete-outline" : "mdi:eye-off-outline"}"></ha-icon>${esc(m.added ? t("Entfernen") : room ? t("Raum ausblenden") : t("Ausblenden"))}</button></div>
+      ${sizeOf(window.__ngLastCfg?.tile_size, curView(), m.id) || ngEdit.sizes?.[szKey(m.id)] ? `<div class="row"><button class="size0"><ha-icon icon="mdi:arrow-collapse"></ha-icon>${esc(t("Standardgröße"))}</button></div>` : `<small>${esc(t("Größe: an der Ecke unten rechts ziehen"))}</small>`}
       <div class="row"><button class="close">${esc(t("Schließen"))}</button></div><div class="err"></div>`;
     root.appendChild(menu);
     // neben die Kachel, im Bild halten (Seiten-Koordinaten: scrollt mit der Kachel)
@@ -10360,6 +11213,7 @@ ha-tile-info {
     const input = menu.querySelector("input.name");
     const err = menu.querySelector(".err");
     const run = async (fn) => {
+      if (ngEdit.busy) return;
       ngEdit.busy = true;
       menu.querySelectorAll("button").forEach((b) => { b.disabled = true; });
       try { await saveEdits(fn); closeMenu(); } catch (e) { err.textContent = String(e?.message || e); menu.querySelectorAll("button").forEach((b) => { b.disabled = false; }); }
@@ -10391,9 +11245,20 @@ ha-tile-info {
     menu.querySelector(".up").addEventListener("click", () => move(-1));
     menu.querySelector(".down").addEventListener("click", () => move(1));
     menu.querySelector(".hide").addEventListener("click", () => run((s) => {
-      if (room) { s.rooms = s.rooms || {}; s.rooms[m.room] = { ...(s.rooms[m.room] || {}), hide: true }; }
+      if (m.added) { const L = layoutOf(s, m.view || "home"); L.add = { ...(L.add || {}) }; L.add[m.added] = (L.add[m.added] || []).filter((x) => x !== m.id);
+        if (!L.add[m.added].length) delete L.add[m.added]; if (!Object.keys(L.add).length) delete L.add; }
+      else if (room) { s.rooms = s.rooms || {}; s.rooms[m.room] = { ...(s.rooms[m.room] || {}), hide: true }; }
       else s.hidden = [...new Set([...(s.hidden || []), m.id])];
     }));
+    menu.querySelector(".size0")?.addEventListener("click", () => {
+      const sk = szKey(m.id);
+      if (ngEdit.sizes[sk] && !sizeOf(window.__ngLastCfg?.tile_size, curView(), m.id)) {   // nur Vorschau: zurücknehmen
+        delete ngEdit.sizes[sk];
+        const o = ngEdit.sized.get(c.wrap); if (o) { c.wrap.setAttribute("style", o.style || ""); c.wrap.className = o.cls; o.inner?.forEach(([e, st]) => { if (st) e.setAttribute("style", st); else e.removeAttribute("style"); }); ngEdit.sized.delete(c.wrap); }
+        ngEdit.moves = Math.max(0, ngEdit.moves - 1); updateBar(); closeMenu(); return;
+      }
+      run((s) => { delete ngEdit.sizes[sk]; if (s.tile_size) { delete s.tile_size[sk]; delete s.tile_size[m.id]; } });
+    });
     menu.querySelector(".close").addEventListener("click", () => closeMenu());
     placeBoxes();
     if (matchMedia("(hover: hover)").matches) setTimeout(() => input.focus(), 30);   // am Handy keine Tastatur aufspringen lassen
@@ -10401,7 +11266,7 @@ ha-tile-info {
   // Menü neben/unter ein Rechteck (Seiten-Koordinaten) setzen, im Bild halten
   const barBottom = () => (ngEdit.root?.querySelector(".bar")?.getBoundingClientRect().bottom || 0) + 8;   // Menüs nie unter der Leiste
   function placeMenu(menu, rr) {
-    const VW = document.documentElement.clientWidth, W = Math.min(280, VW - 16), r = { ...rr, left: rr.left - scrollX, top: rr.top - scrollY };
+    const VW = document.documentElement.clientWidth, W = Math.min(menu.classList.contains("wide") ? 340 : 280, VW - 16), r = { ...rr, left: rr.left - scrollX, top: rr.top - scrollY };
     menu.style.width = `${W}px`;
     const H = menu.offsetHeight || 300;
     let x = r.left + r.width + 12, y = r.top;
@@ -10417,6 +11282,7 @@ ha-tile-info {
   const fk = (c) => `${c.meta.view || "home"}|${c.meta.id}`;
   const curView = () => ngEdit.cards?.find((c) => c.meta.kind === "group")?.meta.view
     || ((x) => (x && isNaN(+x) ? x : "home"))(location.pathname.split("/")[2]);
+  const szKey = (id) => `${curView()}|${id}`;   // Schlüssel in tile_size / ngEdit.sizes
   const nameOf = (view, key) => (view === "home" ? groupName(key, layoutNow()) : window.__ngGroupNames?.[view]?.[key] || key);
   function layoutOf(st, view) {   // beschreibbares Layout einer Seite in der Dashboard-Einstellung
     if (view === "home") return (st.home_layout = { ...(st.home_layout || {}) });
@@ -10431,6 +11297,10 @@ ha-tile-info {
     const layout = (st) => (st.home_layout = clone(st.home_layout || {}));
     const onOff = [["on", t("An")], ["off", t("Aus")]];
     if (key === null) {
+      opt(t("Vorlage übernehmen"), "", Object.entries(PRESETS).map(([k, x]) => [k, t(x.name)]), (st, v) => { applyPreset(st, v, false, !!window.__ngProfile?.own); });
+      if (info.media) opt(t("Musik & TV"), cfg.media_home === false ? "off" : L.split_media ? "own" : "clock",
+        [["clock", t("Unter dem Wetter")], ["own", t("Eigene Gruppe")], ["off", t("Aus")]],
+        (st, v) => { if (v === "off") st.media_home = false; else delete st.media_home; st.home_layout = splitPart(clone(st.home_layout || {}), "media", v === "own"); });
       if (info.hints) opt(t("Hinweis-Leiste"), cfg.hints?.mode === "float" ? "float" : cfg.hints?.mode === "off" ? "off" : "top",
         [["top", t("Oben")], ["float", t("Schwebend")], ["off", t("Aus")]],
         (st, v) => { const h = { ...(st.hints || {}) }; if (v === "top") delete h.mode; else h.mode = v; if (Object.keys(h).length) st.hints = h; else delete st.hints; });
@@ -10463,7 +11333,24 @@ ha-tile-info {
       (st, v) => { const n = layout(st); if (+v > 1) n.cam_cols = +v; else delete n.cam_cols; });
     return out;
   }
-  const settingsHtml = (list) => list.map(([label, value, options], i) => `<div class="opt"><small>${esc(label)}</small><div class="seg2">${options.map(([v, l]) =>
+  // Anzeigen wenn … (layout.show) — für jede Gruppe auf jeder Seite
+  const SHOW_LABEL = { always: "Immer", home: "Jemand da", away: "Niemand da", day: "Tagsüber", night: "Nachts", morning: "Morgens",
+    evening: "Abends", active: "Wenn aktiv", large: "Großer Bildschirm", small: "Kleiner Bildschirm" };
+  function showSetting(view, key) {
+    return [t("Anzeigen"), viewLayout(view).show?.[key] || "always", ["always", ...SHOW_MODES].map((m) => [m, t(SHOW_LABEL[m])]), (st, v) => {
+      const L = layoutOf(st, view);
+      L.show = { ...(L.show || {}) };
+      if (v === "always") delete L.show[key]; else L.show[key] = v;
+      if (!Object.keys(L.show).length) delete L.show;
+    }];
+  }
+  // Gruppen mit Bedingung, die gerade nicht zu sehen sind (fürs Zurückholen im Menü „Ausgeblendete“)
+  function condGroups() {
+    if (ngEdit.mode !== "groups") return [];
+    const v = curView(), sh = viewLayout(v).show || {};
+    return Object.keys(sh).filter((k) => !ngEdit.cards?.some((c) => c.meta.kind === "group" && c.meta.id === k));
+  }
+  const settingsHtml = (list) => list.map(([label, value, options], i) => `<div class="opt"><small>${esc(label)}</small><div class="seg2${options.length > 4 ? " wrap" : ""}">${options.map(([v, l]) =>
     `<button data-i="${i}" data-v="${esc(v)}" class="${v === value ? "on" : ""}">${esc(l)}</button>`).join("")}</div></div>`).join("");
   // Einstellung speichern, auf den Neuaufbau warten, Menü mit neuem Stand wieder öffnen
   function bindSettings(menu, list, key) {
@@ -10482,7 +11369,8 @@ ha-tile-info {
       if (!ngEdit.on) return;
       closeMenu(true); placeBoxes();
       const k = key && ngEdit.cards?.find((x) => x.meta.id === key);
-      if (k) openGroupMenu(k); else if (key === null) openCfgMenu(); else updateBar();
+      updateBar();   // Zähler (Ausgeblendete, Geräte ohne Raum) nach dem Neuaufbau
+      if (k) openGroupMenu(k); else if (key === null) openCfgMenu();
     }));
   }
   // ⚙ in der Leiste (Gruppen-Modus): Einstellungen der ganzen Übersicht + Hinweis auf den Assistenten
@@ -10503,6 +11391,11 @@ ha-tile-info {
   }
   const groupWidth = (c) => +(ngEdit.lay.width[fk(c)] ?? viewLayout(c.meta.view).width?.[c.meta.id] ?? c.meta.w0
     ?? HOME_PARTS.find((p) => p.key === c.meta.id)?.width ?? 1);
+  function offParts() {
+    if (ngEdit.mode !== "groups" || curView() !== "home") return [];
+    const cfg = window.__ngLastCfg || {}, info = window.__ngLastInfo || {};
+    return info.media && cfg.media_home === false ? [["media", t("Musik & TV")]] : [];
+  }
   function hiddenGroups() {
     if (ngEdit.mode !== "groups") return [];
     const v = curView(), pend = (ngEdit.lay?.hide || []).filter((x) => x.startsWith(v + "|")).map((x) => x.slice(v.length + 1));
@@ -10516,7 +11409,7 @@ ha-tile-info {
     const sib = siblings(c), pos = sib.findIndex((x) => x.meta.id === key), w = groupWidth(c);
     const WL = ["", t("1 Spalte"), t("2 Spalten"), t("3 Spalten"), t("ganze Breite")];
     const cols = +getComputedStyle(c.wrap).getPropertyValue("--column-count") || 4;   // Handy: eine Spalte -> keine Breite
-    const opts = home ? groupSettings(key) : [];
+    const opts = [...(home ? groupSettings(key) : []), showSetting(c.meta.view || "home", key)];
     const menu = document.createElement("div");
     menu.className = "menu";
     menu.innerHTML = `<b>${esc(home ? groupName(key, L) : c.meta.name || key)}</b><small>${esc(home ? t("Gruppe auf der Übersicht") : t("Gruppe auf dieser Seite"))}</small>
@@ -10570,13 +11463,32 @@ ha-tile-info {
     root.querySelector(".menu")?.remove();
     const menu = document.createElement("div");
     menu.className = "menu hm";
+    const cg = condGroups(), sh = viewLayout(view).show || {};
     menu.innerHTML = `<b>${esc(t("Ausgeblendete Gruppen"))}</b>${hid.map((k) => `<div class="hl"><span>${esc(nameOf(view, k))}</span>
-      <button data-k="${esc(k)}"><ha-icon icon="mdi:eye-outline"></ha-icon>${esc(t("Anzeigen"))}</button></div>`).join("")}<div class="err"></div>`;
+      <button data-k="${esc(k)}"><ha-icon icon="mdi:eye-outline"></ha-icon>${esc(t("Anzeigen"))}</button></div>`).join("")}
+      ${cg.map((k) => `<div class="hl"><span>${esc(nameOf(view, k))}<small> · ${esc(t("nur: {m}", { m: t(SHOW_LABEL[sh[k]] || sh[k]) }))}</small></span>
+      <button data-c="${esc(k)}"><ha-icon icon="mdi:eye-outline"></ha-icon>${esc(t("Immer"))}</button></div>`).join("")}
+      ${offParts().map(([k, n]) => `<div class="hl"><span>${esc(n)}<small> · ${esc(t("aus"))}</small></span>
+      <button data-o="${esc(k)}"><ha-icon icon="mdi:eye-outline"></ha-icon>${esc(t("Anzeigen"))}</button></div>`).join("")}<div class="err"></div>`;
     root.appendChild(menu);
     const bar = root.querySelector(".bar").getBoundingClientRect();
     placeMenu(menu, { left: bar.left + scrollX + (bar.width - 280) / 2, top: bar.bottom + scrollY + 8, width: 280, height: 0 });
     const W = Math.min(280, document.documentElement.clientWidth - 16);
     Object.assign(menu.style, { left: `${scrollX + Math.max(8, bar.left + (bar.width - W) / 2)}px`, top: `${scrollY + bar.bottom + 8}px` });
+    menu.querySelectorAll("button[data-o]").forEach((b) => b.addEventListener("click", async () => {   // Musik & TV wieder an (unter dem Wetter)
+      if (ngEdit.busy) return;
+      ngEdit.busy = true; menu.querySelectorAll("button").forEach((x) => { x.disabled = true; });
+      try { await saveEdits((s) => { delete s.media_home; }); closeMenu(); }
+      catch (e) { menu.querySelector(".err").textContent = String(e?.message || e); }
+      ngEdit.busy = false;
+    }));
+    menu.querySelectorAll("button[data-c]").forEach((b) => b.addEventListener("click", async () => {
+      if (ngEdit.busy) return;
+      ngEdit.busy = true; menu.querySelectorAll("button").forEach((x) => { x.disabled = true; });
+      try { await saveEdits((s) => { const n = layoutOf(s, view); n.show = { ...(n.show || {}) }; delete n.show[b.dataset.c]; if (!Object.keys(n.show).length) delete n.show; }); closeMenu(); }
+      catch (e) { menu.querySelector(".err").textContent = String(e?.message || e); }
+      ngEdit.busy = false;
+    }));
     menu.querySelectorAll("button[data-k]").forEach((b) => b.addEventListener("click", async () => {
       const k = b.dataset.k, fkey = `${view}|${k}`;
       if (ngEdit.lay.hide.includes(fkey)) {
@@ -10587,14 +11499,339 @@ ha-tile-info {
         closeMenu(); updateBar(); setTimeout(placeBoxes, FLIP_MS + 40);
         return;
       }
-      ngEdit.busy = true;
+      if (ngEdit.busy) return;
+      ngEdit.busy = true; menu.querySelectorAll("button").forEach((x) => { x.disabled = true; });
       try { await saveEdits((s) => { const n = layoutOf(s, view); n.hide = (n.hide || []).filter((x) => x !== k); }); closeMenu(); }
       catch (e) { menu.querySelector(".err").textContent = String(e?.message || e); }
       ngEdit.busy = false;
     }));
   }
+  // ---- Größe per Ecke ziehen: ein gerasterter Umriss folgt dem Zeiger (Kachel und Nachbarn bleiben ruhig), beim Loslassen
+  // übernimmt die Kachel die Größe einmal (Nachbarn gleiten), gespeichert bei „Fertig“. Zeiger über das ganze Fenster verfolgt. ----
+  const SNAP = [3, 4, 6, 8, 9, 12];   // ab einem Viertel — schmaler ist keine Kachel mehr bedienbar
+  function resizeEvents(b) {
+    const rs = b.querySelector(".rs");
+    rs.addEventListener("pointerdown", (ev) => {
+      if (ev.button > 0 || ngEdit.busy || ngEdit.drag || ngEdit.sizing) return;
+      ev.stopPropagation(); ev.preventDefault();
+      const c = ngEdit.cards?.[+b.dataset.i];
+      if (!c || !c.wrap.parentElement) return;
+      closeMenu(true);
+      const grid = c.wrap.parentElement, gcs = getComputedStyle(grid), gap = parseFloat(gcs.columnGap) || 8, rgap = parseFloat(gcs.rowGap) || 8;
+      // Spalten des Section-Rasters zählen: 12 je Spalte der Section (breite Sections, z. B. Energie, haben 24 oder mehr)
+      const N = Math.max(12, gcs.gridTemplateColumns.split(" ").filter(Boolean).length || 12), snap = SNAP.map((x) => (x * N) / 12);
+      const gr = grid.getBoundingClientRect(), unit = (gr.width - (N - 1) * gap) / N, rowH = 56;
+      const w0 = c.wrap.getBoundingClientRect(), vx = scrollX, vy = scrollY;
+      const orig = { columns: Math.min(N, Math.max(1, Math.round((w0.width + gap) / (unit + gap)))), rows: Math.max(1, Math.round((w0.height + rgap) / (rowH + rgap))) };
+      const ghost = document.createElement("div");
+      ghost.className = "rsg"; ghost.innerHTML = "<span></span>";
+      ngEdit.root.querySelector(".boxes").appendChild(ghost);
+      b.classList.add("sizing");
+      ngEdit.sizing = true;
+      let cur = { ...orig };
+      const draw = () => {
+        const W = cur.columns * unit + (cur.columns - 1) * gap, H = cur.rows * rowH + (cur.rows - 1) * rgap;
+        Object.assign(ghost.style, { left: `${w0.left + vx}px`, top: `${w0.top + vy}px`, width: `${W}px`, height: `${H}px` });
+        ghost.querySelector("span").textContent = `${Math.round((cur.columns / N) * 100)} % × ${cur.rows}`;
+      };
+      const move = (e) => {
+        const w = Math.max(unit * 0.8, e.clientX + scrollX - (w0.left + vx)), h = Math.max(rowH * 0.6, e.clientY + scrollY - (w0.top + vy));
+        const raw = (w + gap) / (unit + gap), cols = snap.reduce((a, x) => (Math.abs(x - raw) < Math.abs(a - raw) ? x : a), N);
+        const rows = Math.min(8, Math.max(1, Math.round((h + rgap) / (rowH + rgap))));
+        if (cols === cur.columns && rows === cur.rows) return;
+        cur = { columns: cols, rows };
+        draw();
+      };
+      // Loslassen übernimmt, Abbruch (Esc, Touch abgebrochen, Bearbeiten beendet) verwirft
+      const end = (apply) => {
+        window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", onUp); window.removeEventListener("pointercancel", onCancel);
+        ghost.remove(); b.classList.remove("sizing"); ngEdit.sizing = false; ngEdit.sizeAbort = null;
+        if (!apply || !ngEdit.on) { placeBoxes(); return; }
+        if (cur.columns !== orig.columns || cur.rows !== orig.rows) {
+          const card = c.el.firstElementChild || c.el.shadowRoot?.firstElementChild, inner = [c.el, card].filter(Boolean);
+          if (!ngEdit.sized.has(c.wrap)) ngEdit.sized.set(c.wrap, { style: c.wrap.getAttribute("style"), cls: c.wrap.className, inner: inner.map((e) => [e, e.getAttribute("style")]) });
+          // HA setzt --row-size beim nächsten Zeichnen zurück -> Höhe und Reihen direkt (verwaltet HA nicht), Karte füllt die Höhe
+          flip([...grid.children], () => {
+            c.wrap.style.setProperty("--column-size", cur.columns); c.wrap.style.setProperty("--row-size", cur.rows);
+            c.wrap.style.gridColumn = `span ${cur.columns}`; c.wrap.style.gridRow = `span ${cur.rows}`;
+            c.wrap.style.height = `${cur.rows * rowH + (cur.rows - 1) * rgap}px`;
+            c.wrap.classList.add("fit-rows"); c.wrap.classList.remove("full-width");
+            inner.forEach((e) => { e.style.height = "100%"; });
+          });
+          ngEdit.sizes[szKey(c.meta.id)] = cur; ngEdit.moves++; updateBar();
+        }
+        placeBoxes(); setTimeout(placeBoxes, FLIP_MS + 40);
+      };
+      const onUp = () => end(true), onCancel = () => end(false);
+      ngEdit.sizeAbort = onCancel;
+      draw();
+      window.addEventListener("pointermove", move); window.addEventListener("pointerup", onUp); window.addEventListener("pointercancel", onCancel);
+    });
+  }
+
+  // ---- „+“: beliebige Entität als Kachel in diese Gruppe — passende Geräte zuerst, Filter nach Art ----
+  const ADD_KINDS = [["fit", "Passend"], ["light", "Licht"], ["switch", "Schalter"], ["sensor", "Sensoren"], ["camera", "Kameras"], ["all", "Alle"]];
+  const GROUP_FIT = { licht: ["light", "switch"], klima: ["climate", "fan", "sensor:temperature", "sensor:humidity"], rolllaeden: ["cover"],
+    zuhause: ["lock", "cover:garage", "cover:gate", "binary_sensor", "alarm_control_panel"], energie: ["sensor:power", "sensor:energy", "switch"],
+    kameras: ["camera"], media: ["media_player"], termine: ["calendar"], uhr: ["weather", "sensor"], wetter: ["weather", "sensor"] };
+  function openAddMenu(g) {
+    const root = ngEdit.root, hass = document.querySelector("home-assistant").hass, view = g.meta.view || "home", key = g.meta.id;
+    root.querySelector(".menu")?.remove();
+    const menu = document.createElement("div");
+    menu.className = "menu wide";
+    const gname = view === "home" ? groupName(key, layoutNow()) : g.meta.name || key;
+    menu.innerHTML = `<b>${esc(t("Kachel hinzufügen"))}</b><small>${esc(t("in „{g}“", { g: gname }))}</small>
+      <div class="chips">${ADD_KINDS.map(([k, l]) => `<button data-k="${k}">${esc(t(l))}</button>`).join("")}</div>
+      <input class="q" placeholder="${esc(t("Suchen: Name oder Entität"))}"><div class="list"></div>
+      <div class="row"><button class="close">${esc(t("Schließen"))}</button></div><div class="st"></div><div class="err"></div>`;
+    root.appendChild(menu);
+    placeMenu(menu, g.r);
+    const ents = hass.entities || {}, devs = hass.devices || {}, have = new Set((viewLayout(view).add || {})[key] || []);
+    const shown = new Set((ngEdit.cards || []).filter((c) => c.section === g.section).map((c) => c.meta.id));
+    const all = Object.keys(hass.states).filter((id) => !ents[id]?.hidden && !ents[id]?.entity_category && !have.has(id) && !shown.has(id)
+      && !["sun", "zone", "person", "automation", "script", "update", "event", "tts", "stt", "conversation", "ai_task", "todo", "wake_word", "assist_satellite", "device_tracker"].includes(DOMAIN(id)));
+    const name = (id) => hass.states[id]?.attributes?.friendly_name || id;
+    const dc = (id) => hass.states[id]?.attributes?.device_class;
+    const areaOf = (id) => ents[id]?.area_id || devs[ents[id]?.device_id]?.area_id;
+    const fitSpec = GROUP_FIT[key] || [];
+    const fits = (id) => (key.startsWith("room:") ? areaOf(id) === key.slice(5)
+      : fitSpec.some((f) => { const [d, c] = f.split(":"); return DOMAIN(id) === d && (!c || dc(id) === c); }));
+    const kindOf = { light: (id) => DOMAIN(id) === "light", switch: (id) => ["switch", "input_boolean", "fan"].includes(DOMAIN(id)),
+      sensor: (id) => ["sensor", "binary_sensor"].includes(DOMAIN(id)), camera: (id) => DOMAIN(id) === "camera", all: () => true, fit: fits };
+    let kind = all.some(fits) ? "fit" : "all";
+    const list = menu.querySelector(".list"), q = menu.querySelector("input.q");
+    const draw = () => {
+      menu.querySelectorAll(".chips button").forEach((b) => b.classList.toggle("on", b.dataset.k === kind));
+      const w = q.value.trim().toLowerCase();
+      const hit = all.filter((id) => kindOf[kind](id) && (!w || id.toLowerCase().includes(w) || name(id).toLowerCase().includes(w)))
+        .sort((a, b) => name(a).localeCompare(name(b), numLoc())).slice(0, 50);
+      list.innerHTML = hit.map((id) => `<button class="it" data-e="${esc(id)}"><ha-icon icon="${esc(hass.states[id]?.attributes?.icon || DOMAIN_ICON[DOMAIN(id)] || "mdi:plus-circle-outline")}"></ha-icon>
+        <span class="t"><span>${esc(name(id))}</span><small>${esc(hass.formatEntityState ? hass.formatEntityState(hass.states[id]) : hass.states[id]?.state)} · ${esc(id)}</small></span></button>`).join("")
+        || `<small>${esc(t("Nichts gefunden"))}</small>`;
+      list.querySelectorAll("button[data-e]").forEach((b) => b.addEventListener("click", async () => {
+        if (ngEdit.busy) return;
+        ngEdit.busy = true;
+        menu.querySelectorAll("button").forEach((x) => { x.disabled = true; });
+        menu.querySelector(".st").textContent = t("Speichere …");
+        try {
+          const e = b.dataset.e;
+          await saveEdits((st) => { const L = layoutOf(st, view); L.add = { ...(L.add || {}) }; L.add[key] = [...new Set([...(L.add[key] || []), e])]; });
+          closeMenu(); flashTile(e);
+        } catch (e) { menu.querySelector(".err").textContent = String(e?.message || e); menu.querySelectorAll("button").forEach((x) => { x.disabled = false; }); }
+        ngEdit.busy = false;
+      }));
+    };
+    menu.querySelectorAll(".chips button").forEach((b) => b.addEventListener("click", () => { kind = b.dataset.k; draw(); }));
+    q.addEventListener("input", () => { if (q.value && kind === "fit") kind = "all"; draw(); });
+    draw();
+    menu.querySelector(".close").addEventListener("click", () => closeMenu());
+    if (matchMedia("(hover: hover)").matches) setTimeout(() => q.focus(), 30);
+  }
+  const DOMAIN_ICON = { light: "mdi:lightbulb-outline", switch: "mdi:toggle-switch-outline", sensor: "mdi:gauge", binary_sensor: "mdi:checkbox-blank-circle-outline",
+    camera: "mdi:cctv", cover: "mdi:window-shutter", climate: "mdi:thermostat", lock: "mdi:lock-outline", media_player: "mdi:play-circle-outline",
+    fan: "mdi:fan", weather: "mdi:weather-partly-cloudy", calendar: "mdi:calendar", input_boolean: "mdi:toggle-switch-outline" };
+  // Neue Kachel nach dem Neuaufbau suchen, ins Bild holen und kurz aufleuchten lassen
+  function flashTile(id) {
+    let n = 0;
+    const iv = setInterval(() => {
+      if (!ngEdit.on || ++n > 40) { clearInterval(iv); return; }
+      placeBoxes();
+      const i = (ngEdit.cards || []).findIndex((c) => c.meta.id === id), b = ngEdit.root?.querySelector(`.boxes .box[data-i="${i}"]`);
+      if (i < 0 || !b) return;
+      clearInterval(iv);
+      const c = ngEdit.cards[i];
+      if (c.r.top - scrollY < 80 || c.r.top + c.r.height - scrollY > innerHeight - 100) scrollTo({ top: c.r.top - innerHeight / 3, behavior: "smooth" });
+      b.classList.add("flash"); setTimeout(() => b.classList.remove("flash"), 2200);
+    }, 150);
+  }
+
+  // ---- Geräte ohne Raum: Liste, Raum wählen oder auf eine Raum-Kachel ziehen (schreibt die HA-Zuordnung) ----
+  const USEFUL = ["light", "switch", "cover", "climate", "fan", "media_player", "lock", "camera", "vacuum", "lawn_mower", "humidifier", "water_heater", "valve"];
+  function unassigned() {
+    const hass = document.querySelector("home-assistant")?.hass;
+    if (!hass?.user?.is_admin) return [];
+    const ents = Object.values(hass.entities || {}), devs = hass.devices || {};
+    const useful = (id) => {
+      const d = DOMAIN(id), dc = hass.states[id]?.attributes?.device_class;
+      if (USEFUL.includes(d)) return true;
+      if (d === "sensor") return ["temperature", "humidity"].includes(dc);
+      if (d === "binary_sensor") return ["window", "door", "opening", "motion", "occupancy", "presence", "garage_door"].includes(dc);
+      return false;
+    };
+    const byDev = new Map(), out = [];
+    for (const e of ents) {
+      if (e.hidden || e.entity_category || e.area_id || !hass.states[e.entity_id] || !useful(e.entity_id)) continue;
+      const d = e.device_id && devs[e.device_id];
+      if (d) {
+        if (d.area_id || d.disabled_by || d.entry_type === "service") continue;
+        if (!byDev.has(d.id)) byDev.set(d.id, { device: d.id, name: d.name_by_user || d.name || e.entity_id, sub: [d.manufacturer, d.model].filter(Boolean).join(" "), ents: [] });
+        byDev.get(d.id).ents.push(e.entity_id);
+      } else if (!e.device_id) out.push({ entity: e.entity_id, name: hass.states[e.entity_id]?.attributes?.friendly_name || e.entity_id, sub: e.entity_id, ents: [e.entity_id] });
+    }
+    return [...byDev.values(), ...out].sort((a, b) => a.name.localeCompare(b.name, numLoc()));
+  }
+  function entNames(x) {
+    const hass = document.querySelector("home-assistant")?.hass, strip = new RegExp(`^${escRe(x.name)}\\s*[-–:·]?\\s*`, "i");
+    const n = x.ents.map((id) => (hass?.states[id]?.attributes?.friendly_name || id).replace(strip, "") || id);
+    return n.slice(0, 4).join(", ") + (n.length > 4 ? ` +${n.length - 4}` : "");
+  }
+  async function assignArea(item, area) {
+    const hass = document.querySelector("home-assistant").hass;
+    if (item.device) await hass.callWS({ type: "config/device_registry/update", device_id: item.device, area_id: area });
+    else await hass.callWS({ type: "config/entity_registry/update", entity_id: item.entity, area_id: area });
+  }
+  function openDevMenu() {
+    const root = ngEdit.root, hass = document.querySelector("home-assistant").hass;
+    if (root.querySelector(".menu.dm")) { closeMenu(); return; }
+    root.querySelector(".menu")?.remove();
+    const menu = document.createElement("div");
+    menu.className = "menu wide dm";
+    root.appendChild(menu);
+    const areas = Object.values(hass.areas || {}).sort((a, b) => a.name.localeCompare(b.name, numLoc()));
+    const draw = () => {
+      const list = unassigned();
+      menu.innerHTML = `<b>${esc(list.length === 1 ? t("1 Gerät ohne Raum") : t("{n} Geräte ohne Raum", { n: list.length }))}</b>
+        <small>${esc(t("Auf eine Raum-Kachel ziehen oder Raum wählen — die Zuordnung gilt in ganz Home Assistant."))}</small>
+        <div class="list">${list.map((x, i) => `<div class="dv"><div class="it" data-i="${i}"><span class="grip" data-i="${i}" title="${esc(t("Auf eine Raum-Kachel ziehen"))}"><ha-icon icon="mdi:drag"></ha-icon></span><span class="t"><span>${esc(x.name)}</span>
+          <small>${esc(x.sub || "")}</small><small class="en">${esc(entNames(x))}</small></span>
+          <button class="rb" data-i="${i}">${esc(t("Raum …"))}<ha-icon icon="mdi:chevron-down"></ha-icon></button></div>
+          <div class="rooms" data-i="${i}" hidden>${areas.map((a) => `<button data-a="${esc(a.area_id)}">${esc(a.name)}</button>`).join("")}</div></div>`).join("")
+          || `<small>${esc(t("Alle Geräte haben einen Raum."))}</small>`}</div>
+        <div class="row"><button class="close">${esc(t("Schließen"))}</button></div><div class="st"></div><div class="err"></div>`;
+      const bar = root.querySelector(".bar").getBoundingClientRect(), W = Math.min(500, document.documentElement.clientWidth - 16);
+      Object.assign(menu.style, { width: `${W}px`, left: `${scrollX + Math.max(8, bar.left + (bar.width - W) / 2)}px`, top: `${scrollY + bar.bottom + 8}px` });
+      menu.querySelector(".close").addEventListener("click", () => closeMenu());
+      menu.querySelectorAll("button.rb").forEach((b) => b.addEventListener("click", () => {   // Räume als Knöpfe aufklappen
+        const box = menu.querySelector(`.rooms[data-i="${b.dataset.i}"]`), open = box.hidden;
+        menu.querySelectorAll(".rooms").forEach((r) => { r.hidden = true; });
+        menu.querySelectorAll("button.rb").forEach((r) => r.classList.remove("on"));
+        box.hidden = !open; b.classList.toggle("on", open);
+      }));
+      menu.querySelectorAll(".rooms button[data-a]").forEach((b) => b.addEventListener("click", () => {
+        b.closest(".rooms").querySelectorAll("button").forEach((x) => { x.disabled = true; });
+        done(list[+b.closest(".rooms").dataset.i], b.dataset.a);
+      }));
+      const done = async (x, area) => {
+        menu.querySelector(".st").textContent = t("Speichere …");
+        try { await assignArea(x, area); menu.querySelector(".st").textContent = t("Zugeordnet: {n}", { n: x.name }); setTimeout(() => { draw(); updateBar(); regenerate(); }, 600); }
+        catch (e) { menu.querySelector(".err").textContent = String(e?.message || e); }
+      };
+      menu.querySelectorAll(".grip").forEach((row) => row.addEventListener("pointerdown", (ev) => {
+        if (ev.button > 0 || ngEdit.busy) return;
+        ev.preventDefault();
+        const x = list[+row.dataset.i], ghost = document.createElement("div");
+        ghost.className = "ghost"; ghost.textContent = x.name; root.appendChild(ghost);
+        let target = null;
+        const rooms = (ngEdit.cards || []).filter((c) => c.meta.kind === "room");
+        const boxes = [...root.querySelectorAll(".boxes .box")];
+        const mv = (e) => {
+          Object.assign(ghost.style, { left: `${e.clientX}px`, top: `${e.clientY}px` });
+          const X = e.clientX + scrollX, Y = e.clientY + scrollY, m = menu.getBoundingClientRect();
+          const overMenu = e.clientX >= m.left && e.clientX <= m.right && e.clientY >= m.top && e.clientY <= m.bottom;   // Menü liegt über den Kacheln
+          const hit = overMenu ? null : rooms.find((c) => X >= c.r.left && X <= c.r.left + c.r.width && Y >= c.r.top && Y <= c.r.top + c.r.height) || null;
+          if (hit !== target) { target = hit; boxes.forEach((b) => b.classList.toggle("drop", !!hit && ngEdit.cards[+b.dataset.i] === hit)); }
+        };
+        // nur echtes Loslassen über einer Raum-Kachel ordnet zu (schreibt in HA) — Abbruch (Touch abgebrochen, Esc, Bearbeiten aus) nicht
+        const end = (apply) => {
+          window.removeEventListener("pointermove", mv); window.removeEventListener("pointerup", onUp); window.removeEventListener("pointercancel", onCancel);
+          ghost.remove(); boxes.forEach((b) => b.classList.remove("drop")); ngEdit.devAbort = null;
+          if (apply && target && ngEdit.on) done(x, target.meta.room);
+        };
+        const onUp = () => end(true), onCancel = () => end(false);
+        ngEdit.devAbort = onCancel;
+        mv(ev);
+        window.addEventListener("pointermove", mv); window.addEventListener("pointerup", onUp); window.addEventListener("pointercancel", onCancel);
+      }));
+    };
+    draw();
+  }
+
+  // ---- Anordnung je Gerätetyp (Handy / Tablet / großer Bildschirm) ----
+  function openProfileMenu() {
+    const root = ngEdit.root, base = ngEdit.base;
+    if (root.querySelector(".menu.pm")) { closeMenu(); return; }
+    root.querySelector(".menu")?.remove();
+    const pr = window.__ngProfile || { name: autoProfile() }, set = profileSetting(base), cfg0 = window.__ngLastCfg0 || {};
+    const menu = document.createElement("div");
+    menu.className = "menu pm";
+    const pn = t(PROFILE_NAME[pr.name]), others = Object.keys(cfg0.profiles || {}).filter((k) => k !== pr.name);
+    menu.innerHTML = `<b>${esc(t("Anordnung je Gerätetyp"))}</b>
+      <small>${esc(set === "auto" ? t("Dieses Gerät: {p} (automatisch nach Bildschirmbreite)", { p: pn }) : t("Dieses Gerät: {p} (fest eingestellt)", { p: pn }))}</small>
+      <div class="opt"><small>${esc(t("Dieses Gerät ist"))}</small><div class="seg2">${[["auto", t("Auto")], ...PROFILES.map((k) => [k, t(PROFILE_SHORT[k])])]
+        .map(([v, l]) => `<button data-p="${v}" class="${v === set ? "on" : ""}">${esc(l)}</button>`).join("")}</div></div>
+      ${pr.own ? `<small>${esc(t("Eigene Anordnung für {p}: Verschieben, Breite, Größe und Ausblenden von Kacheln und Gruppen gelten nur hier. Räume (Reihenfolge, ausblenden) gelten überall.", { p: pn }))}</small>
+        <div class="row"><button class="del"><ha-icon icon="mdi:delete-outline"></ha-icon>${esc(t("Eigene Anordnung löschen"))}</button></div>`
+        : `<small>${esc(t("Alle Gerätetypen teilen sich die Anordnung."))}</small>
+        <div class="row"><button class="pri mk"><ha-icon icon="mdi:plus"></ha-icon>${esc(t("Eigene Anordnung für {p}", { p: pn }))}</button></div>`}
+      ${others.length ? `<small>${esc(t("Eigene Anordnung auch für: {l}", { l: others.map((k) => t(PROFILE_NAME[k])).join(", ") }))}</small>` : ""}
+      <div class="row"><button class="close">${esc(t("Schließen"))}</button></div><div class="st"></div><div class="err"></div>`;
+    root.appendChild(menu);
+    const bar = root.querySelector(".bar").getBoundingClientRect(), W = Math.min(300, document.documentElement.clientWidth - 16);
+    Object.assign(menu.style, { width: `${W}px`, left: `${scrollX + Math.max(8, bar.left + (bar.width - W) / 2)}px`, top: `${scrollY + bar.bottom + 8}px` });
+    const busy = async (fn) => {
+      if (ngEdit.busy) return;
+      ngEdit.busy = true; menu.querySelectorAll("button").forEach((b) => { b.disabled = true; });
+      menu.querySelector(".st").textContent = t("Speichere …");
+      try { await fn(); closeMenu(); } catch (e) { menu.querySelector(".err").textContent = String(e?.message || e); menu.querySelectorAll("button").forEach((b) => { b.disabled = false; }); }
+      ngEdit.busy = false;
+    };
+    menu.querySelectorAll("button[data-p]").forEach((b) => b.addEventListener("click", async () => {
+      if (ngEdit.busy || b.classList.contains("on")) return;
+      if (hasPending()) {   // offene Änderungen gehören zum bisherigen Gerätetyp -> erst speichern
+        ngEdit.busy = true; menu.querySelectorAll("button").forEach((x) => { x.disabled = true; });
+        menu.querySelector(".st").textContent = t("Speichere offene Änderungen …");
+        try { await saveEdits(() => {}); } catch (e) {
+          menu.querySelector(".err").textContent = String(e?.message || e); menu.querySelectorAll("button").forEach((x) => { x.disabled = false; }); ngEdit.busy = false; return;
+        }
+        ngEdit.busy = false;
+      }
+      try { if (b.dataset.p === "auto") localStorage.removeItem(profKey(base)); else localStorage.setItem(profKey(base), b.dataset.p); } catch (e) { /* privat */ }
+      closeMenu(); discardOrder(true); regenerate(); setTimeout(() => { updateBar(); placeBoxes(); }, 1500);
+    }));
+    menu.querySelector(".mk")?.addEventListener("click", () => busy(() => saveStrategy((s) => {
+      const P = {};
+      PROFILE_KEYS.forEach((k) => { if (s[k] !== undefined) P[k] = clone(s[k]); });
+      s.profiles = { ...(s.profiles || {}), [pr.name]: P };
+    }, "Profil", { profile: false })));
+    menu.querySelector(".del")?.addEventListener("click", () => busy(() => saveStrategy((s) => {
+      if (s.profiles) delete s.profiles[pr.name];
+    }, "Profil", { profile: false })));
+    menu.querySelector(".close").addEventListener("click", () => closeMenu());
+  }
+
+  // ---- Nach dem Speichern: kurz „Gespeichert · Rückgängig“ (stellt den Stand vor dem Speichern wieder her) ----
+  function savedToast() {
+    document.getElementById("ng-toast")?.remove();
+    const host = document.createElement("div");
+    host.id = "ng-toast";
+    const root = host.attachShadow({ mode: "open" });
+    root.innerHTML = `<style>
+      :host { position: fixed; left: 50%; top: 14px; transform: translateX(-50%); z-index: 8; font-family: var(--ng-font, inherit); }
+      .t { display: flex; align-items: center; gap: 10px; padding: 6px 6px 6px 16px; border-radius: 999px; font-size: 14px; color: var(--ng-txt, #e8f5ee);
+        background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .88);
+        backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.12)), 0 12px 32px -12px rgba(0,0,0,.6);
+        transition: opacity .4s; }
+      ha-icon { --mdc-icon-size: 18px; color: var(--ng-acc, #7cffb2); }
+      button { font: inherit; font-size: 14px; border: 0; cursor: pointer; border-radius: 999px; min-height: 34px; padding: 0 14px; display: inline-flex; align-items: center; gap: 6px;
+        background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); font-weight: 600; }
+      button ha-icon { color: inherit; } .off { opacity: 0; }
+    </style><div class="t"><ha-icon icon="mdi:check-circle-outline"></ha-icon><span>${esc(t("Gespeichert"))}</span>
+      <button><ha-icon icon="mdi:undo"></ha-icon>${esc(t("Rückgängig"))}</button></div>`;
+    const hv = deepFind(document, "hui-view-container");
+    if (hv) { const cs = getComputedStyle(hv); EDIT_TOKENS.forEach((k) => { const v = cs.getPropertyValue(k).trim(); if (v) host.style.setProperty(k, v); }); }
+    document.body.appendChild(host);
+    const bye = () => { root.querySelector(".t")?.classList.add("off"); setTimeout(() => host.remove(), 400); };
+    root.querySelector("button").addEventListener("click", async () => {
+      root.querySelector("span").textContent = t("Stelle wieder her …");
+      try { await restoreVersion(0); root.querySelector("span").textContent = t("Wiederhergestellt"); } catch (e) { root.querySelector("span").textContent = String(e?.message || e); }
+      root.querySelector("button").remove(); setTimeout(bye, 1800);
+    });
+    setTimeout(bye, 9000);
+  }
+  window.__ngSavedToast = savedToast;
+
   // Erste Besuche: Sprechblase unter der Uhr „Tipp: Uhr antippen“ (+ pulsierender Ring). Je Gerät höchstens 3×, weg nach 25 s,
-  // „Verstanden“ oder sobald das Uhr-Pop-up einmal offen war. Admins erfahren dabei von „Kacheln bearbeiten“.
+  // „Verstanden“ oder sobald das Uhr-Pop-up einmal offen war. Admins erfahren dabei von „Dashboard gestalten“.
   const TIP_KEY = "nullglow-tip-clock";
   const tipGet = () => { try { return localStorage.getItem(TIP_KEY) || ""; } catch (e) { return "done"; } };
   const tipSet = (v) => { try { localStorage.setItem(TIP_KEY, v); } catch (e) { /* privat */ } };
@@ -10638,7 +11875,7 @@ ha-tile-info {
     </style><div class="ring" style="left:${ring.left}px;top:${ring.top}px;width:${ring.width}px;height:${ring.height}px"></div>
     <div class="tip" style="left:${Math.max(8, Math.min(r.left + scrollX, scrollX + document.documentElement.clientWidth - W - 8))}px;top:${r.bottom + scrollY + 14}px;width:${W}px">
       <b class="h"><ha-icon icon="mdi:gesture-tap"></ha-icon>${esc(t("Tipp: Uhr antippen"))}</b>
-      <p>${admin ? t("Design, Hell/Dunkel und <b>Kacheln bearbeiten</b>: Kacheln und Gruppen per Ziehen anordnen, Breite, ausblenden, umbenennen.") : esc(t("Design und Hell/Dunkel für dieses Gerät."))}</p>
+      <p>${admin ? t("Design, Hell/Dunkel und <b>Dashboard gestalten</b>: Kacheln und Gruppen per Ziehen anordnen, Breite, ausblenden, umbenennen.") : esc(t("Design und Hell/Dunkel für dieses Gerät."))}</p>
       <div class="row"><button class="ok">${esc(t("Verstanden"))}</button><button class="pri go">${esc(t("Zeigen"))}</button></div></div>`;
     const hv = deepFind(document, "hui-view-container");   // Farben des Designs
     if (hv) { const cs = getComputedStyle(hv); EDIT_TOKENS.forEach((k) => { const v = cs.getPropertyValue(k).trim(); if (v) host.style.setProperty(k, v); }); }
@@ -10665,13 +11902,30 @@ ha-tile-info {
   window.addEventListener("nullglow-hint-ignore", (ev) => {
     const base = "/" + (location.pathname.split("/")[1] || "lovelace"), ids = ev.detail?.entities || [];
     if (!ids.length || window.__nullglowModes[base] === undefined || !document.querySelector("home-assistant")?.hass?.user?.is_admin) return;
-    saveStrategy((s) => { s.hints = { ...(s.hints || {}), ignore: [...new Set([...(s.hints?.ignore || []), ...ids])] }; }).catch(() => {});
+    saveStrategy((s) => { s.hints = { ...(s.hints || {}), ignore: [...new Set([...(s.hints?.ignore || []), ...ids])] }; }, "Hinweise", { version: false }).catch(() => {});   // keine Layout-Version verdrängen
   });
-  // Start: Uhr-Pop-up → „Kacheln bearbeiten“ navigiert zu #ng-bearbeiten
+  // „Zurückholen“ (Batterien & Wartung): aus der dauerhaften Liste nehmen
+  window.addEventListener("nullglow-hint-unignore", (ev) => {
+    const base = "/" + (location.pathname.split("/")[1] || "lovelace"), ids = ev.detail?.entities || [];
+    if (!ids.length || window.__nullglowModes[base] === undefined || !document.querySelector("home-assistant")?.hass?.user?.is_admin) return;
+    saveStrategy((s) => {
+      if (!s.hints?.ignore) return;
+      s.hints = { ...s.hints, ignore: s.hints.ignore.filter((x) => !ids.includes(x)) };
+      if (!s.hints.ignore.length) delete s.hints.ignore;
+    }, "Hinweise", { version: false }).catch(() => {});
+  });
+  // Start: Uhr-Pop-up → „Dashboard gestalten“ navigiert zu #ng-bearbeiten
   const editHash = () => {
-    if (location.hash !== "#ng-bearbeiten") return;
+    const m = /^#ng-bearbeiten(?:-(gruppen|geraete|geraetetyp))?$/.exec(location.hash);
+    if (!m) return;
     history.replaceState(null, "", location.pathname + location.search);
-    setTimeout(editStart, 350);   // Pop-up schließt sich erst
+    setTimeout(() => {   // Pop-up schließt sich erst
+      editStart();
+      if (!ngEdit.on) return;
+      if (m[1] === "gruppen") setMode("groups");
+      else if (m[1] === "geraete" && unassigned().length) setTimeout(openDevMenu, 150);
+      else if (m[1] === "geraetetyp") setTimeout(openProfileMenu, 150);
+    }, 350);
   };
   window.addEventListener("location-changed", editHash);
   window.addEventListener("hashchange", editHash);
@@ -10679,7 +11933,11 @@ ha-tile-info {
   class NullglowDashboardStrategy extends HTMLElement {
     static async generate(config, hass) {
       ngH = hass;
-      const cfg = config || {};
+      const cfg0 = config || {}, base0 = "/" + (location.pathname.split("/")[1] || "lovelace");
+      const prof = deviceProfile(base0);
+      const cfg = effectiveCfg(cfg0, prof);   // eigenes Layout dieses Gerätetyps (falls angelegt)
+      window.__ngProfile = { name: prof, own: !!cfg0.profiles?.[prof], base: base0 };
+      window.__ngLastCfg0 = cfg0;
       const inv = inventory(hass, cfg);
       const energy = await energyCfg(cfg, hass);
       const avail = available(inv, energy);
@@ -10689,6 +11947,8 @@ ha-tile-info {
       const base = "/" + (location.pathname.split("/")[1] || "lovelace");
       ensureTheme();
       const design = designs(hass)[cfg.design] ? cfg.design : "nullglow";
+      // Design dieses Geräts (Uhr-Pop-up, Browser-Speicher) gleich beim Aufbau — sonst blitzt nach jedem Speichern kurz der Standard auf
+      const shown = ((d) => (d && designs(hass)[d] ? d : design))(localPick(base).design);
       window.__nullglowModes[base] = ["dark", "light", "sun"].includes(cfg.mode) ? cfg.mode : "auto";
       // Nordlicht (nullglow-aurora.js) liest hier die Sensoren dieses Dashboards
       window.__nullglowDashboards = { ...(window.__nullglowDashboards || {}), [base]: energy ? {
@@ -10698,6 +11958,13 @@ ha-tile-info {
         home: () => viewHome(inv, energy, base, on, hass, cfg, design), licht: () => viewLicht(inv, hass), klima: () => viewKlima(inv, hass),
         energie: () => viewEnergie(energy, hass), kameras: () => viewKameras(inv, cfg), kalender: () => viewKalender(inv), medien: () => viewMedien(inv, hass),
         sauger: () => viewSauger(inv, hass), maeher: () => viewMaeher(inv, hass),
+      };
+      let invFull = null;   // Inventar ohne „ausgeblendet“ — nur für stabile Gruppen-Schlüssel (applyViewLayout)
+      const buildFull = (key) => {
+        invFull = invFull || inventory(hass, { ...cfg, hidden: [] });
+        const f = { licht: () => viewLicht(invFull, hass), klima: () => viewKlima(invFull, hass), kameras: () => viewKameras(invFull, cfg),
+          kalender: () => viewKalender(invFull), medien: () => viewMedien(invFull, hass), sauger: () => viewSauger(invFull, hass), maeher: () => viewMaeher(invFull, hass) }[key];
+        try { return f ? f().sections : null; } catch (e) { return null; }
       };
       const door = doorbellCfg(cfg, hass, inv);   // Klingel-Pop-up auf jeder Seite
       doorbellWatch(hass, base, door);
@@ -10712,9 +11979,11 @@ ha-tile-info {
         title: cfg.title || "Nullglow",
         views: views.map((v) => {
           const r = build[v.key]();
-          if (v.key !== "home") r.sections = applyViewLayout(v.key, r.sections, (cfg.layouts || {})[v.key], hass);
-          return { title: t(v.title), path: v.key, icon: v.icon, theme: design, type: "sections", max_columns: 4,
-            dense_section_placement: true, sections: [...applyEdits(r.sections, cfg), navSection(views, base, [...(r.extra || []), ...(door ? [doorbellPopup(door)] : []), ...(floatHints ? [floatHints] : [])])] };
+          // Ausgeblendete Kacheln: Schlüssel aus der Fassung ohne sie (sonst verlöre die Gruppe ihre Einstellungen)
+          const full = v.key !== "home" && (cfg.hidden || []).length ? buildFull(v.key) : null;
+          if (v.key !== "home") r.sections = applyViewLayout(v.key, r.sections, (cfg.layouts || {})[v.key], hass, full);
+          return { title: t(v.title), path: v.key, icon: v.icon, theme: shown, type: "sections", max_columns: 4,
+            dense_section_placement: true, sections: [...applyEdits(r.sections, cfg, v.key), navSection(views, base, [...(r.extra || []), ...(door ? [doorbellPopup(door)] : []), ...(floatHints ? [floatHints] : [])])] };
         }),
       };
     }
@@ -10788,6 +12057,13 @@ ha-tile-info {
     .note { font-size: 12px; color: var(--secondary-text-color); margin: 4px 0 10px; line-height: 1.45; }
     .roomform { padding: 4px 0 10px 30px; }
     code { background: var(--secondary-background-color); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+    .presets { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin: 0 0 10px; }
+    button.pre { font: inherit; text-align: left; cursor: pointer; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;
+      color: var(--primary-text-color); background: var(--secondary-background-color); border: 1px solid var(--divider-color); }
+    button.pre:hover { border-color: var(--primary-color); }
+    button.pre ha-icon { --mdc-icon-size: 22px; color: var(--primary-color); margin-bottom: 2px; }
+    button.pre b { font-size: 14px; font-weight: 500; } button.pre small { color: var(--secondary-text-color); font-size: 12px; line-height: 1.3; }
+    .note[hidden] { display: none; }
   `;
 
   class NullglowStrategyEditor extends HTMLElement {
@@ -10801,6 +12077,7 @@ ha-tile-info {
     setConfig(config) {
       const c = clone(config) || {};
       if (this._sent && JSON.stringify(c) === this._sent) return;
+      if (!this._orig) this._orig = bareCfg(c);   // Stand beim Öffnen -> beim ersten Ändern als Version merken
       this._config = c;
       this._build();
     }
@@ -10815,6 +12092,10 @@ ha-tile-info {
 
     _emit() {
       const c = this._config;
+      if (!this._verDone && this._orig && JSON.stringify(bareCfg(c)) !== JSON.stringify(this._orig)) {
+        c._versions = [{ at: new Date().toISOString(), by: "Assistent", cfg: this._orig }, ...(c._versions || [])].slice(0, VMAX);
+        this._verDone = true;
+      }
       for (const k of Object.keys(c)) if (c[k] === undefined || (typeof c[k] === "object" && c[k] && !Array.isArray(c[k]) && !Object.keys(c[k]).length)) delete c[k];
       this._sent = JSON.stringify(c);
       this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: clone(c) }, bubbles: true, composed: true }));
@@ -10903,6 +12184,19 @@ ha-tile-info {
         this._emit(); this._build();
       };
       box = this._panel("layout", t("3 · Übersicht anordnen"), "mdi:view-grid-plus-outline", c.home_layout ? t("angepasst") : t("Standard"));
+      box.insertAdjacentHTML("beforeend", `<div class="note"><b>${t("Vorlage")}</b> — ${t("ein Klick setzt Anordnung und Darstellung; Geräte, Räume und Namen bleiben.")}</div>
+        <div class="presets">${Object.entries(PRESETS).map(([k, x]) => `<button class="pre" data-p="${k}"><ha-icon icon="${x.icon}"></ha-icon><b>${esc(t(x.name))}</b><small>${esc(t(x.desc))}</small></button>`).join("")}</div>
+        <div class="note pconf" hidden></div>`);
+      box.querySelectorAll("button.pre").forEach((b) => b.addEventListener("click", () => {
+        const pc = b.closest(".inner").querySelector(".pconf"), k = b.dataset.p;   // box zeigt später auf andere Panels
+        pc.hidden = false;
+        pc.innerHTML = `${t("„{n}“ übernehmen? Ersetzt die bisherige Anordnung (auch eigene Anordnungen je Gerätetyp).", { n: esc(t(PRESETS[k].name)) })}
+          <button class="reset ok">${t("Übernehmen")}</button> <button class="reset no">${t("Abbrechen")}</button>`;
+        pc.querySelector(".ok").addEventListener("click", () => { applyPreset(c, k, true); this._emit(); this._build(); });
+        pc.querySelector(".no").addEventListener("click", () => { pc.hidden = true; });
+      }));
+      const profs = Object.keys(c.profiles || {});
+      if (profs.length) box.insertAdjacentHTML("beforeend", `<div class="note">${esc(t("Hier änderst du die gemeinsame Anordnung. Eigene Anordnung behalten: {l} (ändern auf dem Gerät: Uhr antippen → Dashboard gestalten).", { l: profs.map((k) => t(PROFILE_NAME[k] || k)).join(", ") }))}</div>`);
       box.insertAdjacentHTML("beforeend", `<div class="note">${t("Reihenfolge der Gruppen auf der Übersicht (Pfeile, von links oben nach rechts unten; passt eine kleine Gruppe in eine Lücke davor, rückt sie dort hinein), Auge = ein-/ausblenden, Auswahl = Breite in Spalten. Mehr Breite = größere Kameras. Am Handy steht ohnehin alles untereinander.")}</div>`);
       const WOPT = [[1, t("1 Spalte")], [2, t("2 Spalten")], [3, t("3 Spalten")], [4, t("ganze Breite")]];
       keys.forEach((k, i) => {
@@ -10977,6 +12271,8 @@ ha-tile-info {
         if (v.covers && v.covers !== "auto") c.covers = v.covers; else delete c.covers;
         this._emit(); this._build();
       }));
+      const nUn = unassigned().length;
+      if (nUn) box.insertAdjacentHTML("beforeend", `<div class="note">📦 ${t("{n} Geräte haben noch keinen Raum und fehlen deshalb. Auf dem Dashboard: <b>Uhr antippen → Dashboard gestalten → 📦</b> — dort per Ziehen auf einen Raum zuordnen.", { n: nUn })}</div>`);
       if (!inv.rooms.length) box.insertAdjacentHTML("beforeend", `<div class="note">${t("Keine Bereiche gefunden. Lege sie unter <b>Einstellungen → Bereiche, Zonen &amp; Etagen</b> an und ordne deine Geräte zu — dann erscheinen hier die Räume.")}</div>`);
       else box.insertAdjacentHTML("beforeend", `<div class="note">${t("Aus deinen HA-Bereichen. Auge = anzeigen, Pfeile = Reihenfolge, Raum antippen = Name, Symbol, Hauptlicht, Temperatur ändern.")}</div>`);
       const ids = inv.rooms.map((r) => r.id);
@@ -11038,9 +12334,15 @@ ha-tile-info {
         ed.addEventListener("config-changed", (ev) => {
           ev.stopPropagation();
           const e = { ...ev.detail.config }; delete e.type;
-          c.energy = e; this._emit();
+          const same = energy && JSON.stringify(e) === JSON.stringify(Object.fromEntries(Object.entries(energy).filter(([k]) => k !== "type")));
+          if (same) delete c.energy; else c.energy = e;   // unverändert = weiter automatisch (neue Sensoren werden erkannt)
+          this._emit();
         });
         box.appendChild(ed);
+      }
+      if (c.energy && energy) {
+        box.insertAdjacentHTML("beforeend", `<div class="note"><button class="reset eauto">${t("Zurück auf automatisch")}</button></div>`);
+        box.querySelector("button.eauto").addEventListener("click", () => { delete c.energy; this._emit(); this._build(); });
       }
 
       // 6. Wetter, Personen, Kameras, Kalender
@@ -11144,10 +12446,15 @@ ha-tile-info {
       }
 
       // 8. Direkt auf der Kachel bearbeitet: Überblick + zurücksetzen
-      const nNames = Object.keys(c.names || {}).length, nHidden = (c.hidden || []).length, nOrder = (c.tile_order || []).length;
+      const inProf = (k) => Object.values(c.profiles || {}).reduce((a, P) => a + (Array.isArray(P[k]) ? P[k].length : Object.keys(P[k] || {}).length), 0);
+      const nNames = Object.keys(c.names || {}).length, nHidden = (c.hidden || []).length, nOrder = (c.tile_order || []).length + inProf("tile_order");
+      const nSize = Object.keys(c.tile_size || {}).length + inProf("tile_size");
+      const eachProf = (fn) => { Object.values(c.profiles || {}).forEach(fn); };
       box = this._panel("edited", t("8 · Direkt bearbeitet"), "mdi:pencil-outline",
-        nNames + nHidden + nOrder ? t("{a} Namen · {b} ausgeblendet", { a: nNames, b: nHidden }) : t("nichts"));
-      box.insertAdjacentHTML("beforeend", `<div class="note">${t("Auf dem Dashboard: <b>Uhr antippen → Kacheln bearbeiten</b> (nur Administratoren). Kachel antippen: umbenennen, ausblenden; halten und ziehen: verschieben. Namen gelten nur in diesem Dashboard.")}</div>`);
+        [nNames && t("{n} Namen", { n: nNames }), nHidden && t("{n} ausgeblendet", { n: nHidden }), nOrder && t("Reihenfolge"),
+          nSize && t("{n} Größen", { n: nSize }),
+          Object.keys(c.profiles || {}).length && t("{n} Gerätetypen", { n: Object.keys(c.profiles).length })].filter(Boolean).join(" · ") || t("nichts"));
+      box.insertAdjacentHTML("beforeend", `<div class="note">${t("Auf dem Dashboard: <b>Uhr antippen → Dashboard gestalten</b> (nur Administratoren). Kachel antippen: umbenennen, ausblenden; halten und ziehen: verschieben. Namen gelten nur in diesem Dashboard.")}</div>`);
       if (nNames) {
         Object.entries(c.names).forEach(([id, n]) => {
           const row = document.createElement("div");
@@ -11162,14 +12469,46 @@ ha-tile-info {
         { hidden: c.hidden || [] }, (v) => { if (v.hidden?.length) c.hidden = v.hidden; else delete c.hidden; this._emit(); }));
       if (nOrder) {
         box.insertAdjacentHTML("beforeend", `<div class="note"><button class="reset ord">${t("Reihenfolge der Kacheln zurücksetzen")}</button></div>`);
-        box.querySelector("button.ord").addEventListener("click", () => { delete c.tile_order; this._emit(); this._build(); });
+        box.querySelector("button.ord").addEventListener("click", () => { delete c.tile_order; eachProf((P) => { delete P.tile_order; }); this._emit(); this._build(); });
       }
+      if (nSize) {   // alle Gerätetypen
+        box.insertAdjacentHTML("beforeend", `<div class="note"><button class="reset tsz">${t("Kachelgrößen zurücksetzen ({n})", { n: nSize })}</button></div>`);
+        box.querySelector("button.tsz").addEventListener("click", () => { delete c.tile_size; eachProf((P) => { delete P.tile_size; }); this._emit(); this._build(); });
+      }
+      Object.keys(c.profiles || {}).forEach((k) => {
+        const row = document.createElement("div");
+        row.className = "row";
+        row.innerHTML = `<ha-icon class="ic" icon="${k === "handy" ? "mdi:cellphone" : k === "tablet" ? "mdi:tablet" : "mdi:monitor"}"></ha-icon><div class="t"><b>${esc(t("Eigene Anordnung: {p}", { p: t(PROFILE_NAME[k] || k) }))}</b>
+          <small>${esc([t("gilt auf Geräten dieses Typs statt der gemeinsamen Anordnung"), (c.profiles[k].hidden || []).length && t("{n} ausgeblendet", { n: c.profiles[k].hidden.length })].filter(Boolean).join(" · "))}</small></div><button title="${t("Löschen")}"><ha-icon icon="mdi:delete-outline"></ha-icon></button>`;
+        row.querySelector("button").addEventListener("click", () => { delete c.profiles[k]; if (!Object.keys(c.profiles).length) delete c.profiles; this._emit(); this._build(); });
+        box.appendChild(row);
+      });
 
-      // 9. Tipps
-      box = this._panel("tips", t("9 · Handy & Wandmonitor"), "mdi:monitor-cellphone");
+      // 9. Versionen (jede Speicherung aus dem Dashboard und die erste Änderung im Assistenten)
+      const versions = c._versions || [];
+      box = this._panel("versions", t("9 · Versionen"), "mdi:history", versions.length ? t("{n} gespeichert", { n: versions.length }) : t("keine"));
+      box.insertAdjacentHTML("beforeend", `<div class="note">${t("Vor jeder Änderung wird der alte Stand gemerkt (die letzten {n}). Wiederherstellen, dann Speichern.", { n: VMAX })}</div>`);
+      const BY = { Kacheln: t("Kacheln bearbeitet"), Assistent: t("Assistent"), Profil: t("Gerätetyp"), Rückgängig: t("Rückgängig") };
+      versions.forEach((v, i) => {
+        const row = document.createElement("div");
+        row.className = "row";
+        const d = new Date(v.at);
+        row.innerHTML = `<ha-icon class="ic" icon="mdi:history"></ha-icon><div class="t"><b>${esc(isNaN(d) ? v.at : d.toLocaleString(numLoc(), { dateStyle: "medium", timeStyle: "short" }))}</b>
+          <small>${esc(t("Stand vor: {x}", { x: BY[v.by] || v.by || "" }))}</small></div><button title="${t("Wiederherstellen")}"><ha-icon icon="mdi:restore"></ha-icon></button>`;
+        row.querySelector("button").addEventListener("click", () => {
+          const now = { at: new Date().toISOString(), by: "Assistent", cfg: bareCfg(c) };
+          const next = { ...clone(v.cfg), _versions: [now, ...versions.filter((x, j) => j !== i)].slice(0, VMAX) };
+          this._config = next; this._verDone = true;
+          this._emit(); this._build();
+        });
+        box.appendChild(row);
+      });
+
+      // 10. Tipps
+      box = this._panel("tips", t("10 · Handy & Wandmonitor"), "mdi:monitor-cellphone");
       box.insertAdjacentHTML("beforeend", `<div class="note">${t("<b>Handy:</b> läuft in der HA-App, Seiten unten per Leiste wechseln (wischbar).")}<br>
         ${t("<b>Wandmonitor (Full HD):</b> Dashboard-Adresse mit <code>?kiosk</code> öffnen (braucht Kiosk Mode) — ohne Kopfzeile und Seitenleiste. Bei 1920×1080 mit 125 % Zoom sieht es aus wie im Original. Hochkant geht auch (die Leiste zeigt dann nur Symbole).")}<br>
-        ${t("<b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist. Als Admin findest du dort auch <b>Kacheln bearbeiten</b>: Kacheln und ganze Gruppen per Ziehen anordnen, breiter machen, ausblenden, umbenennen — auf jeder Seite.")}<br>
+        ${t("<b>Uhr antippen:</b> Design und Hell/Dunkel nur für dieses Gerät — der Standard bleibt, was hier eingestellt ist. Als Admin findest du dort auch <b>Dashboard gestalten</b>: Kacheln und ganze Gruppen per Ziehen anordnen, breiter machen, ausblenden, umbenennen — auf jeder Seite.")}<br>
         ${t("<b>Livebilder am Wandmonitor:</b> Browser-Cache begrenzen, z. B. Chromium mit <code>--disk-cache-size=67108864</code> (64 MB) starten.")}<br>
         ${t("Ändern kannst du alles später über <b>Dashboard bearbeiten</b>; „Kontrolle übernehmen“ macht daraus ein normales, frei bearbeitbares Dashboard (dann ohne automatische Aktualisierung).")}</div>`);
     }
