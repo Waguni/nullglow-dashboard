@@ -3,9 +3,9 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
-window.__NULLGLOW_VERSION = "2.5.0";
-window.__NULLGLOW_BUILD = "71425c3";
-console.info("%c NULLGLOW %c v2.5.0 · 71425c3 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
+window.__NULLGLOW_VERSION = "2.5.1";
+window.__NULLGLOW_BUILD = "d820498";
+console.info("%c NULLGLOW %c v2.5.1 · d820498 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -13219,6 +13219,33 @@ ha-tile-info {
   };
   window.addEventListener("location-changed", editHash);
   window.addEventListener("hashchange", editHash);
+
+  // Navigation am Handy (Bubble-Leiste wischbar, Scroller .card-content.is-scrollable): jede Seite hat ihre eigene Leiste — nach
+  // dem Tippen auf einen Tab stand die neue wieder ganz am Anfang. Stelle merken und übernehmen, aktiven Tab notfalls ins Bild holen.
+  // Gilt überall, wo das Paket geladen ist (Kiosk und Vorlage).
+  if (!window.__ngNavKeep) {
+    window.__ngNavKeep = true;
+    let navX = 0;
+    const navScrollers = () => {
+      const hv = deepFind(document, "hui-view-container"), out = [];
+      if (hv) deepEach(hv, (e) => { if (e.classList?.contains("is-scrollable") && e.parentElement?.classList?.contains("horizontal-buttons-stack-card")) out.push(e); });
+      return out;
+    };
+    const navKeep = () => navScrollers().forEach((el) => {
+      if (!el.__ngKeep) { el.__ngKeep = true; el.addEventListener("scroll", () => { navX = el.scrollLeft; }, { passive: true }); }
+      if (el.scrollWidth <= el.clientWidth + 1) return;
+      let want = navX;
+      const hl = el.querySelector(".bubble-button.highlight"), c = el.getBoundingClientRect(), r = hl?.getBoundingClientRect();
+      if (r?.width) {   // aktiver Tab sichtbar halten
+        const left = r.left - c.left + el.scrollLeft, right = left + r.width;
+        if (left < want + 8) want = Math.max(0, left - 12); else if (right > want + c.width - 8) want = right - c.width + 12;
+      }
+      if (Math.abs(el.scrollLeft - want) > 1) el.scrollTo({ left: want, behavior: "instant" });
+      navX = el.scrollLeft;
+    });
+    window.addEventListener("location-changed", () => [0, 60, 200, 450, 900].forEach((ms) => setTimeout(navKeep, ms)));   // neue Leiste zeichnet sich spät
+    setTimeout(navKeep, 1500);   // erste Seite: Scroll-Stelle ab jetzt mitschreiben
+  }
 
   class NullglowDashboardStrategy extends HTMLElement {
     static async generate(config, hass) {
