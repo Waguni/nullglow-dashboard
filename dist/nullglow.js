@@ -3,9 +3,9 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
-window.__NULLGLOW_VERSION = "2.5.1";
-window.__NULLGLOW_BUILD = "d820498";
-console.info("%c NULLGLOW %c v2.5.1 · d820498 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
+window.__NULLGLOW_VERSION = "2.5.2";
+window.__NULLGLOW_BUILD = "9fb20c7";
+console.info("%c NULLGLOW %c v2.5.2 · 9fb20c7 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -6773,6 +6773,14 @@ window.__NULLGLOW_THEMES = {
     .btns button:active { transform: scale(.96); }
     .btns .lbl { display: inline; }
     @container ngcov (max-width: 520px) { .btns .lbl { display: none; } .btns button { padding: 0 11px; } }
+    /* Räume (rooms mit icon): Balken eines Raums zusammen, darunter das Raumsymbol (farbig, wenn etwas an/offen ist) */
+    .card.grp { row-gap: 8px; }
+    .bars.grp { height: auto; align-items: stretch; gap: 9px; }
+    .bars.grp .g { flex: var(--n, 1) 1 0; min-width: 0; max-width: calc(var(--n, 1) * 28px + (var(--n, 1) - 1) * 4px); display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .bars.grp .gb { display: flex; align-items: flex-end; gap: 4px; width: 100%; height: 20px; }
+    .bars.grp .gb i { max-width: none; }
+    .bars.grp .g > ha-icon { --mdc-icon-size: 18px; width: 18px; height: 18px; display: block; color: var(--ng-txt-dim, #93a79d); transition: color .6s; }
+    .bars.grp .g.on > ha-icon { color: var(--ng-acc, #7cffb2); }
   `;
 
   class NullglowCoversCard extends HTMLElement {
@@ -6819,15 +6827,19 @@ window.__NULLGLOW_THEMES = {
     }
     // ── Editor Ende ──
     setConfig(config) {
-      if (!config?.entities?.length) throw new Error(t("nullglow-covers-card: entities angeben"));
-      this._cfg = { title: t("Rollläden"), icon: "mdi:window-shutter", ...config };
+      const rooms = Array.isArray(config?.rooms) ? config.rooms.filter((r) => r?.entities?.length) : null;
+      const ents = rooms?.length ? rooms.flatMap((r) => r.entities) : config?.entities;
+      if (!ents?.length) throw new Error(t("nullglow-covers-card: entities angeben"));
+      this._cfg = { title: t("Rollläden"), icon: "mdi:window-shutter", ...config, entities: ents };
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
-      card.className = `card ${this._cfg.tap ? "tap" : ""}`;
+      const grp = !!rooms?.length;   // Raumsymbole unter den Balken
+      card.className = `card ${this._cfg.tap ? "tap" : ""} ${grp ? "grp" : ""}`;
       card.innerHTML = `
         <div class="ic"><ha-icon icon="${esc(this._cfg.icon)}"></ha-icon></div>
         <div class="mid"><b>${esc(this._cfg.title)}</b><span class="sum">–</span></div>
-        <div class="bars">${this._cfg.entities.map(() => "<i></i>").join("")}</div>
+        <div class="bars ${grp ? "grp" : ""}">${grp ? rooms.map((r) => `<span class="g" style="--n: ${r.entities.length}" title="${esc(r.name || "")}"><span class="gb">${r.entities.map(() => "<i></i>").join("")}</span><ha-icon icon="${esc(r.icon || "mdi:window-shutter")}"></ha-icon></span>`).join("")
+          : this._cfg.entities.map(() => "<i></i>").join("")}</div>
         <div class="btns">
           <button data-s="open_cover" title="${t("Alle auf")}"><ha-icon icon="mdi:arrow-up"></ha-icon><span class="lbl">${t("Auf")}</span></button>
           <button data-s="stop_cover" title="${t("Stopp")}"><ha-icon icon="mdi:stop"></ha-icon></button>
@@ -6866,6 +6878,8 @@ window.__NULLGLOW_THEMES = {
         el.style.setProperty("--p", v ? `${Math.max(v.p, v.p > 0 ? 8 : 0)}%` : "0%");
         el.title = this._hass.states[this._cfg.entities[i]]?.attributes?.friendly_name || this._cfg.entities[i];
       });
+      // Raumsymbol in Akzentfarbe, solange dort etwas offen ist
+      this._card.querySelectorAll(".bars.grp .g").forEach((g) => g.classList.toggle("on", [...g.querySelectorAll("i")].some((el) => parseFloat(el.style.getPropertyValue("--p")) > 0)));
     }
 
     _press(b) {
@@ -6960,6 +6974,14 @@ window.__NULLGLOW_THEMES = {
     .btns button.arm { background: var(--ng-warn, #ffd166); color: #1a1405; box-shadow: none; }
     .btns button:active { transform: scale(.96); }
     @container nglit (max-width: 300px) { .btns .lbl { display: none; } .btns button { padding: 0 11px; } }
+    /* Räume (rooms mit icon): Balken eines Raums zusammen, darunter das Raumsymbol (farbig, wenn etwas an/offen ist) */
+    .card.grp { row-gap: 8px; }
+    .bars.grp { height: auto; align-items: stretch; gap: 9px; }
+    .bars.grp .g { flex: var(--n, 1) 1 0; min-width: 0; max-width: calc(var(--n, 1) * 56px + (var(--n, 1) - 1) * 4px); display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .bars.grp .gb { display: flex; align-items: flex-end; gap: 4px; width: 100%; height: 26px; }
+    .bars.grp .gb i { max-width: none; }
+    .bars.grp .g > ha-icon { --mdc-icon-size: 18px; width: 18px; height: 18px; display: block; color: var(--ng-txt-dim, #93a79d); transition: color .6s; }
+    .bars.grp .g.on > ha-icon { color: rgb(var(--c, 255, 196, 130)); }
   `;
 
   class NullglowLightsCard extends HTMLElement {
@@ -6987,7 +7009,7 @@ window.__NULLGLOW_THEMES = {
     }
     // ── Editor Ende ──
     setConfig(config) {
-      const rooms = config?.rooms?.length ? config.rooms.map((r) => ({ name: r.name, lights: [].concat(r.lights || r.entities || []) }))
+      const rooms = config?.rooms?.length ? config.rooms.map((r) => ({ name: r.name, icon: r.icon, lights: [].concat(r.lights || r.entities || []) }))
         : (config?.entities || []).map((e) => ({ name: null, lights: [e] }));
       if (!rooms.length || !rooms.some((r) => r.lights.length)) throw new Error(t("nullglow-lights-card: rooms oder entities angeben"));
       this._cfg = { title: t("Licht"), icon: "mdi:lightbulb-group", ...config };
@@ -6995,11 +7017,12 @@ window.__NULLGLOW_THEMES = {
       this._all = [...new Set(this._rooms.flatMap((r) => r.lights))];
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
-      card.className = `card ${this._cfg.tap ? "tap" : ""}`;
+      const grp = this._rooms.some((r) => r.icon);   // Raumsymbole unter den Balken
+      card.className = `card ${this._cfg.tap ? "tap" : ""} ${grp ? "grp" : ""}`;
       card.innerHTML = `
         <div class="ic"><ha-icon icon="${esc(this._cfg.icon)}"></ha-icon></div>
         <div class="mid"><b>${esc(this._cfg.title)}</b><span class="sum">–</span></div>
-        <div class="bars">${this._rooms.map(() => "<i></i>").join("")}</div>
+        <div class="bars ${grp ? "grp" : ""}">${this._rooms.map((r) => (grp ? `<span class="g" title="${esc(r.name || "")}"><span class="gb"><i></i></span><ha-icon icon="${esc(r.icon || "mdi:lightbulb-outline")}"></ha-icon></span>` : "<i></i>")).join("")}</div>
         <div class="btns"><button class="off" title="${t("Alle aus")}"><ha-icon icon="mdi:lightbulb-group-off"></ha-icon><span class="lbl">${t("Aus")}</span></button></div>`;
       this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
       this.shadowRoot.appendChild(card);
@@ -7047,6 +7070,8 @@ window.__NULLGLOW_THEMES = {
         el.style.setProperty("--p", v && v.on ? `${Math.max(v.p, 12)}%` : "0%");
         if (v?.rgb) el.style.setProperty("--c", v.rgb.join(", ")); else el.style.removeProperty("--c");
         el.title = v ? `${v.name}${v.on ? ` · ${v.p} %` : ""}` : this._rooms[i].name || this._rooms[i].lights[0];
+        const g = el.closest(".g");   // Raumsymbol in der Lichtfarbe, solange etwas an ist
+        if (g) { g.classList.toggle("on", !!v?.on); if (v?.rgb) g.style.setProperty("--c", v.rgb.join(", ")); else g.style.removeProperty("--c"); g.title = el.title; }
       });
     }
 
@@ -7125,6 +7150,13 @@ window.__NULLGLOW_THEMES = {
     .dots i { width: 10px; height: 10px; border-radius: 3px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .12); }
     .dots i.on { background: var(--ng-warn, #ffd166); box-shadow: 0 0 8px rgba(var(--rgb-ng-warn, 255, 209, 102), calc(.7 * var(--ng-glow-k, 1))); }
     .dots i.na { background: rgba(var(--rgb-ng-txt, 255, 255, 255), .04); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .12); }
+    /* Räume (rooms mit icon): Punkte eines Raums zusammen, darunter das Raumsymbol (Amber, wenn dort etwas offen ist) */
+    .card.grp { row-gap: 8px; }
+    .dots.grp { flex-wrap: nowrap; gap: 11px; max-height: none; }
+    .dots.grp .g { flex: none; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .dots.grp .gb { display: flex; gap: 4px; }
+    .dots.grp .g > ha-icon { --mdc-icon-size: 18px; width: 18px; height: 18px; display: block; color: var(--ng-txt-dim, #93a79d); }
+    .dots.grp .g.on > ha-icon { color: var(--ng-warn, #ffd166); }
   `;
 
   class NullglowContactsCard extends HTMLElement {
@@ -7174,14 +7206,18 @@ window.__NULLGLOW_THEMES = {
     }
     // ── Editor Ende ──
     setConfig(config) {
-      if (!config?.entities?.length) throw new Error(t("nullglow-contacts-card: entities angeben"));
-      this._cfg = { title: t("Fenster & Türen"), names: {}, ...config };
+      const rooms = Array.isArray(config?.rooms) ? config.rooms.filter((r) => r?.entities?.length) : null;
+      const ents = rooms?.length ? rooms.flatMap((r) => r.entities) : config?.entities;
+      if (!ents?.length) throw new Error(t("nullglow-contacts-card: entities angeben"));
+      this._cfg = { title: t("Fenster & Türen"), names: {}, ...config, entities: ents };
       if (!this.shadowRoot) this.attachShadow({ mode: "open" });
       const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
-      card.className = `card ${this._cfg.tap ? "tap" : ""}`;
+      const grp = !!rooms?.length;   // Raumsymbole unter den Punkten
+      card.className = `card ${this._cfg.tap ? "tap" : ""} ${grp ? "grp" : ""}`;
       card.innerHTML = `<div class="ic"><ha-icon icon="mdi:window-closed-variant"></ha-icon></div>
         <div class="mid"><b>${esc(this._cfg.title)}</b><span class="sum">–</span></div>
-        <div class="dots">${this._cfg.entities.map(() => "<i></i>").join("")}</div>`;
+        <div class="dots ${grp ? "grp" : ""}">${grp ? rooms.map((r) => `<span class="g" title="${esc(r.name || "")}"><span class="gb">${r.entities.map(() => "<i></i>").join("")}</span><ha-icon icon="${esc(r.icon || "mdi:window-closed-variant")}"></ha-icon></span>`).join("")
+          : this._cfg.entities.map(() => "<i></i>").join("")}</div>`;
       this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
       this.shadowRoot.appendChild(card);
       this._card = card;
@@ -7212,6 +7248,7 @@ window.__NULLGLOW_THEMES = {
         this._dots[i].className = v === null ? "na" : v ? "on" : "";
         this._dots[i].title = nm(this._cfg.entities[i]);
       });
+      this._card.querySelectorAll(".dots.grp .g").forEach((g) => g.classList.toggle("on", !!g.querySelector("i.on")));   // Symbol Amber, wenn dort offen
     }
 
     _open() {
@@ -9081,7 +9118,10 @@ window.__NULLGLOW_THEMES = {
     "Verbraucher im Energiefluss: auf dem Dashboard gewählt ({n}).": "Consumers in the energy flow: chosen on the dashboard ({n}).", "wieder automatisch": "automatic again",
     "Neue Gruppe": "New group", "Neue Geräte": "New devices", "Mehr: auswählen, neue Gruppe, Vorschau": "More: select, new group, preview", "Gerät": "Device", "Antippen": "Tap", "Wie vorgesehen": "As designed", "Verlauf dahinter": "Graph behind", "24 Stunden als Kurve": "24 hours as a curve", "„seit …“ zeigen": "Show “since …”", "wann es sich zuletzt geändert hat": "when it last changed", "Livebild": "Live view", "sonst alle paar Sekunden ein Standbild": "otherwise a still image every few seconds", "Nur zeigen, wenn etwas läuft": "Only show while playing", "sonst bleibt die Karte ruhig stehen": "otherwise the card stays in place, calm", "Automatisch": "Automatic", "Hauptlicht": "Main light", "Alle Lampen zusammen": "All lamps together", "In andere Gruppe": "Move to another group", "Zurück": "Back", "Suchen": "Search", "Anderes Gerät": "Another device", "Platz und Größe der Kachel bleiben.": "The tile keeps its place and size.", "Ursprüngliches Gerät": "Original device", "Details": "Details", "Nichts": "Nothing", "Seite öffnen": "Open a page", "Was passiert, wenn man die Kachel antippt": "What happens when you tap the tile", "Welche Seite?": "Which page?", "Standard-Symbol": "Default icon", "Symbol wie mdi:lamp eingeben": "Enter an icon like mdi:lamp", "Welcher Sensor zeigt die Raumtemperatur": "Which sensor shows the room temperature", "Was die Raum-Kachel schaltet": "What the room tile switches", "Jetzt in: {g}": "Now in: {g}", "Keine andere Gruppe auf dieser Seite": "No other group on this page", "Zurück in die ursprüngliche Gruppe": "Back to its original group", "Name & Symbol": "Name & icon", "Welche Player": "Which players", "Es zeigt, was gerade läuft.": "It shows whatever is playing.", "Weitere Media-Karte": "Another media card", "Welche Kameras": "Which cameras", "Reihenfolge: Kacheln ziehen.": "Order: drag the tiles.", "Welche Kalender": "Which calendars", "Verbraucher im Energiefluss": "Consumers in the energy flow", "{n} gewählt": "{n} selected", "Gruppe löschen": "Delete group", "Wirklich löschen? Nochmal tippen": "Really delete? Tap again", "Eine eigene Gruppe auf dieser Seite — danach Kacheln hinzufügen.": "A group of your own on this page — then add tiles.", "Name, z. B. Garten": "Name, e.g. Garden", "Anlegen": "Create", "Bitte einen Namen eingeben": "Please enter a name", "Bis zu 6 — so erscheinen sie im Energiefluss. Namen kurz halten.": "Up to 6 — in this order in the energy flow. Keep names short.", "Noch keine — unten hinzufügen.": "None yet — add some below.", "Hinzufügen": "Add", "Wieder automatisch aus dem Energie-Dashboard": "Automatic again, from the Energy dashboard", "Mehr": "More", "Mehrere Kacheln auswählen": "Select several tiles", "zusammen ausblenden oder verschieben": "hide or move them together", "eigene Gruppe mit beliebigen Kacheln": "your own group with any tiles", "Vorschau: Handy": "Preview: phone", "so sieht es am Handy aus": "how it looks on a phone", "Vorschau: Tablet": "Preview: tablet", "{n} ausgewählt": "{n} selected", "Kacheln antippen zum Auswählen": "Tap tiles to select them", "In Gruppe …": "To group …", "In welche Gruppe?": "Which group?", "1 neues Gerät": "1 new device", "{n} neue Geräte": "{n} new devices", "Seit dem letzten Mal dazugekommen und noch nirgends zu sehen. Gruppe antippen = dort als Kachel hinzufügen.": "Added since last time and not shown anywhere yet. Tap a group to add it there as a tile.", "Ignorieren": "Ignore", "Alles erledigt.": "All done.", "Alle ignorieren": "Ignore all", "Zeigt den gespeicherten Stand — offene Änderungen erst nach „Fertig“.": "Shows the saved state — pending changes only after “Done”.", "Zeigt den gespeicherten Stand dieser Seite.": "Shows the saved state of this page.", "Lädt …": "Loading …", "Sonstige": "Other", "Mehr je Kachel": "More per tile", "Gerät, Symbol, Antippen, Verlauf": "Device, icon, tap, graph", "Name, Symbol, eigene Kacheln": "Name, icon, your tiles", "Vorschau am Handy": "Phone preview", "Ohne das Handy zu holen": "Without grabbing your phone",
     "Direkt hier auf dem Dashboard — für alle Seiten. Tippe auf eine Funktion, um gleich dort zu starten.": "Right here on the dashboard — on every page. Tap a feature to jump straight to it.",
-    "Kurz erklärt": "Quick tour", "Nullglow · lokale Dateien": "Nullglow · local files",
+    "Kurz erklärt": "Quick tour", "Bubble Card fehlt": "Bubble Card is missing", "Bubble Card ist zu alt (v{v})": "Bubble Card is too old (v{v})",
+    "Nullglow braucht die Bubble Card ab Version {min} — sonst funktionieren die Navigation unten und die Pop-ups nicht.":
+      "Nullglow needs Bubble Card {min} or newer — otherwise the navigation at the bottom and the pop-ups don't work.",
+    "In HACS installieren": "Install in HACS", "In HACS aktualisieren": "Update in HACS", "und danach die Seite neu laden.": "and reload the page afterwards.", "Nullglow · lokale Dateien": "Nullglow · local files",
     "Geladene Fassung — steht hier etwas Älteres, liefert der Browser noch eine alte Kopie aus dem Cache": "Loaded version — if this shows an older one, the browser is still serving an old cached copy", "Kacheln": "Tiles", "Gruppen": "Groups", "Speichern": "Saving",
     "Eine <b>Kachel</b> ist ein einzelnes Gerät. <b>Antippen</b>: Name, Symbol, Gerät und mehr · <b>halten und ziehen</b>: verschieben · <b>Ecke ziehen</b>: Größe.":
       "A <b>tile</b> is a single device. <b>Tap</b>: name, icon, device and more · <b>hold and drag</b>: move · <b>drag the corner</b>: size.",
@@ -9353,7 +9393,7 @@ window.__NULLGLOW_THEMES = {
       type: "custom:bubble-card", card_type: "button", button_type: "slider", entity: eid, name, ...(icon ? { icon } : {}),
       show_state: true, use_accent_color: true, tap_to_slide: false, slider_live_update: false,
       button_action: { tap_action: tapAct, hold_action: holdAct },
-      tap_action: tapAct, hold_action: holdAct,
+      tap_action: tapPopup && pop ? { action: "toggle" } : tapAct, hold_action: holdAct,   // Symbol antippen schaltet immer
       grid_options: { columns, rows: 1 },
       styles: [
         `.bubble-button-card-container { border-radius: 20px !important; \${(() => { const c = ${col}; return ${on} ? 'box-shadow: inset 0 0 0 1px rgba(' + c + ',.5), 0 0 30px -10px rgba(' + c + ',.7) !important;' : 'box-shadow: inset 0 0 0 1px var(--ng-line) !important;'; })()} }`,
@@ -9374,7 +9414,7 @@ window.__NULLGLOW_THEMES = {
     return {
       type: "custom:bubble-card", card_type: "button", button_type: "name", name: room.name, icon: room.icon,
       show_state: false,
-      tap_action: tapAct,
+      tap_action: tapPopup && pop ? toggle : tapAct,   // Symbol antippen schaltet immer (Kachel öffnet ggf. den Raum)
       button_action: { tap_action: tapAct, hold_action: holdAct },
       hold_action: holdAct,
       grid_options: { columns, rows: 1 },
@@ -9642,7 +9682,8 @@ ha-tile-info {
     const cards = [];
     gs.forEach((g) => {
       const ents = g.rooms.flatMap((r) => r.covers);
-      cards.push({ type: "custom:nullglow-covers-card", entities: ents, title: gs.length === 1 ? t("Alle Rollläden") : g.name,
+      cards.push({ type: "custom:nullglow-covers-card", entities: ents, rooms: g.rooms.map((r) => ({ name: r.name, icon: r.icon, entities: r.covers })),
+        title: gs.length === 1 ? t("Alle Rollläden") : g.name,
         icon: g.icon || (g.level < 0 ? "mdi:home-floor-negative-1" : g.level <= 3 ? `mdi:home-floor-${g.level}` : "mdi:home-roof"),
         grid_options: { columns: 12, rows: 2 } });
       const tiles = g.rooms.flatMap((r) => r.covers.map((c, i) => {
@@ -9668,7 +9709,7 @@ ha-tile-info {
     const gs = [...groups.values()].sort((a, b) => rank(a.level) - rank(b.level));
     const tapPop = cfg.light_tap === "popup", cards = [];
     gs.forEach((g) => {
-      cards.push({ type: "custom:nullglow-lights-card", rooms: g.rooms.map((r) => ({ name: r.name, lights: r.lights })),
+      cards.push({ type: "custom:nullglow-lights-card", rooms: g.rooms.map((r) => ({ name: r.name, icon: r.icon, lights: r.lights })),
         title: gs.length === 1 ? t("Alle Lichter") : g.name,
         icon: g.icon || (g.level < 0 ? "mdi:home-floor-negative-1" : g.level <= 3 ? `mdi:home-floor-${g.level}` : "mdi:home-roof"),
         grid_options: { columns: 12, rows: 2 } });
@@ -9710,7 +9751,8 @@ ha-tile-info {
     const cards = [];
     gs.forEach((g) => {
       const ents = g.rooms.flatMap((r) => r.contacts);
-      cards.push({ type: "custom:nullglow-contacts-card", entities: ents, title: gs.length === 1 ? t("Alle Fenster & Türen") : g.name,
+      cards.push({ type: "custom:nullglow-contacts-card", entities: ents, rooms: g.rooms.map((r) => ({ name: r.name, icon: r.icon, entities: r.contacts })),
+        title: gs.length === 1 ? t("Alle Fenster & Türen") : g.name,
         names: Object.fromEntries(g.rooms.flatMap((r) => r.contacts.map((c, i) => [c, contactName(inv, r, c, i)]))),
         grid_options: { columns: 12, rows: 2 } });
       cards.push({ type: "grid", columns: 3, square: false,
@@ -10218,7 +10260,7 @@ ha-tile-info {
     if (lightRooms.length) {
       const cards = [heading(t("Licht"), "mdi:lightbulb-group", on.licht ? `${base}/licht` : null)];
       const tapPop = cfg.light_tap === "popup";   // Standard: Antippen schaltet den Raum an/aus
-      if (lightsCompact) cards.push({ type: "custom:nullglow-lights-card", rooms: lightRooms.map((r) => ({ name: r.name, lights: r.lights })),
+      if (lightsCompact) cards.push({ type: "custom:nullglow-lights-card", rooms: lightRooms.map((r) => ({ name: r.name, icon: r.icon, lights: r.lights })),
         title: t("Alle Lichter"), tap: "#lichter", grid_options: { columns: 12, rows: 2 } });   // „Aus“ steckt in der Sammelkachel
       else {
         lightRooms.forEach((r) => cards.push(markRoom(r.light ? lightTile(r.light, r.name, r.icon, r.hash, 6, tapPop) : roomLightsButton(r, r.hash, 6, tapPop), r)));
@@ -10251,7 +10293,8 @@ ha-tile-info {
     const covers = inv.shown.flatMap((r) => r.covers.map((c, i) => [c, r, i]));
     const compact = covers.length && (cfg.covers === "compact" || (cfg.covers !== "list" && covers.length > 6));
     if (compact) S.push("rolllaeden", { type: "grid", cards: [heading(t("Rollläden"), "mdi:window-shutter", "#rolllaeden"),
-      { type: "custom:nullglow-covers-card", entities: covers.map(([c]) => c), title: t("Alle Rollläden"), tap: "#rolllaeden", grid_options: { columns: 12, rows: 2 } }] });
+      { type: "custom:nullglow-covers-card", entities: covers.map(([c]) => c), rooms: inv.shown.filter((r) => r.covers.length).map((r) => ({ name: r.name, icon: r.icon, entities: r.covers })),
+        title: t("Alle Rollläden"), tap: "#rolllaeden", grid_options: { columns: 12, rows: 2 } }] });
     else if (covers.length) S.push("rolllaeden", { type: "grid", cards: [heading(t("Rollläden"), "mdi:window-shutter"), ...covers.map(([c, r, i]) => {
       const n = coverWord(inv.niceName(c, [r.name, r.areaName]), r.name);
       return coverTile(c, r.covers.length === 1 ? r.name : `${r.name} · ${n && n.toLowerCase() !== r.name.toLowerCase() ? n : i + 1}`);
@@ -10270,6 +10313,7 @@ ha-tile-info {
         card_mod: { style: "ha-card { --ng-state: {{ 'warn' if is_state(config.entity, 'unlocked') else 'off' }}; }\n" } }));
       inv.garages.forEach((g) => cards.push({ type: "tile", entity: g, features: [{ type: "cover-open-close" }], grid_options: { columns: 6 } }));
       if (cCompact) cards.push({ type: "custom:nullglow-contacts-card", entities: contacts.map(([c]) => c), tap: "#fenster",
+        rooms: inv.shown.filter((r) => r.contacts.length).map((r) => ({ name: r.name, icon: r.icon, entities: r.contacts })),
         names: Object.fromEntries(contacts.map(([c, r, i]) => [c, contactName(inv, r, c, i)])), grid_options: { columns: 12, rows: 2 } });
       else contacts.forEach(([c, r, i]) => cards.push(contactTile(c, contactName(inv, r, c, i), hass, 6)));
       S.push("zuhause", { type: "grid", cards });
@@ -13305,6 +13349,9 @@ ha-tile-info {
         cams: (cfg.live_cameras || []).filter((c) => hass.states[c]).length };   // fürs Bearbeiten auf der Kachel
       const floatHints = (cfg.hints || {}).mode === "float" ? hintsCard(cfg, base, on, false) : null;
       if (on.home && has("nullglow-design-card")) setTimeout(clockTip, 3500);   // Tipp „Uhr antippen“ (erste Besuche)
+      // Bubble Card fehlt oder ist zu alt: Navigation und Pop-ups gehen dann nicht — Hinweis oben auf jeder Seite
+      const bub = await bubbleProblem(hass);
+      const bubWarn = bub ? [bubbleWarning(bub)] : [];
       // 1) Gruppen jeder Seite, 2) seitenübergreifend verschieben, 3) je Seite anordnen
       const built = {};
       for (const v of views) {
@@ -13328,7 +13375,7 @@ ha-tile-info {
           // Pop-ups der Ursprungsseiten (z. B. Raum-Pop-ups der Übersicht), wenn deren Kacheln hier stehen
           const extra = [...(b.r.extra || []), ...[...(need[v.key] || [])].flatMap((f) => (f !== v.key && built[f]?.r.extra) || [])];
           return { title: v.title, path: v.key, icon: v.icon, theme: shown, type: "sections", max_columns: 4,
-            dense_section_placement: true, sections: [...applyEdits(sections, cfg, v.key, base, hass), navSection(views, base, [...extra, ...(door ? [doorbellPopup(door)] : []), ...(floatHints ? [floatHints] : [])])] };
+            dense_section_placement: true, sections: [...bubWarn, ...applyEdits(sections, cfg, v.key, base, hass), navSection(views, base, [...extra, ...(door ? [doorbellPopup(door)] : []), ...(floatHints ? [floatHints] : [])])] };
         }),
       };
       // Was steht schon irgendwo auf dem Dashboard (auch in Pop-ups)? — für „Neue Geräte“ im Bearbeiten-Modus
@@ -13373,6 +13420,24 @@ ha-tile-info {
     })());
   }
   const older = (v, min) => { for (let i = 0; i < min.length; i++) if ((v[i] || 0) !== min[i]) return (v[i] || 0) < min[i]; return false; };
+  // Bubble Card prüfen (Dashboard selbst, nicht nur im Assistenten): fehlt sie oder ist sie älter als NEEDS.min, gehen Navigation und
+  // Pop-ups nicht (Rückmeldung eines Nutzers: Seiten erst nach Bubble-Update). Wartet kurz auf das Laden; unbekannte Version = kein Hinweis.
+  // Test: window.__ngBubbleFake = [3, 1, 0] bzw. "missing"
+  const cap = (pr, ms, v) => Promise.race([pr, new Promise((r) => setTimeout(() => r(v), ms))]);
+  async function bubbleProblem(hass) {
+    const need = NEEDS.find((n) => n.tag === "bubble-card"), fake = window.__ngBubbleFake;
+    if (fake === "missing") return { need, missing: true };
+    const there = has("bubble-card") || await cap(customElements.whenDefined("bubble-card").then(() => true), 4000, false);
+    if (!there) return { need, missing: true };
+    const v = Array.isArray(fake) ? fake : await cap(cardVersion(hass, need.file), 2500, null);
+    return v && older(v, need.min) ? { need, v } : null;
+  }
+  function bubbleWarning({ need, v, missing }) {
+    const head = missing ? t("Bubble Card fehlt") : t("Bubble Card ist zu alt (v{v})", { v: v.join(".") });
+    return { type: "grid", column_span: 4, cards: [{ type: "markdown", text_only: true, grid_options: { columns: "full" }, content:
+      `<ha-alert alert-type="warning" title="${esc(head)}">${esc(t("Nullglow braucht die Bubble Card ab Version {min} — sonst funktionieren die Navigation unten und die Pop-ups nicht.", { min: need.min.join(".") }))}
+<a href="${hacsLink(need.repo)}" target="_blank" rel="noreferrer">${esc(missing ? t("In HACS installieren") : t("In HACS aktualisieren"))}</a> ${esc(t("und danach die Seite neu laden."))}</ha-alert>` }] };
+  }
 
   const NEEDS = [
     { tag: "bubble-card", name: "Bubble Card", repo: ["Clooos", "Bubble-Card"], must: true, file: "bubble-card", min: [3, 2, 0],

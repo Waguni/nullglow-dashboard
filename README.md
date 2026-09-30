@@ -144,6 +144,9 @@ wall monitor).
   navigation (wall displays).
 - **All lights as one tile** (optional, wizard → rooms → *Lights on the overview*: *Combined*): one tile with a bar per room in
   the real light colour (height = brightness) and *Off* (asks once), tap opens all rooms by floor. Handy for big homes.
+  The combined tiles for lights, blinds and windows show each **room's icon under its bars** (lit in the light colour, green
+  while a blind is open, amber while a window is open), so you can tell at a glance which room it is. If tapping a room opens
+  its pop-up, **tapping the room's icon still switches the light**.
 - **Media:** while music or TV is playing, a card with the cover appears under the weather — the card takes on the colors of
   the cover. Without cover art (e.g. YouTube cast to a Chromecast only reports title and channel) it shows the app's logo in
   its brand color instead — YouTube, Netflix, Spotify, Twitch, Plex, Kodi and a few more. Switch it off in the wizard; the
@@ -204,7 +207,8 @@ If the HA **Energy dashboard** is set up (including power sensors), the energy f
 ## FAQ
 
 - **"Configuration error" or empty tiles:** Bubble Card, Mushroom or card-mod missing? Install, then hard-reload (Ctrl+F5).
-- **Tapping opens no pop-up** (blinds, rooms, radar …): pop-ups come from Bubble Card — you need **3.2 or newer**.
+- **Tapping opens no pop-up** (blinds, rooms, radar …): pop-ups come from Bubble Card — you need **3.2 or newer**. The dashboard
+  shows a warning at the top of every page when Bubble Card is missing or too old.
   Update in HACS, then hard-reload (in the app: clear the app cache). The wizard shows the detected version.
 - **"Nullglow" is missing under "Add dashboard":** reload the browser; check that Nullglow Dashboard is downloaded in HACS.
 - **Slow or stuttering on an older PC/tablet:** tap the clock → *Power saving* → **On**. The aurora missing? *Auto* may
