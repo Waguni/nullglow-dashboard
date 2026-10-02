@@ -105,7 +105,7 @@ wall monitor).
 ![Energy](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/energy.jpg?v=2.2.0)
 
 **Lights** and **Climate**
-![Lights](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/lights.jpg?v=2.2.0)
+![Lights](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/lights.jpg?v=2.5.4)
 ![Climate](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/climate.jpg?v=2.2.0)
 
 **Room pop-up** (long-press a light tile or tap a temperature)
@@ -144,7 +144,13 @@ wall monitor).
   *Hidden* with **Bring back**. Both use the same list, so a battery hidden in one is hidden in the other. The **×** hides a
   hint for single devices (e.g. one that always reports a low battery). At the top of the overview or floating above the
   navigation (wall displays).
-- **All lights as one tile** (optional, wizard → rooms → *Lights on the overview*: *Combined*): one tile with a bar per room in
+- **Lights page per room:** by default every room with several lights gets a **large room tile** (brightness, on/off and up to 4
+  scenes as buttons), with only the lights it doesn't switch shown small below; rooms with one light sit together under *More
+  rooms*. Per room you can choose *Large with scenes*, *Every light on its own* or *Small* — in the wizard (tap a room) or on
+  the dashboard (tap the room tile → *Lights page*).
+- **One setting for tapping room tiles** on the overview (lights, climate, blinds): *switch/details* (hold opens the room
+  pop-up) or *room pop-up* (hold switches / shows details).
+- **All lights as one tile** (automatic from 7 rooms, like blinds and windows; wizard → rooms & devices → *Lights*): one tile with a bar per room in
   the real light colour (height = brightness) and *Off* (asks once), tap opens all rooms by floor. Handy for big homes.
   The combined tiles for lights, blinds and windows show each **room's icon under its bars** (lit in the light colour, green
   while a blind is open, amber while a window is open), so you can tell at a glance which room it is. If tapping a room opens

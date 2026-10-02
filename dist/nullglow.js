@@ -3,9 +3,9 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
-window.__NULLGLOW_VERSION = "2.5.3";
-window.__NULLGLOW_BUILD = "9126869";
-console.info("%c NULLGLOW %c v2.5.3 · 9126869 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
+window.__NULLGLOW_VERSION = "2.5.4";
+window.__NULLGLOW_BUILD = "7eb86b2";
+console.info("%c NULLGLOW %c v2.5.4 · 7eb86b2 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -9119,7 +9119,31 @@ window.__NULLGLOW_THEMES = {
     "Verbraucher im Energiefluss: auf dem Dashboard gewählt ({n}).": "Consumers in the energy flow: chosen on the dashboard ({n}).", "wieder automatisch": "automatic again",
     "Neue Gruppe": "New group", "Neue Geräte": "New devices", "Mehr: auswählen, neue Gruppe, Vorschau": "More: select, new group, preview", "Gerät": "Device", "Antippen": "Tap", "Wie vorgesehen": "As designed", "Verlauf dahinter": "Graph behind", "24 Stunden als Kurve": "24 hours as a curve", "„seit …“ zeigen": "Show “since …”", "wann es sich zuletzt geändert hat": "when it last changed", "Livebild": "Live view", "sonst alle paar Sekunden ein Standbild": "otherwise a still image every few seconds", "Nur zeigen, wenn etwas läuft": "Only show while playing", "sonst bleibt die Karte ruhig stehen": "otherwise the card stays in place, calm", "Automatisch": "Automatic", "Hauptlicht": "Main light", "Alle Lampen zusammen": "All lamps together", "In andere Gruppe": "Move to another group", "Zurück": "Back", "Suchen": "Search", "Anderes Gerät": "Another device", "Platz und Größe der Kachel bleiben.": "The tile keeps its place and size.", "Ursprüngliches Gerät": "Original device", "Details": "Details", "Nichts": "Nothing", "Seite öffnen": "Open a page", "Was passiert, wenn man die Kachel antippt": "What happens when you tap the tile", "Welche Seite?": "Which page?", "Standard-Symbol": "Default icon", "Symbol wie mdi:lamp eingeben": "Enter an icon like mdi:lamp", "Welcher Sensor zeigt die Raumtemperatur": "Which sensor shows the room temperature", "Was die Raum-Kachel schaltet": "What the room tile switches", "Jetzt in: {g}": "Now in: {g}", "Keine andere Gruppe auf dieser Seite": "No other group on this page", "Zurück in die ursprüngliche Gruppe": "Back to its original group", "Name & Symbol": "Name & icon", "Welche Player": "Which players", "Es zeigt, was gerade läuft.": "It shows whatever is playing.", "Weitere Media-Karte": "Another media card", "Welche Kameras": "Which cameras", "Reihenfolge: Kacheln ziehen.": "Order: drag the tiles.", "Welche Kalender": "Which calendars", "Verbraucher im Energiefluss": "Consumers in the energy flow", "{n} gewählt": "{n} selected", "Gruppe löschen": "Delete group", "Wirklich löschen? Nochmal tippen": "Really delete? Tap again", "Eine eigene Gruppe auf dieser Seite — danach Kacheln hinzufügen.": "A group of your own on this page — then add tiles.", "Name, z. B. Garten": "Name, e.g. Garden", "Anlegen": "Create", "Bitte einen Namen eingeben": "Please enter a name", "Bis zu 6 — so erscheinen sie im Energiefluss. Namen kurz halten.": "Up to 6 — in this order in the energy flow. Keep names short.", "Noch keine — unten hinzufügen.": "None yet — add some below.", "Hinzufügen": "Add", "Wieder automatisch aus dem Energie-Dashboard": "Automatic again, from the Energy dashboard", "Mehr": "More", "Mehrere Kacheln auswählen": "Select several tiles", "zusammen ausblenden oder verschieben": "hide or move them together", "eigene Gruppe mit beliebigen Kacheln": "your own group with any tiles", "Vorschau: Handy": "Preview: phone", "so sieht es am Handy aus": "how it looks on a phone", "Vorschau: Tablet": "Preview: tablet", "{n} ausgewählt": "{n} selected", "Kacheln antippen zum Auswählen": "Tap tiles to select them", "In Gruppe …": "To group …", "In welche Gruppe?": "Which group?", "1 neues Gerät": "1 new device", "{n} neue Geräte": "{n} new devices", "Seit dem letzten Mal dazugekommen und noch nirgends zu sehen. Gruppe antippen = dort als Kachel hinzufügen.": "Added since last time and not shown anywhere yet. Tap a group to add it there as a tile.", "Ignorieren": "Ignore", "Alles erledigt.": "All done.", "Alle ignorieren": "Ignore all", "Zeigt den gespeicherten Stand — offene Änderungen erst nach „Fertig“.": "Shows the saved state — pending changes only after “Done”.", "Zeigt den gespeicherten Stand dieser Seite.": "Shows the saved state of this page.", "Lädt …": "Loading …", "Sonstige": "Other", "Mehr je Kachel": "More per tile", "Gerät, Symbol, Antippen, Verlauf": "Device, icon, tap, graph", "Name, Symbol, eigene Kacheln": "Name, icon, your tiles", "Vorschau am Handy": "Phone preview", "Ohne das Handy zu holen": "Without grabbing your phone",
     "Direkt hier auf dem Dashboard — für alle Seiten. Tippe auf eine Funktion, um gleich dort zu starten.": "Right here on the dashboard — on every page. Tap a feature to jump straight to it.",
-    "Kurz erklärt": "Quick tour", "Bubble Card fehlt": "Bubble Card is missing", "Bubble Card ist zu alt (v{v})": "Bubble Card is too old (v{v})",
+    "Kurz erklärt": "Quick tour", "Eigene Seiten": "Your own pages",
+    "{n} hierher verschoben · Name, Symbol, Reihenfolge: Tab auf dem Dashboard antippen": "{n} moved here · name, icon, order: tap the tab on the dashboard",
+    "Umbenannte Tabs: {l}": "Renamed tabs: {l}", "4 · Räume & Geräte": "4 · Rooms & devices", "{n} von {m} Räumen": "{n} of {m} rooms",
+    "Namen & Filter": "Names & filters", "Raum-Kacheln auf der Übersicht antippen": "Tapping room tiles on the overview", "Licht, Klima und Rollläden": "Lights, climate and blinds",
+    "Schalten/Details: Licht an/aus, bei Klima und Rollläden die Details — Halten öffnet das Raum-Pop-up. Raum-Pop-up: umgekehrt. Das Symbol einer Licht-Kachel schaltet immer.":
+      "Switch/details: lights on/off, details for climate and blinds — hold opens the room pop-up. Room pop-up: the other way round. A light tile's icon always switches.",
+    "Schalten/Details (Standard)": "Switch/details (default)", "Auf der Übersicht ({n} Räume)": "On the overview ({n} rooms)",
+    "Automatisch (ab 7 Räumen zusammengefasst)": "Automatic (combined from 7 rooms)", "Einzeln": "Separately",
+    "Seite „Licht“: je Raum unten bei <b>Räume</b> (Raum antippen → Licht-Seite) oder auf dem Dashboard (Raum-Kachel antippen → Licht-Seite). Automatisch: ab 2 Lampen eine große Raum-Kachel mit Szenen, sonst klein bei „Weitere Räume“.":
+      "Lights page: per room below under <b>Rooms</b> (tap a room → Lights page) or on the dashboard (tap a room tile → Lights page). Automatic: a large room tile with scenes from 2 lights, otherwise small under “More rooms”.",
+    "Auf der Übersicht ({n} Rollläden)": "On the overview ({n} blinds)", "Auf der Übersicht ({n} Kontakte)": "On the overview ({n} contacts)",
+    "Hauptlicht (Raum-Kachel auf Übersicht und Licht-Seite)": "Main light (room tile on the overview and the Lights page)",
+    "Aus deinen HA-Bereichen. Auge = anzeigen, Pfeile = Reihenfolge, Raum antippen = Name, Symbol, Hauptlicht, Licht-Seite, Temperatur ändern.":
+      "From your HA areas. Eye = show, arrows = order, tap a room = change name, icon, main light, lights page, temperature.",
+    "6 · Design, Personen, Kameras, Medien & mehr": "6 · Design, people, cameras, media & more", "Kameras & Klingel": "Cameras & doorbell",
+    "Musik & TV": "Music & TV", "Wandmonitor": "Wall display",
+    "Auf andere Seiten verschobene Kacheln und Gruppen zurückholen ({n})": "Bring back tiles and groups moved to other pages ({n})",
+    "Tab-Namen, -Symbole und -Reihenfolge zurücksetzen": "Reset tab names, icons and order", "Etagen-Namen und -Symbole zurücksetzen ({n})": "Reset floor names and icons ({n})",
+    "Anordnung der anderen Seiten zurücksetzen ({n} Seiten: Reihenfolge, Breite, eigene Gruppen)": "Reset the layout of the other pages ({n} pages: order, width, own groups)",
+    "Seiten": "Pages", "Etagen": "Floors", "Weitere Räume": "More rooms", "Licht-Seite": "Lights page", "Groß mit Szenen": "Large with scenes",
+    "Alle Lampen einzeln": "Every light on its own", "Klein": "Small", "Automatisch: {x}": "Automatic: {x}",
+    "Wie der Raum auf der Seite „Licht“ erscheint": "How the room appears on the Lights page", "ab 2 Lampen groß, sonst klein": "large from 2 lights, otherwise small",
+    "Raum-Kachel mit Helligkeit und Szenen, andere Lampen klein darunter": "room tile with brightness and scenes, other lights small below",
+    "jede Lampe eine Kachel, dazu Szenen": "one tile per light, plus scenes", "eine kleine Kachel bei „Weitere Räume“": "one small tile under “More rooms”",
+    "Raum-Kacheln antippen": "Tapping room tiles", "Schalten/Details": "Switch/details", "Bubble Card fehlt": "Bubble Card is missing", "Bubble Card ist zu alt (v{v})": "Bubble Card is too old (v{v})",
     "Nullglow braucht die Bubble Card ab Version {min} — sonst funktionieren die Navigation unten und die Pop-ups nicht.":
       "Nullglow needs Bubble Card {min} or newer — otherwise the navigation at the bottom and the pop-ups don't work.",
     "In HACS installieren": "Install in HACS", "In HACS aktualisieren": "Update in HACS", "und danach die Seite neu laden.": "and reload the page afterwards.", "Nullglow · lokale Dateien": "Nullglow · local files",
@@ -9343,7 +9367,7 @@ window.__NULLGLOW_THEMES = {
         lights: single.length ? single : groups, light, climate,
         temperature: o.temperature || temps[0] || null, humidity: o.humidity || hums[0] || null,
         auto: { light: groups[0] || (single.length === 1 ? single[0] : null), temperature: temps[0] || null, humidity: hums[0] || null },
-        covers, contacts, scenes: mine.filter((id) => DOMAIN(id) === "scene"), areaName: a.name,
+        covers, contacts, scenes: mine.filter((id) => DOMAIN(id) === "scene"), areaName: a.name, lightPage: o.light_page || null,
         motion: mine.filter((id) => DOMAIN(id) === "binary_sensor" && ["motion", "occupancy", "presence"].includes(dc(id))),
       };
     });
@@ -9429,7 +9453,48 @@ window.__NULLGLOW_THEMES = {
     };
   }
 
-  function coverTile(eid, name, columns = 12) {
+  // ── Licht-Seite je Raum (rooms.<id>.light_page) ──
+  //   big   = große Raum-Kachel (Helligkeit, an/aus, bis zu 4 Szenen als Knöpfe), Lampen außerhalb der Raumgruppe klein darunter
+  //   lamps = jede Lampe einzeln (+ „· alle“ und Szenen)       small = kleine Raum-Kachel im Block „Weitere Räume“
+  //   leer  = automatisch: ab 2 Lampen big, sonst small (wie der Wandmonitor-Kiosk)
+  const LIGHT_PAGES = ["big", "lamps", "small"];
+  const lightPageOf = (r) => (LIGHT_PAGES.includes(r.lightPage) ? r.lightPage : r.lights.length > 1 ? "big" : "small");
+  // Lampen, die die Raum-Kachel nicht mitschaltet (z. B. ein LED-Streifen eines anderen Herstellers neben der Hue-Gruppe)
+  function extraLamps(r, hass) {
+    if (!r.light) return [...r.lights];   // ohne Hauptlicht schaltet die Raum-Kachel alle — trotzdem jede einzeln erreichbar
+    const m = hass.states[r.light]?.attributes?.entity_id, members = new Set(Array.isArray(m) ? m : []);
+    return r.lights.filter((l) => l !== r.light && !members.has(l));
+  }
+  const SCENE_ICON = [[/nacht|night|schlaf|sleep/i, "mdi:weather-night"], [/gedimmt|dimm|dim/i, "mdi:brightness-4"],
+    [/entspann|relax|gemütl|cozy|abend|evening/i, "mdi:sofa-outline"], [/konzentr|concentr|lesen|read|arbeit|work/i, "mdi:head-lightbulb-outline"],
+    [/energ/i, "mdi:lightning-bolt-outline"], [/hell|bright|tag|day/i, "mdi:brightness-7"]];
+  function sceneSubs(r, inv, hass, max = 4) {
+    return r.scenes.map((x) => [x, inv.niceName(x, [r.name, r.areaName])]).filter(([, n]) => !technical(n)).slice(0, max).map(([x, n]) => ({
+      name: n, show_background: true, icon: hass.states[x]?.attributes?.icon || (SCENE_ICON.find(([re]) => re.test(n)) || [0, "mdi:palette-outline"])[1],
+      tap_action: { action: "perform-action", perform_action: "scene.turn_on", target: { entity_id: x } } }));
+  }
+  const BIG_CSS = [
+    ".bubble-name { font-size: 19px !important; font-weight: 600 !important; letter-spacing: -.01em; }",
+    ".bubble-state { font-size: 12px !important; letter-spacing: .08em; text-transform: uppercase; opacity: .75; }",
+    ".bubble-sub-button { background: rgba(var(--rgb-ng-txt, 255, 255, 255), .06) !important; box-shadow: inset 0 0 0 1px var(--ng-line); width: 44px !important; height: 44px !important; }",
+    ".bubble-button { align-items: flex-start !important; }",
+    ".bubble-main-icon-container, .bubble-name-container { margin-top: 14px !important; }",
+    ".bubble-name-container { flex: 1 1 auto !important; max-width: none !important; }",
+    ".bubble-sub-button-container { position: absolute !important; right: 14px; bottom: 14px; gap: 8px !important; }",
+  ].join("\n") + "\n";
+  function bigRoomTile(r, inv, hass) {
+    const base = r.light ? lightTile(r.light, r.name, r.icon, null, 12) : roomLightsButton(r, null, 12), subs = sceneSubs(r, inv, hass, 4);
+    return markRoom({ ...base, card_layout: "large", grid_options: { columns: 12, rows: 4 }, ...(subs.length ? { sub_button: subs } : {}),
+      styles: base.styles + BIG_CSS }, r);
+  }
+
+  // Raum-Kacheln der Übersicht antippen (room_tap): device = Licht an/aus bzw. Details, popup = Raum-Pop-up (alt: light_tap: popup)
+  const roomTapPopup = (cfg) => (cfg.room_tap ? cfg.room_tap === "popup" : cfg.light_tap === "popup");
+  // Licht auf der Übersicht: auto (Standard, ab 7 Räumen zusammengefasst) | list | compact — „rooms“ = alter Name für list
+  const lightsMode = (cfg) => (cfg.lights === "compact" ? "compact" : ["list", "rooms"].includes(cfg.lights) ? "list" : "auto");
+
+  // hash/pop: Raum-Pop-up — pop = Antippen öffnet es (Symbol = Details), sonst Halten
+  function coverTile(eid, name, columns = 12, hash = null, pop = false) {
     const s = `hass.states[${q(eid)}]`;
     const moving = `(${s} && ['opening', 'closing'].includes(${s}.state))`;
     const isOpen = `(${s} && ((${s}.attributes.current_position || 0) > 0 || ${s}.state === 'open'))`;
@@ -9437,8 +9502,9 @@ window.__NULLGLOW_THEMES = {
     return {
       type: "custom:bubble-card", card_type: "button", button_type: "slider", entity: eid, name, icon: "mdi:window-shutter",
       show_state: true, show_attribute: true, attribute: "current_position", read_only_slider: true, tap_to_slide: false,
-      button_action: { tap_action: { action: "more-info" }, hold_action: { action: "more-info" } },
-      tap_action: { action: "more-info" }, hold_action: { action: "more-info" },
+      button_action: { tap_action: hash && pop ? { action: "navigate", navigation_path: hash } : { action: "more-info" },
+        hold_action: hash && !pop ? { action: "navigate", navigation_path: hash } : { action: "more-info" } },
+      tap_action: { action: "more-info" }, hold_action: hash && !pop ? { action: "navigate", navigation_path: hash } : { action: "more-info" },
       sub_button: [
         { icon: "mdi:arrow-up", name: t("Auf"), show_background: true, tap_action: act("open_cover") },
         { icon: "mdi:stop", name: t("Stopp"), show_background: true, tap_action: act("stop_cover") },
@@ -9710,7 +9776,7 @@ ha-tile-info {
     });
     const rank = (l) => (l < 0 ? 100 - l : l);   // EG, OG, DG …, dann Keller
     const gs = [...groups.values()].sort((a, b) => rank(a.level) - rank(b.level));
-    const tapPop = cfg.light_tap === "popup", cards = [];
+    const tapPop = roomTapPopup(cfg), cards = [];
     gs.forEach((g) => {
       cards.push({ type: "custom:nullglow-lights-card", rooms: g.rooms.map((r) => ({ id: r.id, name: r.name, icon: r.icon, lights: r.lights })),
         title: gs.length === 1 ? t("Alle Lichter") : g.name,
@@ -10049,10 +10115,10 @@ ha-tile-info {
       const fk = new Set(), keyOf = (sec) => {
         const cards = Array.isArray(sec.cards) ? sec.cards : [];
         if (!cards.length) return null;
-        const room = cards.map((c) => c.view_layout?.ng_edit).find((m) => m?.kind === "room");
+        const room = cards.map((c) => c.view_layout?.ng_edit).find((m) => m?.kind === "room"), fixed = cards.find((c) => c.view_layout?.ng_key)?.view_layout.ng_key;
         const c0 = cards.find((c) => c.type !== "heading") || cards[0], inner = c0.card || c0;
         const e0 = inner.entity || (Array.isArray(inner.entities) ? inner.entities[0] : null), ent = e0?.entity || e0;
-        let k = room ? room.id : String(inner.type || "karte").replace("custom:", "").replace("nullglow-", "") + (typeof ent === "string" ? ":" + ent : "");
+        let k = fixed || (room ? room.id : String(inner.type || "karte").replace("custom:", "").replace("nullglow-", "") + (typeof ent === "string" ? ":" + ent : ""));
         for (let n = 2; fk.has(k); n++) k = k.replace(/#\d+$/, "") + "#" + n;
         fk.add(k);
         return k;
@@ -10063,12 +10129,12 @@ ha-tile-info {
     const items = sections.map((sec, i) => {
       const cards = Array.isArray(sec.cards) ? sec.cards : [];
       if (!cards.length) return { sec, i };
-      const room = cards.map((c) => c.view_layout?.ng_edit).find((m) => m?.kind === "room");
+      const room = cards.map((c) => c.view_layout?.ng_edit).find((m) => m?.kind === "room"), fixed = cards.find((c) => c.view_layout?.ng_key)?.view_layout.ng_key;
       const h = cards.find((c) => c.type === "heading");
       const c0 = cards.find((c) => c.type !== "heading") || cards[0], inner = c0.card || c0;   // Verlauf-Hülle: Karte steckt innen
       const e0 = inner.entity || (Array.isArray(inner.entities) ? inner.entities[0] : null), ent = e0?.entity || e0;
-      let key = room ? room.id : String(inner.type || "karte").replace("custom:", "").replace("nullglow-", "") + (typeof ent === "string" ? ":" + ent : "");
-      if (stable && !room) {   // Gegenstück in der vollen Fassung: gleiche Entitäten (mehr sind es dort höchstens)
+      let key = fixed || (room ? room.id : String(inner.type || "karte").replace("custom:", "").replace("nullglow-", "") + (typeof ent === "string" ? ":" + ent : ""));
+      if (stable && !room && !fixed) {   // Gegenstück in der vollen Fassung: gleiche Entitäten (mehr sind es dort höchstens)
         const mine = secEnts(sec);
         let best = null, bn = 0;
         for (const x of stable) { if (x.taken) continue; let n = 0; mine.forEach((e) => { if (x.ents.has(e)) n++; }); if (n > bn) { best = x; bn = n; } }
@@ -10259,10 +10325,11 @@ ha-tile-info {
       ...live.map((c) => camCard(c, true, live.length > 1))] });
 
     const lightRooms = inv.shown.filter((r) => r.lights.length);
-    const lightsCompact = cfg.lights === "compact" && has("nullglow-lights-card") && lightRooms.length > 0;
+    const lightsCompact = has("nullglow-lights-card") && lightRooms.length > 0
+      && (lightsMode(cfg) === "compact" || (lightsMode(cfg) === "auto" && lightRooms.length > 6));   // auto: ab 7 Räumen wie Rollläden/Fenster
     if (lightRooms.length) {
       const cards = [heading(t("Licht"), "mdi:lightbulb-group", on.licht ? `${base}/licht` : null)];
-      const tapPop = cfg.light_tap === "popup";   // Standard: Antippen schaltet den Raum an/aus
+      const tapPop = roomTapPopup(cfg);   // Standard: Antippen schaltet den Raum an/aus
       if (lightsCompact) cards.push({ type: "custom:nullglow-lights-card", rooms: lightRooms.map((r) => ({ id: r.id, name: r.name, icon: r.icon, lights: r.lights })),
         title: t("Alle Lichter"), tap: "#lichter", grid_options: { columns: 12, rows: 2 }, view_layout: { ng_edit: { id: "combo:licht", kind: "combo", combo: "lights" } } });   // „Aus“ steckt in der Sammelkachel
       else {
@@ -10274,7 +10341,7 @@ ha-tile-info {
         grid_options: { columns: 6, rows: 1 } });
       S.push("licht", { type: "grid", cards });
     }
-    const climRooms = inv.shown.filter((r) => r.temperature || r.climate.length);
+    const climRooms = inv.shown.filter((r) => r.temperature || r.climate.length), roomPop = roomTapPopup(cfg);
     if (climRooms.length) {
       const cards = [heading(t("Klima"), "mdi:thermometer", on.klima ? `${base}/klima` : null)];
       // Verlauf 24 h hinter der Kachel (Standard an, climate_graph: false = aus) — nur mit Temperatur-Sensor (Statistik)
@@ -10285,7 +10352,9 @@ ha-tile-info {
           primary: r.name,
           secondary: t ? `${num1(t)} °C` : `{% set x = state_attr('${r.climate[0]}', 'current_temperature') %}{{ ('%.1f' | format(x | float))${dec()} if is_number(x) else '–' }} °C`,
           icon: r.icon, icon_color: t ? tempColor(t) : "grey",
-          tap_action: { action: "navigate", navigation_path: r.hash },
+          // wie Licht/Rollläden (room_tap): Details, Halten = Raum-Pop-up — oder umgekehrt
+          tap_action: roomPop ? { action: "navigate", navigation_path: r.hash } : { action: "more-info", entity: r.climate[0] || t },
+          hold_action: roomPop ? { action: "more-info", entity: r.climate[0] || t } : { action: "navigate", navigation_path: r.hash },
           card_mod: { style: `ha-card { --ng-state: ${heatCool(r.climate)}; }\n` } };
         cards.push(markRoom(graph && t
           ? { type: "custom:nullglow-spark-card", entity: t, color_scale: "room", min_span: 2, grid_options: { columns: 6 }, card: tile }
@@ -10300,7 +10369,7 @@ ha-tile-info {
         title: t("Alle Rollläden"), tap: "#rolllaeden", grid_options: { columns: 12, rows: 2 }, view_layout: { ng_edit: { id: "combo:rolllaeden", kind: "combo", combo: "covers" } } }] });
     else if (covers.length) S.push("rolllaeden", { type: "grid", cards: [heading(t("Rollläden"), "mdi:window-shutter"), ...covers.map(([c, r, i]) => {
       const n = coverWord(inv.niceName(c, [r.name, r.areaName]), r.name);
-      return coverTile(c, r.covers.length === 1 ? r.name : `${r.name} · ${n && n.toLowerCase() !== r.name.toLowerCase() ? n : i + 1}`);
+      return coverTile(c, r.covers.length === 1 ? r.name : `${r.name} · ${n && n.toLowerCase() !== r.name.toLowerCase() ? n : i + 1}`, 12, r.hash, roomPop);
     })] });
     const contacts = cfg.contacts === "off" ? [] : inv.shown.flatMap((r) => r.contacts.map((c, i) => [c, r, i]));
     const cCompact = contacts.length && (cfg.contacts === "compact" || (cfg.contacts !== "list" && contacts.length > 6));
@@ -10338,17 +10407,34 @@ ha-tile-info {
   }
 
   function viewLicht(inv, hass) {
-    const S = [];
+    const S = [], small = [];
+    const lamp = (r, l, cols) => { const n = inv.niceName(l, [r.name, r.areaName]); return lightTile(l, n, null, null, n.length > 13 ? 12 : cols); };   // lange Namen: ganze Breite
     inv.shown.filter((r) => r.lights.length).forEach((r) => {
-      const cards = [heading(r.name, r.icon)];
+      const mode = lightPageOf(r);
+      if (mode === "small") { small.push(r); return; }
+      if (mode === "big") {   // große Raum-Kachel, darunter nur die Lampen, die sie nicht mitschaltet
+        const ex = extraLamps(r, hass);
+        S.push({ type: "grid", cards: [bigRoomTile(r, inv, hass), ...ex.map((l) => lamp(r, l, ex.length === 1 ? 12 : 6))] });
+        return;
+      }
+      const cards = [heading(r.name, r.icon)];   // lamps: jede Lampe einzeln
       if (r.light && r.lights.length > 1) cards.push(markRoom(lightTile(r.light, t("{n} · alle", { n: r.name }), r.icon, null, 12), r));
       r.lights.forEach((l) => { // lange Namen bekommen die ganze Breite (Bubble lässt sie sonst durchlaufen)
-        const n = inv.niceName(l, [r.name, r.areaName]);
-        cards.push(lightTile(l, n, null, null, r.lights.length === 1 || n.length > 13 ? 12 : 6));
+        const n = inv.niceName(l, [r.name, r.areaName]), tile = lightTile(l, n, null, null, r.lights.length === 1 || n.length > 13 ? 12 : 6);
+        cards.push(r.lights.length === 1 ? markRoom(tile, r) : tile);   // einzige Lampe = Raum-Kachel (Menü: Licht-Seite umstellen)
       });
       cards.push(...sceneButtons(r, inv, hass, 4, 6));
       S.push({ type: "grid", cards });
     });
+    if (small.length) {   // kleine Räume gesammelt (fester Gruppen-Schlüssel, egal welcher Raum zuerst steht)
+      const wide = small.length > 3, cols = wide ? 8 : 6;
+      const cards = [{ ...heading(t("Weitere Räume"), "mdi:lightbulb-outline"), view_layout: { ng_key: "weitere" } }];
+      small.forEach((r) => {
+        cards.push(markRoom(r.light ? lightTile(r.light, r.name, r.icon, null, cols) : roomLightsButton(r, null, cols), r));
+        if (r.light) extraLamps(r, hass).forEach((l) => cards.push(lamp(r, l, cols)));
+      });
+      S.push({ type: "grid", ...(wide ? { column_span: 2 } : {}), cards });
+    }
     S.push({ type: "grid", cards: [heading(t("Alle"), "mdi:lightbulb-group"), { ...allOff(), grid_options: { columns: 12 } }] });
     return { sections: S };
   }
@@ -10680,7 +10766,7 @@ ha-tile-info {
       cfg: { lights: "compact", climate_graph: false, hints: { mode: "off" },
         home_layout: { order: ["uhr", "licht", "klima", "termine"], hide: ["energie", "kameras", "rolllaeden", "zuhause"] } } },
   };
-  const PRESET_KEYS = ["home_layout", "layouts", "tile_order", "tile_size", "lights", "covers", "contacts", "climate_graph", "media_home", "person_map", "light_tap"];
+  const PRESET_KEYS = ["home_layout", "layouts", "tile_order", "tile_size", "lights", "covers", "contacts", "climate_graph", "media_home", "person_map", "light_tap", "room_tap"];
   // layoutOnly: nur die Anordnung (PROFILE_KEYS) — für ein Gerät mit eigenem Layout, Darstellung gilt ja für alle Geräte
   function applyPreset(c, key, resetProfiles, layoutOnly = false) {
     const P = PRESETS[key];
@@ -11722,6 +11808,8 @@ ha-tile-info {
     } else {
       const ri = (window.__ngRoomsInfo || []).find((r) => r.id === m.room);
       rows.push(optRow("ricon", ri?.icon || inner.icon || "mdi:home", t("Symbol"), (window.__ngLastCfg?.rooms || {})[m.room]?.icon ? String(ri?.icon || "").replace("mdi:", "") : t("Standard")));
+      if (ri?.lights?.length) rows.push(optRow("lpage", "mdi:view-dashboard-outline", t("Licht-Seite"),
+        ri.lightPage ? t(LIGHT_PAGE_LABEL[ri.lightPage]) : t("Automatisch: {x}", { x: t(LIGHT_PAGE_LABEL[ri.lightPageAuto]) })));
       if (["sensor", "climate"].includes(dom) || inner.type === "custom:mushroom-template-card") rows.push(optRow("temp", "mdi:thermometer", t("Temperatur-Sensor"),
         (window.__ngLastCfg?.rooms || {})[m.room]?.temperature ? fname(window.__ngLastCfg.rooms[m.room].temperature) : t("Automatisch")));
       if (dom === "light" || (inner.type === "custom:bubble-card" && !inner.entity)) { const l = (window.__ngLastCfg?.rooms || {})[m.room]?.light;
@@ -11843,10 +11931,12 @@ ha-tile-info {
         [["clock", t("Unter dem Wetter")], ["own", t("Eigene Gruppe")], ["off", t("Aus")]],
         (st, v) => { if (v === "off") st.media_home = false; else delete st.media_home; st.home_layout = splitPart(layout(st), "media", v === "own"); });
     if (key === "licht") {
-      if (info.lightsCard) opt(t("Darstellung"), cfg.lights === "compact" ? "compact" : "rooms", [["rooms", t("Je Raum")], ["compact", t("Zusammengefasst")]],
-        (st, v) => { if (v === "compact") st.lights = "compact"; else delete st.lights; });
-      opt(t("Raum antippen"), cfg.light_tap === "popup" ? "popup" : "toggle", [["toggle", t("An/aus")], ["popup", t("Raum-Pop-up")]],
-        (st, v) => { if (v === "popup") st.light_tap = "popup"; else delete st.light_tap; });
+      if (info.lightsCard) opt(t("Darstellung"), lightsMode(cfg), [["auto", t("Auto")], ["list", t("Je Raum")], ["compact", t("Zusammengefasst")]],
+        (st, v) => { if (v === "auto") delete st.lights; else st.lights = v; });
+    }
+    if (["licht", "klima", "rolllaeden"].includes(key)) {   // eine Einstellung für alle Raum-Kacheln (room_tap)
+      opt(t("Raum-Kacheln antippen"), roomTapPopup(cfg) ? "popup" : "device", [["device", t("Schalten/Details")], ["popup", t("Raum-Pop-up")]],
+        (st, v) => { delete st.light_tap; if (v === "popup") st.room_tap = "popup"; else delete st.room_tap; });
     }
     if (key === "klima") opt(t("Temperatur-Verlauf"), cfg.climate_graph === false ? "off" : "on", onOff,
       (st, v) => { if (v === "off") st.climate_graph = false; else delete st.climate_graph; });
@@ -12711,6 +12801,17 @@ ha-tile-info {
       menu.querySelector(".ok").addEventListener("click", ok);
       inp.addEventListener("keydown", (ev) => { if (ev.key === "Enter") ok(); });
       menu.querySelector(".reset")?.addEventListener("click", () => menuSave(menu, (s) => setTile(s, m.id, { icon: null })));
+    } else if (kind === "lpage") {   // Licht-Seite dieses Raums (rooms.<id>.light_page) — gilt für alle Gerätetypen
+      const r = m.room, ri = (window.__ngRoomsInfo || []).find((x) => x.id === r) || {}, cur = ri.lightPage || "";
+      const opts = [["", t("Automatisch: {x}", { x: t(LIGHT_PAGE_LABEL[ri.lightPageAuto || "big"]) })], ...LIGHT_PAGES.map((k) => [k, t(LIGHT_PAGE_LABEL[k])])];
+      done(head(t("Licht-Seite"), t("Wie der Raum auf der Seite „Licht“ erscheint")) + `<div class="rowset">${opts.map(([v, l]) =>
+        `<button class="or${cur === v ? " on" : ""}" data-v="${v}"><ha-icon icon="${v ? LIGHT_PAGE_ICON[v] : "mdi:auto-fix"}"></ha-icon><span class="ol"><span>${esc(l)}</span>
+          <small>${esc(t(LIGHT_PAGE_HINT[v || "auto"]))}</small></span>${cur === v ? `<ha-icon class="chev" icon="mdi:check"></ha-icon>` : ""}</button>`).join("")}</div>`);
+      menu.querySelectorAll(".rowset .or").forEach((b) => b.addEventListener("click", () => menuSave(menu, (s) => {
+        s.rooms = { ...(s.rooms || {}) }; const x = { ...(s.rooms[r] || {}) };
+        if (b.dataset.v) x.light_page = b.dataset.v; else delete x.light_page;
+        if (Object.keys(x).length) s.rooms[r] = x; else delete s.rooms[r];
+      })));
     } else if (kind === "ricon") {   // Raum-Symbol (rooms.<id>.icon) — gilt überall, auch in Sammelkacheln und Pop-ups
       const r = m.room, cur = (window.__ngLastCfg?.rooms || {})[r]?.icon || "", shown = (window.__ngRoomsInfo || []).find((x) => x.id === r)?.icon || "";
       done(head(t("Symbol"), t("Raum · gilt überall im Dashboard")) + iconGrid(ROOM_ICONS.includes(shown) || !shown ? ROOM_ICONS : [shown, ...ROOM_ICONS].slice(0, 24), shown)
@@ -13112,13 +13213,18 @@ ha-tile-info {
     pv.addEventListener("click", (e) => { if (e.target === pv) pv.remove(); });
   }
 
+  const LIGHT_PAGE_LABEL = { big: "Groß mit Szenen", lamps: "Alle Lampen einzeln", small: "Klein" };
+  const LIGHT_PAGE_ICON = { big: "mdi:card-outline", lamps: "mdi:view-grid-outline", small: "mdi:view-sequential-outline" };
+  const LIGHT_PAGE_HINT = { auto: "ab 2 Lampen groß, sonst klein", big: "Raum-Kachel mit Helligkeit und Szenen, andere Lampen klein darunter",
+    lamps: "jede Lampe eine Kachel, dazu Szenen", small: "eine kleine Kachel bei „Weitere Räume“" };
+
   // ======== Sammelkacheln (Licht / Rollläden / Fenster zusammengefasst): Räume und Etagen darin pflegen ========
   // Alles wirkt wie im Assistenten (rooms.<id>, room_order, floors.<id>) — überall im Dashboard, auch in den Pop-ups.
   const ROOM_ICONS = ["mdi:sofa", "mdi:bed", "mdi:silverware-fork-knife", "mdi:stove", "mdi:shower", "mdi:toilet", "mdi:desk", "mdi:door",
     "mdi:stairs", "mdi:garage", "mdi:flower", "mdi:tree", "mdi:balcony", "mdi:washing-machine", "mdi:baby-face-outline", "mdi:gamepad-variant",
     "mdi:wardrobe", "mdi:dumbbell", "mdi:greenhouse", "mdi:home-roof", "mdi:home-floor-0", "mdi:home-floor-1", "mdi:home-floor-negative-1", "mdi:home"];
   const COMBO = {
-    lights: { title: "Alle Lichter", key: "lights", opts: [["rooms", "Je Raum"], ["compact", "Zusammengefasst"]], cur: (c) => (c.lights === "compact" ? "compact" : "rooms") },
+    lights: { title: "Alle Lichter", key: "lights", opts: [["auto", "Auto"], ["list", "Je Raum"], ["compact", "Zusammengefasst"]], cur: (c) => lightsMode(c) },
     covers: { title: "Alle Rollläden", key: "covers", opts: [["auto", "Auto"], ["list", "Einzeln"], ["compact", "Zusammengefasst"]], cur: (c) => c.covers || "auto" },
     contacts: { title: "Fenster & Türen", key: "contacts", opts: [["auto", "Auto"], ["list", "Einzeln"], ["compact", "Zusammen"], ["off", "Aus"]], cur: (c) => c.contacts || "auto" },
   };
@@ -13220,7 +13326,7 @@ ha-tile-info {
         if (Object.keys(x).length) s.floors[f] = x; else delete s.floors[f];
       }
       if (!Object.keys(s.floors).length) delete s.floors;
-      if (disp !== disp0) { if (disp === K.opts[0][0] && kind !== "lights") delete s[K.key]; else if (kind === "lights" && disp === "rooms") delete s.lights; else s[K.key] = disp; }
+      if (disp !== disp0) { if (disp === "auto") delete s[K.key]; else s[K.key] = disp; }
     };
     draw();
   }
@@ -13490,7 +13596,8 @@ ha-tile-info {
       const door = doorbellCfg(cfg, hass, inv);   // Klingel-Pop-up auf jeder Seite
       doorbellWatch(hass, base, door);
       window.__ngLastCfg = cfg; window.__ngLastRooms = inv.rooms.map((r) => r.id); window.__ngLastWeather = !!inv.weather;
-      window.__ngRoomsInfo = inv.rooms.map((r) => ({ id: r.id, name: r.name, icon: r.icon, floor: r.floor?.id || "_", hide: r.hide, lights: r.lights }));
+      window.__ngRoomsInfo = inv.rooms.map((r) => ({ id: r.id, name: r.name, icon: r.icon, floor: r.floor?.id || "_", hide: r.hide, lights: r.lights,
+        lightPage: r.lightPage, lightPageAuto: r.lights.length > 1 ? "big" : "small" }));
       window.__ngFloors = { _: { name: inv.other.name, icon: inv.other.icon || "mdi:home-roof", ha: t("Weitere") },
         ...Object.fromEntries(Object.values(hass.floors || {}).map((f) => [f.floor_id, { name: (cfg.floors || {})[f.floor_id]?.name || f.name,
           icon: (cfg.floors || {})[f.floor_id]?.icon || f.icon || (f.level < 0 ? "mdi:home-floor-negative-1" : f.level <= 3 ? `mdi:home-floor-${f.level ?? 0}` : "mdi:home-roof"), ha: f.name }])) };
@@ -13616,6 +13723,10 @@ ha-tile-info {
     .req a { color: var(--primary-color); font-weight: 500; text-decoration: none; white-space: nowrap; }
     .row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--divider-color); }
     .row:last-child { border-bottom: 0; }
+    .sub { display: flex; align-items: center; gap: 8px; margin: 18px 0 6px; padding-top: 12px; border-top: 1px solid var(--divider-color);
+      font-weight: 600; font-size: 14px; color: var(--primary-text-color); }
+    .sub:first-child { margin-top: 2px; padding-top: 0; border-top: 0; }
+    .sub ha-icon { --mdc-icon-size: 18px; color: var(--primary-color); }
     .row ha-icon.ic { --mdc-icon-size: 22px; color: var(--primary-color); flex: none; }
     .row .t { flex: 1; min-width: 0; } .row .t b { display: block; font-weight: 500; }
     .row .t small { color: var(--secondary-text-color); font-size: 12px; }
@@ -13688,6 +13799,10 @@ ha-tile-info {
       return inner;
     }
 
+    _sub(box, title, icon) {   // Zwischenüberschrift in einem Schritt
+      box.insertAdjacentHTML("beforeend", `<div class="sub"><ha-icon icon="${icon}"></ha-icon><span>${esc(title)}</span></div>`);
+    }
+
     _form(schema, data, onChange) {
       const f = document.createElement("ha-form");
       f.hass = this._hass; f.schema = schema; f.data = data;
@@ -13740,12 +13855,32 @@ ha-tile-info {
         medien: has("nullglow-media-card") ? t("{n} Medien-Player", { n: inv.media.length }) : t("Medien-Karte fehlt"), sauger: inv.vacuums.length ? t("{n} Saugroboter", { n: inv.vacuums.length }) : t("kein Saugroboter"),
         maeher: inv.mowers.length ? t("{n} Mähroboter", { n: inv.mowers.length }) : t("kein Mähroboter"),
       };
-      box = this._panel("views", t("2 · Seiten"), "mdi:view-dashboard-outline", t("{n} aktiv", { n: VIEWS.filter((v) => avail[v.key] && (c.views?.[v.key] ?? true)).length }));
+      box = this._panel("views", t("2 · Seiten"), "mdi:view-dashboard-outline", t("{n} aktiv", { n: VIEWS.filter((v) => avail[v.key] && (c.views?.[v.key] ?? true)).length + (c.pages?.custom || []).length }));
       box.appendChild(this._form(VIEWS.map((v) => ({ name: v.key, label: `${t(v.title)} — ${info[v.key]}`, disabled: !avail[v.key], selector: { boolean: {} } })),
         Object.fromEntries(VIEWS.map((v) => [v.key, avail[v.key] && (c.views?.[v.key] ?? true)])), (val) => {
           c.views = Object.fromEntries(VIEWS.filter((v) => avail[v.key] && val[v.key] === false).map((v) => [v.key, false]));
           this._emit();
         }));
+      // eigene Seiten (auf dem Dashboard mit „+“ angelegt): sehen und löschen; Name, Symbol, Reihenfolge = Tab auf dem Dashboard antippen
+      const ownPages = c.pages?.custom || [];
+      if (ownPages.length) {
+        this._sub(box, t("Eigene Seiten"), "mdi:tab-plus");
+        ownPages.forEach((x) => {
+          const row = document.createElement("div");
+          row.className = "row";
+          const moved = Object.values(c.pages?.tiles || {}).filter((v) => String(v).split("|")[0] === x.key).length + Object.values(c.pages?.groups || {}).filter((v) => v === x.key).length;
+          row.innerHTML = `<ha-icon class="ic" icon="${esc(x.icon || "mdi:star-outline")}"></ha-icon><div class="t"><b>${esc(x.title)}</b>
+            <small>${esc(t("{n} hierher verschoben · Name, Symbol, Reihenfolge: Tab auf dem Dashboard antippen", { n: moved }))}</small></div>
+            <button title="${t("Seite löschen")}"><ha-icon icon="mdi:delete-outline"></ha-icon></button>`;
+          const del = row.querySelector("button");
+          del.addEventListener("click", () => {
+            if (!del.classList.contains("sure")) { del.classList.add("sure"); del.style.color = "var(--error-color)"; del.title = t("Wirklich löschen? Nochmal tippen"); return; }
+            deletePage(c, x.key); tidyPages(c); this._emit(); this._build();
+          });
+          box.appendChild(row);
+        });
+      }
+      if (c.pages?.names || c.pages?.icons) box.insertAdjacentHTML("beforeend", `<div class="note">${t("Umbenannte Tabs: {l}", { l: esc(Object.entries(c.pages?.names || {}).map(([k, n]) => `${t(VIEWS.find((v) => v.key === k)?.title || k)} → ${n}`).join(", ") || "–") })}</div>`);
 
       // 3. Übersicht anordnen: Reihenfolge, Breite, ein-/ausblenden — gespeichert werden nur Abweichungen (home_layout)
       const L = c.home_layout || {};
@@ -13810,45 +13945,66 @@ ha-tile-info {
         box.querySelector("button.reset").addEventListener("click", () => { delete c.home_layout; this._emit(); this._build(); });
       }
 
-      // 4. Räume
-      box = this._panel("rooms", t("4 · Räume, Rollläden & Fenster"), "mdi:floor-plan", t("{n} von {m}", { n: inv.shown.length, m: inv.rooms.length }));
+      // 4. Räume & Geräte — in Abschnitten (Namen, Antippen, Licht, Klima, Rollläden, Fenster, Räume); gespeichert werden nur Abweichungen
+      box = this._panel("rooms", t("4 · Räume & Geräte"), "mdi:floor-plan", t("{n} von {m} Räumen", { n: inv.shown.length, m: inv.rooms.length }));
       const nCov = inv.shown.reduce((a, r) => a + r.covers.length, 0), nCon = inv.shown.reduce((a, r) => a + r.contacts.length, 0);
+      const nLR = inv.shown.filter((r) => r.lights.length).length;
+      const d4 = { hide_labels: c.hide_labels || [], short_names: c.short_names !== false, covers: c.covers || "auto", contacts: c.contacts || "auto",
+        room_tap: roomTapPopup(c) ? "popup" : "device", climate_graph: c.climate_graph !== false, lights: lightsMode(c) };
+      const save4 = (v) => {
+        Object.assign(d4, v);
+        if (d4.lights === "auto") delete c.lights; else c.lights = d4.lights;
+        if (d4.contacts && d4.contacts !== "auto") c.contacts = d4.contacts; else delete c.contacts;
+        if (d4.climate_graph === false) c.climate_graph = false; else delete c.climate_graph;
+        delete c.light_tap; if (d4.room_tap === "popup") c.room_tap = "popup"; else delete c.room_tap;
+        if (d4.hide_labels?.length) c.hide_labels = d4.hide_labels; else delete c.hide_labels;
+        if (d4.short_names === false) c.short_names = false; else delete c.short_names;
+        if (d4.covers && d4.covers !== "auto") c.covers = d4.covers; else delete c.covers;
+        this._emit(); this._build();
+      };
+      const AUTO3 = (x) => [{ value: "auto", label: x }, { value: "list", label: t("Einzeln") }, { value: "compact", label: t("Zusammengefasst") }];
+      this._sub(box, t("Namen & Filter"), "mdi:tag-text-outline");
       box.appendChild(this._form([
         { name: "hide_labels", label: t("Mit Label ausblenden"), helper: t("Entitäten, Geräte oder ganze Bereiche mit diesem Label erscheinen nicht (z. B. no_dboard)"),
           selector: { label: { multiple: true } } },
         { name: "short_names", label: t("Namen kürzen"), helper: t("Etage und Raum vorne im Namen weglassen („EG - Küche - Rollladen links“ → „Küche · links“)"), selector: { boolean: {} } },
-        { name: "covers", label: t("Rollläden auf der Übersicht ({n})", { n: nCov }), helper: t("Zusammengefasst = eine Kachel mit Alle auf/zu, Antippen öffnet alle nach Etage"),
-          selector: { select: { mode: "dropdown", options: [
-            { value: "auto", label: t("Automatisch (ab 7 zusammengefasst)") }, { value: "list", label: t("Einzeln") }, { value: "compact", label: t("Zusammengefasst") }] } } },
-        ...(has("nullglow-lights-card") ? [{ name: "lights", label: t("Licht auf der Übersicht ({n} Räume)", { n: inv.shown.filter((r) => r.lights.length).length }),
-          helper: t("Zusammengefasst = eine Kachel mit Balken je Raum und „Aus“, Antippen öffnet alle Räume nach Etage"),
-          selector: { select: { mode: "dropdown", options: [
-            { value: "rooms", label: t("Je Raum eine Kachel (Standard)") }, { value: "compact", label: t("Zusammengefasst") }] } } }] : []),
-        { name: "light_tap", label: t("Licht-Kachel auf der Übersicht antippen"),
-          helper: t("Pop-up = alle Lampen des Raums einzeln (dimmen, Farbe, Szenen); Halten schaltet dann den Raum an/aus"),
-          selector: { select: { mode: "dropdown", options: [
-            { value: "toggle", label: t("Licht an/aus (Standard)") }, { value: "popup", label: t("Pop-up mit den Lampen des Raums") }] } } },
+      ], d4, save4));
+      this._sub(box, t("Raum-Kacheln auf der Übersicht antippen"), "mdi:gesture-tap");
+      box.appendChild(this._form([
+        { name: "room_tap", label: t("Licht, Klima und Rollläden"),
+          helper: t("Schalten/Details: Licht an/aus, bei Klima und Rollläden die Details — Halten öffnet das Raum-Pop-up. Raum-Pop-up: umgekehrt. Das Symbol einer Licht-Kachel schaltet immer."),
+          selector: { select: { mode: "dropdown", options: [{ value: "device", label: t("Schalten/Details (Standard)") }, { value: "popup", label: t("Raum-Pop-up") }] } } },
+      ], d4, save4));
+      this._sub(box, t("Licht"), "mdi:lightbulb-group");
+      if (has("nullglow-lights-card")) box.appendChild(this._form([
+        { name: "lights", label: t("Auf der Übersicht ({n} Räume)", { n: nLR }), helper: t("Zusammengefasst = eine Kachel mit Balken je Raum und „Aus“, Antippen öffnet alle Räume nach Etage"),
+          selector: { select: { mode: "dropdown", options: AUTO3(t("Automatisch (ab 7 Räumen zusammengefasst)")) } } },
+      ], d4, save4));
+      box.insertAdjacentHTML("beforeend", `<div class="note">${t("Seite „Licht“: je Raum unten bei <b>Räume</b> (Raum antippen → Licht-Seite) oder auf dem Dashboard (Raum-Kachel antippen → Licht-Seite). Automatisch: ab 2 Lampen eine große Raum-Kachel mit Szenen, sonst klein bei „Weitere Räume“.")}</div>`);
+      this._sub(box, t("Klima"), "mdi:thermometer");
+      box.appendChild(this._form([
         { name: "climate_graph", label: t("Temperatur-Verlauf in den Klima-Kacheln"),
           helper: t("zeigt die letzten 24 Stunden als Linie hinter der Kachel (farbig nach Temperatur)"), selector: { boolean: {} } },
-        { name: "contacts", label: t("Fenster & Türen auf der Übersicht ({n})", { n: nCon }), helper: t("Zusammengefasst = eine Kachel „Alles zu“ / „2 offen · …“, Antippen zeigt alle nach Etage"),
-          selector: { select: { mode: "dropdown", options: [
-            { value: "auto", label: t("Automatisch (ab 7 zusammengefasst)") }, { value: "list", label: t("Einzeln") },
-            { value: "compact", label: t("Zusammengefasst") }, { value: "off", label: t("Nicht anzeigen") }] } } },
-      ], { hide_labels: c.hide_labels || [], short_names: c.short_names !== false, covers: c.covers || "auto", contacts: c.contacts || "auto",
-        light_tap: c.light_tap || "toggle", climate_graph: c.climate_graph !== false, lights: c.lights || "rooms" }, (v) => {
-        if (v.lights === "compact") c.lights = "compact"; else delete c.lights;
-        if (v.contacts && v.contacts !== "auto") c.contacts = v.contacts; else delete c.contacts;
-        if (v.climate_graph === false) c.climate_graph = false; else delete c.climate_graph;
-        if (v.light_tap === "popup") c.light_tap = "popup"; else delete c.light_tap;
-        if (v.hide_labels?.length) c.hide_labels = v.hide_labels; else delete c.hide_labels;
-        if (v.short_names === false) c.short_names = false; else delete c.short_names;
-        if (v.covers && v.covers !== "auto") c.covers = v.covers; else delete c.covers;
-        this._emit(); this._build();
-      }));
+      ], d4, save4));
+      if (nCov) {
+        this._sub(box, t("Rollläden"), "mdi:window-shutter");
+        box.appendChild(this._form([
+          { name: "covers", label: t("Auf der Übersicht ({n} Rollläden)", { n: nCov }), helper: t("Zusammengefasst = eine Kachel mit Alle auf/zu, Antippen öffnet alle nach Etage"),
+            selector: { select: { mode: "dropdown", options: AUTO3(t("Automatisch (ab 7 zusammengefasst)")) } } },
+        ], d4, save4));
+      }
+      if (nCon) {
+        this._sub(box, t("Fenster & Türen"), "mdi:window-closed-variant");
+        box.appendChild(this._form([
+          { name: "contacts", label: t("Auf der Übersicht ({n} Kontakte)", { n: nCon }), helper: t("Zusammengefasst = eine Kachel „Alles zu“ / „2 offen · …“, Antippen zeigt alle nach Etage"),
+            selector: { select: { mode: "dropdown", options: [...AUTO3(t("Automatisch (ab 7 zusammengefasst)")), { value: "off", label: t("Nicht anzeigen") }] } } },
+        ], d4, save4));
+      }
+      this._sub(box, t("Räume"), "mdi:floor-plan");
       const nUn = unassigned().length;
       if (nUn) box.insertAdjacentHTML("beforeend", `<div class="note">📦 ${t("{n} Geräte haben noch keinen Raum und fehlen deshalb. Auf dem Dashboard: <b>Uhr antippen → Dashboard gestalten → 📦</b> — dort per Ziehen auf einen Raum zuordnen.", { n: nUn })}</div>`);
       if (!inv.rooms.length) box.insertAdjacentHTML("beforeend", `<div class="note">${t("Keine Bereiche gefunden. Lege sie unter <b>Einstellungen → Bereiche, Zonen &amp; Etagen</b> an und ordne deine Geräte zu — dann erscheinen hier die Räume.")}</div>`);
-      else box.insertAdjacentHTML("beforeend", `<div class="note">${t("Aus deinen HA-Bereichen. Auge = anzeigen, Pfeile = Reihenfolge, Raum antippen = Name, Symbol, Hauptlicht, Temperatur ändern.")}</div>`);
+      else box.insertAdjacentHTML("beforeend", `<div class="note">${t("Aus deinen HA-Bereichen. Auge = anzeigen, Pfeile = Reihenfolge, Raum antippen = Name, Symbol, Hauptlicht, Licht-Seite, Temperatur ändern.")}</div>`);
       const ids = inv.rooms.map((r) => r.id);
       inv.rooms.forEach((r, i) => {
         const row = document.createElement("div");
@@ -13885,13 +14041,15 @@ ha-tile-info {
               { name: "name", label: t("Name"), selector: { text: {} } },
               { name: "icon", label: t("Symbol"), selector: { icon: { placeholder: r.icon } } },
             ] },
-            { name: "light", label: t("Hauptlicht (Kachel auf der Übersicht)"),
+            { name: "light", label: t("Hauptlicht (Raum-Kachel auf Übersicht und Licht-Seite)"),
               helper: t("leer = automatisch: {x}", { x: r.auto.light ? inv.niceName(r.auto.light) : t("Knopf schaltet alle Lampen des Raums") }),
               selector: { entity: { filter: { domain: "light" } } } },
+            ...(r.lights.length ? [{ name: "light_page", label: t("Licht-Seite"), helper: t("Automatisch: {x}", { x: t(LIGHT_PAGE_LABEL[r.lights.length > 1 ? "big" : "small"]) }),
+              selector: { select: { mode: "dropdown", options: [{ value: "auto", label: t("Automatisch") }, ...LIGHT_PAGES.map((k) => ({ value: k, label: `${t(LIGHT_PAGE_LABEL[k])} — ${t(LIGHT_PAGE_HINT[k])}` }))] } } }] : []),
             { name: "temperature", label: t("Temperatur-Sensor"), helper: t("leer = automatisch: {x}", { x: r.auto.temperature ? inv.niceName(r.auto.temperature) : t("keiner") }), selector: { entity: { filter: { domain: "sensor", device_class: "temperature" } } } },
             { name: "humidity", label: t("Luftfeuchte-Sensor"), helper: t("leer = automatisch: {x}", { x: r.auto.humidity ? inv.niceName(r.auto.humidity) : t("keiner") }), selector: { entity: { filter: { domain: "sensor", device_class: "humidity" } } } },
-          ], { name: o.name, icon: o.icon, light: o.light, temperature: o.temperature, humidity: o.humidity }, (v) => {
-            setRoom({ name: v.name, icon: v.icon, light: v.light, temperature: v.temperature, humidity: v.humidity });
+          ], { name: o.name, icon: o.icon, light: o.light, temperature: o.temperature, humidity: o.humidity, light_page: o.light_page || "auto" }, (v) => {
+            setRoom({ name: v.name, icon: v.icon, light: v.light, temperature: v.temperature, humidity: v.humidity, light_page: v.light_page === "auto" ? undefined : v.light_page });
             this._emit();
           }));
           box.appendChild(wrap);
@@ -13930,41 +14088,13 @@ ha-tile-info {
         ? (door ? t("aktiv: {e} → {c} — beim Klingeln öffnet sich die Kamera groß (2 Min, auf jeder Seite)", { e: door.event, c: door.camera })
           : t("keine Klingel oder Kamera gefunden — unten wählen"))
         : t("beim Klingeln öffnet sich die Kamera groß auf jeder Seite (2 Min){x}", { x: this._doorAuto.event ? t(" — erkannt: {e}", { e: this._doorAuto.event }) : "" });
-      box = this._panel("more", t("6 · Design, Wetter, Personen, Kameras, Kalender"), "mdi:tune-variant", designs(hass)[c.design] || designs(hass).nullglow || "Nullglow");
-      box.appendChild(this._form([
-        { name: "weather", label: t("Wetter"), helper: t("leer = {x}", { x: inv.weather || t("keins gefunden") }), selector: { entity: { filter: { domain: "weather" } } } },
-        { name: "persons", label: t("Personen"), helper: t("leer = alle"), selector: { entity: { multiple: true, filter: { domain: "person" } } } },
-        { name: "person_map", label: t("Karte mit Personen auf der Übersicht"), helper: t("zeigt, wo alle gerade sind (Standort aus der HA-App) — unter den Personen im Bereich Zuhause"),
-          selector: { boolean: {} } },
-        ...(c.person_map ? [{ name: "map_tint", label: t("Karte in den Design-Farben"), helper: t("aus = normale Kartenfarben"), selector: { boolean: {} } }] : []),
-        { name: "cameras", label: t("Kameras"), helper: t("leer = alle"), selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
-        { name: "live_cameras", label: t("Live-Kameras auf der Übersicht (optional)"), helper: t("eine oder mehrere; Stream nur, solange die Übersicht offen ist — Größe und Platz unter „3 · Übersicht anordnen“"),
-          selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
-        { name: "doorbell_on", label: t("Klingel: Kamera groß anzeigen"), helper: this._doorHelp, selector: { boolean: {} } },
-        ...(c.doorbell?.enabled ? [
-          { name: "doorbell_event", label: t("Klingel-Sensor"),
-            helper: t("leer = automatisch: {x}", { x: this._doorAuto.event || t("keiner gefunden") }) + ". "
-              + t("Auch ein einfacher Taster geht (z. B. Zigbee „…_action“) — jeder Druck zählt als Klingeln."),
-            selector: { entity: { include_entities: Object.keys(hass.states).filter((id) =>
-              ["event", "binary_sensor"].includes(DOMAIN(id)) || DOOR_ACTION(id) || id === c.doorbell?.event) } } },
-          { name: "doorbell_camera", label: t("Kamera für das Klingel-Fenster"), helper: t("leer = automatisch: {x}", { x: this._doorAuto.camera || t("keine gefunden") }),
-            selector: { entity: { filter: { domain: "camera" } } } }] : []),
-        { name: "cameras_live", label: t("Kameras-Seite live"), helper: t("aus = Standbild, das sich alle paar Sekunden erneuert (Antippen = live)"), selector: { boolean: {} } },
-        { name: "calendars", label: t("Kalender"), helper: t("leer = alle"), selector: { entity: { multiple: true, filter: { domain: "calendar" } } } },
-        { name: "media_home", label: t("Musik/TV auf der Übersicht, solange etwas läuft"), helper: t("mit Cover — die Karte färbt sich in den Farben des Covers"), selector: { boolean: {} } },
-        { name: "media_players", label: t("Medien-Player"), helper: t("leer = alle (Seite „Medien“ und Übersicht)"), selector: { entity: { multiple: true, filter: { domain: "media_player" } } } },
-        { name: "screen_switch", label: t("Steckdose des Wandmonitors (optional)"), helper: t("ist sie aus, pausiert das Nordlicht im Hintergrund"),
-          selector: { entity: { filter: { domain: ["switch", "light", "input_boolean", "binary_sensor"] } } } },
-        { name: "title", label: t("Titel des Dashboards"), selector: { text: {} } },
-        { name: "design", label: "Design", helper: t("Standard-Farbvariante — auf jedem Gerät per Uhr antippen umstellbar"),
-          selector: { select: { mode: "dropdown", options: Object.entries(designs(hass)).map(([value, label]) => ({ value, label })) } } },
-        { name: "mode", label: t("Hell / Dunkel"), helper: t("jedes Design gibt es hell und dunkel"),
-          selector: { select: { mode: "dropdown", options: [
-            { value: "auto", label: t("Wie Gerät / HA-Profil") }, { value: "dark", label: t("Immer dunkel") },
-            { value: "light", label: t("Immer hell") }, { value: "sun", label: t("Nach Sonne (tagsüber hell)") }] } } },
-      ], { design: c.design || "nullglow", mode: c.mode || "auto", weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], live_cameras: c.live_cameras || [], cameras_live: !!c.cameras_live, person_map: !!c.person_map, map_tint: c.map_tint !== false, calendars: c.calendars || [], title: c.title, media_home: c.media_home !== false, media_players: c.media_players || [],
+      box = this._panel("more", t("6 · Design, Personen, Kameras, Medien & mehr"), "mdi:tune-variant", designs(hass)[c.design] || designs(hass).nullglow || "Nullglow");
+      const d6 = { design: c.design || "nullglow", mode: c.mode || "auto", weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], live_cameras: c.live_cameras || [], cameras_live: !!c.cameras_live, person_map: !!c.person_map, map_tint: c.map_tint !== false, calendars: c.calendars || [], title: c.title, media_home: c.media_home !== false, media_players: c.media_players || [],
         doorbell_on: !!c.doorbell?.enabled, doorbell_event: c.doorbell?.event, doorbell_camera: c.doorbell?.camera,
-        screen_switch: c.screen_switch }, (v) => {
+        screen_switch: c.screen_switch };
+      const save6 = (vv) => {
+        Object.assign(d6, vv);
+        const v = d6;
         for (const k of ["weather", "title", "screen_switch"]) { if (v[k]) c[k] = v[k]; else delete c[k]; }
         if (v.design && v.design !== "nullglow") c.design = v.design; else delete c.design;
         if (v.mode && v.mode !== "auto") c.mode = v.mode; else delete c.mode;
@@ -13980,7 +14110,52 @@ ha-tile-info {
         else delete c.doorbell;
         if (wasDoor !== !!v.doorbell_on) { this._emit(); this._build(); return; }   // Felder für Sensor/Kamera ein-/ausblenden
         this._emit();
-      }));
+      };
+      const sec6 = (title, icon, schema) => { this._sub(box, title, icon); box.appendChild(this._form(schema, d6, save6)); };
+      sec6(t("Design"), "mdi:palette-outline", [
+        { name: "design", label: "Design", helper: t("Standard-Farbvariante — auf jedem Gerät per Uhr antippen umstellbar"),
+          selector: { select: { mode: "dropdown", options: Object.entries(designs(hass)).map(([value, label]) => ({ value, label })) } } },
+        { name: "mode", label: t("Hell / Dunkel"), helper: t("jedes Design gibt es hell und dunkel"),
+          selector: { select: { mode: "dropdown", options: [
+            { value: "auto", label: t("Wie Gerät / HA-Profil") }, { value: "dark", label: t("Immer dunkel") },
+            { value: "light", label: t("Immer hell") }, { value: "sun", label: t("Nach Sonne (tagsüber hell)") }] } } },
+        { name: "title", label: t("Titel des Dashboards"), selector: { text: {} } },
+      ]);
+      sec6(t("Wetter"), "mdi:weather-partly-cloudy", [
+        { name: "weather", label: t("Wetter"), helper: t("leer = {x}", { x: inv.weather || t("keins gefunden") }), selector: { entity: { filter: { domain: "weather" } } } },
+      ]);
+      sec6(t("Personen"), "mdi:account-multiple-outline", [
+        { name: "persons", label: t("Personen"), helper: t("leer = alle"), selector: { entity: { multiple: true, filter: { domain: "person" } } } },
+        { name: "person_map", label: t("Karte mit Personen auf der Übersicht"), helper: t("zeigt, wo alle gerade sind (Standort aus der HA-App) — unter den Personen im Bereich Zuhause"),
+          selector: { boolean: {} } },
+        ...(c.person_map ? [{ name: "map_tint", label: t("Karte in den Design-Farben"), helper: t("aus = normale Kartenfarben"), selector: { boolean: {} } }] : []),
+      ]);
+      sec6(t("Kameras & Klingel"), "mdi:cctv", [
+        { name: "cameras", label: t("Kameras"), helper: t("leer = alle"), selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
+        { name: "live_cameras", label: t("Live-Kameras auf der Übersicht (optional)"), helper: t("eine oder mehrere; Stream nur, solange die Übersicht offen ist — Größe und Platz unter „3 · Übersicht anordnen“"),
+          selector: { entity: { multiple: true, filter: { domain: "camera" } } } },
+        { name: "cameras_live", label: t("Kameras-Seite live"), helper: t("aus = Standbild, das sich alle paar Sekunden erneuert (Antippen = live)"), selector: { boolean: {} } },
+        { name: "doorbell_on", label: t("Klingel: Kamera groß anzeigen"), helper: this._doorHelp, selector: { boolean: {} } },
+        ...(c.doorbell?.enabled ? [
+          { name: "doorbell_event", label: t("Klingel-Sensor"),
+            helper: t("leer = automatisch: {x}", { x: this._doorAuto.event || t("keiner gefunden") }) + ". "
+              + t("Auch ein einfacher Taster geht (z. B. Zigbee „…_action“) — jeder Druck zählt als Klingeln."),
+            selector: { entity: { include_entities: Object.keys(hass.states).filter((id) =>
+              ["event", "binary_sensor"].includes(DOMAIN(id)) || DOOR_ACTION(id) || id === c.doorbell?.event) } } },
+          { name: "doorbell_camera", label: t("Kamera für das Klingel-Fenster"), helper: t("leer = automatisch: {x}", { x: this._doorAuto.camera || t("keine gefunden") }),
+            selector: { entity: { filter: { domain: "camera" } } } }] : []),
+      ]);
+      sec6(t("Kalender"), "mdi:calendar-month", [
+        { name: "calendars", label: t("Kalender"), helper: t("leer = alle"), selector: { entity: { multiple: true, filter: { domain: "calendar" } } } },
+      ]);
+      sec6(t("Musik & TV"), "mdi:play-circle-outline", [
+        { name: "media_home", label: t("Musik/TV auf der Übersicht, solange etwas läuft"), helper: t("mit Cover — die Karte färbt sich in den Farben des Covers"), selector: { boolean: {} } },
+        { name: "media_players", label: t("Medien-Player"), helper: t("leer = alle (Seite „Medien“ und Übersicht)"), selector: { entity: { multiple: true, filter: { domain: "media_player" } } } },
+      ]);
+      sec6(t("Wandmonitor"), "mdi:monitor", [
+        { name: "screen_switch", label: t("Steckdose des Wandmonitors (optional)"), helper: t("ist sie aus, pausiert das Nordlicht im Hintergrund"),
+          selector: { entity: { filter: { domain: ["switch", "light", "input_boolean", "binary_sensor"] } } } },
+      ]);
 
       // 7. Hinweise (nullglow-hints-card) — nur Abweichungen speichern
       const H = c.hints || {}, RULES = ["rain", "waste", "battery", "offline", "updates", "away"];
@@ -14031,6 +14206,7 @@ ha-tile-info {
       box = this._panel("edited", t("8 · Direkt bearbeitet"), "mdi:pencil-outline",
         [nNames && t("{n} Namen", { n: nNames }), nHidden && t("{n} ausgeblendet", { n: nHidden }), nOrder && t("Reihenfolge"),
           nSize && t("{n} Größen", { n: nSize }), Object.keys(c.tiles || {}).length && t("{n} Kachel-Einstellungen", { n: Object.keys(c.tiles).length }),
+          (Object.keys(c.pages?.tiles || {}).length + Object.keys(c.pages?.groups || {}).length) && t("Seiten"), Object.keys(c.floors || {}).length && t("Etagen"),
           Object.keys(c.profiles || {}).length && t("{n} Gerätetypen", { n: Object.keys(c.profiles).length })].filter(Boolean).join(" · ") || t("nichts"));
       box.insertAdjacentHTML("beforeend", `<div class="note">${t("Auf dem Dashboard: <b>Uhr antippen → Dashboard gestalten</b> (nur Administratoren). Kachel antippen: umbenennen, ausblenden; halten und ziehen: verschieben. Namen gelten nur in diesem Dashboard.")}</div>`);
       if (nNames) {
@@ -14057,6 +14233,22 @@ ha-tile-info {
         box.insertAdjacentHTML("beforeend", `<div class="note"><button class="reset tsz">${t("Kachelgrößen zurücksetzen ({n})", { n: nSize })}</button></div>`);
         box.querySelector("button.tsz").addEventListener("click", () => { delete c.tile_size; eachProf((P) => { delete P.tile_size; }); this._emit(); this._build(); });
       }
+      // auf dem Dashboard gestaltet (Seiten, Etagen, Anordnung der anderen Seiten): sehen und zurücksetzen
+      const PG = c.pages || {}, nMoved = Object.keys(PG.tiles || {}).length + Object.keys(PG.groups || {}).length;
+      const nTabs = Object.keys(PG.names || {}).length + Object.keys(PG.icons || {}).length + ((PG.order || []).length ? 1 : 0);
+      const nFloors = Object.keys(c.floors || {}).length, nLay = Object.keys(c.layouts || {}).length;
+      const resetBtn = (n, label, fn) => {
+        if (!n) return;
+        const nt = document.createElement("div");
+        nt.className = "note";
+        nt.innerHTML = `<button class="reset">${esc(label)}</button>`;
+        nt.querySelector("button").addEventListener("click", () => { fn(); tidyPages(c); this._emit(); this._build(); });
+        box.appendChild(nt);
+      };
+      resetBtn(nMoved, t("Auf andere Seiten verschobene Kacheln und Gruppen zurückholen ({n})", { n: nMoved }), () => { if (c.pages) { delete c.pages.tiles; delete c.pages.groups; } });
+      resetBtn(nTabs, t("Tab-Namen, -Symbole und -Reihenfolge zurücksetzen"), () => { if (c.pages) { delete c.pages.names; delete c.pages.icons; delete c.pages.order; } });
+      resetBtn(nFloors, t("Etagen-Namen und -Symbole zurücksetzen ({n})", { n: nFloors }), () => { delete c.floors; });
+      resetBtn(nLay, t("Anordnung der anderen Seiten zurücksetzen ({n} Seiten: Reihenfolge, Breite, eigene Gruppen)", { n: nLay }), () => { delete c.layouts; eachProf((P) => { delete P.layouts; }); });
       Object.keys(c.profiles || {}).forEach((k) => {
         const row = document.createElement("div");
         row.className = "row";
