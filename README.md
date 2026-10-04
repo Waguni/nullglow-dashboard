@@ -38,7 +38,15 @@ Everything you can change right on the dashboard starts with **one tap on the bi
 - **Customize dashboard** (admins) — a panel that lists everything you can change; tap a feature to jump straight there
   (or *Edit*). The first time, a short tour explains **tiles, groups and pages** (again any time via **?** in the edit bar).
   Then, right on the dashboard:
-  - **Drag tiles** where you want them. On a phone: hold a tile briefly, then drag — a normal swipe still scrolls.
+  - **Drag tiles** where you want them — **also into another group**: hover over a group and the tile shows up right where
+    it will land (blinds next to the lights, a sensor into the climate group …). A group that ends up empty disappears.
+    On a phone: hold a tile briefly, then drag — a normal swipe still scrolls.
+  - **🧱 Building blocks** in the edit bar: a drawer with every **Nullglow card** (clock, weather, all lights, *All off*, all
+    blinds, windows & doors, energy flow, power 24 h, music, agenda, batteries & maintenance), **all devices** (search, by
+    type, the ones not on the dashboard yet first) and everything **hidden**. Drag one into a group — or onto *Drop here: new
+    group* — or tap it and pick the group. Anything already on the page moves instead of showing up twice.
+  - **Fill gaps** (bottom of the drawer, or ⚙): groups slide up into free space like on a pinboard, so no more puzzling to
+    avoid empty spots. Off by default; phones (one column) don't change.
   - Every **group** has a **tab** on top: drag it to move the **whole block** — energy, lights, calendar, cameras … — **on every
     page**; drag the **right edge** to make it wider or narrower (1–4 columns). Big cards like the **calendar** or the energy flow
     can be moved and resized like tiles.
@@ -47,12 +55,14 @@ Everything you can change right on the dashboard starts with **one tap on the bi
     hidden ones back). New devices still sort themselves in automatically. On big screens, **Scrolls** warns you when a page no
     longer fits without scrolling.
   - **Tap a group's tab** for its settings: lights per room or as one tile, blinds and windows combined, temperature graphs,
-    weather or music as a group of their own, cameras side by side. ⚙ holds the hint bar.
+    weather or music as a group of their own, cameras side by side. ⚙ holds *Fill gaps* and the hint bar.
   - **Tap a combined tile** (all lights, blinds or windows) to look after the rooms in it: **icon**, name, main light, order,
     hide or bring back — and rename the **floors** (or give them an icon). Room tiles have an *Icon* entry too.
-  - **Tap a tile** to rename or hide it — and to change what's behind it: **another device** (keeps place and size), what
+  - **Tap a tile** to rename or hide it (big cards like music, weather or the calendar and combined tiles too — per page) — and to change what's behind it: **another device** (keeps place and size), what
     **tapping** does (on/off, details, open a page), its **icon**, a **24 h graph** behind sensors, *"since …"*, **live view**
-    for cameras (plus **format**, **zoom** with focus point and the **name in the picture** — per page), *only while playing* for media cards, the **temperature sensor** or **main light** of a room, or **move it to
+    for cameras (plus **format**, **zoom** with focus point and the **name in the picture** — per page, and **also on tap**, e.g. the
+    porch light for 2 minutes before the camera opens, and **pause while the monitor is off** — a still image instead of the live
+    stream while the wall display's plug is off; only on the wall display itself, phones and PCs keep the live view), *only while playing* for media cards, the **temperature sensor** or **main light** of a room, or **move it to
     another group**. **Drag its corner** to make it bigger or smaller (width and height).
   - **Groups:** rename them and pick an icon, choose **which media players, cameras and calendars** they show, set the **consumers
     of the energy flow** (up to 6, with short names) — and create **groups of your own** (⋯ → *New group*, e.g. "Garden").
@@ -156,6 +166,7 @@ devices) and — on a wall display — while the screen is off.
 
 - **Arrange the overview:** move groups (clock & weather, energy, cameras, lights, climate, blinds, home, agenda), hide
   them, and set each group's **width** (1–4 columns). A wider camera group = bigger live images, 1/2/3 per row.
+  Tiles and cards can change groups; **Fill gaps** (`gapless: true`) lets groups slide up into free space.
 - **Monthly balance:** grid cost, savings and self-sufficiency per day; arrows go back to earlier months, *Year* shows one bar
   per month (tap a month to open it). Past months are loaded once and remembered; after 5 minutes it returns to the current
   month (wall displays). Costs of earlier periods use today's price.
@@ -165,6 +176,12 @@ devices) and — on a wall display — while the screen is off.
   UniFi, … are detected automatically, no helper or automation needed). Separate camera, e.g. **Frigate**? Just pick the
   camera and what rings: a doorbell event, a binary sensor or a simple button (e.g. Zigbee `sensor.…_action` —
   every press counts as a ring).
+- **Camera window:** more cameras can open it too — e.g. the driveway when a person is detected; several within a short time
+  are shown one below the other (newest on top, with what happened and when). In edit mode (⋯ → *Camera window*, or tap a camera
+  tile) pick cameras and triggers, the **picture** per camera (format, zoom, focus — handy on portrait screens) and **buttons below
+  the picture** (porch light for 2 minutes, a lock, the garage, a scene …). It closes 1–10 minutes after the last alert.
+  Timed buttons create a small script (`script.nullglow_an_…`) in Home Assistant once, so the light also turns off when no
+  browser is open (it only turns off what was off before).
 - **Lights:** tap = on/off (default) or open a pop-up with every lamp of the room; long-press opens the room.
 - **Many blinds / window contacts:** 7 or more become *one* tile with a bar/dot per device; tap opens them grouped by floor.
 - **People map:** optional map of everyone's location, tinted in your design colour.
@@ -195,8 +212,8 @@ devices) and — on a wall display — while the screen is off.
   its brand color instead — YouTube, Netflix, Spotify, Twitch, Plex, Kodi and a few more. Switch it off in the wizard; the
   *Media* page is always there when you have media players.
 - **Edit tiles directly** (see *Tap the clock* above): moves and widths show up instantly and are saved together with
-  *Done*; group settings apply right away. Names only apply in this dashboard. Hidden groups come back via the eye button
-  in the edit bar, hidden tiles in the wizard (step 8). Weather and music can become groups of their own (tap the clock
+  *Done*; group settings apply right away. Names only apply in this dashboard. Hidden groups and cards come back via the eye button
+  in the edit bar or *Building blocks → Hidden*, hidden tiles there or in the wizard (step 8). Weather and music can become groups of their own (tap the clock
   group); a separate music group keeps its place and shows a calm *Nothing playing* while idle, so the layout never jumps.
 - **Power saving** for slow PCs and old tablets: tap the clock → *Power saving* **Off / On / Auto**. It turns off the
   aurora and the weather colors, stops the tile animations and runs the energy flow at 15 instead of 30 fps. *Auto*
@@ -243,7 +260,8 @@ If the HA **Energy dashboard** is set up (including power sensors), the energy f
 - Open the dashboard with **`?kiosk`** (e.g. `http://homeassistant.local:8123/nullglow/home?kiosk`) — with Kiosk Mode
   there's no header or sidebar.
 - At 1920×1080 it looks best at **125 % zoom** (browser zoom or `--force-device-scale-factor=1.25`).
-- If the monitor is switched by a smart plug, add it in the wizard — the aurora then pauses while the monitor is off.
+- If the monitor is switched by a smart plug, add it in the wizard — the aurora then pauses while the monitor is off, and so do
+  cameras set to *Pause while the monitor is off* (tap the camera tile in edit mode).
 - With live cameras, limit the browser cache, e.g. Chromium with `--disk-cache-size=67108864` (64 MB).
 - Portrait works too; if space runs out, the navigation shows icons only.
 
@@ -260,6 +278,9 @@ If the HA **Energy dashboard** is set up (including power sensors), the energy f
   missing driver, acceleration turned off). The clock pop-up then says *no graphics acceleration* and power saving switches on by
   itself; check `chrome://gpu` (WebGL should not say *Software only*). While you edit the dashboard, animations always pause.
 - **Rain radar shows nothing:** it uses the German Weather Service (DWD) and covers Germany plus ~100 km around it.
+- **Empty space between groups:** Home Assistant lines groups up in rows, each as tall as its tallest group. Turn on
+  **Fill gaps** (edit bar → *Building blocks*, or ⚙) and groups slide up into the free space — or drag single tiles into
+  the group next to the gap.
 - **Want to tweak single tiles:** ⋮ → Edit dashboard → *Take control* turns it into a normal dashboard you can edit freely
   (it then no longer updates itself).
 - **Updates:** come through HACS; the dashboard rebuilds itself with the new features. Which version is loaded? The
