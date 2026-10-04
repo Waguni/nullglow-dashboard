@@ -3,9 +3,9 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
-window.__NULLGLOW_VERSION = "2.6.0";
-window.__NULLGLOW_BUILD = "2ef7901";
-console.info("%c NULLGLOW %c v2.6.0 · 2ef7901 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
+window.__NULLGLOW_VERSION = "2.7.0";
+window.__NULLGLOW_BUILD = "dce0b1e";
+console.info("%c NULLGLOW %c v2.7.0 · dce0b1e ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -6514,20 +6514,47 @@ window.__NULLGLOW_THEMES = {
     solar: [], solarPeak: 800, grid: [], monitor: null,
     fps: 30, scale: 0.5, height: "68vh",
   };
+
+  // ── Animationen: Namen, Symbole, Standard je Stil (auch fürs Uhr-Pop-up und den Assistenten) ──
+  const MODES = ["aurora", "blobs", "waves", "bokeh", "bubbles", "scan", "rain", "stars", "lines", "shapes", "grid"];   // Index = uMode
+  const STYLE_DEFAULT = { glas: "aurora", liquid: "blobs", material: "waves", soft: "bokeh", clay: "bubbles", hud: "scan",
+    terminal: "rain", konsole: "stars", retro: "lines", synthwave: "grid", brutal: "shapes" };
+  const META = {
+    auto: ["Passend zum Stil", "Match style", "mdi:auto-fix"], none: ["Aus", "Off", "mdi:motion-pause-outline"],
+    aurora: ["Nordlicht", "Aurora", "mdi:weather-night"], blobs: ["Farbwolken", "Colour clouds", "mdi:blur"],
+    waves: ["Wellen", "Waves", "mdi:waves"], bokeh: ["Lichtpunkte", "Bokeh", "mdi:circle-multiple-outline"],
+    bubbles: ["Blasen", "Bubbles", "mdi:chart-bubble"], scan: ["Radar", "Radar", "mdi:radar"],
+    rain: ["Datenregen", "Code rain", "mdi:matrix"], stars: ["Sternenflug", "Starfield", "mdi:star-four-points-outline"],
+    lines: ["Linien", "Lines", "mdi:vector-polyline"], shapes: ["Formen", "Shapes", "mdi:shape-outline"],
+    grid: ["Horizont", "Horizon", "mdi:grid"],
+  };
+  const de = () => String(document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de");
+  const resolve = (want, style) => (want && want !== "auto" ? (want === "none" || MODES.includes(want) ? want : "aurora")
+    : STYLE_DEFAULT[style] || "aurora");
+  window.__ngMotion = window.__ngMotion || {
+    list: ["auto", "none", ...MODES], resolve,
+    meta: (k) => { const m = META[k] || META.aurora; return { key: META[k] ? k : "aurora", title: de() ? m[0] : m[1], icon: m[2] }; },
+  };
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   const VS = "attribute vec2 p; void main() { gl_Position = vec4(p, 0.0, 1.0); }";
   const FS = `
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+    precision highp float;
+    #else
     precision mediump float;
+    #endif
     uniform vec2 uRes; uniform float uTime; uniform float uPower; uniform float uCalm; uniform float uNight; uniform vec3 uAcc; uniform vec3 uAcc2; uniform float uLight;
+    uniform vec3 uInfo; uniform vec3 uWarn; uniform vec3 uBg; uniform float uT; uniform int uMode;
     float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    vec2 hash2(vec2 p) { return vec2(hash(p), hash(p + 19.19)); }
     float noise(vec2 p) {
       vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
       return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
     }
     float fbm(vec2 p) { float v = 0.0, a = 0.5; for (int i = 0; i < 4; i++) { v += a * noise(p); p = p * 2.03 + 7.1; a *= 0.5; } return v; }
-
-    void main() {
+    vec3 pal(float h) { return h < 0.34 ? uAcc : (h < 0.67 ? uAcc2 : uInfo); }   // Design-Farben
+    vec3 aurora() {
       vec2 uv = gl_FragCoord.xy / uRes;
       float aspect = uRes.x / uRes.y;
       float x = uv.x * aspect;
@@ -6573,6 +6600,200 @@ window.__NULLGLOW_THEMES = {
       col *= smoothstep(0.0, 0.10, uv.x) * smoothstep(0.0, 0.10, 1.0 - uv.x) * 0.25 + 0.75; // Ränder minimal weicher
       float master = mix(0.22, 0.9, uPower) * mix(1.0, 0.6, uCalm);
       vec3 o = col * master;
+      return o;
+    }
+
+    // ── Farbwolken: weiche Flecken in den Design-Farben ziehen langsam umher ──
+    vec3 blobs(vec2 uv, float asp, float t) {
+      vec2 p = vec2(uv.x * asp, uv.y);
+      vec3 c = vec3(0.0);
+      for (int i = 0; i < 5; i++) {
+        float fi = float(i);
+        vec2 ctr = vec2((0.5 + 0.44 * sin(t * (0.050 + 0.013 * fi) + fi * 1.7)) * asp, 0.5 + 0.42 * cos(t * (0.041 + 0.011 * fi) + fi * 2.9));
+        float r = 0.30 + 0.08 * sin(t * 0.07 + fi * 4.1);
+        vec2 d = p - ctr;
+        c += pal(fract(fi * 0.37)) * exp(-dot(d, d) / (r * r));
+      }
+      return c * 0.30;
+    }
+    // ── Wellen: leuchtende Linien fließen quer durchs Bild ──
+    vec3 waves(vec2 uv, float asp, float t) {
+      float x = uv.x * asp, y = uv.y;
+      vec3 c = vec3(0.0);
+      for (int i = 0; i < 5; i++) {
+        float fi = float(i);
+        float b = 0.20 + 0.085 * fi + 0.055 * sin(x * (1.1 + 0.15 * fi) + t * (0.22 + 0.05 * fi) + fi * 1.9)
+          + 0.025 * sin(x * (2.9 - 0.2 * fi) - t * (0.31 + 0.04 * fi) + fi * 0.7);
+        float d = abs(y - b);
+        c += mix(uAcc, uInfo, fi / 4.0) * (exp(-d / 0.004) * 0.8 + exp(-d / 0.045) * 0.16) * (1.0 - 0.13 * fi);
+      }
+      return c * 0.70;
+    }
+    // ── Lichtpunkte: weiche Kreise (Bokeh) schweben und funkeln ──
+    vec3 bokeh(vec2 uv, float asp, float t) {
+      vec2 p = vec2(uv.x * asp, uv.y);
+      vec3 c = vec3(0.0);
+      for (int l = 0; l < 3; l++) {
+        float fl = float(l), sc = 4.0 + 3.0 * fl;
+        vec2 q = p * sc - vec2(t * 0.018 * (1.0 + fl), t * 0.03 * (1.0 + 0.5 * fl));
+        vec2 cell = floor(q), f = fract(q) - 0.5;
+        float h = hash(cell + fl * 31.7);
+        if (h > 0.55) {
+          vec2 o = (hash2(cell + 7.3) - 0.5) * 0.4;
+          float r = 0.13 + 0.15 * hash(cell + 2.1);
+          float d = length(f - o);
+          float disk = smoothstep(r, r * 0.55, d), rim = exp(-abs(d - r * 0.92) / 0.02) * 0.35;
+          float tw = 0.55 + 0.45 * sin(t * (0.3 + h) + h * 40.0);
+          c += pal(hash(cell + 5.5)) * (disk * 0.5 + rim) * tw * (0.30 - 0.07 * fl);
+        }
+      }
+      return c;
+    }
+    // ── Blasen: Ringe mit Glanzpunkt steigen wackelnd auf ──
+    vec3 bubbles(vec2 uv, float asp, float t) {
+      vec2 p = vec2(uv.x * asp, uv.y);
+      vec3 c = vec3(0.0);
+      for (int l = 0; l < 2; l++) {
+        float fl = float(l), sc = 3.5 + 3.0 * fl;
+        vec2 q = p * sc - vec2(0.0, t * (0.10 + 0.07 * fl));
+        vec2 cell = floor(q), f = fract(q) - 0.5;
+        float h = hash(cell + fl * 13.1);
+        if (h > 0.5) {
+          vec2 o = vec2(0.18 * sin(t * 0.7 + h * 30.0), (hash(cell + 3.3) - 0.5) * 0.2);
+          float r = 0.15 + 0.13 * hash(cell + 8.8);
+          float d = length(f - o);
+          float ring = smoothstep(0.035, 0.0, abs(d - r)), fill = smoothstep(r, 0.0, d) * 0.10;
+          float spot = smoothstep(r * 0.32, 0.0, length(f - o - vec2(-r * 0.4, r * 0.4))) * 0.55;
+          c += pal(hash(cell + 1.7)) * (ring * 0.55 + fill + spot) * (0.32 - 0.09 * fl);
+        }
+      }
+      return c;
+    }
+    // ── Radar: Strahl kreist, Ringe, aufleuchtende Punkte ──
+    vec3 scan(vec2 uv, float asp, float t) {
+      vec2 p = vec2(uv.x * asp, uv.y), d = p - vec2(0.5 * asp, 0.5);
+      float r = length(d), a = atan(d.y, d.x) / 6.2831853;
+      float s = fract(t * 0.07 - a);                                   // 0 = Strahl, wächst dahinter
+      float trail = exp(-s * 7.0) * smoothstep(1.15, 0.05, r);
+      float rr = abs(fract(r * 4.0 + 0.5) - 0.5) / 4.0;
+      float rings = exp(-rr / 0.0022) * smoothstep(1.2, 0.1, r);
+      float crs = (exp(-abs(d.x) / 0.0018) + exp(-abs(d.y) / 0.0018)) * 0.5;
+      vec2 g = p * 9.0, cell = floor(g);
+      vec2 bp = (cell + 0.2 + 0.6 * hash2(cell + 4.0)) / 9.0;
+      float hb = hash(cell + 9.0), ba = atan(bp.y - 0.5, bp.x - 0.5 * asp) / 6.2831853;
+      float bs = fract(t * 0.07 - ba);
+      float blip = hb > 0.82 ? exp(-length(p - bp) / 0.006) * exp(-bs * 3.0) : 0.0;
+      return uAcc * (trail * 0.30 + rings * 0.16 + crs * 0.06) + mix(uAcc, vec3(1.0), 0.4) * blip * 1.2;
+    }
+    // ── Datenregen: Zeichenspalten fallen, Kopf hell ──
+    vec3 rain(vec2 uv, float t) {
+      float rows = 30.0, cw = uRes.y / rows;
+      vec2 g = gl_FragCoord.xy / cw, cell = floor(g), f = fract(g);
+      float colh = hash(vec2(cell.x, 7.0));
+      if (colh < 0.40) return vec3(0.0);
+      float speed = 2.5 + 5.0 * hash(vec2(cell.x, 3.0)), len = 6.0 + 14.0 * hash(vec2(cell.x, 9.0));
+      float top = floor(uRes.y / cw) - cell.y;
+      float dist = mod(t * speed + 60.0 * colh, rows + len + 10.0) - top;
+      if (dist < 0.0 || dist > len) return vec3(0.0);
+      vec2 sub = floor(f * vec2(4.0, 5.0));
+      float flick = floor(t * (0.6 + 1.6 * hash(cell)) + hash(cell + 1.0) * 10.0);
+      float bit = step(0.45, hash(sub + cell * 7.1 + flick * 3.7));
+      vec2 m = step(vec2(0.14, 0.08), f) * step(f, vec2(0.86, 0.92));
+      return mix(uAcc, vec3(1.0), dist < 1.0 ? 0.55 : 0.0) * bit * m.x * m.y * (1.0 - dist / len) * 0.34;
+    }
+    // ── Sternenflug: Sterne ziehen als Streifen aus der Mitte nach außen ──
+    vec3 stars(vec2 uv, float asp, float t) {
+      vec2 p = (uv - 0.5) * vec2(asp, 1.0);
+      float r = length(p), a = atan(p.y, p.x);
+      vec3 c = vec3(0.0);
+      for (int l = 0; l < 3; l++) {
+        float fl = float(l), n = 70.0 + 50.0 * fl;
+        float ac = floor((a / 6.2831853 + 0.5) * n);
+        float h = hash(vec2(ac, fl * 7.0 + 1.0));
+        if (h > 0.3) {
+          float z = fract(h * 7.3 + t * (0.045 + 0.02 * fl));
+          float rs = 0.04 + z * z * 1.15, len = 0.006 + 0.10 * z * z;
+          float ca = ((ac + 0.5) / n - 0.5) * 6.2831853;
+          float lat = abs(sin(a - ca)) * r, along = rs - r;
+          float s = step(0.0, along) * step(along, len) * (1.0 - along / len);
+          c += mix(uInfo, vec3(1.0), 0.45) * s * exp(-lat / (0.0012 + 0.0025 * z)) * z * 1.3;
+        }
+      }
+      return c * 0.6 + uAcc * exp(-r / 0.25) * 0.05;
+    }
+    // ── Linien: zwei Vielecke prallen von den Rändern ab und ziehen Spuren (90er-Bildschirmschoner) ──
+    float seg(vec2 p, vec2 a, vec2 b) { vec2 pa = p - a, ba = b - a; float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0); return length(pa - ba * h); }
+    vec2 vtx(float t, float k, float j, float asp) {
+      vec2 sp = vec2(0.035 + 0.03 * hash(vec2(k, j)), 0.03 + 0.03 * hash(vec2(j, k + 5.0)));
+      vec2 v = abs(fract(t * sp + hash2(vec2(k * 3.0, j * 7.0))) * 2.0 - 1.0);
+      return vec2((0.05 + 0.9 * v.x) * asp, 0.05 + 0.9 * v.y);
+    }
+    vec3 lines(vec2 uv, float asp, float t) {
+      vec2 p = vec2(uv.x * asp, uv.y);
+      vec3 c = vec3(0.0);
+      for (int j = 0; j < 2; j++) {
+        float fj = float(j), glow = 0.0;
+        for (int i = 0; i < 4; i++) {
+          float tt = t - float(i) * 0.9;
+          vec2 a0 = vtx(tt, 0.0, fj, asp), a1 = vtx(tt, 1.0, fj, asp), a2 = vtx(tt, 2.0, fj, asp), a3 = vtx(tt, 3.0, fj, asp);
+          float d = min(min(seg(p, a0, a1), seg(p, a1, a2)), min(seg(p, a2, a3), seg(p, a3, a0)));
+          glow += exp(-d / 0.0022) * (1.0 - float(i) * 0.22);
+        }
+        c += (fj < 0.5 ? uAcc : uInfo) * glow;
+      }
+      return c * 0.38;
+    }
+    // ── Formen: Kreise, Quadrate, Dreiecke treiben und drehen sich ──
+    float sdBox(vec2 p, vec2 b) { vec2 d = abs(p) - b; return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0); }
+    float sdTri(vec2 p, float r) {
+      p.x = abs(p.x) - r; p.y = p.y + r / 1.7320508;
+      if (p.x + 1.7320508 * p.y > 0.0) p = vec2(p.x - 1.7320508 * p.y, -1.7320508 * p.x - p.y) / 2.0;
+      p.x -= clamp(p.x, -2.0 * r, 0.0);
+      return -length(p) * sign(p.y);
+    }
+    vec3 shapes(vec2 uv, float asp, float t) {
+      vec2 p = vec2(uv.x * asp, uv.y) * 3.2 + vec2(t * 0.03, t * 0.02);
+      vec2 cell = floor(p), f = fract(p) - 0.5;
+      float h = hash(cell);
+      if (h < 0.45) return vec3(0.0);
+      float an = t * (0.1 + 0.2 * hash(cell + 2.0)) * (h > 0.7 ? 1.0 : -1.0);
+      vec2 q = mat2(cos(an), -sin(an), sin(an), cos(an)) * (f - (hash2(cell + 4.0) - 0.5) * 0.3);
+      float k = hash(cell + 9.0), s = 0.15 + 0.08 * hash(cell + 6.0), d;
+      if (k < 0.33) d = abs(length(q) - s); else if (k < 0.66) d = abs(sdBox(q, vec2(s * 0.85))); else d = abs(sdTri(q, s));
+      return pal(hash(cell + 11.0)) * smoothstep(0.024, 0.013, d) * 0.42;
+    }
+    // ── Horizont: Synthwave-Boden mit Gitter, das auf einen zukommt (deckt den Boden, Himmel bleibt frei) ──
+    vec4 horizon(vec2 uv, float asp, float t) {
+      float hz = 0.39;
+      if (uv.y > hz) { float g = exp(-(uv.y - hz) / 0.018) * 0.55; return vec4(uAcc * g, g); }
+      float dy = max(hz - uv.y, 0.0015), z = 0.12 / dy;
+      float s1 = z * 2.5 + t * 0.7, w1 = 2.5 * 0.12 / (dy * dy) / uRes.y;
+      float d1 = 0.5 - abs(fract(s1) - 0.5);
+      float lh = 1.0 - smoothstep(0.0, w1 * 1.6, d1);
+      float s2 = (uv.x - 0.5) * asp * z * 14.0, w2 = 14.0 * asp * z / uRes.x;
+      float d2 = 0.5 - abs(fract(s2) - 0.5);
+      float lv = (1.0 - smoothstep(0.0, w2 * 1.6, d2)) * smoothstep(0.03, 0.18, dy);
+      float fog = smoothstep(0.03, 0.16, dy) * (1.0 - smoothstep(0.35, 1.0, w1));   // am Horizont dicht -> ausblenden
+      vec3 base = uBg + uAcc * exp(-dy / 0.05) * 0.18;
+      vec3 c = mix(base, uInfo, lh * fog * 0.6);                    // mischen statt addieren: auch im Hellen sichtbar
+      return vec4(mix(c, uAcc, lv * fog * 0.8), 1.0);
+    }
+
+    void main() {
+      vec2 uv = gl_FragCoord.xy / uRes;
+      float asp = uRes.x / uRes.y, t = uT;
+      if (uMode == 10) { gl_FragColor = horizon(uv, asp, t); return; }   // vormultipliziert, normal gemischt
+      vec3 o;
+      if (uMode == 0) o = aurora();
+      else if (uMode == 1) o = blobs(uv, asp, t);
+      else if (uMode == 2) o = waves(uv, asp, t);
+      else if (uMode == 3) o = bokeh(uv, asp, t);
+      else if (uMode == 4) o = bubbles(uv, asp, t);
+      else if (uMode == 5) o = scan(uv, asp, t);
+      else if (uMode == 6) o = rain(uv, t);
+      else if (uMode == 7) o = stars(uv, asp, t);
+      else if (uMode == 8) o = lines(uv, asp, t);
+      else o = shapes(uv, asp, t);
       if (uLight > 0.5) {                           // helles Design: als Farbschleier multiplizieren (Weiß = keine Änderung)
         float m = max(max(o.r, o.g), o.b);
         o = mix(vec3(1.0), o / max(m, 0.0001) * 0.9, clamp(m * 0.75, 0.0, 0.5));
@@ -6588,7 +6809,7 @@ window.__NULLGLOW_THEMES = {
       position: "absolute", left: "0", top: "0", width: "100%", height: CFG.height, pointerEvents: "none",
       mixBlendMode: "screen", opacity: "0", transition: "opacity 2.5s ease",
     });
-    gl = canvas.getContext("webgl", { alpha: false, antialias: false, premultipliedAlpha: false, powerPreference: "low-power" });
+    gl = canvas.getContext("webgl", { alpha: true, antialias: false, premultipliedAlpha: true, powerPreference: "low-power" });
     if (!gl) return false;
     const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
       if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
@@ -6604,7 +6825,7 @@ window.__NULLGLOW_THEMES = {
     const p = gl.getAttribLocation(prog, "p");
     gl.enableVertexAttribArray(p);
     gl.vertexAttribPointer(p, 2, gl.FLOAT, false, 0, 0);
-    for (const u of ["uRes", "uTime", "uPower", "uCalm", "uNight", "uAcc", "uAcc2", "uLight"]) loc[u] = gl.getUniformLocation(prog, u);
+    for (const u of ["uRes", "uTime", "uPower", "uCalm", "uNight", "uAcc", "uAcc2", "uLight", "uInfo", "uWarn", "uBg", "uT", "uMode"]) loc[u] = gl.getUniformLocation(prog, u);
     const dbg = gl.getExtension("WEBGL_debug_renderer_info");
     info.renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : "webgl";
     return true;
@@ -6638,13 +6859,17 @@ window.__NULLGLOW_THEMES = {
   const target = { power: 0, calm: 0, night: 0 }, cur = { power: 0, calm: 0, night: 0 };
   let active = true, cfg = CFG;
   // Farben des aktiven Designs (Theme-Tokens am Hintergrund), Rückfall Nullglow-Grün
-  const col = { acc: [0.486, 1.0, 0.698], acc2: [0.168, 0.890, 0.560], light: 0 };
+  const col = { acc: [0.486, 1.0, 0.698], acc2: [0.168, 0.890, 0.560], info: [0.42, 0.89, 1.0], warn: [1.0, 0.82, 0.4], bg: [0.02, 0.03, 0.04], light: 0 };
+  let mode = "aurora", modeIdx = 0, pend = null, pendAt = 0, style = "";
   function readColors() {
     const cs = getComputedStyle(canvas), rd = (v, d) => { const m = cs.getPropertyValue(v).match(/\d+/g); return m && m.length >= 3 ? m.slice(0, 3).map((x) => x / 255) : d; };
     col.acc = rd("--rgb-ng-acc", col.acc); col.acc2 = rd("--rgb-ng-acc-2", col.acc2);
+    col.info = rd("--rgb-ng-info", col.info); col.warn = rd("--rgb-ng-warn", col.warn); col.bg = rd("--rgb-ng-bg", col.bg);
     col.light = cs.getPropertyValue("--ng-is-light").trim() === "1" ? 1 : 0;   // hell: multiplizieren statt aufhellen
-    const mode = col.light ? "multiply" : "screen";
-    if (canvas.style.mixBlendMode !== mode) canvas.style.mixBlendMode = mode;
+    style = cs.getPropertyValue("--ngs-style").trim();
+    // Horizont deckt den Boden (normal gemischt), alle anderen leuchten auf dem Hintergrund (dunkel aufhellen, hell tönen)
+    const blend = mode === "grid" ? "normal" : col.light ? "multiply" : "screen";
+    if (canvas.style.mixBlendMode !== blend) canvas.style.mixBlendMode = blend;
   }
   function readHass() {
     const h = document.querySelector("home-assistant")?.hass;
@@ -6662,7 +6887,14 @@ window.__NULLGLOW_THEMES = {
     const mon = cfg.monitor && wall ? h.states[cfg.monitor] : null;
     // Stromsparen (Uhr-Pop-up der Vorlage, data-ng-eco an <html>): kein Nordlicht
     const eco = document.documentElement.dataset.ngEco === "1";
-    active = !!forced || (!eco && (!mon || mon.state !== "off"));   // Test (erzwungene Werte) zeichnet immer
+    const want = resolve(document.documentElement.dataset.ngMotion || "auto", style);
+    if (want !== mode && want !== pend) { pend = want; pendAt = performance.now() + (canvas.style.opacity === "0" ? 0 : 700); canvas.style.opacity = "0"; }
+    if (pend && performance.now() >= pendAt) {
+      mode = pend; pend = null; modeIdx = Math.max(0, MODES.indexOf(mode));
+      canvas.style.height = mode === "aurora" ? CFG.height : "100vh";   // Container hat keine eigene Höhe
+      canvas.style.mixBlendMode = mode === "grid" ? "normal" : col.light ? "multiply" : "screen";
+    }
+    active = (!!forced || (!eco && (!mon || mon.state !== "off"))) && mode !== "none" && !pend;   // Test zeichnet immer
     if (canvas.isConnected && !active && canvas.style.opacity !== "0") canvas.style.opacity = "0";
     if (forced) { Object.assign(target, { power: forced.power ?? 0.6, calm: forced.calm ?? 0, night: forced.night ? 1 : 0 }); return; }
     target.power = Math.min(1, Math.sqrt(solar / (cfg.solarPeak || 800)));        // Wurzel: auch 100 W sind schon sichtbar
@@ -6684,6 +6916,7 @@ window.__NULLGLOW_THEMES = {
     if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; gl.viewport(0, 0, w, h); }
     // Zeit läuft je nach Energie unterschiedlich schnell weiter (kein Sprung bei Wertewechsel)
     tAcc += dt * (0.55 + 0.9 * cur.power) * (1 - 0.35 * cur.calm);
+    tPlain = (tPlain + dt) % 20000;   // Zeit begrenzen (Genauigkeit auf Handys)
     gl.uniform2f(loc.uRes, w, h);
     gl.uniform1f(loc.uTime, tAcc);   // volle Sonne: Welle ~18 s, Strahlen ziehen langsam; nachts deutlich träger
     gl.uniform1f(loc.uPower, cur.power);
@@ -6692,12 +6925,14 @@ window.__NULLGLOW_THEMES = {
     gl.uniform3fv(loc.uAcc, col.acc);
     gl.uniform3fv(loc.uAcc2, col.acc2);
     gl.uniform1f(loc.uLight, col.light);
+    gl.uniform3fv(loc.uInfo, col.info); gl.uniform3fv(loc.uWarn, col.warn); gl.uniform3fv(loc.uBg, col.bg);
+    gl.uniform1f(loc.uT, tPlain); gl.uniform1i(loc.uMode, modeIdx);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     if (canvas.style.opacity !== "1") canvas.style.opacity = "1";
     frames++;
     if (now - fpsT > 2000) { info.fps = Math.round(frames * 1000 / (now - fpsT)); frames = 0; fpsT = now; }
   }
-  let tAcc = Math.random() * 100;
+  let tAcc = Math.random() * 100, tPlain = 20 + Math.random() * 100;
   function schedule() { if (!running) { running = true; requestAnimationFrame(frame); } }
 
   function tick() {
@@ -6712,13 +6947,14 @@ window.__NULLGLOW_THEMES = {
   }
 
   window.__ngAurora = (v) => { forced = v || null; if (v && v.snap) Object.assign(cur, { power: v.power ?? 0.6, calm: v.calm ?? 0, night: v.night ? 1 : 0 }); tick(); };
-  window.__ngAurora.info = () => ({ ...info, target: { ...target }, cur: { ...cur }, active, mounted: !!canvas?.isConnected });
+  window.__ngAurora.info = () => ({ ...info, mode, style, want: document.documentElement.dataset.ngMotion || "auto", target: { ...target }, cur: { ...cur }, active, mounted: !!canvas?.isConnected });
 
   try {
     if (!setup()) return;
   } catch (e) { console.warn("nullglow-aurora:", e); return; }
   document.addEventListener("visibilitychange", tick);
   window.addEventListener("nullglow-eco", tick);   // Stromsparen an/aus (nullglow-strategy.js)
+  window.addEventListener("nullglow-motion", tick);   // andere Animation gewählt (Uhr-Pop-up)
   setTimeout(tick, 1200);
   setInterval(tick, 2000);
 })();
@@ -9139,6 +9375,9 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     "Nordlicht, Wetterfarben und Animationen aus — für langsame Geräte": "Aurora, weather colors and animations off — for slow devices",
     "Auto: gerade an (langsames Gerät erkannt)": "Auto: currently on (slow device detected)", "Auto: gerade aus": "Auto: currently off",
     "Stil": "Style", "Form, Linien, Glas und Leuchten — die Farben bleiben": "Shape, lines, glass and glow — colors stay",
+    "Hintergrund": "Background", "Animation hinter den Kacheln — Stromsparen hält sie an": "Animation behind the tiles — power saving pauses it",
+    "Passend": "Match style", "Standard-Animation": "Default animation", "Animations-Helfer": "Animation helper",
+    "Optionen = Animations-Schlüssel (auto, none, aurora, …)": "Options = animation keys (auto, none, aurora, …)",
     "Stil-Helfer": "Style helper", "Optionen = Stil-Schlüssel (glas, liquid, …)": "Options = style keys (glas, liquid, …)", "Standard-Stil": "Default style",
   };
   let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
@@ -9198,6 +9437,7 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     .s.on { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .12); box-shadow: inset 0 0 0 2px var(--ng-acc, var(--primary-color)); }
     .s span { font-size: 13px; font-weight: 500; line-height: 1.2; }
     .pv { flex: none; width: 34px; height: 26px; box-sizing: border-box; }
+    .s .ai { flex: none; --mdc-icon-size: 22px; width: 34px; display: grid; place-items: center; color: var(--ng-acc, var(--primary-color)); }
     .pv-glas { border-radius: 8px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.15)), 0 0 10px -3px var(--ng-acc, #7cffb2); }
     .pv-liquid { border-radius: 11px; background: linear-gradient(135deg, rgba(var(--rgb-ng-acc, 124, 255, 178), .5), rgba(var(--rgb-ng-txt, 255, 255, 255), .1));
       box-shadow: inset 1.5px 1.5px 0 rgba(255, 255, 255, .7), inset -1px -1px 0 rgba(255, 255, 255, .2); }
@@ -9225,6 +9465,8 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
   const readLocal = (k) => { try { return JSON.parse(localStorage.getItem(k) || "{}") || {}; } catch (e) { return {}; } };
   // Stil-Helfer angegeben, aber (noch) nicht geladen: Wahl nur in diesem Browser (localStorage), Auswertung im Umschalter
   const readStyle = () => { try { return localStorage.getItem("nullglow-style-local") || "glas"; } catch (e) { return "glas"; } };
+  const readMotion = () => { try { return localStorage.getItem("nullglow-motion-local") || "auto"; } catch (e) { return "auto"; } };
+  const writeMotion = (k) => { try { if (k && k !== "auto") localStorage.setItem("nullglow-motion-local", k); else localStorage.removeItem("nullglow-motion-local"); } catch (e) { /* gesperrt */ } };
   const writeStyle = (k) => { try { if (k && k !== "glas") localStorage.setItem("nullglow-style-local", k); else localStorage.removeItem("nullglow-style-local"); } catch (e) { /* gesperrt */ } };
 
   class NullglowDesignCard extends HTMLElement {
@@ -9264,15 +9506,19 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
           { name: "default_design", selector: { text: {} } },
           { name: "default_mode", selector: { select: { mode: "dropdown", options: [
             { value: "auto", label: "Wie Gerät" }, { value: "dark", label: "Dunkel" }, { value: "light", label: "Hell" }, { value: "sun", label: "Nach Sonne" }] } } },
-          { name: "default_style", selector: { select: { mode: "dropdown", options: (window.__ngStyles?.list || ["glas"]).map((k) => ({ value: k, label: window.__ngStyles?.meta(k).title || k })) } } } ] },
+          { name: "default_style", selector: { select: { mode: "dropdown", options: (window.__ngStyles?.list || ["glas"]).map((k) => ({ value: k, label: window.__ngStyles?.meta(k).title || k })) } } },
+          { name: "default_motion", selector: { select: { mode: "dropdown", options: (window.__ngMotion?.list || ["auto"]).map((k) => ({ value: k, label: window.__ngMotion?.meta(k).title || k })) } } } ] },
         { type: "expandable", name: "", title: "Helfer (nur „Für alle Geräte“)", flatten: true, schema: [
           { name: "entity", selector: { entity: { filter: { domain: "input_select" } } } },
           { name: "mode_entity", selector: { entity: { filter: { domain: "input_select" } } } },
-          { name: "style_entity", selector: { entity: { filter: { domain: "input_select" } } } } ] },
+          { name: "style_entity", selector: { entity: { filter: { domain: "input_select" } } } },
+          { name: "motion_entity", selector: { entity: { filter: { domain: "input_select" } } } } ] },
       ], { storage: "Wahl speichern", dashboard: "Dashboard", default_design: "Standard-Design", default_mode: "Standard Hell/Dunkel",
-        entity: "Design-Helfer", mode_entity: "Hell/Dunkel-Helfer", default_style: "Standard-Stil", style_entity: "Stil-Helfer" },
+        entity: "Design-Helfer", mode_entity: "Hell/Dunkel-Helfer", default_style: "Standard-Stil", style_entity: "Stil-Helfer",
+        default_motion: "Standard-Animation", motion_entity: "Animations-Helfer" },
       { dashboard: "Adresse, z. B. /nullglow — leer = dieses Dashboard", default_design: "z. B. nullglow, halcyon, emberglow",
-        entity: "Optionen = Theme-Namen", mode_entity: "Optionen Dunkel | Hell | Auto", style_entity: "Optionen = Stil-Schlüssel (glas, liquid, …)" },
+        entity: "Optionen = Theme-Namen", mode_entity: "Optionen Dunkel | Hell | Auto", style_entity: "Optionen = Stil-Schlüssel (glas, liquid, …)",
+        motion_entity: "Optionen = Animations-Schlüssel (auto, none, aurora, …)" },
       { "Nur dieses Gerät (Browser)": "This device only (browser)", "Für alle Geräte (input_select-Helfer)": "All devices (input_select helper)",
         "Wie Gerät": "Like device", "Dunkel": "Dark", "Hell": "Light", "Nach Sonne": "By sun",
         "Helfer (nur „Für alle Geräte“)": "Helpers (only “All devices”)", "Wahl speichern": "Save choice", "Dashboard": "Dashboard",
@@ -9280,7 +9526,8 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
         "Hell/Dunkel-Helfer": "Light/dark helper", "Adresse, z. B. /nullglow — leer = dieses Dashboard": "Path, e.g. /nullglow — empty = this dashboard",
         "z. B. nullglow, halcyon, emberglow": "e.g. nullglow, halcyon, emberglow", "Optionen = Theme-Namen": "Options = theme names",
         "Optionen Dunkel | Hell | Auto": "Options Dunkel | Hell | Auto", "Standard-Stil": "Default style", "Stil-Helfer": "Style helper",
-        "Optionen = Stil-Schlüssel (glas, liquid, …)": "Options = style keys (glas, liquid, …)" });
+        "Optionen = Stil-Schlüssel (glas, liquid, …)": "Options = style keys (glas, liquid, …)", "Standard-Animation": "Default animation",
+        "Animations-Helfer": "Animation helper", "Optionen = Animations-Schlüssel (auto, none, aurora, …)": "Options = animation keys (auto, none, aurora, …)" });
     }
     static async getStubConfig() {
       return { storage: "local", dashboard: "/" + (location.pathname.split("/")[1] || "lovelace"), default_design: "nullglow", default_mode: "auto" };
@@ -9301,7 +9548,8 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
       if (this._drag) return;   // Regler wird gerade gezogen -> nicht neu aufbauen
       const st = h.states[this._cfg.entity], md = h.states[this._cfg.mode_entity], gl = h.states[this._cfg.glass_entity];
       const sy = h.states[this._cfg.style_entity];
-      const src = this._local ? JSON.stringify(readLocal(this._lkey)) : st ? `${st.state}|${(st.attributes.options || []).join(",")}|${md?.state}|${gl?.state}|${sy?.state ?? readStyle()}` : "-";
+      const mo = h.states[this._cfg.motion_entity];
+      const src = this._local ? JSON.stringify(readLocal(this._lkey)) : st ? `${st.state}|${(st.attributes.options || []).join(",")}|${md?.state}|${gl?.state}|${sy?.state ?? readStyle()}|${mo?.state ?? readMotion()}` : "-";
       const key = `${src}|${Object.keys(h.themes?.themes || {}).length}|${h.themes?.darkMode}|${ngLang()}|${document.documentElement.dataset.ngEco || ""}`;
       if (key !== this._key) { this._key = key; this._render(); }
     }
@@ -9322,6 +9570,7 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
         const p = readLocal(this._lkey), all = h.themes?.themes || {};
         const options = Object.keys(all).filter((k) => !k.includes("--") && (all[k]?.["ng-design-title"] || all[k]?.modes?.dark?.["ng-design-title"]));   // ohne Stil-Themes
         const defD = c.default_design || "nullglow", defM = c.default_mode || "auto", defS = window.__ngStyles?.valid(c.default_style) || "glas";
+        const defA = c.default_motion || "auto";
         const save = (patch) => {
           const n = { ...readLocal(this._lkey), ...patch };
           for (const k of Object.keys(n)) if (!n[k]) delete n[k];
@@ -9331,7 +9580,8 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
         const dT = String(this._theme(defD)?.["ng-design-title"] || defD).split(" — ")[0];
         return { design: p.design || defD, mode: p.mode || defM, options, modes: LOCAL_MODES,
           hint: t("Gilt nur für dieses Gerät · Standard: {d}, {m}", { d: dT, m: MODE_NAME[defM] ? t(MODE_NAME[defM]) : defM }),
-          custom: !!(p.design || p.mode || p.glass || p.eco || p.style),
+          custom: !!(p.design || p.mode || p.glass || p.eco || p.style || p.motion),
+          motion: p.motion || defA, pickMotion: (k) => save({ motion: k === defA ? "" : k }),
           style: window.__ngStyles?.valid(p.style) || (p.style === "glas" ? "glas" : defS), pickStyle: (k) => save({ style: k === defS ? "" : k }),
           // Stromsparen (nullglow-strategy.js wertet aus): "on" | "off" | leer = Auto; Auto antippen misst neu
           eco: p.eco || "auto", pickEco: (v) => { if (v === "auto") window.__ngEcoRemeasure?.(); save({ eco: v === "auto" ? "" : v }); },
@@ -9352,7 +9602,10 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
         pickMode: (v) => h.callService("input_select", "select_option", { entity_id: c.mode_entity, option: v }),
         ...(h.states[c.style_entity] ? { style: h.states[c.style_entity].state,
           pickStyle: (k) => h.callService("input_select", "select_option", { entity_id: c.style_entity, option: k }) }
-          : c.style_entity ? { style: readStyle(), pickStyle: (k) => { writeStyle(k); this._refresh(); } } : {}) };
+          : c.style_entity ? { style: readStyle(), pickStyle: (k) => { writeStyle(k); this._refresh(); } } : {}),
+        ...(h.states[c.motion_entity] ? { motion: h.states[c.motion_entity].state,
+          pickMotion: (k) => h.callService("input_select", "select_option", { entity_id: c.motion_entity, option: k }) }
+          : c.motion_entity ? { motion: readMotion(), pickMotion: (k) => { writeMotion(k); this._refresh(); } } : {}) };
     }
 
     _render() {
@@ -9393,7 +9646,13 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
           const x = S.meta(k);
           return `<button class="s${(m.style || "glas") === k ? " on" : ""}" data-s="${esc(k)}" title="${esc(x.desc)}"><i class="pv pv-${esc(k)}"></i><span>${esc(x.title)}</span></button>`;
         }).join("")}</div></div>` : "";
-      this.shadowRoot.innerHTML = `<style>${STYLE}</style><div class="top"><div class="hint">${esc(m.hint)}</div>${seg}${reset}</div>${glass}${eco}${sty}<div class="grid">${tiles}</div>`;
+      const A = window.__ngMotion;
+      const mot = m.pickMotion && A ? `<div class="sty"><div class="lbl"><ha-icon icon="mdi:animation-play-outline"></ha-icon><b>${t("Hintergrund")}</b>
+        <span>${t("Animation hinter den Kacheln — Stromsparen hält sie an")}</span></div><div class="sgrid">${A.list.map((k) => {
+          const x = A.meta(k), auto = k === "auto" ? A.meta(A.resolve("auto", m.style || "glas")) : null;
+          return `<button class="s${(m.motion || "auto") === k ? " on" : ""}" data-a="${esc(k)}"><ha-icon class="ai" icon="${esc(auto ? auto.icon : x.icon)}"></ha-icon><span>${esc(auto ? `${t("Passend")} · ${auto.title}` : x.title)}</span></button>`;
+        }).join("")}</div></div>` : "";
+      this.shadowRoot.innerHTML = `<style>${STYLE}</style><div class="top"><div class="hint">${esc(m.hint)}</div>${seg}${reset}</div>${glass}${eco}${sty}${mot}<div class="grid">${tiles}</div>`;
       const rng = this.shadowRoot.querySelector(".glass input");
       if (rng) {
         const val = this.shadowRoot.querySelector(".glass .val");
@@ -9409,6 +9668,7 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
       this.shadowRoot.querySelectorAll(".eco button[data-e]").forEach((b) => b.addEventListener("click", () => m.pickEco(b.dataset.e)));
       this.shadowRoot.querySelectorAll(".d").forEach((b) => b.addEventListener("click", () => m.pickDesign(b.dataset.o)));
       this.shadowRoot.querySelectorAll(".s[data-s]").forEach((b) => b.addEventListener("click", () => m.pickStyle(b.dataset.s)));
+      this.shadowRoot.querySelectorAll(".s[data-a]").forEach((b) => b.addEventListener("click", () => { m.pickMotion(b.dataset.a); setTimeout(() => window.dispatchEvent(new Event("nullglow-motion")), 300); }));
       this.shadowRoot.querySelector(".reset")?.addEventListener("click", () => m.reset());
     }
 
@@ -9544,7 +9804,9 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     "ist sie aus, pausiert das Nordlicht im Hintergrund": "when it is off, the aurora background pauses",
     "Titel des Dashboards": "Dashboard title",
     "Standard-Farbvariante — auf jedem Gerät per Uhr antippen umstellbar": "default color variant — tap the clock on any device to change it there",
-    "Stil": "Style", "Glas": "Glass",
+    "Stil": "Style", "Glas": "Glass", "Hintergrund-Animation": "Background animation",
+    "„Passend zum Stil“ wählt je Stil eine eigene (Glas: Nordlicht) — je Gerät per Uhr antippen umstellbar, Stromsparen hält sie an":
+      "“Match style” picks one per style (Glass: aurora) — tap the clock on any device to change it there; power saving pauses it",
     "Form, Linien, Glas und Leuchten — unabhängig von den Farben; je Gerät per Uhr antippen umstellbar": "shape, lines, glass and glow — independent of the colors; tap the clock on any device to change it there",
     "Hell / Dunkel": "Light / dark", "jedes Design gibt es hell und dunkel": "every design comes in light and dark",
     "Wie Gerät / HA-Profil": "Like device / HA profile", "Immer dunkel": "Always dark", "Immer hell": "Always light",
@@ -10345,11 +10607,11 @@ ha-tile-info {
   }
 
   // Uhr antippen: Design + Hell/Dunkel für dieses Gerät (nullglow-design-card, Browser-Speicher)
-  function designPopup(base, design, mode, admin, style) {
+  function designPopup(base, design, mode, admin, style, motion) {
     return { type: "custom:bubble-card", card_type: "pop-up", hash: "#design", name: "Design", icon: "mdi:palette",
       width_desktop: "900px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 60000,
       cards: [{ type: "custom:nullglow-design-card", storage: "local", dashboard: base, default_design: design, default_mode: mode,
-        ...(window.__ngStyles?.valid(style) ? { default_style: style } : {}) },
+        ...(window.__ngStyles?.valid(style) ? { default_style: style } : {}), ...(motion && motion !== "auto" ? { default_motion: motion } : {}) },
         ...(admin ? [{ type: "custom:nullglow-edit-card", grid_options: { columns: 12, rows: "auto" } }] : [])] };
   }
 
@@ -10915,7 +11177,7 @@ ha-tile-info {
     if (compact) pops.push(coversPopup(inv));
     if (lightsCompact) pops.push(lightsPopup(inv, cfg));
     if (cCompact) pops.push(contactsPopup(inv, hass));
-    if (withDesign) pops.push(designPopup(base, design, ["dark", "light", "sun"].includes(cfg.mode) ? cfg.mode : "auto", !!hass.user?.is_admin, cfg.style));
+    if (withDesign) pops.push(designPopup(base, design, ["dark", "light", "sun"].includes(cfg.mode) ? cfg.mode : "auto", !!hass.user?.is_admin, cfg.style, cfg.motion));
     return { parts: P, extra: pops };
   }
 
@@ -11233,6 +11495,14 @@ ha-tile-info {
     } else if (modeOwn) {
       modeOwn = false;
       if (modeHa !== null && h.themes.darkMode !== modeHa) { ha._updateHass({ themes: { ...h.themes, darkMode: modeHa } }); changed = true; }
+    }
+    // Hintergrund-Animation je Gerät (Uhr-Pop-up) bzw. Option motion -> data-ng-motion an <html> (nullglow-aurora.js)
+    {
+      const de0 = document.documentElement;
+      if (own) {
+        const mo = pick.motion || window.__nullglowStyles?.[base]?.motion || "auto";
+        if (de0.dataset.ngMotion !== mo) { de0.dataset.ngMotion = mo; de0.dataset.ngMotionBy = "vorlage"; window.dispatchEvent(new Event("nullglow-motion")); }
+      } else if (de0.dataset.ngMotionBy === "vorlage") { delete de0.dataset.ngMotion; delete de0.dataset.ngMotionBy; window.dispatchEvent(new Event("nullglow-motion")); }
     }
     // Glas-Deckkraft je Gerät (Uhr-Pop-up, Browser-Speicher): Faktor --ng-glass-k an <html>, nur auf eigenen Dashboards
     const de = document.documentElement, gk = own ? +pick.glass || 1 : 1;
@@ -14097,7 +14367,8 @@ ha-tile-info {
       // Stil (nullglow-styles.js): Option style, im Uhr-Pop-up je Gerät überschreibbar („glas“ = Standard) -> abgeleitetes Theme
       const style = window.__ngStyles?.valid(pick0.style || cfg.style) || null;
       const shown = (style && window.__ngStyles.ensure(shownD, style, hass)) || shownD;
-      window.__nullglowStyles = { ...(window.__nullglowStyles || {}), [base]: { design, style: window.__ngStyles?.valid(cfg.style) || null } };
+      window.__nullglowStyles = { ...(window.__nullglowStyles || {}), [base]: { design, style: window.__ngStyles?.valid(cfg.style) || null,
+        motion: typeof cfg.motion === "string" ? cfg.motion : "auto" } };
       window.__nullglowModes[base] = ["dark", "light", "sun"].includes(cfg.mode) ? cfg.mode : "auto";
       // Nordlicht (nullglow-aurora.js) liest hier die Sensoren dieses Dashboards
       window.__nullglowDashboards = { ...(window.__nullglowDashboards || {}), [base]: energy ? {
@@ -14612,7 +14883,7 @@ ha-tile-info {
         : t("beim Klingeln öffnet sich die Kamera groß auf jeder Seite (2 Min){x}", { x: this._doorAuto.event ? t(" — erkannt: {e}", { e: this._doorAuto.event }) : "" });
       const styleSum = window.__ngStyles?.valid(c.style) ? " · " + window.__ngStyles.meta(c.style).title : "";
       box = this._panel("more", t("6 · Design, Personen, Kameras, Medien & mehr"), "mdi:tune-variant", (designs(hass)[c.design] || designs(hass).nullglow || "Nullglow") + styleSum);
-      const d6 = { design: c.design || "nullglow", style: window.__ngStyles?.valid(c.style) || "glas", mode: c.mode || "auto", weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], live_cameras: c.live_cameras || [], cameras_live: !!c.cameras_live, person_map: !!c.person_map, map_tint: c.map_tint !== false, calendars: c.calendars || [], title: c.title, media_home: c.media_home !== false, media_players: c.media_players || [],
+      const d6 = { design: c.design || "nullglow", style: window.__ngStyles?.valid(c.style) || "glas", motion: c.motion || "auto", mode: c.mode || "auto", weather: c.weather, persons: c.persons || [], cameras: c.cameras || [], live_cameras: c.live_cameras || [], cameras_live: !!c.cameras_live, person_map: !!c.person_map, map_tint: c.map_tint !== false, calendars: c.calendars || [], title: c.title, media_home: c.media_home !== false, media_players: c.media_players || [],
         doorbell_on: !!c.doorbell?.enabled, doorbell_event: c.doorbell?.event, doorbell_camera: c.doorbell?.camera,
         screen_switch: c.screen_switch };
       const save6 = (vv) => {
@@ -14621,6 +14892,7 @@ ha-tile-info {
         for (const k of ["weather", "title", "screen_switch"]) { if (v[k]) c[k] = v[k]; else delete c[k]; }
         if (v.design && v.design !== "nullglow") c.design = v.design; else delete c.design;
         if (window.__ngStyles?.valid(v.style)) c.style = v.style; else delete c.style;
+        if (v.motion && v.motion !== "auto") c.motion = v.motion; else delete c.motion;
         if (v.mode && v.mode !== "auto") c.mode = v.mode; else delete c.mode;
         for (const k of ["persons", "cameras", "calendars", "live_cameras", "media_players"]) { if (v[k]?.length) c[k] = v[k]; else delete c[k]; }
         if (v.media_home === false) c.media_home = false; else delete c.media_home;
@@ -14643,6 +14915,11 @@ ha-tile-info {
           selector: { select: { mode: "dropdown", options: (window.__ngStyles?.list || ["glas"]).map((k) => {
             const m = window.__ngStyles?.meta(k) || { title: t("Glas"), desc: "" };
             return { value: k, label: m.desc ? `${m.title} — ${m.desc}` : m.title };
+          }) } } },
+        { name: "motion", label: t("Hintergrund-Animation"), helper: t("„Passend zum Stil“ wählt je Stil eine eigene (Glas: Nordlicht) — je Gerät per Uhr antippen umstellbar, Stromsparen hält sie an"),
+          selector: { select: { mode: "dropdown", options: (window.__ngMotion?.list || ["auto"]).map((k) => {
+            const m = window.__ngMotion?.meta(k) || { title: k };
+            return { value: k, label: k === "auto" && window.__ngMotion ? `${m.title} (${window.__ngMotion.meta(window.__ngMotion.resolve("auto", window.__ngStyles?.valid(c.style) || "glas")).title})` : m.title };
           }) } } },
         { name: "mode", label: t("Hell / Dunkel"), helper: t("jedes Design gibt es hell und dunkel"),
           selector: { select: { mode: "dropdown", options: [

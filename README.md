@@ -100,24 +100,34 @@ A **style** changes how tiles, buttons, sliders and the navigation look — inde
 light/dark, so any combination works (e.g. *Halcyon* + *light* + *Sci-fi HUD*). Pick one in the wizard (*step 6*) or per
 device with a tap on the clock. Sizes and spacing stay the same, so a page that fits keeps fitting.
 
-| Style | Look |
-| --- | --- |
-| **Glass** (default) | frosted glass with a soft glow |
-| **Liquid Glass** | clear glass with a light edge over a vivid background, squircle corners |
-| **Material** | tonal surfaces, shapes morph when switched on, no glass |
-| **Soft UI** | embossed from the background, pressed when on |
-| **Clay** | soft, puffy clay tiles, very round |
-| **Sci-fi HUD** | beveled corners, corner brackets, glowing lines, segmented bars |
-| **Terminal** | monospace, phosphor glow, scanlines, inverted buttons |
-| **Console** | coloured pill blocks and elbow frames on black, narrow capitals |
-| **Retro desktop** | grey 3D bevels, title bars, taskbar |
-| **Synthwave** | neon edges, a striped sun and a grid horizon |
-| **Neo-brutalism** | thick borders, hard offset shadows, bold type |
+| Style | Look | Background |
+| --- | --- | --- |
+| **Glass** (default) | frosted glass with a soft glow | Aurora |
+| **Liquid Glass** | clear glass with a light edge over a vivid background, squircle corners | Colour clouds |
+| **Material** | tonal surfaces, shapes morph when switched on, no glass | Waves |
+| **Soft UI** | embossed from the background, pressed when on | Bokeh |
+| **Clay** | soft, puffy clay tiles, very round | Bubbles |
+| **Sci-fi HUD** | beveled corners, corner brackets, glowing lines, segmented bars | Radar |
+| **Terminal** | monospace, phosphor glow, scanlines, inverted buttons | Code rain |
+| **Console** | coloured pill blocks and elbow frames on black, narrow capitals | Starfield |
+| **Retro desktop** | grey 3D bevels, title bars, taskbar | Lines |
+| **Synthwave** | neon edges, a striped sun and a grid horizon | Horizon |
+| **Neo-brutalism** | thick borders, hard offset shadows, bold type | Shapes |
 
 Each style works with all 13 designs, dark and light, on phones and large screens. Beveled corners (*Sci-fi HUD*) need a
 Chromium-based browser (Chrome, Edge, the HA app on Android); other browsers show plain corners.
 
 ![11 styles](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/styles.jpg?v=2.6.0)
+
+### Background animations
+
+Each style brings its own **background animation** (last column) — or pick one yourself: tap the clock → **Background**, or in
+the wizard (*step 6*). **Aurora** (grows with your solar power), **Colour clouds**, **Waves**, **Bokeh**, **Bubbles**, **Radar**,
+**Code rain**, **Starfield**, **Lines**, **Shapes**, **Horizon** (a moving synthwave floor) or **Off**. It runs behind the
+tiles at 30 frames per second in half resolution, pauses when the page is hidden or power saving is on (automatic on slow
+devices) and — on a wall display — while the screen is off.
+
+![11 background animations](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/backgrounds.jpg?v=2.7.0)
 
 ## Screenshots
 
