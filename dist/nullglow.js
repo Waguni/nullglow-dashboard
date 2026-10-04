@@ -3,9 +3,9 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
-window.__NULLGLOW_VERSION = "2.7.0";
-window.__NULLGLOW_BUILD = "dce0b1e";
-console.info("%c NULLGLOW %c v2.7.0 · dce0b1e ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
+window.__NULLGLOW_VERSION = "2.7.1";
+window.__NULLGLOW_BUILD = "e6b96b3";
+console.info("%c NULLGLOW %c v2.7.1 · e6b96b3 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -9373,7 +9373,8 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     "Design-Auswahl (Farbvarianten)": "Design picker (color variants)",
     "Stromsparen": "Power saving", "Aus": "Off", "An": "On",
     "Nordlicht, Wetterfarben und Animationen aus — für langsame Geräte": "Aurora, weather colors and animations off — for slow devices",
-    "Auto: gerade an (langsames Gerät erkannt)": "Auto: currently on (slow device detected)", "Auto: gerade aus": "Auto: currently off",
+    "Auto: gerade an (langsames Gerät erkannt)": "Auto: currently on (slow device detected)",
+    "Auto: gerade an (keine Grafikbeschleunigung)": "Auto: currently on (no graphics acceleration)", "Auto: gerade aus": "Auto: currently off",
     "Stil": "Style", "Form, Linien, Glas und Leuchten — die Farben bleiben": "Shape, lines, glass and glow — colors stay",
     "Hintergrund": "Background", "Animation hinter den Kacheln — Stromsparen hält sie an": "Animation behind the tiles — power saving pauses it",
     "Passend": "Match style", "Standard-Animation": "Default animation", "Animations-Helfer": "Animation helper",
@@ -9639,7 +9640,7 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
       const eco = m.pickEco ? `<div class="eco"><ha-icon icon="mdi:leaf"></ha-icon><span class="lbl">${t("Stromsparen")}</span>
         <div class="seg">${[["Aus", "off"], ["An", "on"], ["Auto", "auto"]].map(([l, v]) =>
           `<button data-e="${v}" class="${m.eco === v ? "on" : ""}">${t(l)}</button>`).join("")}</div>
-        <span class="note">${m.eco === "auto" ? t(ecoOn ? "Auto: gerade an (langsames Gerät erkannt)" : "Auto: gerade aus") + " · " : ""}${t("Nordlicht, Wetterfarben und Animationen aus — für langsame Geräte")}</span></div>` : "";
+        <span class="note">${m.eco === "auto" ? t(ecoOn ? (window.__ngSoftGL ? "Auto: gerade an (keine Grafikbeschleunigung)" : "Auto: gerade an (langsames Gerät erkannt)") : "Auto: gerade aus") + " · " : ""}${t("Nordlicht, Wetterfarben und Animationen aus — für langsame Geräte")}</span></div>` : "";
       const S = window.__ngStyles;
       const sty = m.pickStyle && S ? `<div class="sty"><div class="lbl"><ha-icon icon="mdi:shape-plus-outline"></ha-icon><b>${t("Stil")}</b>
         <span>${t("Form, Linien, Glas und Leuchten — die Farben bleiben")}</span></div><div class="sgrid">${S.list.map((k) => {
@@ -9804,7 +9805,7 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     "ist sie aus, pausiert das Nordlicht im Hintergrund": "when it is off, the aurora background pauses",
     "Titel des Dashboards": "Dashboard title",
     "Standard-Farbvariante — auf jedem Gerät per Uhr antippen umstellbar": "default color variant — tap the clock on any device to change it there",
-    "Stil": "Style", "Glas": "Glass", "Hintergrund-Animation": "Background animation",
+    "ohne Grafikbeschleunigung": "no graphics acceleration", "Stil": "Style", "Glas": "Glass", "Hintergrund-Animation": "Background animation",
     "„Passend zum Stil“ wählt je Stil eine eigene (Glas: Nordlicht) — je Gerät per Uhr antippen umstellbar, Stromsparen hält sie an":
       "“Match style” picks one per style (Glass: aurora) — tap the clock on any device to change it there; power saving pauses it",
     "Form, Linien, Glas und Leuchten — unabhängig von den Farben; je Gerät per Uhr antippen umstellbar": "shape, lines, glass and glow — independent of the colors; tap the clock on any device to change it there",
@@ -10665,7 +10666,8 @@ ha-tile-info {
       .f small { display: none; } }
   `;
   // Geladene Fassung (HACS-Paket: Version + Bau-Kennung aus tools/build-hacs.py; sonst die einzelnen Dateien unter /local)
-  const ngVersion = () => (window.__NULLGLOW_VERSION ? `Nullglow v${window.__NULLGLOW_VERSION}${window.__NULLGLOW_BUILD ? ` · ${window.__NULLGLOW_BUILD}` : ""}` : t("Nullglow · lokale Dateien"));
+  const ngVersion = () => (window.__NULLGLOW_VERSION ? `Nullglow v${window.__NULLGLOW_VERSION}${window.__NULLGLOW_BUILD ? ` · ${window.__NULLGLOW_BUILD}` : ""}` : t("Nullglow · lokale Dateien"))
+    + (softRender() ? ` · ${t("ohne Grafikbeschleunigung")}` : "");
   if (!customElements.get("nullglow-edit-card")) customElements.define("nullglow-edit-card", class extends HTMLElement {
     setConfig() { if (!this.shadowRoot) { this.attachShadow({ mode: "open" }); this.shadowRoot.addEventListener("click", (e) => this._click(e)); } this._render(); }
     set hass(h) {
@@ -11434,9 +11436,26 @@ ha-tile-info {
   // (nullglow-eco-auto); „Auto“ im Uhr-Pop-up misst neu. Stromsparen: Nordlicht aus, Wetterfarben ruhig, Kachel-Animationen
   // stehen, Energiefluss 15 statt 30 Bilder/s.
   const ECO_KEY = "nullglow-eco-auto";
+  let softGL = null;
+  function softRender() {   // true = keine Grafikbeschleunigung (Browser rechnet WebGL in Software)
+    if (softGL !== null) return softGL;
+    try {
+      const c = document.createElement("canvas");
+      const fast = c.getContext("webgl", { failIfMajorPerformanceCaveat: true });
+      const gl = fast || c.getContext("webgl"), dbg = gl?.getExtension("WEBGL_debug_renderer_info");
+      const r = String(gl && dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : "");
+      softGL = !gl || !fast || /swiftshader|llvmpipe|softpipe|software|basic render/i.test(r);
+      window.__ngSoftGL = softGL;
+      window.__ngRenderer = r || (gl ? "webgl" : "kein WebGL");
+      gl?.getExtension("WEBGL_lose_context")?.loseContext();
+    } catch (e) { softGL = false; }
+    return softGL;
+  }
   function ecoAuto() {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches || (navigator.hardwareConcurrency || 8) <= 2 || (navigator.deviceMemory || 8) <= 2) return true;
+    if (softRender()) return true;
     let v = null;
+    try { if (localStorage.getItem(ECO_KEY + "-b") !== String(window.__NULLGLOW_BUILD || "")) localStorage.removeItem(ECO_KEY); } catch (e) { /* gesperrt */ }
     try { v = localStorage.getItem(ECO_KEY); } catch (e) { /* gesperrt */ }
     if (v === "1" || v === "0") return v === "1";
     ecoMeasure();
@@ -11456,7 +11475,7 @@ ha-tile-info {
         if (now < end) { requestAnimationFrame(step); return; }
         d.sort((a, b) => a - b);
         const slow = d.length > 0 && d[d.length >> 1] > 45;
-        try { localStorage.setItem(ECO_KEY, slow ? "1" : "0"); } catch (e) { /* gesperrt */ }
+        try { localStorage.setItem(ECO_KEY, slow ? "1" : "0"); localStorage.setItem(ECO_KEY + "-b", String(window.__NULLGLOW_BUILD || "")); } catch (e) { /* gesperrt */ }
         window.__ngEcoMeasuring = false;
         window.__ngEcoMs = Math.round(d[d.length >> 1] || 0);
         ensureMode();
@@ -11515,7 +11534,7 @@ ha-tile-info {
       }
     }
     // Stromsparen je Gerät (Uhr-Pop-up): pick.eco "on" | "off" | leer = automatisch -> data-ng-eco + --ng-eco an <html>
-    const eco = own && (pick.eco === "on" || (pick.eco !== "off" && ecoAuto()));
+    const eco = own && (window.__ngEditing || pick.eco === "on" || (pick.eco !== "off" && ecoAuto()));   // Bearbeiten: wie Stromsparen
     if (eco !== (de.dataset.ngEco === "1")) {
       if (eco) { de.dataset.ngEco = "1"; de.style.setProperty("--ng-eco", "1"); } else { delete de.dataset.ngEco; de.style.removeProperty("--ng-eco"); }
       window.dispatchEvent(new Event("nullglow-eco"));
@@ -11729,12 +11748,12 @@ ha-tile-info {
   // Rahmen, Menü und Leiste liegen in Seiten-Koordinaten (scrollen nativ mit), nur die Leiste steht fest oben.
   // Verschieben (Ziehen oder Früher/Später) ist sofort sichtbar (CSS order im Section-Grid) und wird erst bei „Fertig“
   // gespeichert — eine Speicherung statt einer je Schritt (HA baut das Dashboard danach komplett neu).
+  // Bearbeiten-Oberfläche bewusst ohne backdrop-filter (Leistung auf schwachen Geräten, 05.10.)
   const EDIT_CSS = `
     :host { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 7; pointer-events: none; font-family: var(--ng-font, inherit); }
     .bar { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: auto; display: flex; align-items: center; gap: 12px;
       padding: 8px 8px 8px 18px; border-radius: 999px; font-size: 14px; color: var(--ng-txt, #e8f5ee); white-space: nowrap;
-      background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .82);
-      backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+      background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .96);
       box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .45), 0 12px 40px -12px rgba(0, 0, 0, .6); }
     .bar ha-icon { --mdc-icon-size: 18px; color: var(--ng-acc, #7cffb2); }
     .bar .msg { color: var(--ng-txt-dim, #93a79d); }
@@ -11793,8 +11812,7 @@ ha-tile-info {
       box-shadow: inset 0 0 0 2px var(--ng-acc, #7cffb2), 0 22px 44px -14px rgba(0, 0, 0, .75), 0 0 28px -6px rgba(var(--rgb-ng-acc, 124, 255, 178), .7); }
     .menu { position: absolute; z-index: 2; pointer-events: auto; width: 280px; padding: 14px; border-radius: 20px; display: flex; flex-direction: column; gap: 8px;
       color: var(--ng-txt, #e8f5ee); box-sizing: border-box;
-      background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .9);
-      backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .97);
       box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.12)), 0 20px 50px -14px rgba(0, 0, 0, .7); }
     .menu b { font-size: 15px; font-weight: 600; } .menu small { color: var(--ng-txt-dim, #93a79d); font-size: 12px; margin-top: -4px; }
     .menu .row { display: flex; gap: 8px; } .menu .row button { flex: 1; justify-content: center; }
@@ -11814,7 +11832,7 @@ ha-tile-info {
       font-weight: 600; background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); pointer-events: none; }
     .add { position: absolute; pointer-events: auto; transform: translateX(-100%); height: 28px; min-height: 0; padding: 0 12px 0 8px; gap: 4px;
       border-radius: 999px; border: 0; cursor: pointer; display: inline-flex; align-items: center; font-size: 13px; font-weight: 600;
-      background: rgba(var(--rgb-ng-bg, 10, 14, 18), .9); color: var(--ng-acc, #7cffb2); z-index: 1;
+      background: rgba(var(--rgb-ng-bg, 10, 14, 18), .97); color: var(--ng-acc, #7cffb2); z-index: 1;
       box-shadow: inset 0 0 0 1.5px rgba(var(--rgb-ng-acc, 124, 255, 178), .7), 0 6px 16px -6px rgba(0, 0, 0, .6); }
     .add:hover { background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); }
     .add ha-icon { --mdc-icon-size: 16px; color: inherit; }
@@ -11904,11 +11922,10 @@ ha-tile-info {
     .box.picked .ck { display: grid; }
     .pk { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 3; pointer-events: auto; display: flex; align-items: center; gap: 8px;
       flex-wrap: wrap; justify-content: center; max-width: calc(100vw - 24px); box-sizing: border-box; padding: 8px 8px 8px 16px; border-radius: 22px; font-size: 14px;
-      color: var(--ng-txt, #e8f5ee); background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .9);
-      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .5), 0 14px 40px -12px rgba(0, 0, 0, .7); }
+      color: var(--ng-txt, #e8f5ee); background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .97); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .5), 0 14px 40px -12px rgba(0, 0, 0, .7); }
     .pk .err:empty { display: none; } .pk .err { color: var(--ng-danger, #ff6b6b); font-size: 12px; }
     .pv { position: fixed; inset: 0; z-index: 4; pointer-events: auto; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 14px 12px;
-      background: rgba(var(--rgb-ng-bg, 10, 14, 18), .78); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-sizing: border-box; }
+      background: rgba(var(--rgb-ng-bg, 10, 14, 18), .9); box-sizing: border-box; }
     .pv .pvb { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; color: var(--ng-txt, #e8f5ee); }
     .pv .pvb small { color: var(--ng-txt-dim, #93a79d); font-size: 12.5px; }
     .pv .pvb .x { width: 36px; padding: 0; justify-content: center; }
@@ -11928,14 +11945,13 @@ ha-tile-info {
     .tb.drop { pointer-events: none; background: rgba(var(--rgb-ng-acc, 124, 255, 178), .28);
       box-shadow: inset 0 0 0 3px var(--ng-acc, #7cffb2), 0 0 28px -2px rgba(var(--rgb-ng-acc, 124, 255, 178), .95); }
     .tadd { position: fixed; z-index: 3; pointer-events: auto; width: 44px; height: 44px; min-height: 0; padding: 0; justify-content: center; border-radius: 50%;
-      background: rgba(var(--rgb-ng-bg, 10, 14, 18), .92); color: var(--ng-acc, #7cffb2);
+      background: rgba(var(--rgb-ng-bg, 10, 14, 18), .97); color: var(--ng-acc, #7cffb2);
       box-shadow: inset 0 0 0 1.5px rgba(var(--rgb-ng-acc, 124, 255, 178), .75), 0 8px 20px -8px rgba(0, 0, 0, .6); }
     .tadd ha-icon { --mdc-icon-size: 24px; }
     .tadd:hover { background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); }
     .navhint, .note { position: fixed; z-index: 3; left: 50%; transform: translateX(-50%); pointer-events: none; box-sizing: border-box; max-width: calc(100vw - 24px);
       padding: 7px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 600; text-align: center; color: var(--ng-txt, #e8f5ee);
-      background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .92);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 0 0 1.5px rgba(var(--rgb-ng-acc, 124, 255, 178), .55), 0 12px 30px -12px rgba(0, 0, 0, .7); }
+      background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .97); box-shadow: inset 0 0 0 1.5px rgba(var(--rgb-ng-acc, 124, 255, 178), .55), 0 12px 30px -12px rgba(0, 0, 0, .7); }
     .navhint { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .navhint.on { background: var(--ng-acc, #7cffb2); color: var(--ng-acc-ink, #04140d); }
     .note { z-index: 5; }
@@ -11960,6 +11976,7 @@ ha-tile-info {
     document.getElementById("ng-toast")?.remove(); document.getElementById("ng-tip")?.remove();   // nichts über der Leiste
     Object.assign(ngEdit, { on: true, base, pend: [], moves: 0, grids: new Set(), drag: null, press: null, busy: false, sizing: false, sizeAbort: null,
       sel: null, selSec: null, canUndo: false, picking: false, picked: new Set(), newCount: 0, mode: "tiles", lay: { width: {}, hide: [] }, prev: new Map(), hasGroups: false, sizes: {}, sized: new Map(), groupsAll: [] });
+    window.__ngEditing = true; setTimeout(ensureMode, 0);   // Animationen stehen, solange bearbeitet wird (flüssiges Ziehen)
     const host = document.createElement("div");
     host.id = "ng-edit";
     const root = host.attachShadow({ mode: "open" });
@@ -12035,8 +12052,7 @@ ha-tile-info {
     @keyframes ngtour { 50% { box-shadow: 0 0 0 2px var(--ng-acc, #7cffb2), 0 0 34px -4px var(--ng-acc, #7cffb2); } }
     .tour { position: fixed; z-index: 4; box-sizing: border-box; width: min(340px, calc(100vw - 16px)); padding: 14px 16px; border-radius: 20px;
       pointer-events: auto; color: var(--ng-txt, #e8f5ee); font-size: 14px; line-height: 1.45; white-space: normal;
-      background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .92);
-      backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .97);
       box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .5), 0 18px 44px -14px rgba(0, 0, 0, .7); transition: left .25s, top .25s; }
     .tour b.h { display: flex; align-items: center; gap: 8px; font-size: 15px; margin-bottom: 4px; color: var(--ng-acc, #7cffb2); }
     .tour b.h ha-icon { --mdc-icon-size: 20px; }
@@ -12125,6 +12141,7 @@ ha-tile-info {
     ngEdit.picking = false; ngEdit.picked = new Set();
     discardOrder(true);
     ngEdit.on = false;
+    window.__ngEditing = false; setTimeout(ensureMode, 0);
     ngEdit.sel = ngEdit.selSec = null;
     clearInterval(ngEdit.timer);
     window.removeEventListener("keydown", ngEdit.key);
@@ -12510,6 +12527,7 @@ ha-tile-info {
     d.gx = p.x + scrollX - w.left; d.gy = p.y + scrollY - w.top;   // Griffpunkt auf der Kachel
     d.off = { x: c.r.left - w.left, y: c.r.top - w.top };           // Rahmen relativ zum Wrapper
     Object.assign(d.wrap.style, { zIndex: 5, position: "relative", willChange: "transform" });
+    d.wrap.style.setProperty("--ha-card-backdrop-filter", "none");   // Glas-Unschärfe der gezogenen Kachel nicht je Bild neu rechnen
     ngEdit.drag = d;
     drawTabs();   // Hinweis „auf einen Tab ziehen“
     ngEdit.root.querySelector(".boxes").classList.add("dragging");

@@ -254,8 +254,11 @@ If the HA **Energy dashboard** is set up (including power sensors), the energy f
   shows a warning at the top of every page when Bubble Card is missing or too old.
   Update in HACS, then hard-reload (in the app: clear the app cache). The wizard shows the detected version.
 - **"Nullglow" is missing under "Add dashboard":** reload the browser; check that Nullglow Dashboard is downloaded in HACS.
-- **Slow or stuttering on an older PC/tablet:** tap the clock → *Power saving* → **On**. The aurora missing? *Auto* may
-  have switched power saving on for a slow device — pick **Off** to get it back.
+- **Slow or stuttering on an older PC/tablet:** tap the clock → *Power saving* → **On**. The background animation missing?
+  *Auto* may have switched power saving on for a slow device — pick **Off** to get it back.
+- **Very slow everywhere, even on a decent PC:** the browser probably renders without graphics acceleration (virtual machine,
+  missing driver, acceleration turned off). The clock pop-up then says *no graphics acceleration* and power saving switches on by
+  itself; check `chrome://gpu` (WebGL should not say *Software only*). While you edit the dashboard, animations always pause.
 - **Rain radar shows nothing:** it uses the German Weather Service (DWD) and covers Germany plus ~100 km around it.
 - **Want to tweak single tiles:** ⋮ → Edit dashboard → *Take control* turns it into a normal dashboard you can edit freely
   (it then no longer updates itself).
