@@ -33,8 +33,8 @@ Plus a **glass navigation dock** in your design colours, room pop-ups, a backgro
 Everything you can change right on the dashboard starts with **one tap on the big clock** of the overview
 (the first time you open the dashboard, a small hint points at it):
 
-- **Design, light/dark, glass** (clear ↔ frosted) and **power saving** — for *this* device, so the wall monitor and
-  your phone can look different.
+- **Design, style, light/dark, glass** (clear ↔ frosted) and **power saving** — for *this* device, so the wall monitor
+  and your phone can look different.
 - **Customize dashboard** (admins) — a panel that lists everything you can change; tap a feature to jump straight there
   (or *Edit*). The first time, a short tour explains **tiles, groups and pages** (again any time via **?** in the edit bar).
   Then, right on the dashboard:
@@ -93,6 +93,31 @@ Every design also comes in **light** ("tinted daylight": soft page colour, white
 wall monitor).
 
 ![13 designs, light](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs-light.jpg?v=2.2.0)
+
+## 11 styles — shape, lines, glass and glow
+
+A **style** changes how tiles, buttons, sliders and the navigation look — independent of the colours (design) and of
+light/dark, so any combination works (e.g. *Halcyon* + *light* + *Sci-fi HUD*). Pick one in the wizard (*step 6*) or per
+device with a tap on the clock. Sizes and spacing stay the same, so a page that fits keeps fitting.
+
+| Style | Look |
+| --- | --- |
+| **Glass** (default) | frosted glass with a soft glow |
+| **Liquid Glass** | clear glass with a light edge over a vivid background, squircle corners |
+| **Material** | tonal surfaces, shapes morph when switched on, no glass |
+| **Soft UI** | embossed from the background, pressed when on |
+| **Clay** | soft, puffy clay tiles, very round |
+| **Sci-fi HUD** | beveled corners, corner brackets, glowing lines, segmented bars |
+| **Terminal** | monospace, phosphor glow, scanlines, inverted buttons |
+| **Console** | coloured pill blocks and elbow frames on black, narrow capitals |
+| **Retro desktop** | grey 3D bevels, title bars, taskbar |
+| **Synthwave** | neon edges, a striped sun and a grid horizon |
+| **Neo-brutalism** | thick borders, hard offset shadows, bold type |
+
+Each style works with all 13 designs, dark and light, on phones and large screens. Beveled corners (*Sci-fi HUD*) need a
+Chromium-based browser (Chrome, Edge, the HA app on Android); other browsers show plain corners.
+
+![11 styles](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/styles.jpg?v=2.6.0)
 
 ## Screenshots
 
