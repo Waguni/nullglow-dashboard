@@ -3,9 +3,9 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
-window.__NULLGLOW_VERSION = "2.7.1";
-window.__NULLGLOW_BUILD = "e6b96b3";
-console.info("%c NULLGLOW %c v2.7.1 · e6b96b3 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
+window.__NULLGLOW_VERSION = "2.8.0";
+window.__NULLGLOW_BUILD = "3d01a88";
+console.info("%c NULLGLOW %c v2.8.0 · 3d01a88 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -9805,7 +9805,9 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     "ist sie aus, pausiert das Nordlicht im Hintergrund": "when it is off, the aurora background pauses",
     "Titel des Dashboards": "Dashboard title",
     "Standard-Farbvariante — auf jedem Gerät per Uhr antippen umstellbar": "default color variant — tap the clock on any device to change it there",
-    "ohne Grafikbeschleunigung": "no graphics acceleration", "Stil": "Style", "Glas": "Glass", "Hintergrund-Animation": "Background animation",
+    "ohne Grafikbeschleunigung": "no graphics acceleration", "Bild: Format und Zoom": "Picture: format and zoom",
+    "Gilt für diese Kamera auf dieser Seite": "For this camera on this page", "Format": "Format", "Original": "Original",
+    "Zoom": "Zoom", "Ausschnitt": "Focus", "Name im Bild": "Name in the picture", "unten im Kamerabild": "at the bottom of the camera picture", "Stil": "Style", "Glas": "Glass", "Hintergrund-Animation": "Background animation",
     "„Passend zum Stil“ wählt je Stil eine eigene (Glas: Nordlicht) — je Gerät per Uhr antippen umstellbar, Stromsparen hält sie an":
       "“Match style” picks one per style (Glass: aurora) — tap the clock on any device to change it there; power saving pauses it",
     "Form, Linien, Glas und Leuchten — unabhängig von den Farben; je Gerät per Uhr antippen umstellbar": "shape, lines, glass and glow — independent of the colors; tap the clock on any device to change it there",
@@ -11659,6 +11661,21 @@ ha-tile-info {
     if (o.graph === false && wrap) return { ...inner, grid_options: card.grid_options, view_layout: card.view_layout };
     return wrap ? { ...card, card: inner } : inner;
   }
+  // Kamera-Bild je Seite (cams["<seite>|<entität>"]): name (Name unten im Bild an/aus), Format (aspect_ratio, „auto“ = wie die Kamera liefert), Zoom 1–4 mit
+  // Ausschnitt x/y in % (transform-origin). Zoom per card_mod (Paket setzt card-mod voraus), das Bild bleibt in der Karte beschnitten.
+  const CAM_RATIOS = ["auto", "16:9", "4:3", "3:2", "1:1", "21:9", "3:4", "9:16"];
+  const CAM_ZOOMS = [1, 1.25, 1.5, 2, 3];
+  const pct = (v, d) => (isFinite(+v) ? Math.min(100, Math.max(0, +v)) : d);
+  const camCss = (o) => { const z = Math.min(4, Math.max(1, +o.zoom || 1));
+    return z > 1.001 ? `ha-card { overflow: hidden; }\nhui-image { transform: scale(${z}); transform-origin: ${pct(o.x, 50)}% ${pct(o.y, 50)}%; }\n` : ""; };
+  function camOpts(c, o) {
+    const out = { ...c };
+    if (o.ratio === "auto") delete out.aspect_ratio; else if (CAM_RATIOS.includes(o.ratio)) out.aspect_ratio = o.ratio;
+    if (typeof o.name === "boolean") out.show_name = o.name;
+    const css = camCss(o);
+    if (css) { const cm = out.card_mod?.style; out.card_mod = { ...(out.card_mod || {}), style: (typeof cm === "string" ? cm + "\n" : "") + css }; }
+    return out;
+  }
   function applyEdits(sections, cfg, view = "home", base = "", hass = null) {
     const names = cfg.names || {}, order = cfg.tile_order || [], size = cfg.tile_size || {}, tiles = cfg.tiles || {};
     const sized = (c) => { const z = sizeOf(size, view, c.view_layout?.ng_edit?.id); return z ? { ...c, grid_options: { ...(c.grid_options || {}), columns: z.columns, rows: z.rows } } : c; };
@@ -11674,6 +11691,8 @@ ha-tile-info {
         }
         if (m.kind !== "entity") return sized(x);
         if (tiles[m.id]) x = tileOpts(x, m.id, tiles[m.id], hass, view, base);
+        const cam = (cfg.cams || {})[`${view}|${m.id}`];
+        if (cam && x.type === "picture-entity") x = camOpts(x, cam);
         const n = names[m.id], k = n && labelKey(editCard(x));
         if (k) x = x.type === "custom:nullglow-spark-card" && x.card ? { ...x, card: { ...x.card, [k]: n } } : { ...x, [k]: n };
         return sized(x);
@@ -11844,6 +11863,9 @@ ha-tile-info {
     .box.sizing { opacity: .35; }
     .box.flash { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .22); box-shadow: inset 0 0 0 3px var(--ng-acc, #7cffb2), 0 0 34px -2px rgba(var(--rgb-ng-acc, 124, 255, 178), .9); }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .menu .focus { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+    .menu .focus button { min-height: 32px; padding: 0; justify-content: center; border-radius: 10px; }
+    .menu .focus button.on { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .2); color: var(--ng-acc, #7cffb2); }
     .chips button { min-height: 28px; padding: 0 11px; font-size: 13px; }
     .chips button.on { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .2); color: var(--ng-acc, #7cffb2); font-weight: 600; }
     .menu .list { display: flex; flex-direction: column; gap: 4px; max-height: 320px; overflow: auto; margin: 0 -4px; padding: 0 4px; }
@@ -12610,6 +12632,9 @@ ha-tile-info {
       if (dom === "sensor" && isFinite(parseFloat(st?.state)) && has("nullglow-spark-card")) rows.push(optRow("graph", "mdi:chart-bell-curve-cumulative", t("Verlauf dahinter"), t("24 Stunden als Kurve"), true, c.config.type === "custom:nullglow-spark-card"));
       if (["tile", "custom:bubble-card"].includes(inner.type)) rows.push(optRow("since", "mdi:clock-outline", t("„seit …“ zeigen"), t("wann es sich zuletzt geändert hat"), true, !!o.since));
       if (inner.type === "picture-entity" && dom === "camera") rows.push(optRow("live", "mdi:video-outline", t("Livebild"), t("sonst alle paar Sekunden ein Standbild"), true, inner.camera_view === "live"));
+      if (inner.type === "picture-entity" && dom === "camera") rows.push(optRow("camname", "mdi:label-outline", t("Name im Bild"), t("unten im Kamerabild"), true, inner.show_name !== false));
+      if (inner.type === "picture-entity" && dom === "camera") { const co = camOpt(m.id), z = +co.zoom || 1;
+        rows.push(optRow("cam", "mdi:crop", t("Bild: Format und Zoom"), co.ratio || z > 1 ? [co.ratio ? (co.ratio === "auto" ? t("Original") : co.ratio) : "", z > 1 ? `${Math.round(z * 100)} %` : ""].filter(Boolean).join(" · ") : t("Standard"))); }
       if (inner.type === "custom:nullglow-media-card" && inner.entity) rows.push(optRow("idle", "mdi:play-pause", t("Nur zeigen, wenn etwas läuft"), t("sonst bleibt die Karte ruhig stehen"), true, o.idle === "hide"));
     } else {
       const ri = (window.__ngRoomsInfo || []).find((r) => r.id === m.room);
@@ -12670,6 +12695,7 @@ ha-tile-info {
       if (k === "graph") run((s) => setTile(s, m.id, { graph: c.config.type === "custom:nullglow-spark-card" ? (o.graph === true ? null : false) : true }));
       else if (k === "since") run((s) => setTile(s, m.id, { since: o.since ? null : true }));
       else if (k === "live") run((s) => setTile(s, m.id, { live: inner.camera_view !== "live" }));
+      else if (k === "camname") run((s) => setCam(s, `${curView()}|${m.id}`, { name: inner.show_name === false }));
       else if (k === "idle") run((s) => setTile(s, m.id, { idle: o.idle === "hide" ? null : "hide" }));
       else tileSub(c, menu, k);
     }));
@@ -13488,6 +13514,14 @@ ha-tile-info {
   const hassNow = () => document.querySelector("home-assistant")?.hass;
   const fname = (id) => hassNow()?.states[id]?.attributes?.friendly_name || id;
   const tileOpt = (id) => (window.__ngLastCfg?.tiles || {})[id] || {};
+  const camOpt = (id) => (window.__ngLastCfg?.cams || {})[`${curView()}|${id}`] || {};
+  function setCam(s, key, patch) {   // cams["<seite>|<kamera>"] ändern (Wert null = Schlüssel weg)
+    s.cams = { ...(s.cams || {}) };
+    const o = { ...(s.cams[key] || {}) };
+    for (const [k, v] of Object.entries(patch)) { if (v === null || v === undefined) delete o[k]; else o[k] = v; }
+    if (Object.keys(o).length) s.cams[key] = o; else delete s.cams[key];
+    if (!Object.keys(s.cams).length) delete s.cams;
+  }
   function setTile(s, id, patch) {   // tiles.<id> ändern (null = Eintrag weg)
     s.tiles = { ...(s.tiles || {}) };
     const o = { ...(s.tiles[id] || {}) };
@@ -13579,6 +13613,41 @@ ha-tile-info {
       q?.addEventListener("input", () => { const w = q.value.trim().toLowerCase(); menu.querySelectorAll(".list .it").forEach((b) => { b.hidden = !!w && !b.textContent.toLowerCase().includes(w); }); });
       if (q && matchMedia("(hover: hover)").matches) setTimeout(() => q.focus(), 30);
     };
+    if (kind === "cam") {   // Kamera: Format, Zoom, Ausschnitt (nur diese Seite)
+      const card = c.el.firstElementChild || c.el.shadowRoot?.firstElementChild, sr = card?.shadowRoot, cfg0 = card?._config ? { ...card._config } : null;
+      const o0 = camOpt(m.id), cur = { ratio: o0.ratio || "", zoom: +o0.zoom || 1, x: pct(o0.x, 50), y: pct(o0.y, 50) };
+      const preview = () => {   // nur ansehen: Karte direkt umstellen (nichts gespeichert)
+        try {
+          if (cfg0 && typeof card.setConfig === "function") { const nc = { ...cfg0 }; if (cur.ratio === "auto") delete nc.aspect_ratio; else nc.aspect_ratio = cur.ratio || cfg0.aspect_ratio; card.setConfig(nc); }
+          setTimeout(() => {
+            const hc = sr?.querySelector("ha-card"), im = sr?.querySelector("hui-image");
+            if (hc) hc.style.overflow = cur.zoom > 1 ? "hidden" : "";
+            if (im) { im.style.transform = cur.zoom > 1 ? `scale(${cur.zoom})` : ""; im.style.transformOrigin = `${cur.x}% ${cur.y}%`; }
+            schedulePlace();
+          }, 60);
+        } catch (e) { /* Vorschau ist Kür */ }
+      };
+      const restore = () => { try { if (cfg0) card.setConfig(cfg0); const im = sr?.querySelector("hui-image"), hc = sr?.querySelector("ha-card");
+        if (im) { im.style.transform = ""; im.style.transformOrigin = ""; } if (hc) hc.style.overflow = ""; } catch (e) { /* egal */ } };
+      const FOCUS = [[0, 0], [50, 0], [100, 0], [0, 50], [50, 50], [100, 50], [0, 100], [50, 100], [100, 100]];
+      const FICON = ["mdi:arrow-top-left", "mdi:arrow-up", "mdi:arrow-top-right", "mdi:arrow-left", "mdi:circle-small", "mdi:arrow-right", "mdi:arrow-bottom-left", "mdi:arrow-down", "mdi:arrow-bottom-right"];
+      const draw = () => {
+        done(head(t("Bild: Format und Zoom"), t("Gilt für diese Kamera auf dieser Seite")) + `
+          <small>${esc(t("Format"))}</small><div class="chips cr">${["", ...CAM_RATIOS].map((r) => `<button data-r="${r}" class="${cur.ratio === r ? "on" : ""}">${esc(r === "" ? t("Standard") : r === "auto" ? t("Original") : r)}</button>`).join("")}</div>
+          <small>${esc(t("Zoom"))}</small><div class="chips cz">${CAM_ZOOMS.map((z) => `<button data-z="${z}" class="${Math.abs(cur.zoom - z) < 0.01 ? "on" : ""}">${Math.round(z * 100)} %</button>`).join("")}</div>
+          ${cur.zoom > 1 ? `<small>${esc(t("Ausschnitt"))}</small><div class="focus">${FOCUS.map(([x, y], i) => `<button data-f="${i}" class="${cur.x === x && cur.y === y ? "on" : ""}" title="${x} % · ${y} %"><ha-icon icon="${FICON[i]}"></ha-icon></button>`).join("")}</div>` : ""}
+          <div class="row">${o0.ratio || o0.zoom ? `<button class="reset"><ha-icon icon="mdi:backup-restore"></ha-icon>${esc(t("Standard"))}</button>` : ""}<button class="pri ok"><ha-icon icon="mdi:check"></ha-icon>${esc(t("Übernehmen"))}</button></div>`, true);
+        menu.querySelector(".back").addEventListener("click", restore, { capture: true });
+        menu.querySelectorAll(".cr button").forEach((b) => b.addEventListener("click", () => { cur.ratio = b.dataset.r; preview(); draw(); }));
+        menu.querySelectorAll(".cz button").forEach((b) => b.addEventListener("click", () => { cur.zoom = +b.dataset.z; preview(); draw(); }));
+        menu.querySelectorAll(".focus button").forEach((b) => b.addEventListener("click", () => { [cur.x, cur.y] = FOCUS[+b.dataset.f]; preview(); draw(); }));
+        menu.querySelector(".reset")?.addEventListener("click", () => menuSave(menu, (s) => setCam(s, `${view}|${m.id}`, { ratio: null, zoom: null, x: null, y: null })));
+        menu.querySelector(".ok").addEventListener("click", () => menuSave(menu, (s) => setCam(s, `${view}|${m.id}`,
+          { ratio: cur.ratio || null, ...(cur.zoom > 1 ? { zoom: cur.zoom, x: cur.x, y: cur.y } : { zoom: null, x: null, y: null }) })));
+      };
+      draw();
+      return;
+    }
     if (kind === "swap") {   // anderes Gerät derselben Art (Sensoren: gleiche Messgröße)
       const dc = hass.states[m.id]?.attributes?.device_class;
       const list = Object.keys(hass.states).filter((id) => DOMAIN(id) === DOMAIN(m.id) && id !== ent && !hass.entities?.[id]?.hidden

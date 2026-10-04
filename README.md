@@ -52,7 +52,7 @@ Everything you can change right on the dashboard starts with **one tap on the bi
     hide or bring back — and rename the **floors** (or give them an icon). Room tiles have an *Icon* entry too.
   - **Tap a tile** to rename or hide it — and to change what's behind it: **another device** (keeps place and size), what
     **tapping** does (on/off, details, open a page), its **icon**, a **24 h graph** behind sensors, *"since …"*, **live view**
-    for cameras, *only while playing* for media cards, the **temperature sensor** or **main light** of a room, or **move it to
+    for cameras (plus **format**, **zoom** with focus point and the **name in the picture** — per page), *only while playing* for media cards, the **temperature sensor** or **main light** of a room, or **move it to
     another group**. **Drag its corner** to make it bigger or smaller (width and height).
   - **Groups:** rename them and pick an icon, choose **which media players, cameras and calendars** they show, set the **consumers
     of the energy flow** (up to 6, with short names) — and create **groups of your own** (⋯ → *New group*, e.g. "Garden").
