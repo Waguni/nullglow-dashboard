@@ -3,9 +3,9 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
-window.__NULLGLOW_VERSION = "2.9.0";
-window.__NULLGLOW_BUILD = "b45a3fb";
-console.info("%c NULLGLOW %c v2.9.0 · b45a3fb ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
+window.__NULLGLOW_VERSION = "2.10.0";
+window.__NULLGLOW_BUILD = "5646190";
+console.info("%c NULLGLOW %c v2.10.0 · 5646190 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -10026,7 +10026,8 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     "Liegt jetzt in „{g}“": "Now in “{g}”", "Wieder da": "Back again", "Nichts ausgeblendet": "Nothing hidden", "Lückenlos anordnen": "Fill gaps",
     "Gruppen rutschen in freie Stellen": "Groups slide up into free space", "Lückenlos: an": "Fill gaps: on", "Lückenlos: aus": "Fill gaps: off",
     "Wetter heute": "Weather today", "Wetter stündlich": "Hourly weather", "Gruppe · nur: {m}": "Group · only: {m}", "Raum": "Room", "Gruppe": "Group", "Pausieren, wenn der Monitor aus ist": "Pause while the monitor is off",
-    "Standbild statt Livebild, solange „{m}“ aus ist — nur am Wandmonitor": "still image instead of live while “{m}” is off — on the wall display only",
+    "Standbild statt Livebild, solange „{m}“ aus ist — nur am Wandmonitor, das Kamera-Fenster bleibt live": "still image instead of live while “{m}” is off — on the wall display only, the camera window stays live",
+    "Im Kamera-Fenster immer Livebild — auch wenn die Kamera-Kachel bei Monitor aus pausiert.": "The camera window always shows live — even if the camera tile pauses while the monitor is off.",
     "Steckdose des Wandmonitors im Assistenten wählen (Schritt 6) — bis dahin nur bei verdeckter Seite": "pick the wall display's plug in the wizard (step 6) — until then only while the page is hidden",
     "ist sie aus, pausiert das Nordlicht im Hintergrund — und Kameras mit „Pausieren, wenn der Monitor aus ist“ zeigen ein Standbild (nur am Wandmonitor)":
       "when it is off, the aurora background pauses — and cameras with “Pause while the monitor is off” show a still image (on the wall display only)", "Person erkannt": "Person detected", "Fahrzeug erkannt": "Vehicle detected", "Tier erkannt": "Animal detected",
@@ -10056,6 +10057,29 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
       "<b>Building blocks</b> lists all cards, devices and hidden items: <b>drag into a group</b> or tap and choose a group. At the bottom of the drawer: <b>Fill gaps</b>.",
     "„{n}“ übernehmen? Ersetzt die bisherige Anordnung (auch eigene Anordnungen je Gerätetyp).": "Apply “{n}”? Replaces the current layout (including own layouts per device type).",
     "Kachel": "Tile", "in „{g}“": "into “{g}”", "Passend": "Suggested", "Schalter": "Switches", "Sensoren": "Sensors",
+    // 2.10.0: Kamera antippen, Knöpfe im Kamera-Fenster, Kalender, Ausschnitt, eigene Karten
+    "Kamera öffnen": "Open camera", "Nur „Zusätzlich“": "Only “Also”", "nur „{a}“": "only “{a}”", "„{a}“, dann: {b}": "“{a}”, then: {b}",
+    "Passiert beim Antippen der Kamera": "Happens when you tap the camera", "Danach die Kamera öffnen": "Then open the camera",
+    "aus: nur das hier — z. B. wenn das Kamerabild schon groß ist": "off: only this — e.g. when the camera picture is already large",
+    "Einstellen": "Settings", "Knopf unter dem Kamerabild": "Button below the camera picture", "Beim Antippen": "On tap", "Details öffnen": "Open details",
+    "Direkt schalten": "Switch directly", "Ausführen": "Run",
+    "Details: dort auf- oder abschließen bzw. die Tür öffnen — ein Fingertipp schaltet nicht aus Versehen.": "Details: lock, unlock or open the door there — a single tap can't switch it by accident.",
+    "Details: das Fenster von Home Assistant mit allen Möglichkeiten.": "Details: the Home Assistant dialog with all options.",
+    "Größere Karte: mehr Termine einstellen": "Bigger card: show more events", "Wie viele Termine?": "How many events?",
+    "Zeitraum": "Period", "{n} Tage": "{n} days", "alle": "all", "{n} Termine": "{n} events", "4 Termine": "4 events",
+    "Antippen der Karte zeigt weiter alle Termine des Zeitraums.": "Tapping the card still shows all events of the period.",
+    "Hochkant-Bildschirm: „Original“ zeigt das ganze Bild, 3:4 oder 9:16 füllt mehr Höhe — mit den Pfeilen den Ausschnitt wählen.":
+      "Portrait screen: “Original” shows the whole picture, 3:4 or 9:16 fills more height — pick the part with the arrows.",
+    "Ausschnitt verschieben": "Move the visible part", "Mitte": "Center",
+    "Karten-Code": "Card code", "ansehen und ändern": "view and change", "Eigene Karte (Code)": "Own card (code)", "Eigene Karte": "Own card",
+    "Karten-Code einfügen — z. B. aus einem anderen Dashboard": "Paste card code — e.g. from another dashboard", "eigene Karte · nicht auf dieser Seite": "own card · not on this page",
+    "Karten-Code ändern": "Change card code", "Das ist eine ganze Ansicht — bitte nur den Code einer Karte einfügen.": "That's a whole view — please paste the code of a single card.",
+    "Es fehlt „type:“ (z. B. type: entities).": "“type:” is missing (e.g. type: entities).",
+    "Karten-Code (YAML) einfügen — z. B. in einem anderen Dashboard die Karte bearbeiten, auf den Code-Editor umschalten und alles kopieren.":
+      "Paste card code (YAML) — e.g. edit the card in another dashboard, switch to the code editor and copy everything.",
+    "Name (für Schublade und Menü)": "Name (for drawer and menu)", "Lade Editor …": "Loading editor …", "Hier erscheint die Karte.": "The card shows up here.",
+    "Weiter: Gruppe wählen": "Next: choose group", "YAML fehlerhaft": "YAML error", "Wirklich löschen?": "Really delete?", "Eigene Karte gelöscht": "Own card deleted",
+    "Nur JSON möglich (YAML-Editor von Home Assistant nicht geladen).": "JSON only (Home Assistant's YAML editor didn't load).",
   };
   let ngH = null;   // zuletzt bekanntes hass (generate/Editor setzen es) — Sprache für t()
   const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
@@ -10794,7 +10818,10 @@ ha-tile-info {
     if (d === "button" || d === "input_button") return { action: "perform-action", perform_action: `${d}.press`, target: { entity_id: x.entity } };
     return { action: "toggle" };
   }
-  const doorBtn = (x) => { const act = alsoAction(x);
+  // Knöpfe im Kamera-Fenster: Schlösser/Alarm öffnen standardmäßig die HA-Details (dort aufschließen/öffnen) statt sofort zu schalten — tap: "more" | "act"
+  const BTN_MORE = ["lock", "alarm_control_panel"];
+  const btnTap = (x) => x.tap || (BTN_MORE.includes(DOMAIN(x.entity || "")) ? "more" : "act");
+  const doorBtn = (x) => { const act = btnTap(x) === "more" ? { action: "more-info" } : alsoAction(x);
     return { type: "tile", entity: x.entity, ...(x.name ? { name: x.name } : {}), ...(x.icon ? { icon: x.icon } : {}), tap_action: act, icon_tap_action: act }; };
   function doorbellPopup(d, cfg) {
     const bell = d.alerts.every((x) => x.label === "Es hat geklingelt"), cams = cfg.cams || {};
@@ -10802,7 +10829,7 @@ ha-tile-info {
       width_desktop: "100%", margin_top_desktop: "0px", bg_opacity: 94, close_by_clicking_outside: true,   // schließt der Wächter (close Minuten nach der letzten Meldung)
       cards: [{ type: "custom:nullglow-door-card", close: d.close, buttons: d.buttons.map(doorBtn),
         alerts: d.alerts.map((x) => ({ camera: x.camera, event: x.event, label: t(x.label), view: { ...(cams[`klingel|${x.camera}`] || {}) },
-          ...((cfg.tiles || {})[x.camera]?.pause ? { pause: true } : {}) })) }] };
+ })) }] };
   }
   // Wächter: ein Abo je Browser (alle Auslöser); meldet eine Kamera, während ein Nullglow-Dashboard offen ist -> #klingel. Mehrere kurz
   // nacheinander: alle untereinander (W.active, nullglow-door-card). Schließt close Minuten nach der letzten Meldung.
@@ -10849,21 +10876,83 @@ ha-tile-info {
   // alerts: [{ camera, event, label, view: { ratio, zoom, x, y, name } }], buttons: [Kartenkonfig], close (Minuten). Ohne Meldung (von Hand
   // geöffnet) die erste Kamera, in der Vorschau (Bearbeiten) alle. Bildbreite so, dass alles ohne Scrollen passt.
   const ratioNum = (r) => { const m = /^(\d+):(\d+)$/.exec(r || ""); return m ? +m[1] / +m[2] : 16 / 9; };
+  // Seitenverhältnis der Kamera (Standbild einmal je Sitzung gemessen) — das Kamerabild steht damit unbeschnitten in seiner Karte, Format,
+  // Zoom und Ausschnitt macht camFrame. null = wird noch gemessen (Ereignis „nullglow-camratio“, solange gilt 16:9).
+  const CAM_NAT = new Map();
+  function camNative(hass, cam) {
+    const k = CAM_NAT.get(cam);
+    if (typeof k === "number") return k;
+    if (!k) {
+      const url = hass?.states[cam]?.attributes?.entity_picture;
+      if (!url) return null;
+      CAM_NAT.set(cam, new Promise((res) => { const im = new Image(); setTimeout(() => res(0), 8000);
+        im.onload = () => res(im.naturalWidth && im.naturalHeight ? im.naturalWidth / im.naturalHeight : 0); im.onerror = () => res(0); im.src = url; })
+        .then((r) => { CAM_NAT.set(cam, r > 0.2 && r < 6 ? r : 16 / 9); window.dispatchEvent(new Event("nullglow-camratio")); }));
+    }
+    return null;
+  }
+  // Kamerabild im eigenen Rahmen: Rahmen im gewählten Format (Standard 16:9, „Original“ = wie die Kamera), das Bild füllt ihn ganz
+  // (wie object-fit: cover), Zoom 1–4, Ausschnitt x/y in % über das GANZE Bild (0 = linker/oberer Rand). Vorher wirkten Zoom und Pfeile
+  // nur im schon beschnittenen bzw. schwarz umrandeten Bild von HA — je nach Kamera und Stand-/Livebild kamen komische Ausschnitte heraus.
+  function camFrame(hc, view, nat) {
+    const v = view || {}, fr = document.createElement("div"), clamp = (x, d) => (isFinite(+x) ? Math.min(100, Math.max(0, +x)) : d) / 100;
+    const z = Math.min(4, Math.max(1, +v.zoom || 1)), fx = clamp(v.x, 50), fy = clamp(v.y, 50);
+    fr.className = "frm";
+    fr.__ngFit = (n) => {   // n = Seitenverhältnis der Kamera (nachgereicht, sobald gemessen)
+      if (n) fr.__nat = n;
+      const fw = fr.clientWidth, ih = hc.offsetHeight, R = v.ratio === "auto" ? fr.__nat || 16 / 9 : ratioNum(v.ratio);
+      fr.style.aspectRatio = String(R);
+      if (!fw || ih < 20) return;
+      const fh = fw / R, s = Math.max(1, fh / ih) * z;
+      hc.style.transform = `translate(${((fw - fw * s) * fx).toFixed(1)}px, ${((fh - ih * s) * fy).toFixed(1)}px) scale(${s.toFixed(4)})`;
+    };
+    fr.__nat = nat || 0;
+    Object.assign(hc.style, { position: "absolute", left: "0", top: "0", width: "100%", display: "block", transformOrigin: "0 0" });
+    fr.appendChild(hc);
+    const ro = new ResizeObserver(() => fr.__ngFit());
+    ro.observe(fr); ro.observe(hc);
+    fr.__ro = ro;
+    fr.__ngFit();
+    return fr;
+  }
+  // Karte fürs Kamerabild: unbeschnitten im Format der Kamera (solange es gemessen wird 16:9)
+  const camPic = (cam, nat, live, extra = {}) => ({ type: "picture-entity", entity: cam, camera_view: live ? "live" : "auto", show_name: false, show_state: false,
+    fit_mode: "cover", tap_action: { action: "none" }, hold_action: { action: "none" }, aspect_ratio: nat ? `${Math.round(nat * 1000)}:1000` : "16:9", ...extra });
+  const CAM_FRAME_CSS = `.frm { position: relative; overflow: hidden; border-radius: var(--ha-card-border-radius, 16px); background: #000; width: 100%; }
+    .frm > hui-card { --ha-card-border-radius: 0px; --ha-card-border-width: 0px; --video-max-height: none; }
+    .frm .nm { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 14px 10px; font-size: 14px; font-weight: 600; color: #fff;
+      background: linear-gradient(transparent, rgba(0, 0, 0, .55)); pointer-events: none; }`;
   if (!customElements.get("nullglow-door-card")) customElements.define("nullglow-door-card", class extends HTMLElement {
     setConfig(c) { this._c = c || {}; this._key = ""; this._draw(); }
     set hass(h) { this._h = h; (this._kids || []).forEach((k) => { k.hass = h; }); if (!this._key) this._draw(); }
     getCardSize() { return 8; }
     connectedCallback() {
       this._on = this._on || (() => this._draw());
-      window.addEventListener("nullglow-door", this._on); window.addEventListener("location-changed", this._on);
+      this._nat = this._nat || (() => this._ratios());
+      window.addEventListener("nullglow-door", this._on); window.addEventListener("location-changed", this._on); window.addEventListener("nullglow-camratio", this._nat);
       this._draw();
     }
-    disconnectedCallback() { window.removeEventListener("nullglow-door", this._on); window.removeEventListener("location-changed", this._on); }
+    disconnectedCallback() { window.removeEventListener("nullglow-door", this._on); window.removeEventListener("location-changed", this._on); window.removeEventListener("nullglow-camratio", this._nat); }
     _shown() {
       const W = window.__ngDoorbell || {}, A = this._c.alerts || [], ms = (this._c.close || 2) * 60000, now = Date.now();
       const act = [...(W.active || new Map()).entries()].filter(([cam, x]) => now - x.t < ms && A.some((y) => y.camera === cam)).sort((p, q) => q[1].t - p[1].t);
       if (act.length) return act.map(([cam, x]) => { const y = A.find((z) => z.camera === cam); return { ...y, label: x.label ? t(x.label) : y.label, at: x.t }; });
       return W.preview ? A : A.slice(0, 1);
+    }
+    _width(x, n) {   // Bildbreite: alle Kameras + Knöpfe ohne Scrollen (Höhe je Kamera = verfügbare Höhe / n)
+      const R = x.view?.ratio === "auto" ? CAM_NAT.get(x.camera) : ratioNum(x.view?.ratio);
+      return `calc((100vh - ${this._reserve}px) / ${n} * ${typeof R === "number" ? R : 16 / 9})`;
+    }
+    _ratios() {   // Seitenverhältnis einer Kamera ist jetzt bekannt: Karte und Rahmen nachziehen, ohne den Stream neu zu starten
+      (this._frames || []).forEach((f) => {
+        const n = CAM_NAT.get(f.cam);
+        if (typeof n !== "number" || f.fr.__nat === n) return;
+        const ar = { aspect_ratio: `${Math.round(n * 1000)}:1000` };
+        if (f.hc.__ngLive) f.hc.__ngLive = { ...f.hc.__ngLive, ...ar };
+        f.hc.config = { ...f.hc.config, ...ar };
+        f.box.style.maxWidth = this._width(f.x, f.n);
+        f.fr.__ngFit(n);
+      });
     }
     _draw() {
       if (!this._c || !this._h || !this.isConnected) return;
@@ -10873,7 +10962,8 @@ ha-tile-info {
       this._key = key;
       const root = this.shadowRoot || this.attachShadow({ mode: "open" }), n = shown.length;
       const tm = (ts) => new Date(ts).toLocaleTimeString(numLoc(), { hour: "2-digit", minute: "2-digit" });
-      const reserve = 200 + (btns.length ? 64 * Math.ceil(btns.length / 3) + 12 : 0) + n * 30;
+      const fname0 = (id) => this._h.states[id]?.attributes?.friendly_name || id;
+      this._reserve = 200 + (btns.length ? 64 * Math.ceil(btns.length / 3) + 12 : 0) + n * 30;
       root.innerHTML = `<style>
         :host { display: block; }
         .cam { margin: 0 auto 12px; }
@@ -10882,14 +10972,24 @@ ha-tile-info {
         .hd small { font-weight: 400; font-size: 13px; color: var(--ng-txt-dim, var(--secondary-text-color)); }
         .btns { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
         .btns:empty { display: none; }
-      </style>${shown.map((x, i) => `<div class="cam" data-i="${i}" style="max-width: calc((100vh - ${reserve}px) / ${n} * ${ratioNum(x.view?.ratio)})">
-        ${n > 1 || x.at ? `<div class="hd"><ha-icon icon="mdi:cctv"></ha-icon><span>${esc(x.label || "")}</span><small>${esc(this._h.states[x.camera]?.attributes?.friendly_name || x.camera)}${x.at ? " · " + tm(x.at) : ""}</small></div>` : ""}</div>`).join("")}
+        ${CAM_FRAME_CSS}
+      </style>${shown.map((x, i) => `<div class="cam" data-i="${i}" style="max-width: ${this._width(x, n)}">
+        ${n > 1 || x.at ? `<div class="hd"><ha-icon icon="mdi:cctv"></ha-icon><span>${esc(x.label || "")}</span><small>${esc(fname0(x.camera))}${x.at ? " · " + tm(x.at) : ""}</small></div>` : ""}</div>`).join("")}
         <div class="btns"></div>`;
-      this._kids = [];
-      const mk = (cfg) => { const hc = document.createElement("hui-card"); hc.hass = this._h; hc.preview = false; hc.config = cfg; try { hc.load?.(); } catch (e) { /* Karte fehlt */ } this._kids.push(hc); return hc; };
-      shown.forEach((x, i) => root.querySelector(`.cam[data-i="${i}"]`).appendChild(mk(camOpts({ type: "picture-entity", entity: x.camera, camera_view: "live",
-        show_name: false, show_state: false, aspect_ratio: "16:9", tap_action: { action: "none" }, ...(x.pause ? { view_layout: { ng_pause: true } } : {}) }, x.view || {}))));
+      this._kids = []; this._frames = [];
+      const mk = (cfg) => { const hc = document.createElement("hui-card"); hc.hass = this._h; hc.preview = false;
+        hc.config = cfg; try { hc.load?.(); } catch (e) { /* Karte fehlt */ } this._kids.push(hc); return hc; };
+      shown.forEach((x, i) => {
+        const nat = camNative(this._h, x.camera), box = root.querySelector(`.cam[data-i="${i}"]`);
+        // immer live, auch wenn die Kamera auf den Seiten bei Monitor aus pausiert: wer klingelt, soll man sofort sehen (manche
+        // Klingeln liefern gar kein Standbild — das Fenster blieb dann leer). Es schließt sich ohnehin nach ein paar Minuten.
+        const hc = mk(camPic(x.camera, nat, true)), fr = camFrame(hc, x.view, nat);
+        if (x.view?.name) fr.insertAdjacentHTML("beforeend", `<div class="nm">${esc(fname0(x.camera))}</div>`);
+        box.appendChild(fr);
+        this._frames.push({ cam: x.camera, hc, fr, box, x, n });
+      });
       btns.forEach((x) => root.querySelector(".btns").appendChild(mk(x)));
+      this._ratios();
     }
   });
   // Kamera-Kachel „zusätzlich beim Antippen“ (tiles.<id>.also): die Kachel feuert ein fire-dom-event -> hier erst die Aktion, dann öffnen wie eingestellt
@@ -11002,9 +11102,16 @@ ha-tile-info {
   }
   const BLOCK_POPS = { weather: () => radarPopup(), lights: () => lightsPopup(blockCtx.inv, blockCtx.cfg), covers: () => coversPopup(blockCtx.inv),
     contacts: () => contactsPopup(blockCtx.inv, blockCtx.hass), care: () => carePopup(blockCtx.base, blockCtx.cfg) };
-  const addOk = (e, hass) => (String(e).startsWith("block:") ? blockOk(String(e).slice(6)) : !!hass.states[e]);
+  // Eigene Karten (custom_cards: { <id>: { name, card } }): Karten-Code aus der Schublade („Eigene Karte“), liegt wie ein Baustein in
+  // layout.add als „own:<id>“ — gilt auf allen Seiten und für alle Gerätetypen gleich, nur der Platz ist je Seite/Gruppe
+  const ownDef = (id) => { const d = (blockCtx?.cfg?.custom_cards || {})[id]; return d?.card && typeof d.card === "object" && typeof d.card.type === "string" ? d : null; };
+  const addOk = (e, hass) => (String(e).startsWith("block:") ? blockOk(String(e).slice(6)) : String(e).startsWith("own:") ? !!ownDef(String(e).slice(4)) : !!hass.states[e]);
   // Selbst hinzugefügte Kacheln (layout.add: { <gruppe>: [entity…] }): passender Baustein je Domäne
   function addedTile(eid, hass, key, view) {
+    if (String(eid).startsWith("own:")) {   // eigene Karte (Karten-Code)
+      const k = String(eid).slice(4), d = ownDef(k);
+      return d && { ...JSON.parse(JSON.stringify(d.card)), view_layout: { ...(d.card.view_layout || {}), ng_edit: { id: eid, kind: "card", added: key, view, own: k } } };
+    }
     if (String(eid).startsWith("block:")) {   // Baustein aus der Schublade
       const k = String(eid).slice(6), b = blockOk(k) ? blockCard(k, view) : null;
       return b && { ...b, view_layout: { ...(b.view_layout || {}), ng_edit: { id: eid, kind: "card", added: key, view, block: k } } };
@@ -11787,7 +11894,7 @@ ha-tile-info {
   // ---------- Kameras pausieren, wenn der Wandmonitor aus ist (tiles.<kamera>.pause, Kamera-Kachel → „Pausieren, wenn der Monitor aus ist“) ----------
   // Die Monitor-Steckdose (screen_switch) zählt nur am Wandmonitor selbst (Benutzer „kiosk“ oder Adresse mit ?kiosk — wie beim Nordlicht),
   // Handy/PC zeigen weiter live. Außerdem: Seite verdeckt. Pausiert = Standbild statt Livebild (camera_view auto) an allen Karten mit
-  // view_layout.ng_pause (auch im Kamera-Fenster); solange aus, alle 10 s nachsehen (neu gebaute Karten). Sonst kostet es nichts.
+  // view_layout.ng_pause (Kacheln auf den Seiten; das Kamera-Fenster bleibt live); solange aus, alle 10 s nachsehen (neu gebaute Karten). Sonst kostet es nichts.
   const cp = { off: false, at: 0 };
   function camPause() {
     if (!window.__ngPauseAny && !cp.off) return;
@@ -11806,6 +11913,7 @@ ha-tile-info {
   }
   setInterval(camPause, 1000);
   document.addEventListener("visibilitychange", () => setTimeout(camPause, 50));
+  ["nullglow-door", "location-changed"].forEach((e) => window.addEventListener(e, () => { if (cp.off) { cp.at = 0; setTimeout(camPause, 400); } }));   // neue Karten gleich mitnehmen
 
   // ---------- Lückenlos (Option gapless; Schalter in den Bausteinen und unter ⚙ im Bearbeiten-Modus) ----------
   // HA legt die Gruppen (Sections) in Reihen, jede so hoch wie ihre höchste Gruppe — darunter bleiben Lücken. Hier bekommt das Raster
@@ -11980,6 +12088,14 @@ ha-tile-info {
     if (css) { const cm = out.card_mod?.style; out.card_mod = { ...(out.card_mod || {}), style: (typeof cm === "string" ? cm + "\n" : "") + css }; }
     return out;
   }
+  // Einstellungen großer Karten (tiles.<card-id>): Kalender — events (Anzahl, -1 = alle im Zeitraum), days (Zeitraum)
+  function cardOpts(c, o) {
+    if (c.type !== "custom:calendar-card-pro") return c;
+    const out = { ...c };
+    if (o.events === -1) delete out.compact_events_to_show; else if (o.events > 0) out.compact_events_to_show = o.events;
+    if (o.days > 0) out.days_to_show = o.days;
+    return out;
+  }
   // Karten mit Rang (≥ 0) tauschen ihre Plätze nach dem Rang, alle anderen bleiben stehen
   function swapSlots(cards, rank) {
     const slots = cards.map((c, i) => [i, rank(c)]).filter(([, k]) => k !== -1);
@@ -12009,6 +12125,7 @@ ha-tile-info {
           m = { id, kind: "entity" };
           x = { ...c, view_layout: { ...(c.view_layout || {}), ng_edit: m } };
         }
+        if (m.kind === "card" && tiles[m.id]) x = cardOpts(x, tiles[m.id]);
         if (m.kind !== "entity") return sized(x);
         if (tiles[m.id]) x = tileOpts(x, m.id, tiles[m.id], hass, view, base);
         const cam = (cfg.cams || {})[`${view}|${m.id}`];
@@ -12186,6 +12303,9 @@ ha-tile-info {
     .box.flash { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .22); box-shadow: inset 0 0 0 3px var(--ng-acc, #7cffb2), 0 0 34px -2px rgba(var(--rgb-ng-acc, 124, 255, 178), .9); }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; }
     .menu .focus { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+    .menu .dpvw { display: flex; justify-content: center; margin: 2px 0 4px; }
+    .menu .dpvw:empty { display: none; }
+    ${CAM_FRAME_CSS}
     .menu .focus button { min-height: 32px; padding: 0; justify-content: center; border-radius: 10px; }
     .menu .focus button.on { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .2); color: var(--ng-acc, #7cffb2); }
     .chips button { min-height: 28px; padding: 0 11px; font-size: 13px; }
@@ -12201,6 +12321,19 @@ ha-tile-info {
     .menu select { font: inherit; font-size: 13px; color: var(--ng-txt, #e8f5ee); background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); border: 0;
       border-radius: 10px; padding: 6px 8px; max-width: 130px; box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.12)); }
     .menu.wide { width: 340px; }
+    .menu.own { overflow-y: auto; overscroll-behavior: contain; }
+    .menu.own .ow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: 12px; align-items: start; }
+    .menu.own .yb { min-height: 240px; max-height: 56vh; overflow: auto; border-radius: 12px; background: rgba(var(--rgb-ng-txt, 255, 255, 255), .05);
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .12)); }
+    .menu.own .yb small { display: block; padding: 12px; margin: 0; }
+    .menu.own textarea { display: block; width: 100%; min-height: 240px; box-sizing: border-box; font: 13px/1.45 ui-monospace, Consolas, monospace; color: inherit;
+      background: transparent; border: 0; outline: 0; padding: 10px 12px; resize: vertical; }
+    .menu.own .opv { display: flex; flex-direction: column; gap: 6px; min-width: 0; } .menu.own .opv small { margin: 0; }
+    .menu.own .pvb { max-height: 56vh; overflow: auto; border-radius: 14px; }
+    .menu.own .pvb:empty::before { content: attr(data-empty); display: block; padding: 18px 12px; font-size: 12px; color: var(--ng-txt-dim, #93a79d);
+      border-radius: 14px; box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .12)); }
+    .menu.own .row button.del { color: var(--ng-danger, #ff6b6b); }
+    @media (max-width: 700px) { .menu.own .ow { grid-template-columns: minmax(0, 1fr); } .menu.own .yb { min-height: 180px; max-height: 40vh; } }
     .menu.dm .it .t span, .menu.dm .it .t small { white-space: normal; overflow: visible; overflow-wrap: anywhere; }
     .menu.dm .it .t small.en { opacity: .8; font-style: italic; }
     .menu.dm .dv { display: flex; flex-direction: column; gap: 4px; }
@@ -12347,6 +12480,11 @@ ha-tile-info {
     @media (max-width: 480px) { .bar { gap: 4px; padding: 5px; max-width: calc(100vw - 16px); box-sizing: border-box; }
       .bar button { padding: 0 9px; min-height: 34px; } .seg button { padding: 0 8px; } .bar .prof { display: none; }
       .pk { left: 12px; right: 12px; transform: none; max-width: none; } .pk span { flex: 1 0 100%; text-align: center; } }
+    /* Leiste breiter als der Bildschirm (Hochkant-Monitor, viele Knöpfe): fitBar() verdichtet stufenweise — „Fertig“ bleibt immer sichtbar */
+    .bar.c1 .msg { display: none; } .bar.c1 .cnt { display: inline; }
+    .bar.c2 > ha-icon, .bar.c2 .tx { display: none; } .bar.c2 { gap: 6px; padding-left: 8px; } .bar.c2 button { padding: 0 11px; }
+    .bar.c3 { gap: 4px; padding: 5px; } .bar.c3 button { padding: 0 9px; } .bar.c3 .prof span { display: none; }
+    .bar.c4 { flex-wrap: wrap; justify-content: center; white-space: normal; border-radius: 24px; width: max-content; max-width: calc(100vw - 16px); box-sizing: border-box; }
   `;
   const EDIT_TOKENS = ["--ng-acc", "--rgb-ng-acc", "--ng-acc-ink", "--ng-txt", "--rgb-ng-txt", "--ng-txt-dim", "--ng-line", "--ng-glass-2",
     "--rgb-ng-bg", "--ng-danger", "--ng-warn", "--ng-font"];
@@ -12363,6 +12501,16 @@ ha-tile-info {
     window.__ngEditing = true; setTimeout(ensureMode, 0);   // Animationen stehen, solange bearbeitet wird (flüssiges Ziehen)
     const host = document.createElement("div");
     host.id = "ng-edit";
+    // HA-Bausteine im Overlay (YAML-Editor der eigenen Karte) holen Sprache, Zustände usw. per Lit-Context von <home-assistant> — das
+    // Overlay hängt aber am body, die Anfrage käme dort nie an (Fehler „reading 'localize'“). Also nach drinnen weiterreichen.
+    host.addEventListener("context-request", (ev) => {
+      const inner = document.querySelector("home-assistant")?.shadowRoot?.firstElementChild;
+      if (!inner || ev.__ng) return;
+      ev.stopPropagation();
+      const fwd = new Event("context-request", { bubbles: true, composed: true });
+      Object.assign(fwd, { context: ev.context, callback: ev.callback, subscribe: ev.subscribe, contextTarget: ev.contextTarget || ev.composedPath()[0], __ng: true });
+      inner.dispatchEvent(fwd);
+    });
     const root = host.attachShadow({ mode: "open" });
     root.innerHTML = `<style>${EDIT_CSS}</style><div class="bar"><ha-icon icon="mdi:pencil"></ha-icon>
       <span class="msg"></span>
@@ -12412,7 +12560,7 @@ ha-tile-info {
       else if (root.querySelector(".drawer")) closeDrawer();
       else if (ngEdit.picking) stopPick(); else editStop();
     };
-    ngEdit.resize = () => placeBoxes();
+    ngEdit.resize = () => { fitBar(); placeBoxes(); };
     ngEdit.scroll = () => clipBoxes();
     window.addEventListener("keydown", ngEdit.key);
     window.addEventListener("resize", ngEdit.resize);
@@ -12597,6 +12745,16 @@ ha-tile-info {
     ub.hidden = !n && !ngEdit.canUndo;
     ub.querySelector(".tx").textContent = n ? t("Verwerfen") : t("Rückgängig");
     ub.title = n ? t("Verwerfen") : t("Rückgängig");
+    fitBar();
+  }
+  // Leiste passt nicht in die Breite (z. B. Hochkant-Monitor 864 px mit allen Knöpfen): erst Hinweis weg, dann Beschriftungen, dann enger,
+  // zuletzt zweizeilig. Sonst ragte sie links und rechts aus dem Bild und „Fertig“ war nicht mehr erreichbar.
+  function fitBar() {
+    const bar = ngEdit.root?.querySelector(".bar");
+    if (!bar) return;
+    const max = document.documentElement.clientWidth - 16, K = ["c1", "c2", "c3", "c4"];
+    bar.classList.remove(...K);
+    for (const k of K) { if (bar.offsetWidth <= max) break; bar.classList.add(k); }
   }
 
   // Speichern: offene Reihenfolge + Änderung aus dem Menü in einem Rutsch
@@ -12939,6 +13097,7 @@ ha-tile-info {
     d.group = c.meta.kind === "group" ? null : (ngEdit.groupsAll || []).find((g) => g.meta.id === secGroup(c.section)) || null;
     d.xe = c.wrap.__ngPh ? (ngEdit.xmv || []).find((x) => x.ph === c.wrap) || null : null;
     d.grid0 = c.wrap.parentElement; d.kids0 = d.grid0 ? orderedKids(d.grid0) : [];
+    d.g0r = d.group && d.group.wrap.isConnected ? docRect(d.group.wrap.getBoundingClientRect()) : null;   // Lage der eigenen Gruppe beim Start
     Object.assign(d.wrap.style, { zIndex: 5, position: "relative", willChange: "transform" });
     d.wrap.style.setProperty("--ha-card-backdrop-filter", "none");   // Glas-Unschärfe der gezogenen Kachel nicht je Bild neu rechnen
     ngEdit.drag = d;
@@ -12966,7 +13125,9 @@ ha-tile-info {
     if (d.group && tab == null) {
       const g = groupAt(X, Y);
       if (g && g !== d.group) { foreignAt(d, g); return; }
-      if (g === d.group && d.fx) foreignLeave(d);
+      // zurück: über der eigenen Gruppe — oder dort, wo sie stand (sie schrumpft, sobald die Kachel draußen ist)
+      const home = d.g0r && X >= d.g0r.left && X <= d.g0r.left + d.g0r.width && Y >= d.g0r.top && Y <= d.g0r.top + d.g0r.height;
+      if (d.fx && (g === d.group || (!g && home))) foreignLeave(d);
     }
     if (d.fx) { moveGhost(d); return; }
     const inR = (r) => r && X >= r.left && X <= r.left + r.width && Y >= r.top && Y <= r.top + r.height;
@@ -13039,7 +13200,7 @@ ha-tile-info {
   function tileName(c) {
     const i = editCard(c.config) || {}, ok = (x) => typeof x === "string" && x && !x.includes("{");
     return (ok(i.name) && i.name) || (ok(i.title) && i.title) || (ok(i.primary) && i.primary)
-      || (c.meta.block && t(BLOCKS.find((b) => b.k === c.meta.block)?.name || "")) || fname(c.meta.id);
+      || (c.meta.block && t(BLOCKS.find((b) => b.k === c.meta.block)?.name || "")) || (c.meta.own && ownName(c.meta.own)) || fname(c.meta.id);
   }
   function makePh(c) {   // Vorschau-Kopie: gleiche Rasterzelle (Klasse/Stil des Wrappers), darin eine eigene hui-card mit derselben Konfiguration
     const ph = document.createElement("div");
@@ -13144,17 +13305,21 @@ ha-tile-info {
     root.querySelector(".menu")?.remove();
     ngEdit.sel = m.id; ngEdit.selSec = c.section;
     const inner = editCard(c.config), key = labelKey(inner), o = tileOpt(m.id);
-    const cur = card ? (m.block ? t(BLOCKS.find((b) => b.k === m.block)?.name || "Karte") : t(GROUP_TYPE_NAMES[String(inner.type || "").replace("custom:", "")] || "Karte"))
+    const cur = card ? (m.own ? ownName(m.own) : m.block ? t(BLOCKS.find((b) => b.k === m.block)?.name || "Karte") : t(GROUP_TYPE_NAMES[String(inner.type || "").replace("custom:", "")] || "Karte"))
       : room ? (inner.name || inner.primary || "") : (key && inner[key]) || hass.states[m.id]?.attributes?.friendly_name || m.id;
     const label = room ? String(cur).replace(/ · .*$/, "") : String(cur);
     const sib = siblings(c), pos = sib.findIndex((x) => x.meta.id === m.id);
     // Was diese Kachel kann (je nach Kartentyp/Gerät)
     const ent = inner.entity || (room ? null : m.id), dom = ent ? DOMAIN(ent) : "", st = ent && hass.states[ent];
     const rows = [];
-    if (card) { /* große Karte (Kalender, Energie …): nur Platz, Größe, Gruppe und Seite */ }
+    if (card) {   // große Karte (Kalender, Energie …): Platz, Größe, Gruppe und Seite — Kalender zusätzlich: wie viele Termine
+      if (inner.type === "custom:calendar-card-pro") rows.push(optRow("cal", "mdi:calendar-text-outline", t("Termine"), calTxt(o)));
+      if (m.own) rows.push(optRow("own", "mdi:code-braces", t("Karten-Code"), t("ansehen und ändern")));
+    }
     else if (!room) {
       rows.push(optRow("swap", "mdi:swap-horizontal", t("Gerät"), fname(ent)));
-      if (TAP_TYPES.includes(inner.type)) rows.push(optRow("tap", "mdi:gesture-tap", t("Antippen"), o.tap ? t(TAP_LABEL[o.tap]) + (o.tap === "nav" ? ` · ${(window.__ngViews || []).find((v) => v.key === o.nav)?.title || ""}` : "") : t("Wie vorgesehen")));
+      if (TAP_TYPES.includes(inner.type)) rows.push(optRow("tap", "mdi:gesture-tap", t("Antippen"), inner.type === "picture-entity" && dom === "camera" ? camTapTxt(o)
+        : o.tap ? t(TAP_LABEL[o.tap]) + (o.tap === "nav" ? ` · ${(window.__ngViews || []).find((v) => v.key === o.nav)?.title || ""}` : "") : t("Wie vorgesehen")));
       if (ICON_TYPES.includes(inner.type)) rows.push(optRow("icon", o.icon || inner.icon || "mdi:emoticon-outline", t("Symbol"), o.icon ? o.icon.replace("mdi:", "") : t("Standard")));
       if (dom === "sensor" && isFinite(parseFloat(st?.state)) && has("nullglow-spark-card")) rows.push(optRow("graph", "mdi:chart-bell-curve-cumulative", t("Verlauf dahinter"), t("24 Stunden als Kurve"), true, c.config.type === "custom:nullglow-spark-card"));
       if (["tile", "custom:bubble-card"].includes(inner.type)) rows.push(optRow("since", "mdi:clock-outline", t("„seit …“ zeigen"), t("wann es sich zuletzt geändert hat"), true, !!o.since));
@@ -13875,7 +14040,7 @@ ha-tile-info {
     const dock = ngEdit.dock, big = innerWidth >= 1000 && innerHeight >= 600;
     const bottom = Math.max(0, ...(ngEdit.groupsAll || []).map((g) => g.r.top + g.r.height)) - (ngEdit.padded ? PAD_TOP : 0);   // ohne den Platz fürs Bearbeiten
     const over = !!(big && dock && bottom > dock.top - 4);
-    if (b.hidden === over) { b.hidden = !over; }
+    if (b.hidden === over) { b.hidden = !over; fitBar(); }
   }
 
   // ---- „+“: beliebige Entität als Kachel in diese Gruppe — passende Geräte zuerst, Filter nach Art ----
@@ -14092,6 +14257,13 @@ ha-tile-info {
   };
   const iconsFor = (id) => [...new Set([...(ICONS[DOMAIN(id)] || ICONS.sensor), ...ICONS.common])].slice(0, 18);
   const TAP_LABEL = { toggle: "An/aus", more: "Details", none: "Nichts", nav: "Seite öffnen" };
+  const CAL_EVENTS = [0, 6, 8, 12, -1], CAL_DAYS = [0, 7, 14, 30];
+  const calTxt = (o) => [o.events ? (o.events === -1 ? t("alle") : t("{n} Termine", { n: o.events })) : t("4 Termine"), o.days ? t("{n} Tage", { n: o.days }) : ""].filter(Boolean).join(" · ");
+  // Kamera-Kachel: was beim Antippen passiert (zusätzliche Aktion + öffnen / nur die Aktion) — großes Kamerabild öffnet man selten noch einmal
+  const camTapTxt = (o) => { const a = o.also?.entity ? fname(o.also.entity) : "";
+    if (o.tap === "none") return a ? t("nur „{a}“", { a }) : t("Nichts");
+    const then = o.tap === "nav" ? t("Seite öffnen") : t("Kamera öffnen");
+    return a ? t("„{a}“, dann: {b}", { a, b: then }) : then; };
   const TOGGLE_DOMS = ["light", "switch", "fan", "input_boolean", "lock", "cover", "siren", "humidifier", "media_player", "automation", "script", "valve"];
   const ICON_TYPES = ["tile", "custom:bubble-card", "custom:mushroom-template-card", "custom:mushroom-climate-card", "custom:mushroom-vacuum-card"];
   const TAP_TYPES = [...ICON_TYPES, "picture-entity", "custom:mushroom-person-card"];
@@ -14204,9 +14376,10 @@ ha-tile-info {
       menu.querySelector(".reset")?.addEventListener("click", () => menuSave(menu, (s) => setTile(s, m.id, { entity: null })));
       menu.querySelectorAll(".list .it").forEach((b) => b.addEventListener("click", () => menuSave(menu, (s) => setTile(s, m.id, { entity: b.dataset.e === m.id ? null : b.dataset.e }))));
     } else if (kind === "tap") {   // Antippen: Standard / an-aus / Details / nichts / Seite öffnen
-      const opts = [["", t("Wie vorgesehen")], ...(TOGGLE_DOMS.includes(DOMAIN(ent)) ? [["toggle", t("An/aus")]] : []), ["more", t("Details")], ["none", t("Nichts")], ["nav", t("Seite öffnen")]];
-      const pages = (window.__ngViews || []).filter((v) => v.key !== view);
       const camTap = inner.type === "picture-entity";
+      const opts = camTap ? [["", t("Kamera öffnen")], ["none", o.also?.entity ? t("Nur „Zusätzlich“") : t("Nichts")], ["nav", t("Seite öffnen")]]
+        : [["", t("Wie vorgesehen")], ...(TOGGLE_DOMS.includes(DOMAIN(ent)) ? [["toggle", t("An/aus")]] : []), ["more", t("Details")], ["none", t("Nichts")], ["nav", t("Seite öffnen")]];
+      const pages = (window.__ngViews || []).filter((v) => v.key !== view);
       done(head(t("Antippen"), t("Was passiert, wenn man die Kachel antippt")) + `<div class="seg2 wrap">${opts.map(([v, l]) => `<button data-v="${v}" class="${(o.tap || "") === v ? "on" : ""}">${esc(l)}</button>`).join("")}</div>
         <div class="pages" ${o.tap === "nav" ? "" : "hidden"}><small>${esc(t("Welche Seite?"))}</small><div class="chips">${pages.map((v) => `<button data-p="${esc(v.key)}" class="${o.nav === v.key ? "on" : ""}"><ha-icon icon="${esc(v.icon)}"></ha-icon>${esc(v.title)}</button>`).join("")}</div></div>
         ${camTap ? `<small class="sec-t">${esc(t("Zusätzlich beim Antippen"))}</small><div class="rowset">${optRow("also", o.also?.entity ? "mdi:lightbulb-on-outline" : "mdi:plus-circle-outline",
@@ -14218,19 +14391,31 @@ ha-tile-info {
       }));
       menu.querySelectorAll(".pages button").forEach((b) => b.addEventListener("click", () => menuSave(menu, (s) => setTile(s, m.id, { tap: "nav", nav: b.dataset.p }))));
     } else if (kind === "also") {   // Kamera: zusätzlich beim Antippen — Gerät an (auf Wunsch nur ein paar Minuten), Skript, Szene, Taste
-      let pick = o.also?.entity || "", mins = o.also?.minutes || 0, q = "";
+      let pick = o.also?.entity || "", mins = o.also?.minutes || 0, q = "", open = o.tap !== "none";
       const draw = () => {
-        done(head(t("Zusätzlich beim Antippen"), t("Passiert, bevor sich die Kamera öffnet")) + pickHtml(pick, mins, q, ent)
-          + `<div class="row">${o.also?.entity ? `<button class="reset"><ha-icon icon="mdi:close"></ha-icon>${esc(t("Nichts"))}</button>` : ""}
+        done(head(t("Zusätzlich beim Antippen"), t("Passiert beim Antippen der Kamera")) + pickHtml(pick, mins, q, ent)
+          + `<div class="rowset">${optRow("open", "mdi:cctv", t("Danach die Kamera öffnen"), t("aus: nur das hier — z. B. wenn das Kamerabild schon groß ist"), true, open)}</div>
+          <div class="row">${o.also?.entity ? `<button class="reset"><ha-icon icon="mdi:close"></ha-icon>${esc(t("Nichts"))}</button>` : ""}
             <button class="pri ok" ${pick ? "" : "disabled"}><ha-icon icon="mdi:check"></ha-icon>${esc(t("Übernehmen"))}</button></div>`, true);
         bindPick(menu, (e) => { pick = e; mins = ON_DOMS.includes(DOMAIN(e)) ? mins || 2 : 0; draw(); }, (n) => { mins = n; draw(); }, (v) => { q = v; draw(); });
-        menu.querySelector(".reset")?.addEventListener("click", () => menuSave(menu, (st) => setTile(st, m.id, { also: null })));
+        menu.querySelector('.or[data-o="open"]').addEventListener("click", () => { open = !open; draw(); });
+        menu.querySelector(".reset")?.addEventListener("click", () => menuSave(menu, (st) => setTile(st, m.id, { also: null, ...(o.tap === "none" ? { tap: null } : {}) })));
         menu.querySelector(".ok").addEventListener("click", async () => {
           if (mins && !(await onForReady(menu, pick))) return;
-          menuSave(menu, (st) => setTile(st, m.id, { also: { entity: pick, ...(mins ? { minutes: mins } : {}) } }));
+          menuSave(menu, (st) => setTile(st, m.id, { also: { entity: pick, ...(mins ? { minutes: mins } : {}) },
+            tap: open ? (o.tap === "none" ? null : o.tap || null) : "none" }));
         });
       };
       draw();
+    } else if (kind === "own") { openOwnEditor(m.own); return;
+    } else if (kind === "cal") {   // Kalender: Anzahl Termine (compact_events_to_show) und Zeitraum (days_to_show) — tiles.<karte>.events/days
+      const ev0 = o.events || 0, dy0 = o.days || 0;
+      done(head(t("Termine"), t("Größere Karte: mehr Termine einstellen")) + `<small>${esc(t("Wie viele Termine?"))}</small>
+        <div class="seg2 wrap ev">${CAL_EVENTS.map((n) => `<button data-n="${n}" class="${ev0 === n ? "on" : ""}">${esc(n ? (n === -1 ? t("Alle") : String(n)) : "4")}</button>`).join("")}</div>
+        <small>${esc(t("Zeitraum"))}</small><div class="seg2 wrap dy">${CAL_DAYS.map((n) => `<button data-n="${n}" class="${dy0 === n ? "on" : ""}">${esc(n ? t("{n} Tage", { n }) : t("Standard"))}</button>`).join("")}</div>
+        <small class="hint">${esc(t("Antippen der Karte zeigt weiter alle Termine des Zeitraums."))}</small>`);
+      menu.querySelectorAll(".ev button").forEach((b) => b.addEventListener("click", () => menuSave(menu, (s) => setTile(s, m.id, { events: +b.dataset.n || null }))));
+      menu.querySelectorAll(".dy button").forEach((b) => b.addEventListener("click", () => menuSave(menu, (s) => setTile(s, m.id, { days: +b.dataset.n || null }))));
     } else if (kind === "door") { openDoorMenu(alertsOf().some((x) => x.camera === ent) ? "main" : `trig|${ent}`); return;
     } else if (kind === "icon") {
       done(head(t("Symbol")) + iconGrid(iconsFor(ent), o.icon) + `<div class="row"><input class="ic" placeholder="mdi:…" value="${esc(o.icon || "")}"><button class="pri ok"><ha-icon icon="mdi:check"></ha-icon></button></div>
@@ -14521,8 +14706,10 @@ ha-tile-info {
   // ======== Kamera-Fenster (#klingel) im Bearbeiten-Modus: Kameras mit Auslöser, Bild je Kamera, Knöpfe unter dem Bild, Schließen nach ========
   const alertsOf = () => window.__ngDoorbell?.dash?.[ngEdit.base]?.alerts || [];
   const pauseTxt = () => { const mon = window.__ngLastCfg?.screen_switch;   // Monitor-Steckdose aus dem Assistenten (Schritt 6)
-    return mon ? t("Standbild statt Livebild, solange „{m}“ aus ist — nur am Wandmonitor", { m: fname(mon) }) : t("Steckdose des Wandmonitors im Assistenten wählen (Schritt 6) — bis dahin nur bei verdeckter Seite"); };
-  const alsoTxt = (x) => (x.minutes ? t("{n} Min an", { n: x.minutes }) : ["script", "scene", "button", "input_button"].includes(DOMAIN(x.entity)) ? t("ausführen") : t("an/aus"));
+    return mon ? t("Standbild statt Livebild, solange „{m}“ aus ist — nur am Wandmonitor, das Kamera-Fenster bleibt live", { m: fname(mon) }) : t("Steckdose des Wandmonitors im Assistenten wählen (Schritt 6) — bis dahin nur bei verdeckter Seite"); };
+  const DOOR_RUN = ["script", "scene", "button", "input_button"];
+  const alsoTxt = (x) => (x.minutes ? t("{n} Min an", { n: x.minutes }) : DOOR_RUN.includes(DOMAIN(x.entity)) ? t("ausführen") : t("an/aus"));
+  const btnTxt = (x) => (btnTap(x) === "more" ? t("Details öffnen") : alsoTxt(x));
   const PICK_DOMS = ["light", "switch", "fan", "input_boolean", "siren", "lock", "cover", "valve", "script", "scene", "button", "input_button"];
   // Geräte-Auswahl (Knöpfe, „zusätzlich“): passende zuerst (gleicher Raum wie die Kamera), Suche; Lampen/Schalter: dauerhaft oder kurz an
   function pickHtml(pick, mins, q, near) {
@@ -14596,7 +14783,8 @@ ha-tile-info {
           ${x.main ? "" : `<button class="ico rm" data-i="${i}" title="${esc(t("Entfernen"))}"><ha-icon icon="mdi:close"></ha-icon></button>`}</div>`).join("")}
           <button class="it add-cam"><ha-icon icon="mdi:plus"></ha-icon><span class="t"><span>${esc(t("Kamera hinzufügen"))}</span><small>${esc(t("z. B. Einfahrt bei Person oder Bewegung"))}</small></span></button></div>
         <small class="sec-t">${esc(t("Knöpfe unter dem Bild"))}</small><div class="rowset">${btns.map((x, i) => `<div class="dr"><ha-icon icon="${esc(hass.states[x.entity]?.attributes?.icon || DOMAIN_ICON[DOMAIN(x.entity)] || "mdi:gesture-tap-button")}"></ha-icon>
-          <span class="t"><span>${esc(fname(x.entity))}</span><small>${esc(alsoTxt(x))}</small></span>
+          <span class="t"><span>${esc(fname(x.entity))}</span><small>${esc(btnTxt(x))}</small></span>
+          <button class="ico bs" data-i="${i}" title="${esc(t("Einstellen"))}"><ha-icon icon="mdi:tune-variant"></ha-icon></button>
           <button class="ico up" data-i="${i}" ${i ? "" : "disabled"} title="${esc(t("Früher"))}"><ha-icon icon="mdi:chevron-up"></ha-icon></button>
           <button class="ico rmb" data-i="${i}" title="${esc(t("Entfernen"))}"><ha-icon icon="mdi:close"></ha-icon></button></div>`).join("")}
           <button class="it add-btn"><ha-icon icon="mdi:plus"></ha-icon><span class="t"><span>${esc(t("Knopf hinzufügen"))}</span><small>${esc(t("z. B. Licht vor der Tür, Tür öffnen, Garage"))}</small></span></button></div>
@@ -14610,6 +14798,7 @@ ha-tile-info {
       menu.querySelector(".add-btn")?.addEventListener("click", () => openDoorMenu("btn"));
       menu.querySelectorAll(".rmb").forEach((b) => b.addEventListener("click", () => save((d) => { d.buttons = (d.buttons || []).filter((_, j) => j !== +b.dataset.i); if (!d.buttons.length) delete d.buttons; })));
       menu.querySelectorAll(".up").forEach((b) => b.addEventListener("click", () => save((d) => { const L = [...(d.buttons || [])], j = +b.dataset.i; [L[j - 1], L[j]] = [L[j], L[j - 1]]; d.buttons = L; })));
+      menu.querySelectorAll(".bs").forEach((b) => b.addEventListener("click", () => openDoorMenu(`bset|${b.dataset.i}`)));
       menu.querySelectorAll("[data-cl]").forEach((b) => b.addEventListener("click", () => save((d) => { if (+b.dataset.cl === 2) delete d.close; else d.close = +b.dataset.cl; })));
       menu.querySelector(".dpv")?.addEventListener("click", () => {   // Vorschau: alle Kameras im Fenster (bleibt offen, bis man es schließt)
         const W = window.__ngDoorbell || {};
@@ -14639,27 +14828,69 @@ ha-tile-info {
         d.enabled = true;
         d.alerts = [...(d.alerts || []).filter((y) => !(y.event === b.dataset.e && y.camera === arg)), { event: b.dataset.e, camera: arg }];
       })));
-    } else if (pg === "view") {   // Bild im Fenster: Format, Zoom, Ausschnitt, Name — cams["klingel|<kamera>"]
+    } else if (pg === "view") {   // Bild im Fenster: Format, Zoom, Ausschnitt, Name — cams["klingel|<kamera>"]; oben eine Vorschau (Standbild)
       const key = `klingel|${arg}`, o0 = (window.__ngLastCfg?.cams || {})[key] || {}, cur = st0.cur || { ratio: o0.ratio || "", zoom: +o0.zoom || 1, x: pct(o0.x, 50), y: pct(o0.y, 50), name: o0.name === true };
-      const FOCUS = [[0, 0], [50, 0], [100, 0], [0, 50], [50, 50], [100, 50], [0, 100], [50, 100], [100, 100]];
-      const FICON = ["mdi:arrow-top-left", "mdi:arrow-up", "mdi:arrow-top-right", "mdi:arrow-left", "mdi:circle-small", "mdi:arrow-right", "mdi:arrow-bottom-left", "mdi:arrow-down", "mdi:arrow-bottom-right"];
-      fin(`${back()}<b>${esc(t("Bild: Format und Zoom"))}</b><small>${esc(t("{c} im Kamera-Fenster", { c: fname(arg) }))}</small>
+      const nat = camNative(hass, arg), R = cur.ratio === "auto" ? nat || 16 / 9 : ratioNum(cur.ratio);
+      const crop = cur.zoom > 1 || (cur.ratio !== "auto" && Math.abs(R - (nat || 16 / 9)) > 0.03);   // es gibt etwas zu verschieben
+      const PAD = [[-1, -1], [0, -1], [1, -1], [-1, 0], [0, 0], [1, 0], [-1, 1], [0, 1], [1, 1]];
+      const FICON = ["mdi:arrow-top-left", "mdi:arrow-up", "mdi:arrow-top-right", "mdi:arrow-left", "mdi:image-filter-center-focus", "mdi:arrow-right", "mdi:arrow-bottom-left", "mdi:arrow-down", "mdi:arrow-bottom-right"];
+      const stuck = (dx, dy) => (dx < 0 && cur.x <= 0) || (dx > 0 && cur.x >= 100) || (dy < 0 && cur.y <= 0) || (dy > 0 && cur.y >= 100);
+      fin(`${back()}<b>${esc(t("Bild: Format und Zoom"))}</b><small>${esc(t("{c} im Kamera-Fenster", { c: fname(arg) }))}</small><div class="dpvw"></div>
         <small>${esc(t("Format"))}</small><div class="chips cr">${["", ...CAM_RATIOS].map((r) => `<button data-r="${r}" class="${cur.ratio === r ? "on" : ""}">${esc(r === "" ? t("Standard") : r === "auto" ? t("Original") : r)}</button>`).join("")}</div>
-        <small class="hint">${esc(t("Hochkant-Bildschirm: „Original“ nimmt die schwarzen Ränder weg, 3:4 oder 9:16 mit Zoom füllt mehr Höhe."))}</small>
+        <small class="hint">${esc(t("Hochkant-Bildschirm: „Original“ zeigt das ganze Bild, 3:4 oder 9:16 füllt mehr Höhe — mit den Pfeilen den Ausschnitt wählen."))}</small>
         <small>${esc(t("Zoom"))}</small><div class="chips cz">${CAM_ZOOMS.map((z) => `<button data-z="${z}" class="${Math.abs(cur.zoom - z) < 0.01 ? "on" : ""}">${Math.round(z * 100)} %</button>`).join("")}</div>
-        ${cur.zoom > 1 ? `<small>${esc(t("Ausschnitt"))}</small><div class="focus">${FOCUS.map(([x, y], i) => `<button data-f="${i}" class="${cur.x === x && cur.y === y ? "on" : ""}"><ha-icon icon="${FICON[i]}"></ha-icon></button>`).join("")}</div>` : ""}
+        ${crop ? `<small>${esc(t("Ausschnitt verschieben"))}</small><div class="focus">${PAD.map(([dx, dy], i) => `<button data-f="${i}" class="${!dx && !dy && cur.x === 50 && cur.y === 50 ? "on" : ""}"
+          ${dx || dy ? (stuck(dx, dy) ? "disabled" : "") : ""} title="${esc(!dx && !dy ? t("Mitte") : "")}"><ha-icon icon="${FICON[i]}"></ha-icon></button>`).join("")}</div>` : ""}
         <div class="rowset">${optRow("nm", "mdi:label-outline", t("Name im Bild"), t("unten im Kamerabild"), true, cur.name)}
-          ${optRow("pz", "mdi:pause-circle-outline", t("Pausieren, wenn der Monitor aus ist"), pauseTxt(), true, !!(window.__ngLastCfg?.tiles || {})[arg]?.pause)}</div>
+</div>
+        <small class="hint">${esc(t("Im Kamera-Fenster immer Livebild — auch wenn die Kamera-Kachel bei Monitor aus pausiert."))}</small>
         <div class="row">${Object.keys(o0).length ? `<button class="reset"><ha-icon icon="mdi:backup-restore"></ha-icon>${esc(t("Standard"))}</button>` : ""}<button class="pri ok"><ha-icon icon="mdi:check"></ha-icon>${esc(t("Übernehmen"))}</button></div>`);
+      // Vorschau: Standbild mit den Einstellungen von eben (die Karte bleibt über die Neuaufbauten des Menüs erhalten, das Bild lädt nicht neu)
+      let pv = openDoorMenu.pv;
+      if (!pv || pv.cam !== arg) { pv = openDoorMenu.pv = { cam: arg, hc: document.createElement("hui-card") }; pv.hc.preview = false; }
+      const pc = camPic(arg, nat, false);
+      pv.hc.hass = hass;
+      if (JSON.stringify(pv.cfg) !== JSON.stringify(pc)) { pv.cfg = pc; pv.hc.config = pc; try { pv.hc.load?.(); } catch (e) { /* Karte fehlt */ } }
+      pv.fr?.__ro?.disconnect();
+      pv.fr = camFrame(pv.hc, cur, nat);
+      pv.fr.style.width = `min(100%, ${Math.round(170 * R)}px)`;
+      if (cur.name) pv.fr.insertAdjacentHTML("beforeend", `<div class="nm">${esc(fname(arg))}</div>`);
+      menu.querySelector(".dpvw").appendChild(pv.fr);
+      if (!nat) window.addEventListener("nullglow-camratio", () => { if (menu.isConnected && menu.querySelector(".dpvw")) again(); }, { once: true });
       const again = () => openDoorMenu(page, { cur });
       menu.querySelectorAll(".cr button").forEach((b) => b.addEventListener("click", () => { cur.ratio = b.dataset.r; again(); }));
       menu.querySelectorAll(".cz button").forEach((b) => b.addEventListener("click", () => { cur.zoom = +b.dataset.z; again(); }));
-      menu.querySelectorAll(".focus button").forEach((b) => b.addEventListener("click", () => { [cur.x, cur.y] = FOCUS[+b.dataset.f]; again(); }));
+      menu.querySelectorAll(".focus button").forEach((b) => b.addEventListener("click", () => {   // Pfeile: je ein Viertel weiter, Mitte: zurück
+        const [dx, dy] = PAD[+b.dataset.f];
+        if (!dx && !dy) { cur.x = 50; cur.y = 50; } else { cur.x = Math.min(100, Math.max(0, cur.x + dx * 25)); cur.y = Math.min(100, Math.max(0, cur.y + dy * 25)); }
+        again();
+      }));
       menu.querySelector('.or[data-o="nm"]').addEventListener("click", () => { cur.name = !cur.name; again(); });
-      menu.querySelector('.or[data-o="pz"]').addEventListener("click", () => save((d, s) => setTile(s, arg, { pause: (s.tiles || {})[arg]?.pause ? null : true }), page));   // gilt überall
       menu.querySelector(".reset")?.addEventListener("click", () => save((d, s) => setCam(s, key, { ratio: null, zoom: null, x: null, y: null, name: null })));
-      menu.querySelector(".ok").addEventListener("click", () => save((d, s) => setCam(s, key, { ratio: cur.ratio || null, name: cur.name || null,
-        ...(cur.zoom > 1 ? { zoom: cur.zoom, x: cur.x, y: cur.y } : { zoom: null, x: null, y: null }) })));
+      menu.querySelector(".ok").addEventListener("click", () => save((d, s) => setCam(s, key, { ratio: cur.ratio || null, name: cur.name || null, zoom: cur.zoom > 1 ? cur.zoom : null,
+        ...(crop && (cur.x !== 50 || cur.y !== 50) ? { x: cur.x, y: cur.y } : { x: null, y: null }) })));
+    } else if (pg === "bset") {   // Knopf einstellen: Details öffnen oder direkt schalten, bei Lampen/Schaltern wie lange
+      const L = Array.isArray(D.buttons) ? D.buttons : [], i = +arg, x = L[i];
+      if (!x) { openDoorMenu(); return; }
+      const cur = st0.cur || { tap: btnTap(x), mins: x.minutes || 0 }, dom = DOMAIN(x.entity), on = ON_DOMS.includes(dom);
+      fin(`${back()}<b>${esc(fname(x.entity))}</b><small>${esc(t("Knopf unter dem Kamerabild"))}</small>
+        <small>${esc(t("Beim Antippen"))}</small><div class="seg2 wrap tp">${[["more", t("Details öffnen")], ["act", on ? t("Direkt schalten") : DOOR_RUN.includes(dom) ? t("Ausführen") : t("Direkt schalten")]]
+          .map(([v, l]) => `<button data-v="${v}" class="${cur.tap === v ? "on" : ""}">${esc(l)}</button>`).join("")}</div>
+        <small class="hint">${esc(BTN_MORE.includes(dom) ? t("Details: dort auf- oder abschließen bzw. die Tür öffnen — ein Fingertipp schaltet nicht aus Versehen.") : t("Details: das Fenster von Home Assistant mit allen Möglichkeiten."))}</small>
+        ${on && cur.tap === "act" ? `<small>${esc(t("Wie lange an?"))}</small><div class="seg2 wrap mins">${[[0, t("an/aus")], [1, "1 Min"], [2, "2 Min"], [5, "5 Min"], [10, "10 Min"]]
+          .map(([n, l]) => `<button data-n="${n}" class="${+cur.mins === n ? "on" : ""}">${esc(l)}</button>`).join("")}</div>` : ""}
+        <div class="row"><button class="pri ok"><ha-icon icon="mdi:check"></ha-icon>${esc(t("Übernehmen"))}</button></div>`);
+      const again = () => openDoorMenu(page, { cur });
+      menu.querySelectorAll(".tp button").forEach((b) => b.addEventListener("click", () => { cur.tap = b.dataset.v; again(); }));
+      menu.querySelectorAll(".mins button").forEach((b) => b.addEventListener("click", () => { cur.mins = +b.dataset.n; again(); }));
+      menu.querySelector(".ok").addEventListener("click", async () => {
+        const mins = on && cur.tap === "act" ? cur.mins : 0;
+        if (mins && !(await onForReady(menu, x.entity))) return;
+        save((d) => { const B = [...(d.buttons || [])], y = { ...B[i] };
+          if (cur.tap === (BTN_MORE.includes(dom) ? "more" : "act")) delete y.tap; else y.tap = cur.tap;
+          if (mins) y.minutes = mins; else delete y.minutes;
+          B[i] = y; d.buttons = B; });
+      });
     } else if (pg === "btn") {   // Knopf unter dem Bild
       let pick = st0.pick || "", mins = st0.mins ?? 0;
       const near = A[0]?.camera || "";
@@ -14695,11 +14926,16 @@ ha-tile-info {
   function bkItems(S) {
     const hass = hassNow(), w = S.q.trim().toLowerCase(), hit = (x) => !w || String(x).toLowerCase().includes(w);
     if (S.tab === "hid") return bkHidden();
-    if (S.tab === "cards") return BLOCKS.filter((b) => blockOk(b.k) && hit(t(b.name))).map((b) => {
+    if (S.tab === "cards") return [...(!w || hit(t("Eigene Karte (Code)")) ? [{ kind: "ownnew", id: "", name: t("Eigene Karte (Code)"), icon: "mdi:code-braces",
+      sub: t("Karten-Code einfügen — z. B. aus einem anderen Dashboard") }] : []),
+      ...Object.entries(window.__ngLastCfg?.custom_cards || {}).filter(([, d]) => d?.card && hit(d.name || t("Eigene Karte"))).map(([k, d]) => {
+        const c = (ngEdit.cards || []).find((x) => x.meta.id === `own:${k}` && x.r.width > 0);
+        return { kind: "own", id: `own:${k}`, own: k, name: ownName(k), icon: "mdi:card-text-outline", c, sub: c ? whereTxt(c) : t("eigene Karte · nicht auf dieser Seite") }; }),
+      ...BLOCKS.filter((b) => blockOk(b.k) && hit(t(b.name))).map((b) => {
       const c = pageCard(BLOCK_TEST[b.k]), h = !c && hiddenCards().find((x) => BLOCK_TEST[b.k](x.cfg || {}));
       if (h) return { ...hidCard(h, curView()), name: t(b.name), icon: b.icon, sub: t("ausgeblendet · antippen zeigt sie wieder") };   // nicht doppelt anlegen
       return { kind: "block", id: `block:${b.k}`, name: t(b.name), icon: b.icon, c, sub: c ? whereTxt(c) : t("noch nicht auf dieser Seite") };
-    });
+    })];
     const E = hass.entities || {}, D = hass.devices || {}, shown = window.__ngShown || new Set(), ok = DEV_TEST[S.kind] || DEV_TEST.all;
     const area = (id) => hass.areas?.[E[id]?.area_id || D[E[id]?.device_id]?.area_id]?.name || "";
     const rank = (id) => (shown.has(id) ? 4 : 0) + (PRIMARY.includes(DOMAIN(id)) && !/^(sensor|binary_sensor)$/.test(DOMAIN(id)) ? 0 : 2) + (area(id) ? 0 : 1);
@@ -14797,12 +15033,14 @@ ha-tile-info {
         <div class="bl">${gl.map((g, i) => `<button class="it${g === here ? " on" : ""}" data-g="${i}"><ha-icon icon="mdi:arrow-right-bold-box-outline"></ha-icon>
           <span class="t"><span>${esc(groupLabel(g))}</span>${g === here ? `<small>${esc(t("steht hier"))}</small>` : ""}</span></button>`).join("")}
           <button class="it newg"><ha-icon icon="mdi:folder-plus-outline"></ha-icon><span class="t"><span>${esc(t("Neue Gruppe"))}</span><small>${esc(t("mit diesem Baustein"))}</small></span></button></div>
-        ${it.c ? `<button class="show"><ha-icon icon="mdi:crosshairs-gps"></ha-icon>${esc(t("Zeigen, wo es steht"))}</button>` : ""}</div>`;
+        ${it.c ? `<button class="show"><ha-icon icon="mdi:crosshairs-gps"></ha-icon>${esc(t("Zeigen, wo es steht"))}</button>` : ""}
+        ${it.kind === "own" && !it.def ? `<button class="code"><ha-icon icon="mdi:code-braces"></ha-icon>${esc(t("Karten-Code ändern"))}</button>` : ""}</div>`;
       dr.querySelector(".x").addEventListener("click", closeDrawer);
       dr.querySelector(".back").addEventListener("click", () => { S.pick = null; draw(); });
       dr.querySelectorAll(".it[data-g]").forEach((b) => b.addEventListener("click", () => { S.pick = null; draw(); bkPlace(it, gl[+b.dataset.g]); }));
       dr.querySelector(".newg").addEventListener("click", () => { S.pick = null; draw(); bkPlace(it, "new"); });
       dr.querySelector(".show")?.addEventListener("click", () => flashTile(it.c.meta.id));
+      dr.querySelector(".code")?.addEventListener("click", () => openOwnEditor(it.own));
     };
     const draw = () => {
       if (!dr.isConnected) return;
@@ -14833,12 +15071,13 @@ ha-tile-info {
   function bkTap(it) {
     if (ngEdit.busy) return;
     if (it.kind === "hid") { bkPlace(it, null); return; }
+    if (it.kind === "ownnew") { openOwnEditor(null); return; }
     ngEdit.bkState.pick = it;
     ngEdit.drawDrawer?.();
   }
   function bkDragStart(p) {
     const root = ngEdit.root, dr = root?.querySelector(".drawer");
-    if (!dr || ngEdit.bkDrag || p.done) return;
+    if (!dr || ngEdit.bkDrag || p.done || p.it.kind === "ownnew") return;   // neue eigene Karte: erst den Code eingeben (Antippen)
     navigator.vibrate?.(12);
     const ghost = document.createElement("div");
     ghost.className = "ghost"; ghost.textContent = p.it.name;
@@ -14892,6 +15131,7 @@ ha-tile-info {
       ng = { key, name: it.name, icon: it.icon };
     } else if (it.c && groupOfCard(it.c) === g) { flashTile(it.c.meta.id); flashNote(t("Steht schon in „{g}“", { g: groupLabel(g) })); return; }
     bkSave((st) => {
+      if (it.def) st.custom_cards = { ...(st.custom_cards || {}), [it.own]: it.def };   // neue eigene Karte: Code und Platz in einem Rutsch
       if (ng) { const X = layoutOf(st, view); X.groups = [...(X.groups || []), ng]; }
       if (it.c) moveTiles(st, view, [it.c], key);
       else { const X = layoutOf(st, view); X.add = { ...(X.add || {}) }; X.add[key] = [...new Set([...(X.add[key] || []), it.id])]; }
@@ -14905,6 +15145,103 @@ ha-tile-info {
     ngEdit.drawDrawer?.();
   }
 
+  // ======== Eigene Karte: Karten-Code (YAML) einfügen, z. B. aus einem anderen Dashboard, mit Vorschau. Neu: danach Gruppe wählen (Schublade),
+  // gespeichert als custom_cards.<id> + layout.add.<gruppe>: ["own:<id>"]. Editor ist der YAML-Editor von HA (ha-yaml-editor, kommt mit dem
+  // Karten-Editor der Stapel-Karte), fehlt er: Textfeld für JSON. ========
+  const ownName = (k) => (window.__ngLastCfg?.custom_cards || {})[k]?.name || t("Eigene Karte");
+  async function yamlEditorReady() {
+    if (!customElements.get("ha-yaml-editor")) {
+      try { const h = await window.loadCardHelpers?.(), el = await h?.createCardElement({ type: "vertical-stack", cards: [] }); await el?.constructor?.getConfigElement?.(); }
+      catch (e) { /* älteres HA: dann JSON */ }
+      await Promise.race([customElements.whenDefined("ha-yaml-editor"), new Promise((r) => setTimeout(r, 4000))]);
+    }
+    return !!customElements.get("ha-yaml-editor");
+  }
+  function ownCardOf(v) {   // eingefügter Code -> [Kartenkonfiguration, Fehlertext]; mehrere Karten (Liste) stehen untereinander
+    if (Array.isArray(v)) v = v.length === 1 ? v[0] : { type: "vertical-stack", cards: v };
+    if (v && typeof v === "object" && !v.type && v.card && typeof v.card === "object" && !Array.isArray(v.card)) v = v.card;
+    if (!v || typeof v !== "object" || !Object.keys(v).length) return [null, ""];
+    if (Array.isArray(v.sections) || Array.isArray(v.views) || ["sections", "masonry", "panel", "sidebar"].includes(v.type))
+      return [null, t("Das ist eine ganze Ansicht — bitte nur den Code einer Karte einfügen.")];
+    if (typeof v.type !== "string" || !v.type) return [null, t("Es fehlt „type:“ (z. B. type: entities).")];
+    const { view_layout, ...card } = v;
+    return [card, ""];
+  }
+  function stripOwn(st, ref) {   // „own:<id>“ aus den add-Listen aller Seiten nehmen (Karte gelöscht)
+    const fix = (L) => { if (!L?.add) return L; const add = {};
+      for (const [g, a] of Object.entries(L.add)) { const b = (Array.isArray(a) ? a : []).filter((x) => x !== ref); if (b.length) add[g] = b; }
+      return tidyExtra({ ...L, add }); };
+    if (st.home_layout) st.home_layout = fix(st.home_layout);
+    if (st.layouts) st.layouts = Object.fromEntries(Object.entries(st.layouts).map(([k, L]) => [k, fix(L)]));
+  }
+  async function openOwnEditor(id) {
+    const root = ngEdit.root, hass = hassNow();
+    if (!root || !hass) return;
+    root.querySelector(".menu")?.remove();
+    closeDrawer();
+    const def = id ? (window.__ngLastCfg?.custom_cards || {})[id] : null, st = { card: def?.card ? clone(def.card) : null, err: "", sure: false };
+    const menu = document.createElement("div");
+    menu.className = "menu wide own";
+    menu.innerHTML = `<b>${esc(id ? ownName(id) : t("Eigene Karte (Code)"))}</b>
+      <small>${esc(t("Karten-Code (YAML) einfügen — z. B. in einem anderen Dashboard die Karte bearbeiten, auf den Code-Editor umschalten und alles kopieren."))}</small>
+      <input class="nm" placeholder="${esc(t("Name (für Schublade und Menü)"))}" value="${esc(def?.name || "")}">
+      <div class="ow"><div class="yb"><small>${esc(t("Lade Editor …"))}</small></div><div class="opv"><small>${esc(t("Vorschau"))}</small><div class="pvb" data-empty="${esc(t("Hier erscheint die Karte."))}"></div></div></div>
+      <div class="err"></div>
+      <div class="row">${id ? `<button class="del"><ha-icon icon="mdi:delete-outline"></ha-icon><span>${esc(t("Löschen"))}</span></button>` : ""}
+        <button class="close">${esc(t("Abbrechen"))}</button>
+        <button class="pri ok" disabled><ha-icon icon="${id ? "mdi:check" : "mdi:arrow-right"}"></ha-icon>${esc(id ? t("Speichern") : t("Weiter: Gruppe wählen"))}</button></div><div class="st"></div>`;
+    root.appendChild(menu);
+    const place = () => { const VW = document.documentElement.clientWidth, W = Math.min(920, VW - 16), dk = ngEdit.dock, avail = (dk ? dk.top - 12 : innerHeight - 8) - barBottom();
+      Object.assign(menu.style, { width: `${W}px`, maxHeight: `${Math.max(320, avail)}px`, left: `${scrollX + (VW - W) / 2}px`, top: `${scrollY + barBottom()}px` }); };
+    place();
+    menu.addEventListener("keydown", (ev) => ev.stopPropagation());   // Tippen im Editor: keine HA-Kurzbefehle (e, c, a …), Escape schließt nicht alles
+    const pvb = menu.querySelector(".pvb"), ok = menu.querySelector(".ok"), er = menu.querySelector(".err"), name = menu.querySelector("input.nm");
+    let hc = null;
+    const show = () => {   // Vorschau mit dem Code von eben (HA zeigt Fehler selbst als Fehler-Karte)
+      ok.disabled = !st.card || !!st.err;
+      er.textContent = st.err;
+      if (!st.card || st.err) { hc?.remove(); hc = null; return; }
+      if (!hc) { hc = document.createElement("hui-card"); hc.preview = true; pvb.appendChild(hc); }
+      hc.hass = hassNow(); hc.config = clone(st.card);
+      try { hc.load?.(); } catch (e) { /* Karte fehlt */ }
+    };
+    const took = (v, bad) => { if (bad) { st.card = null; st.err = bad; } else [st.card, st.err] = ownCardOf(v); clearTimeout(st.tm); st.tm = setTimeout(show, 350); };
+    const yb = menu.querySelector(".yb");
+    if (await yamlEditorReady()) {
+      if (!menu.isConnected) return;
+      const ed = document.createElement("ha-yaml-editor");
+      ed.hass = hass;
+      if (st.card) ed.defaultValue = st.card;
+      ed.addEventListener("value-changed", (ev) => { ev.stopPropagation(); const d = ev.detail || {};
+        took(d.value, d.isValid === false ? String(d.errorMsg || "").split("\n")[0] || t("YAML fehlerhaft") : ""); });   // Meldung von HA (übersetzt, mit Zeile)
+      yb.replaceChildren(ed);
+    } else {
+      if (!menu.isConnected) return;
+      const ta = document.createElement("textarea");
+      ta.placeholder = '{ "type": "entities", "entities": ["sun.sun"] }';
+      ta.value = st.card ? JSON.stringify(st.card, null, 2) : "";
+      ta.addEventListener("input", () => { let v; try { v = ta.value.trim() ? JSON.parse(ta.value) : {}; } catch (e) { took(null, t("Nur JSON möglich (YAML-Editor von Home Assistant nicht geladen).")); return; } took(v); });
+      yb.replaceChildren(ta);
+    }
+    show();
+    menu.querySelector(".close").addEventListener("click", () => closeMenu());
+    menu.querySelector(".del")?.addEventListener("click", (ev) => {   // zweimal: erst fragen
+      if (!st.sure) { st.sure = true; ev.currentTarget.querySelector("span").textContent = t("Wirklich löschen?"); return; }
+      closeMenu(true);
+      bkSave((s) => { s.custom_cards = { ...(s.custom_cards || {}) }; delete s.custom_cards[id]; if (!Object.keys(s.custom_cards).length) delete s.custom_cards; stripOwn(s, `own:${id}`); },
+        t("Eigene Karte gelöscht"));
+    });
+    ok.addEventListener("click", () => {
+      if (!st.card || st.err) return;
+      const nm = name.value.trim(), d = { ...(nm ? { name: nm } : {}), card: clone(st.card) };
+      closeMenu(true);
+      if (id) { bkSave((s) => { s.custom_cards = { ...(s.custom_cards || {}), [id]: d }; }, t("Gespeichert"), `own:${id}`); return; }
+      const k = "k" + Date.now().toString(36);   // neu: Gruppe wählen, gespeichert wird beim Ablegen (bkPlace)
+      openDrawer();
+      ngEdit.bkState.pick = { kind: "own", id: `own:${k}`, own: k, def: d, name: nm || t("Eigene Karte"), icon: "mdi:card-text-outline" };
+      ngEdit.drawDrawer?.();
+    });
+  }
   // Mehrfachauswahl: Kacheln antippen = markieren, unten eine Leiste mit Ausblenden / In Gruppe / Fertig
   function startPick() {
     ngEdit.picking = true; ngEdit.picked = new Set();

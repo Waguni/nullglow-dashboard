@@ -45,6 +45,8 @@ Everything you can change right on the dashboard starts with **one tap on the bi
     blinds, windows & doors, energy flow, power 24 h, music, agenda, batteries & maintenance), **all devices** (search, by
     type, the ones not on the dashboard yet first) and everything **hidden**. Drag one into a group — or onto *Drop here: new
     group* — or tap it and pick the group. Anything already on the page moves instead of showing up twice.
+    **Own cards:** *Own card (code)* takes the YAML of **any card** — e.g. copied from another dashboard's code editor —
+    shows a preview and drops it into a group like any other block (tap it later → *Card code* to change or delete it).
   - **Fill gaps** (bottom of the drawer, or ⚙): groups slide up into free space like on a pinboard, so no more puzzling to
     avoid empty spots. Off by default; phones (one column) don't change.
   - Every **group** has a **tab** on top: drag it to move the **whole block** — energy, lights, calendar, cameras … — **on every
@@ -61,8 +63,8 @@ Everything you can change right on the dashboard starts with **one tap on the bi
   - **Tap a tile** to rename or hide it (big cards like music, weather or the calendar and combined tiles too — per page) — and to change what's behind it: **another device** (keeps place and size), what
     **tapping** does (on/off, details, open a page), its **icon**, a **24 h graph** behind sensors, *"since …"*, **live view**
     for cameras (plus **format**, **zoom** with focus point and the **name in the picture** — per page, and **also on tap**, e.g. the
-    porch light for 2 minutes before the camera opens, and **pause while the monitor is off** — a still image instead of the live
-    stream while the wall display's plug is off; only on the wall display itself, phones and PCs keep the live view), *only while playing* for media cards, the **temperature sensor** or **main light** of a room, or **move it to
+    porch light for 2 minutes before the camera opens — or *only* that, without opening it, handy for a big camera picture —, and **pause while the monitor is off** — a still image instead of the live
+    stream while the wall display's plug is off; only on the wall display itself, phones and PCs keep the live view, and the camera window always shows live), *only while playing* for media cards, **how many events** the agenda shows (4–12 or all, and the period), the **temperature sensor** or **main light** of a room, or **move it to
     another group**. **Drag its corner** to make it bigger or smaller (width and height).
   - **Groups:** rename them and pick an icon, choose **which media players, cameras and calendars** they show, set the **consumers
     of the energy flow** (up to 6, with short names) — and create **groups of your own** (⋯ → *New group*, e.g. "Garden").
@@ -178,8 +180,10 @@ devices) and — on a wall display — while the screen is off.
   every press counts as a ring).
 - **Camera window:** more cameras can open it too — e.g. the driveway when a person is detected; several within a short time
   are shown one below the other (newest on top, with what happened and when). In edit mode (⋯ → *Camera window*, or tap a camera
-  tile) pick cameras and triggers, the **picture** per camera (format, zoom, focus — handy on portrait screens) and **buttons below
-  the picture** (porch light for 2 minutes, a lock, the garage, a scene …). It closes 1–10 minutes after the last alert.
+  tile) pick cameras and triggers, the **picture** per camera (format, zoom and the visible part, with a preview — the picture always
+  fills its frame, the arrows move across the whole picture; handy on portrait screens) and **buttons below the picture** (porch light
+  for 2 minutes, a lock, the garage, a scene …). Locks open Home Assistant's dialog by default, so a single tap can't unlock the
+  door — switch a button to *Switch directly* if you prefer. It closes 1–10 minutes after the last alert.
   Timed buttons create a small script (`script.nullglow_an_…`) in Home Assistant once, so the light also turns off when no
   browser is open (it only turns off what was off before).
 - **Lights:** tap = on/off (default) or open a pop-up with every lamp of the room; long-press opens the room.
@@ -281,8 +285,9 @@ If the HA **Energy dashboard** is set up (including power sensors), the energy f
 - **Empty space between groups:** Home Assistant lines groups up in rows, each as tall as its tallest group. Turn on
   **Fill gaps** (edit bar → *Building blocks*, or ⚙) and groups slide up into the free space — or drag single tiles into
   the group next to the gap.
-- **Want to tweak single tiles:** ⋮ → Edit dashboard → *Take control* turns it into a normal dashboard you can edit freely
-  (it then no longer updates itself).
+- **Want a card Nullglow doesn't have:** edit mode → *Building blocks* → *Own card (code)* and paste its YAML — the dashboard
+  keeps updating itself. Only if you want to change everything by hand: ⋮ → Edit dashboard → *Take control* turns it into a
+  normal dashboard (it then no longer updates itself).
 - **Updates:** come through HACS; the dashboard rebuilds itself with the new features. Which version is loaded? The
   browser console (F12) shows `NULLGLOW v…`.
 
