@@ -3,9 +3,9 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
-window.__NULLGLOW_VERSION = "2.11.0";
-window.__NULLGLOW_BUILD = "ce4e00c";
-console.info("%c NULLGLOW %c v2.11.0 · ce4e00c ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
+window.__NULLGLOW_VERSION = "2.11.1";
+window.__NULLGLOW_BUILD = "441d0bf";
+console.info("%c NULLGLOW %c v2.11.1 · 441d0bf ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -12241,7 +12241,7 @@ ha-tile-info {
   // Bearbeiten-Oberfläche bewusst ohne backdrop-filter (Leistung auf schwachen Geräten, 05.10.)
   const EDIT_CSS = `
     :host { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 7; pointer-events: none; font-family: var(--ng-font, inherit); }
-    .bar { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: auto; display: flex; align-items: center; gap: 12px;
+    .bar { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: auto; display: flex; align-items: center; gap: 12px;
       padding: 8px 8px 8px 18px; border-radius: 999px; font-size: 14px; color: var(--ng-txt, #e8f5ee); white-space: nowrap;
       background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgba(var(--rgb-ng-bg, 10, 14, 18), .96);
       box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .45), 0 12px 40px -12px rgba(0, 0, 0, .6); }
@@ -12470,7 +12470,7 @@ ha-tile-info {
     .emptyadd ha-icon { --mdc-icon-size: 20px; }
     /* Bausteine (Schublade): rechts am Rand, am Handy unten; beim Ziehen nur Kopf + Ablage „neue Gruppe“ (Platz für die Gruppen darunter) */
     .bar button.on { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .2); color: var(--ng-acc, #7cffb2); }
-    .drawer { position: fixed; z-index: 3; top: 72px; right: 10px; bottom: 10px; width: 300px; pointer-events: auto; display: flex; flex-direction: column; gap: 8px;
+    .drawer { position: fixed; z-index: 3; top: 72px; right: calc(10px + env(safe-area-inset-right, 0px)); bottom: calc(10px + env(safe-area-inset-bottom, 0px)); width: 300px; pointer-events: auto; display: flex; flex-direction: column; gap: 8px;
       padding: 12px; border-radius: 22px; box-sizing: border-box; color: var(--ng-txt, #e8f5ee); font-size: 14px;
       background: linear-gradient(var(--ng-glass-2, rgba(255,255,255,.07)), var(--ng-glass-2, rgba(255,255,255,.07))), rgb(var(--rgb-ng-bg, 10, 14, 18));   /* groß: ganz deckend */
       box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .45), 0 20px 50px -14px rgba(0, 0, 0, .7); }
@@ -12517,7 +12517,8 @@ ha-tile-info {
     .box.away { visibility: hidden; }
     .boxes.popoff, .adds.popoff, .tabs.popoff { display: none; }
     .boxes.dragging .box.grp.drop { opacity: 1; }
-    @media (max-width: 760px) { .drawer { top: auto !important; left: 8px; right: 8px; bottom: 8px; width: auto; height: min(52vh, 460px); } .drawer.dragging { height: auto; } }
+    @media (max-width: 760px) { .drawer { top: auto !important; left: calc(8px + env(safe-area-inset-left, 0px)); right: calc(8px + env(safe-area-inset-right, 0px));
+      bottom: calc(8px + env(safe-area-inset-bottom, 0px)); width: auto; height: min(52vh, 460px); } .drawer.dragging { height: auto; } }
     @media (max-width: 600px) { .bar .msg, .bar > ha-icon, .bar .tx { display: none; } .bar .cnt { display: inline; } .bar { gap: 6px; padding-left: 8px; }
       .bar button { padding: 0 11px; } .seg button { padding: 0 10px; } }
     @media (max-width: 480px) { .bar { gap: 4px; padding: 5px; max-width: calc(100vw - 16px); box-sizing: border-box; }
@@ -12527,7 +12528,10 @@ ha-tile-info {
     .bar.c1 .msg { display: none; } .bar.c1 .cnt { display: inline; }
     .bar.c2 > ha-icon, .bar.c2 .tx { display: none; } .bar.c2 { gap: 6px; padding-left: 8px; } .bar.c2 button { padding: 0 11px; }
     .bar.c3 { gap: 4px; padding: 5px; } .bar.c3 button { padding: 0 9px; } .bar.c3 .prof span { display: none; }
-    .bar.c4 { flex-wrap: wrap; justify-content: center; white-space: normal; border-radius: 24px; width: max-content; max-width: calc(100vw - 16px); box-sizing: border-box; }
+    .bar.c4 { flex-wrap: wrap; justify-content: center; white-space: normal; border-radius: 24px; width: max-content; box-sizing: border-box;
+      max-width: calc(100vw - 16px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); }
+    .sa { position: fixed; left: 0; top: 0; width: 0; height: 0; visibility: hidden; pointer-events: none;
+      padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
   `;
   const EDIT_TOKENS = ["--ng-acc", "--rgb-ng-acc", "--ng-acc-ink", "--ng-txt", "--rgb-ng-txt", "--ng-txt-dim", "--ng-line", "--ng-glass-2",
     "--rgb-ng-bg", "--ng-danger", "--ng-warn", "--ng-font"];
@@ -12567,7 +12571,7 @@ ha-tile-info {
       <button class="more" title="${esc(t("Mehr: auswählen, neue Gruppe, Vorschau"))}"><ha-icon icon="mdi:dots-horizontal"></ha-icon></button>
       <button class="help" title="${esc(t("Kurz erklärt: Kacheln, Gruppen und Seiten"))}"><ha-icon icon="mdi:help-circle-outline"></ha-icon></button>
       <button class="undo" hidden><ha-icon icon="mdi:undo"></ha-icon><span class="tx">${esc(t("Verwerfen"))}</span></button>
-      <button class="pri done"><ha-icon icon="mdi:check"></ha-icon>${esc(t("Fertig"))}<span class="cnt"></span></button></div><div class="boxes"></div>`;
+      <button class="pri done"><ha-icon icon="mdi:check"></ha-icon>${esc(t("Fertig"))}<span class="cnt"></span></button></div><div class="boxes"></div><div class="sa"></div>`;
     document.body.appendChild(host);
     ngEdit.host = host; ngEdit.root = root;
     // Antippen/Drücken: erst Rahmen nachmessen (HA ordnet das Raster teils verzögert neu, ohne dass sich eine Größe ändert) und den
@@ -12734,6 +12738,7 @@ ha-tile-info {
     if (ngEdit.raf) cancelAnimationFrame(ngEdit.raf);
     ngEdit.raf = 0; ngEdit.tour = null;
     if (ngEdit.padded) { const [v, pr] = ngEdit.padOld || []; if (v) ngEdit.padded.style.setProperty("padding-top", v, pr); else ngEdit.padded.style.removeProperty("padding-top"); ngEdit.padded = null; }
+    ngEdit.padPx = 0; ngEdit.padHv = null;   // beim nächsten Bearbeiten neu messen
     ngEdit.host?.remove();
     ngEdit.host = ngEdit.root = null;
     window.dispatchEvent(new Event("nullglow-edit"));
@@ -12792,10 +12797,15 @@ ha-tile-info {
   }
   // Leiste passt nicht in die Breite (z. B. Hochkant-Monitor 864 px mit allen Knöpfen): erst Hinweis weg, dann Beschriftungen, dann enger,
   // zuletzt zweizeilig. Sonst ragte sie links und rechts aus dem Bild und „Fertig“ war nicht mehr erreichbar.
+  // sichere Ränder des Geräts (iPhone: Statusleiste/Dynamic Island oben, Home-Leiste unten) in px
+  function safeArea() {
+    const e = ngEdit.root?.querySelector(".sa"), cs = e && getComputedStyle(e), n = (k) => (cs ? parseFloat(cs[k]) || 0 : 0);
+    return { t: n("paddingTop"), r: n("paddingRight"), b: n("paddingBottom"), l: n("paddingLeft") };
+  }
   function fitBar() {
     const bar = ngEdit.root?.querySelector(".bar");
     if (!bar) return;
-    const max = document.documentElement.clientWidth - 16, K = ["c1", "c2", "c3", "c4"];
+    const sa = safeArea(), max = document.documentElement.clientWidth - 16 - sa.l - sa.r, K = ["c1", "c2", "c3", "c4"];
     bar.classList.remove(...K);
     for (const k of K) { if (bar.offsetWidth <= max) break; bar.classList.add(k); }
   }
@@ -13016,8 +13026,13 @@ ha-tile-info {
     const hv = deepFind(document, "hui-view-container");
     if (hv) { const cs = getComputedStyle(hv); EDIT_TOKENS.forEach((k) => { const v = cs.getPropertyValue(k).trim(); if (v) ngEdit.host.style.setProperty(k, v); }); }
     // ohne HA-Kopfzeile (Kiosk) begänne die Seite unter der Leiste — oberste Reiter und „+ Kachel“ wären verdeckt: oben Platz schaffen
-    if (hv && !ngEdit.padded && hv.getBoundingClientRect().top + scrollY < 40) { ngEdit.padded = hv; ngEdit.padOld = [hv.style.getPropertyValue("padding-top"), hv.style.getPropertyPriority("padding-top")];
-      hv.style.setProperty("padding-top", `${PAD_TOP}px`, "important"); }   // kiosk-mode setzt padding-top: 0 !important
+    if (hv) {   // kiosk-mode setzt padding-top: 0 !important; reicht HAs eigener Abstand (Kopfzeile), bleibt er
+      if (ngEdit.padHv !== hv) { ngEdit.padHv = hv; ngEdit.padBase = parseFloat(getComputedStyle(hv).paddingTop) || 0; }   // vor dem eigenen Wert messen
+      const bar = ngEdit.root.querySelector(".bar")?.getBoundingClientRect(), top0 = hv.getBoundingClientRect().top + scrollY;
+      const need = bar ? Math.ceil(bar.bottom + 8 - top0) : PAD_TOP;   // Abstand ab Oberkante der View bis unter die Leiste
+      if (need > ngEdit.padBase && !ngEdit.padded) { ngEdit.padded = hv; ngEdit.padOld = [hv.style.getPropertyValue("padding-top"), hv.style.getPropertyPriority("padding-top")]; }
+      if (ngEdit.padded === hv && need > ngEdit.padBase && need !== ngEdit.padPx) { ngEdit.padPx = need; hv.style.setProperty("padding-top", `${need}px`, "important"); }
+    }
     const list = editCards();
     ngEdit.cards = list;
     if (ngEdit.ro) {   // neu aufgetauchte Kacheln/Raster/Gruppen beobachten (einmal je Element)
@@ -14081,7 +14096,7 @@ ha-tile-info {
     const b = ngEdit.root?.querySelector(".bar .fit");
     if (!b) return;
     const dock = ngEdit.dock, big = innerWidth >= 1000 && innerHeight >= 600;
-    const bottom = Math.max(0, ...(ngEdit.groupsAll || []).map((g) => g.r.top + g.r.height)) - (ngEdit.padded ? PAD_TOP : 0);   // ohne den Platz fürs Bearbeiten
+    const bottom = Math.max(0, ...(ngEdit.groupsAll || []).map((g) => g.r.top + g.r.height)) - (ngEdit.padded ? ngEdit.padPx || 0 : 0);   // ohne den Platz fürs Bearbeiten
     const over = !!(big && dock && bottom > dock.top - 4);
     if (b.hidden === over) { b.hidden = !over; fitBar(); }
   }
