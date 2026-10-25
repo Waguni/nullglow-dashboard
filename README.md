@@ -68,6 +68,13 @@ Everything you can change right on the dashboard starts with **one tap on the bi
     another group**. **Drag its corner** to make it bigger or smaller (width and height).
   - **Groups:** rename them and pick an icon, choose **which media players, cameras and calendars** they show, set the **consumers
     of the energy flow** (up to 6, with short names) — and create **groups of your own** (⋯ → *New group*, e.g. "Garden").
+  - **🔔 Notifications to your phone** (⋯ → *Notifications*): pick a template — *appliance done* (washing machine, dryer, printer …),
+    *door or window open* for 10 minutes, *doorbell* with camera picture, *someone arrives or leaves*, *value above/below*, *battery low*,
+    *water/smoke/gas*, *reminder at a time* — or build your own: **when** (device + state or value, "for at least …", or a time and
+    weekdays), **message** (title and text with `{name}`, `{state}`, `{value}`, `{time}`), **to** (phones with the Home Assistant app)
+    and extras (only when someone/nobody is home, not at night, camera picture, important). **Test** sends a sample right away. Each
+    rule becomes a regular Home Assistant automation (`automation.nullglow_…`), so it runs without an open dashboard; switch it
+    on/off, change or delete it here.
   - **⋯ in the edit bar:** *select several tiles* (hide or move them together), *new group*, **phone / tablet preview** of the
     page without grabbing your phone. **✨ New devices** lists devices added since last time that aren't on the dashboard yet —
     one tap adds them to a group.
@@ -186,6 +193,9 @@ devices) and — on a wall display — while the screen is off.
   door — switch a button to *Switch directly* if you prefer. It closes 1–10 minutes after the last alert.
   Timed buttons create a small script (`script.nullglow_an_…`) in Home Assistant once, so the light also turns off when no
   browser is open (it only turns off what was off before).
+- **Notifications:** rules from the edit mode are stored as normal automations (id `nullglow_push_…`, alias *Nullglow: …*, the
+  rule's settings in `variables.nullglow_push`); targets are the `notify.mobile_app_*` services of the companion app. Needs an admin
+  (like editing). If you change such an automation in Home Assistant, edit it there from then on.
 - **Lights:** tap = on/off (default) or open a pop-up with every lamp of the room; long-press opens the room.
 - **Many blinds / window contacts:** 7 or more become *one* tile with a bar/dot per device; tap opens them grouped by floor.
 - **People map:** optional map of everyone's location, tinted in your design colour.

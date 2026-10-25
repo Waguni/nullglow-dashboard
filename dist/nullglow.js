@@ -3,9 +3,9 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
-window.__NULLGLOW_VERSION = "2.10.0";
-window.__NULLGLOW_BUILD = "5646190";
-console.info("%c NULLGLOW %c v2.10.0 · 5646190 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
+window.__NULLGLOW_VERSION = "2.11.0";
+window.__NULLGLOW_BUILD = "ce4e00c";
+console.info("%c NULLGLOW %c v2.11.0 · ce4e00c ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -9920,7 +9920,7 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     "Nullglow braucht die Bubble Card ab Version {min} — sonst funktionieren die Navigation unten und die Pop-ups nicht.":
       "Nullglow needs Bubble Card {min} or newer — otherwise the navigation at the bottom and the pop-ups don't work.",
     "In HACS installieren": "Install in HACS", "In HACS aktualisieren": "Update in HACS", "und danach die Seite neu laden.": "and reload the page afterwards.", "Nullglow · lokale Dateien": "Nullglow · local files",
-    "Geladene Fassung — steht hier etwas Älteres, liefert der Browser noch eine alte Kopie aus dem Cache": "Loaded version — if this shows an older one, the browser is still serving an old cached copy", "Kacheln": "Tiles", "Gruppen": "Groups", "Speichern": "Saving",
+    "Geladene Fassung — steht hier etwas Älteres, liefert der Browser noch eine alte Kopie aus dem Cache": "Loaded version — if this shows an older one, the browser is still serving an old cached copy", "Kacheln": "Tiles", "Gruppen": "Groups", "Speichern": "Save",
     "Eine <b>Kachel</b> ist ein einzelnes Gerät. <b>Antippen</b>: Name, Symbol, Gerät und mehr · <b>halten und ziehen</b>: verschieben, auch in eine andere Gruppe · <b>Ecke ziehen</b>: Größe.":
       "A <b>tile</b> is a single device. <b>Tap</b>: name, icon, device and more · <b>hold and drag</b>: move, also into another group · <b>drag the corner</b>: size.",
     "Nichts wird sofort gespeichert: <b>Fertig</b> speichert, <b>Verwerfen</b> nimmt alles zurück. Diese Erklärung gibt es jederzeit wieder über <b>?</b>.":
@@ -10080,6 +10080,38 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     "Name (für Schublade und Menü)": "Name (for drawer and menu)", "Lade Editor …": "Loading editor …", "Hier erscheint die Karte.": "The card shows up here.",
     "Weiter: Gruppe wählen": "Next: choose group", "YAML fehlerhaft": "YAML error", "Wirklich löschen?": "Really delete?", "Eigene Karte gelöscht": "Own card deleted",
     "Nur JSON möglich (YAML-Editor von Home Assistant nicht geladen).": "JSON only (Home Assistant's YAML editor didn't load).",
+    // 2.11.0: Benachrichtigungen aufs Handy
+    "Benachrichtigungen": "Notifications", "Benachrichtigung": "Notification", "aufs Handy, z. B. Waschmaschine fertig": "to your phone, e.g. washing machine done",
+    "Push aufs Handy, wenn etwas passiert — läuft in Home Assistant, auch wenn kein Dashboard offen ist.": "Push to your phone when something happens — runs in Home Assistant, even when no dashboard is open.",
+    "Keine Handy-App gefunden: die Home-Assistant-App auf dem Handy installieren und anmelden, dann taucht das Handy hier auf.": "No phone app found: install the Home Assistant app on your phone and sign in, then the phone shows up here.",
+    "Keine Handy-App gefunden — ohne sie kann nichts ankommen.": "No phone app found — without it nothing can arrive.",
+    "Deine Benachrichtigungen": "Your notifications", "Neue Benachrichtigung": "New notification", "Benachrichtigung ändern": "Edit notification",
+    "zuletzt {x}": "last {x}", "an · noch nie ausgelöst": "on · never triggered", "Ausschalten": "Turn off", "Einschalten": "Turn on", "Lade …": "Loading …",
+    "Diese Automation wurde in Home Assistant geändert und lässt sich hier nicht mehr bearbeiten.": "This automation was changed in Home Assistant and can no longer be edited here.",
+    "Eigene": "Custom", "beliebiges Gerät, Zustand oder Wert": "any device, state or value",
+    "Gerät fertig": "Appliance done", "Waschmaschine, Trockner, Spülmaschine, 3D-Drucker …": "washing machine, dryer, dishwasher, 3D printer …",
+    "Tür oder Fenster offen": "Door or window open", "länger als 10 Minuten": "longer than 10 minutes", "Klingel": "Doorbell", "mit Kamerabild": "with camera picture",
+    "Jemand kommt heim oder geht": "Someone arrives or leaves", "Person zu Hause / abwesend": "person home / away",
+    "Wert über oder unter": "Value above or below", "z. B. Temperatur über 28 °C, Luftfeuchte über 70 %": "e.g. temperature above 28 °C, humidity above 70 %",
+    "Batterie niedrig": "Battery low", "unter 20 %": "below 20 %", "Wasser, Rauch, Gas": "Water, smoke, gas", "sofort und hervorgehoben": "immediately and highlighted",
+    "Erinnerung zur Uhrzeit": "Reminder at a time", "z. B. Mülltonne rausstellen": "e.g. put the bins out",
+    "{Name} ist fertig": "{name} is done", "Fertig um {Uhrzeit}.": "Done at {time}.", "{Name} ist offen": "{name} is open", "Seit 10 Minuten offen.": "Open for 10 minutes.",
+    "Jemand steht vor der Tür ({Uhrzeit}).": "Someone is at the door ({time}).", "{Name} ist {Zustand}": "{name} is {state}", "{Name}: {Wert}": "{name}: {value}",
+    "{Name}: Batterie {Wert}": "{name}: battery {value}", "Bitte bald wechseln oder laden.": "Please replace or charge soon.", "Alarm: {Name}": "Alarm: {name}",
+    "{Name}: {Zustand}": "{name}: {state}", "Erinnerung": "Reminder", "Mülltonne rausstellen": "Put the bins out",
+    "{Name}": "{name}", "{Zustand}": "{state}", "{Wert}": "{value}", "{Uhrzeit}": "{time}",
+    "Welches Gerät?": "Which device?", "Alle Geräte zeigen": "Show all devices", "Gerät wählen": "Choose device", "antippen": "tap",
+    "Wann": "When", "Zustand": "State", "Wert": "Value", "Uhrzeit": "Time", "wird": "becomes", "jede Änderung": "any change", "über": "above", "unter": "below",
+    "für mindestens": "for at least", "sofort": "at once", "{n} Min": "{n} min", "Nachricht": "Message", "Titel": "Title", "Text (optional)": "Text (optional)",
+    "So kommt es an": "Arrives as", "Keins gewählt = an alle Handys": "None selected = all phones", "Extras": "Extras",
+    "Jemand daheim": "Someone home", "Niemand daheim": "Nobody home", "Nicht nachts": "Not at night", "nur zwischen 7 und 22 Uhr": "only between 7 am and 10 pm",
+    "Wichtig": "Important", "sofort zustellen, hervorgehoben (iPhone: auch im Fokus)": "deliver immediately, highlighted (iPhone: also in Focus)",
+    "Kamerabild anhängen": "Attach camera picture", "kein Bild": "no picture", "Test": "Test", "Sende …": "Sending …", "Gesendet — schau aufs Handy.": "Sent — check your phone.",
+    "Lösche …": "Deleting …", "Benachrichtigung gespeichert": "Notification saved", "Benachrichtigung gelöscht": "Notification deleted",
+    "Bitte ein Gerät wählen.": "Please choose a device.", "Bitte einen Wert eingeben.": "Please enter a value.", "Bitte eine Uhrzeit eingeben.": "Please enter a time.",
+    "Bitte mindestens einen Tag wählen.": "Please choose at least one day.", "Bitte einen Titel oder Text eingeben.": "Please enter a title or text.",
+    "Benachrichtigung aus dem Nullglow-Dashboard — dort ändern: Bearbeiten → ⋯ → Benachrichtigungen.": "Notification from the Nullglow dashboard — change it there: Edit → ⋯ → Notifications.",
+    "Mo": "Mo", "Di": "Tu", "Mi": "We", "Do": "Th", "Fr": "Fr", "Sa": "Sa", "So": "Su",
   };
   let ngH = null;   // zuletzt bekanntes hass (generate/Editor setzen es) — Sprache für t()
   const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
@@ -12451,6 +12483,17 @@ ha-tile-info {
     .menu.door .dr > ha-icon { flex: none; --mdc-icon-size: 18px; color: var(--ng-acc, #7cffb2); }
     .menu.door .dr .t { flex: 1; min-width: 0; display: flex; flex-direction: column; } .menu.door .dr .t small { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .menu.door .dr .t span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .menu.push .dr .t.ed { all: unset; flex: 1; min-width: 0; display: flex; flex-direction: column; cursor: pointer; }
+    .menu.push .dr .onoff ha-icon { --mdc-icon-size: 26px; } .menu.push .dr .onoff { background: none; }
+    .menu.push textarea { font: inherit; font-size: 14px; padding: 9px 12px; border-radius: 12px; border: 0; outline: 0; resize: vertical; min-height: 44px;
+      color: var(--ng-txt, #e8f5ee); background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.12)); }
+    .menu.push textarea:focus { box-shadow: inset 0 0 0 1.5px var(--ng-acc, #7cffb2); }
+    .menu.push .nv { align-items: center; } .menu.push .nv .seg2 { flex: none; } .menu.push .nv input { flex: 1; min-width: 0; }
+    .menu.push .nv .u { color: var(--ng-txt-dim, #93a79d); font-size: 13px; min-width: 18px; }
+    .menu.push .tm input { flex: 1; color-scheme: dark; }
+    .menu.push .ph button { font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+    .menu small.warn { color: var(--ng-warn, #ffd166); }
+    .menu.push .it .chev { margin-left: auto; --mdc-icon-size: 18px; opacity: .6; }
     .drawer .seg2 button { flex: 1 1 auto; white-space: nowrap; padding: 0 8px; }
     .drawer input { font: inherit; font-size: 14px; padding: 8px 12px; border-radius: 12px; border: 0; outline: 0; color: var(--ng-txt, #e8f5ee);
       background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255,255,255,.12)); }
@@ -14688,6 +14731,7 @@ ha-tile-info {
       ${optRow("pick", "mdi:checkbox-multiple-marked-outline", t("Mehrere Kacheln auswählen"), t("zusammen ausblenden oder verschieben"))}
       ${optRow("group", "mdi:folder-plus-outline", t("Neue Gruppe"), t("eigene Gruppe mit beliebigen Kacheln"))}
       ${optRow("door", "mdi:doorbell-video", t("Kamera-Fenster"), t("Klingel & Kameras: was aufgeht, Bild, Knöpfe"))}
+      ${optRow("push", "mdi:bell-ring-outline", t("Benachrichtigungen"), t("aufs Handy, z. B. Waschmaschine fertig"))}
       ${optRow("phone", "mdi:cellphone", t("Vorschau: Handy"), t("so sieht es am Handy aus"))}
       ${optRow("tablet", "mdi:tablet", t("Vorschau: Tablet"))}
       ${optRow("prof", "mdi:devices", t("Anordnung je Gerätetyp"), window.__ngProfile?.own ? t(PROFILE_NAME[window.__ngProfile.name]) : t("Alle Geräte"))}</div>
@@ -14699,6 +14743,7 @@ ha-tile-info {
     menu.querySelector('[data-o="group"]').addEventListener("click", newGroupMenu);
     menu.querySelector('[data-o="phone"]').addEventListener("click", () => { closeMenu(true); openPreview("handy"); });
     menu.querySelector('[data-o="door"]').addEventListener("click", () => openDoorMenu("main"));
+    menu.querySelector('[data-o="push"]').addEventListener("click", () => openPushMenu("main"));
     menu.querySelector('[data-o="tablet"]').addEventListener("click", () => { closeMenu(true); openPreview("tablet"); });
     menu.querySelector('[data-o="prof"]').addEventListener("click", () => { closeMenu(true); openProfileMenu(); });
     menu.querySelector(".close").addEventListener("click", () => closeMenu());
@@ -14900,6 +14945,285 @@ ha-tile-info {
       menu.querySelector(".ok").addEventListener("click", async () => {
         if (mins && !(await onForReady(menu, pick))) return;
         save((d) => { d.buttons = [...(d.buttons || []), { entity: pick, ...(mins ? { minutes: mins } : {}) }]; });
+      });
+    }
+  }
+
+  // ======== Benachrichtigungen aufs Handy (Bearbeiten → ⋯ → Benachrichtigungen): einfache Regeln „Wenn … → Push an …“, statt HA-Automationen
+  // von Hand. Jede Regel ist eine echte HA-Automation (id nullglow_push_<k>, Alias „Nullglow: …“) — läuft also auch ohne offenen Browser und
+  // steht ganz normal unter Automationen. Die Einstellungen der Regel stehen in deren variables.nullglow_push, so lässt sie sich hier wieder
+  // öffnen. Anlegen/Ändern/Löschen über die Config-API (nur Admin, wie das ganze Bearbeiten). Ziel: notify.mobile_app_* (Companion-App). ========
+  const PUSH_ID = "nullglow_push_";
+  const PUSH_WD = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"], PUSH_WDL = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+  const PUSH_PH = [["Name", "name"], ["Zustand", "state"], ["Wert", "value"], ["Uhrzeit", "time"]];   // Platzhalter im Text (DE/EN)
+  const PUSH_NAME_RX = / (Leistung|Power|Energie|Energy|Stromverbrauch|Verbrauch|Status|Batterie|Battery)$/i;
+  const pushRules = () => Object.values(hassNow()?.states || {}).filter((s) => DOMAIN(s.entity_id) === "automation" && String(s.attributes?.id || "").startsWith(PUSH_ID))
+    .sort((a, b) => String(a.attributes.friendly_name).localeCompare(String(b.attributes.friendly_name), numLoc()));
+  function pushPhones() {   // Handys mit Companion-App: notify.mobile_app_<gerät>, Name aus der Geräteliste
+    const h = hassNow(), D = Object.values(h?.devices || {}), us = (x) => String(x || "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+    return Object.keys(h?.services?.notify || {}).filter((s) => s.startsWith("mobile_app_")).map((svc) => {
+      const k = svc.slice(11), d = D.find((x) => us(x.name_by_user) === k || us(x.name) === k);
+      return { svc, name: d ? d.name_by_user || d.name : k.replace(/_/g, " ") };
+    }).sort((a, b) => a.name.localeCompare(b.name, numLoc()));
+  }
+  const pushName = (e) => String(fname(e)).replace(PUSH_NAME_RX, "");
+  // Vorlagen: Startwerte + welche Geräte zur Auswahl oben stehen
+  const PUSH_PRESETS = [
+    { k: "fertig", icon: "mdi:washing-machine", name: "Gerät fertig", sub: "Waschmaschine, Trockner, Spülmaschine, 3D-Drucker …",
+      m: { when: "num", below: 5, for: 3, title: "{Name} ist fertig", text: "Fertig um {Uhrzeit}." },
+      pick: (s, d, dc) => d === "sensor" && dc === "power" },
+    { k: "offen", icon: "mdi:door-open", name: "Tür oder Fenster offen", sub: "länger als 10 Minuten",
+      m: { when: "state", to: "on", for: 10, title: "{Name} ist offen", text: "Seit 10 Minuten offen." },
+      pick: (s, d, dc) => (d === "binary_sensor" && ["door", "window", "opening", "garage_door"].includes(dc)) || (d === "cover" && ["garage", "gate", "door"].includes(dc)) },
+    { k: "klingel", icon: "mdi:doorbell-video", name: "Klingel", sub: "mit Kamerabild",
+      m: { when: "state", to: "", title: "Es hat geklingelt", text: "Jemand steht vor der Tür ({Uhrzeit}).", important: true },
+      pick: (s, d, dc) => (d === "event" && dc === "doorbell") || (["event", "binary_sensor", "sensor"].includes(d) && /klingel|doorbell|t(ü|ue)rglocke|ding/i.test(s.entity_id + " " + (s.attributes.friendly_name || ""))) },
+    { k: "heim", icon: "mdi:home-account", name: "Jemand kommt heim oder geht", sub: "Person zu Hause / abwesend",
+      m: { when: "state", to: "home", title: "{Name} ist {Zustand}", text: "{Uhrzeit}" }, pick: (s, d) => d === "person" },
+    { k: "wert", icon: "mdi:thermometer-alert", name: "Wert über oder unter", sub: "z. B. Temperatur über 28 °C, Luftfeuchte über 70 %",
+      m: { when: "num", above: 28, title: "{Name}: {Wert}", text: "" }, pick: (s, d) => d === "sensor" && isFinite(parseFloat(s.state)) && !!s.attributes.unit_of_measurement },
+    { k: "batterie", icon: "mdi:battery-alert-variant-outline", name: "Batterie niedrig", sub: "unter 20 %",
+      m: { when: "num", below: 20, title: "{Name}: Batterie {Wert}", text: "Bitte bald wechseln oder laden." }, pick: (s, d, dc) => d === "sensor" && dc === "battery" },
+    { k: "alarm", icon: "mdi:water-alert", name: "Wasser, Rauch, Gas", sub: "sofort und hervorgehoben",
+      m: { when: "state", to: "on", title: "Alarm: {Name}", text: "{Name}: {Zustand}", important: true },
+      pick: (s, d, dc) => d === "binary_sensor" && ["moisture", "smoke", "gas", "carbon_monoxide", "safety"].includes(dc) },
+    { k: "zeit", icon: "mdi:alarm", name: "Erinnerung zur Uhrzeit", sub: "z. B. Mülltonne rausstellen",
+      m: { when: "time", at: "19:00", days: [0, 1, 2, 3, 4, 5, 6], title: "Erinnerung", text: "Mülltonne rausstellen" } },
+  ];
+  const PUSH_SKIP = ["automation", "script", "scene", "update", "zone", "sun", "tts", "stt", "conversation", "ai_task", "todo", "wake_word", "button", "input_button", "notify", "image", "camera"];
+  function pushStates(e) {   // mögliche Zustände eines Geräts für „wird …“ (Text wie in HA)
+    const h = hassNow(), s = h.states[e], d = DOMAIN(e || ""), a = s?.attributes || {};
+    const L = Array.isArray(a.options) ? a.options
+      : d === "binary_sensor" ? ["on", "off"] : ["person", "device_tracker"].includes(d) ? ["home", "not_home"]
+      : d === "lock" ? ["unlocked", "locked", "open", "jammed"] : d === "cover" ? ["open", "closed", "opening", "closing"]
+      : d === "vacuum" ? ["cleaning", "docked", "returning", "error"] : d === "lawn_mower" ? ["mowing", "docked", "error"]
+      : d === "media_player" ? ["playing", "paused", "idle", "off"] : d === "alarm_control_panel" ? ["triggered", "armed_away", "armed_home", "disarmed"]
+      : ["switch", "light", "fan", "input_boolean", "siren", "humidifier"].includes(d) ? ["on", "off"] : d === "climate" ? ["off", "heat", "cool", "auto"]
+      : d === "event" || !s || ["unknown", "unavailable"].includes(s.state) || isFinite(parseFloat(s.state)) ? [] : [s.state];
+    return L.map((v) => [v, s && h.formatEntityState ? h.formatEntityState(s, v) : v]);
+  }
+  // Text mit Platzhaltern -> Jinja (Automation) bzw. jetzt ausgerechnet (Test, Alias)
+  function pushTpl(txt, e) {
+    const n = `(state_attr('${e}', 'friendly_name') or '${e}') | regex_replace('${PUSH_NAME_RX.source.replace(/\\/g, "\\\\")}', '')`;
+    const unit = `{{ (' ' ~ state_attr('${e}', 'unit_of_measurement')) if state_attr('${e}', 'unit_of_measurement') else '' }}`;
+    const put = (x) => () => x;   // Ersatz als Funktion: im Muster steht ein $ (in Ersatz-Strings ein Sonderzeichen)
+    return String(txt || "").replace(/\{(Name|name)\}/g, put(e ? `{{ ${n} }}` : "")).replace(/\{(Zustand|state)\}/g, put(e ? `{{ state_translated('${e}') }}` : ""))
+      .replace(/\{(Wert|value)\}/g, put(e ? `{{ states('${e}') }}${unit}` : "")).replace(/\{(Uhrzeit|time)\}/g, put("{{ now().strftime('%H:%M') }}"));
+  }
+  function pushNow(txt, e) {
+    const h = hassNow(), s = e && h.states[e], u = s?.attributes?.unit_of_measurement;
+    const put = (x) => () => x;
+    return String(txt || "").replace(/\{(Name|name)\}/g, put(e ? pushName(e) : "")).replace(/\{(Zustand|state)\}/g, put(s && h.formatEntityState ? h.formatEntityState(s) : s?.state || ""))
+      .replace(/\{(Wert|value)\}/g, put(s ? `${s.state}${u ? " " + u : ""}` : "")).replace(/\{(Uhrzeit|time)\}/g, put(new Date().toLocaleTimeString(numLoc(), { hour: "2-digit", minute: "2-digit" })));
+  }
+  const pushExtra = (m, k) => ({ tag: k, clickAction: ngEdit.base || "/", url: ngEdit.base || "/",
+    ...(m.camera ? { image: `/api/camera_proxy/${m.camera}`, entity_id: m.camera } : {}),
+    ...(m.important ? { ttl: 0, priority: "high", channel: t("Wichtig"), push: { "interruption-level": "time-sensitive" } } : {}) });
+  const pushTargets = (m) => (m.phones?.length ? m.phones : pushPhones().map((p) => p.svc));
+  function pushAutomation(m, k) {   // Regel -> Automation (HA 2024.10+: triggers/conditions/actions)
+    const e = m.entity, trig = m.when === "time" ? { trigger: "time", at: `${m.at || "08:00"}:00` }
+      : m.when === "num" ? { trigger: "numeric_state", entity_id: e, ...(m.dir === "above" ? { above: +m.value } : { below: +m.value }) }
+      : { trigger: "state", entity_id: e, ...(m.to ? { to: m.to } : { not_to: ["unavailable", "unknown"] }), not_from: ["unavailable", "unknown"] };
+    if (+m.for > 0 && m.when !== "time") trig.for = { minutes: +m.for };
+    const cond = [];
+    if (m.when === "time" && m.days?.length && m.days.length < 7) cond.push({ condition: "time", weekday: m.days.map((d) => PUSH_WD[d]) });
+    if (m.only === "home") cond.push({ condition: "numeric_state", entity_id: "zone.home", above: 0 });
+    if (m.only === "away") cond.push({ condition: "numeric_state", entity_id: "zone.home", below: 1 });
+    if (m.quiet) cond.push({ condition: "time", after: "07:00:00", before: "22:00:00" });
+    const title = pushTpl(m.title, e), msg = pushTpl(m.text, e), extra = pushExtra(m, k);
+    return { alias: pushAlias(m), description: t("Benachrichtigung aus dem Nullglow-Dashboard — dort ändern: Bearbeiten → ⋯ → Benachrichtigungen."),
+      mode: "single", max_exceeded: "silent", variables: { nullglow_push: m }, triggers: [trig], conditions: cond,
+      actions: pushTargets(m).map((svc) => ({ action: `notify.${svc}`, data: { ...(msg ? { title, message: msg } : { message: title }), data: extra } })) };
+  }
+  // Name der Automation: {Name} eingesetzt, wechselnde Werte als „…“ (sonst stünde z. B. der Zustand von heute im Namen)
+  const pushAlias = (m) => `Nullglow: ${String(m.title || m.text || "").replace(/\{(Name|name)\}/g, () => (m.entity ? pushName(m.entity) : ""))
+    .replace(/\{(Zustand|state|Wert|value|Uhrzeit|time)\}/g, "…").replace(/\s+/g, " ").trim() || t("Benachrichtigung")}`;
+  function openPushMenu(page = "main", st0 = {}) {
+    const root = ngEdit.root, hass = hassNow();
+    if (!root || !hass) return;
+    root.querySelector(".menu")?.remove();
+    ngEdit.drawDrawer && closeDrawer();
+    const menu = document.createElement("div");
+    menu.className = "menu wide combo door push";
+    root.appendChild(menu);
+    const [pg, arg] = splitKey(page);
+    const place = () => { const dk = ngEdit.dock, avail = (dk ? dk.top - 12 : innerHeight - 8) - barBottom(); menu.style.maxHeight = `${Math.max(300, avail)}px`;
+      const bar = root.querySelector(".bar").getBoundingClientRect(), W = Math.min(420, document.documentElement.clientWidth - 16);
+      Object.assign(menu.style, { width: `${W}px`, left: `${scrollX + Math.max(8, bar.left + (bar.width - W) / 2)}px`, top: `${scrollY + barBottom()}px` }); };
+    const fin = (html, act = "") => {
+      menu.innerHTML = `<div class="cbody">${html}</div>${act ? `<div class="act">${act}</div>` : ""}<div class="st"></div><div class="err"></div>`;
+      menu.querySelectorAll(".back").forEach((b) => b.addEventListener("click", () => openPushMenu(b.dataset.to || "main", b.dataset.to ? st0 : {})));
+      place();
+    };
+    const back = (to = "") => `<button class="back" data-to="${esc(to)}"><ha-icon icon="mdi:chevron-left"></ha-icon>${esc(t("Zurück"))}</button>`;
+    const busy = (txt) => { const s = menu.querySelector(".st"); if (s) s.textContent = txt || ""; menu.querySelectorAll(".act button").forEach((b) => { b.disabled = !!txt; }); };
+    const fail = (e) => { busy(""); const er = menu.querySelector(".err"); if (er) er.textContent = String(e?.body?.message || e?.message || e); };
+    const ph = pushPhones();
+    if (pg === "main") {
+      const L = pushRules();
+      fin(`<b>${esc(t("Benachrichtigungen"))}</b><small>${esc(t("Push aufs Handy, wenn etwas passiert — läuft in Home Assistant, auch wenn kein Dashboard offen ist."))}</small>
+        ${ph.length ? "" : `<small class="hint warn">${esc(t("Keine Handy-App gefunden: die Home-Assistant-App auf dem Handy installieren und anmelden, dann taucht das Handy hier auf."))}</small>`}
+        ${L.length ? `<small class="sec-t">${esc(t("Deine Benachrichtigungen"))}</small><div class="rowset">${L.map((s) => `<div class="dr" data-e="${esc(s.entity_id)}">
+          <ha-icon icon="${s.state === "on" ? "mdi:bell-ring-outline" : "mdi:bell-off-outline"}"></ha-icon>
+          <button class="t ed" data-e="${esc(s.entity_id)}"><span>${esc(String(s.attributes.friendly_name || "").replace(/^Nullglow: /, ""))}</span>
+            <small>${esc(s.state === "on" ? (s.attributes.last_triggered ? t("zuletzt {x}", { x: new Date(s.attributes.last_triggered).toLocaleString(numLoc(), { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) }) : t("an · noch nie ausgelöst")) : t("aus"))}</small></button>
+          <button class="ico onoff" data-e="${esc(s.entity_id)}" title="${esc(s.state === "on" ? t("Ausschalten") : t("Einschalten"))}"><ha-icon icon="${s.state === "on" ? "mdi:toggle-switch" : "mdi:toggle-switch-off-outline"}"></ha-icon></button></div>`).join("")}</div>` : ""}
+        <small class="sec-t">${esc(t("Neue Benachrichtigung"))}</small><div class="rowset">${PUSH_PRESETS.map((p) => `<button class="it pre" data-k="${p.k}"><ha-icon icon="${p.icon}"></ha-icon>
+          <span class="t"><span>${esc(t(p.name))}</span><small>${esc(t(p.sub))}</small></span></button>`).join("")}
+          <button class="it pre" data-k=""><ha-icon icon="mdi:bell-plus-outline"></ha-icon><span class="t"><span>${esc(t("Eigene"))}</span><small>${esc(t("beliebiges Gerät, Zustand oder Wert"))}</small></span></button></div>`,
+        `<div class="row"><button class="close">${esc(t("Schließen"))}</button></div>`);
+      menu.querySelector(".close").addEventListener("click", () => closeMenu());
+      menu.querySelectorAll(".onoff").forEach((b) => b.addEventListener("click", async () => {
+        const on = hass.states[b.dataset.e]?.state === "on";
+        try { await hass.callService("automation", on ? "turn_off" : "turn_on", {}, { entity_id: b.dataset.e }); } catch (e) { fail(e); return; }
+        setTimeout(() => openPushMenu("main"), 600);
+      }));
+      menu.querySelectorAll(".ed").forEach((b) => b.addEventListener("click", async () => {
+        const id = hass.states[b.dataset.e]?.attributes?.id;
+        busy(t("Lade …"));
+        try {
+          const c = await hass.callApi("GET", `config/automation/config/${id}`), m = c?.variables?.nullglow_push;
+          if (!m) { busy(""); fail(t("Diese Automation wurde in Home Assistant geändert und lässt sich hier nicht mehr bearbeiten.")); return; }
+          openPushMenu("edit", { cur: { ...m }, id });
+        } catch (e) { fail(e); }
+      }));
+      menu.querySelectorAll(".pre").forEach((b) => b.addEventListener("click", () => {
+        const p = PUSH_PRESETS.find((x) => x.k === b.dataset.k), m = { when: "state", to: "", for: 0, title: "{Name}: {Zustand}", text: "", only: "", ...(p ? JSON.parse(JSON.stringify(p.m)) : {}) };
+        if (m.when === "num") { m.dir = m.above !== undefined ? "above" : "below"; m.value = m.above ?? m.below; delete m.above; delete m.below; }
+        m.title = t(m.title); m.text = t(m.text);   // Startwerte in der Sprache des Nutzers
+        if (p?.k === "klingel") m.camera = (window.__ngLastCfg?.doorbell || {}).camera || alertsOf()[0]?.camera || Object.keys(hass.states).find((x) => DOMAIN(x) === "camera") || "";
+        if (p?.k === "klingel" && hass.states[(window.__ngLastCfg?.doorbell || {}).event]) m.entity = window.__ngLastCfg.doorbell.event;   // Klingel aus dem Assistenten
+        const next = { cur: m, preset: p?.k || "" };
+        openPushMenu(m.when === "time" || m.entity ? "edit" : "ent", next);
+      }));
+    } else if (pg === "ent") {   // Gerät wählen (passende zuerst; Suche)
+      const p = PUSH_PRESETS.find((x) => x.k === st0.preset), q = st0.q || "", w = q.trim().toLowerCase(), all = !!st0.all || !p?.pick;
+      const E = hass.entities || {};
+      const ok = (s) => { const d = DOMAIN(s.entity_id); return !PUSH_SKIP.includes(d) && !E[s.entity_id]?.hidden && !E[s.entity_id]?.entity_category; };
+      const L = Object.values(hass.states).filter(ok).filter((s) => all || p.pick(s, DOMAIN(s.entity_id), s.attributes.device_class))
+        .filter((s) => !w || s.entity_id.includes(w) || String(s.attributes.friendly_name || "").toLowerCase().includes(w))
+        .sort((a, b) => String(a.attributes.friendly_name || a.entity_id).localeCompare(String(b.attributes.friendly_name || b.entity_id), numLoc())).slice(0, 80);
+      fin(`${back(st0.id || st0.cur?.entity ? "edit" : "")}<b>${esc(t("Welches Gerät?"))}</b>${p ? `<small>${esc(t(p.name))}</small>` : ""}
+        <input class="pq" placeholder="${esc(t("Suchen: Name oder Entität"))}" value="${esc(q)}">
+        <div class="list">${L.map((s) => `<button class="it${s.entity_id === st0.cur?.entity ? " on" : ""}" data-e="${esc(s.entity_id)}"><ha-icon icon="${esc(s.attributes.icon || DOMAIN_ICON[DOMAIN(s.entity_id)] || "mdi:shape-outline")}"></ha-icon>
+          <span class="t"><span>${esc(s.attributes.friendly_name || s.entity_id)}</span><small>${esc(hass.formatEntityState ? hass.formatEntityState(s) : s.state)} · ${esc(s.entity_id)}</small></span></button>`).join("") || `<small>${esc(t("Nichts gefunden"))}</small>`}</div>
+        ${p?.pick && !all ? `<button class="it allp"><ha-icon icon="mdi:format-list-bulleted"></ha-icon><span class="t"><span>${esc(t("Alle Geräte zeigen"))}</span></span></button>` : ""}`);
+      const inp = menu.querySelector("input.pq");
+      let tm = 0; inp.addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(() => openPushMenu("ent", { ...st0, q: inp.value }), 350); });
+      if (q) { inp.focus(); inp.setSelectionRange(q.length, q.length); }
+      menu.querySelector(".allp")?.addEventListener("click", () => openPushMenu("ent", { ...st0, all: true }));
+      menu.querySelectorAll(".list .it[data-e]").forEach((b) => b.addEventListener("click", () => {
+        const m = { ...st0.cur, entity: b.dataset.e }, opts = pushStates(m.entity), s = hass.states[m.entity];
+        if (m.when === "state" && m.to && !opts.some(([v]) => v === m.to)) m.to = opts[0]?.[0] || "";   // Vorlage passt nicht zum Gerät
+        if (m.when === "num" && !isFinite(parseFloat(s?.state))) { m.when = "state"; m.to = opts[0]?.[0] || ""; }
+        if (m.when === "state" && st0.preset === "" && isFinite(parseFloat(s?.state)) && s?.attributes?.unit_of_measurement) { m.when = "num"; m.dir = "above"; m.value = Math.round(parseFloat(s.state)); }
+        openPushMenu("edit", { ...st0, cur: m, q: "" });
+      }));
+    } else if (pg === "edit") {
+      const m = st0.cur || {}, e = m.entity, s = e && hass.states[e], u = s?.attributes?.unit_of_measurement || "", opts = e ? pushStates(e) : [];
+      const sel = new Set(m.phones || []), cams = Object.keys(hass.states).filter((x) => DOMAIN(x) === "camera").sort((a, b) => fname(a).localeCompare(fname(b), numLoc()));
+      const chip = (cls, v, on, label) => `<button class="${cls}${on ? " on" : ""}" data-v="${esc(v)}">${esc(label)}</button>`;
+      fin(`${back()}<b>${esc(st0.id ? t("Benachrichtigung ändern") : t("Neue Benachrichtigung"))}</b>
+        <small class="sec-t">${esc(t("Wann"))}</small>
+        <div class="seg2 wh">${[["state", t("Zustand")], ["num", t("Wert")], ["time", t("Uhrzeit")]].map(([v, l]) => chip("", v, m.when === v, l)).join("")}</div>
+        ${m.when === "time" ? `<div class="row tm"><input type="time" class="at" value="${esc(m.at || "08:00")}"></div>
+          <div class="chips dy">${PUSH_WDL.map((l, i) => chip("", i, (m.days || []).includes(i), t(l))).join("")}</div>`
+        : `<button class="it ent"><ha-icon icon="${esc(s?.attributes?.icon || DOMAIN_ICON[DOMAIN(e || "")] || "mdi:shape-outline")}"></ha-icon><span class="t"><span>${esc(e ? fname(e) : t("Gerät wählen"))}</span>
+            <small>${esc(e ? `${hass.formatEntityState && s ? hass.formatEntityState(s) : s?.state || ""} · ${e}` : t("antippen"))}</small></span><ha-icon class="chev" icon="mdi:chevron-right"></ha-icon></button>
+          ${e && m.when === "state" ? `<small>${esc(t("wird"))}</small><div class="chips to">${[["", t("jede Änderung")], ...opts].map(([v, l]) => chip("", v, (m.to || "") === v, l)).join("")}</div>` : ""}
+          ${e && m.when === "num" ? `<div class="row nv"><div class="seg2 dir">${chip("", "above", m.dir === "above", t("über"))}${chip("", "below", m.dir !== "above", t("unter"))}</div>
+            <input class="val" type="number" step="any" value="${esc(m.value ?? "")}"><span class="u">${esc(u)}</span></div>` : ""}
+          ${e ? `<small>${esc(t("für mindestens"))}</small><div class="chips fr">${[0, 1, 3, 5, 10, 30, 60].map((n) => chip("", n, (+m.for || 0) === n, n ? t("{n} Min", { n }) : t("sofort"))).join("")}</div>` : ""}`}
+        <small class="sec-t">${esc(t("Nachricht"))}</small>
+        <input class="ti" placeholder="${esc(t("Titel"))}" value="${esc(m.title || "")}">
+        <textarea class="tx" rows="2" placeholder="${esc(t("Text (optional)"))}">${esc(m.text || "")}</textarea>
+        ${m.when === "time" ? "" : `<div class="chips ph">${PUSH_PH.map(([de]) => `<button data-p="${esc(t("{" + de + "}"))}">${esc(t("{" + de + "}"))}</button>`).join("")}</div>`}
+        <small class="hint npv"></small>
+        <small class="sec-t">${esc(t("An"))}</small>
+        ${ph.length ? `<div class="chips to2">${ph.map((p) => chip("", p.svc, sel.has(p.svc), p.name)).join("")}</div><small class="hint">${esc(sel.size ? "" : t("Keins gewählt = an alle Handys"))}</small>`
+          : `<small class="hint warn">${esc(t("Keine Handy-App gefunden — ohne sie kann nichts ankommen."))}</small>`}
+        <small class="sec-t">${esc(t("Extras"))}</small>
+        <div class="seg2 wrap only">${[["", t("Immer")], ["home", t("Jemand daheim")], ["away", t("Niemand daheim")]].map(([v, l]) => chip("", v, (m.only || "") === v, l)).join("")}</div>
+        <div class="rowset">${optRow("quiet", "mdi:weather-night", t("Nicht nachts"), t("nur zwischen 7 und 22 Uhr"), true, !!m.quiet)}
+          ${optRow("imp", "mdi:alert-circle-outline", t("Wichtig"), t("sofort zustellen, hervorgehoben (iPhone: auch im Fokus)"), true, !!m.important)}
+          ${cams.length ? optRow("cam", "mdi:cctv", t("Kamerabild anhängen"), m.camera ? fname(m.camera) : t("kein Bild"), true, !!m.camera) : ""}</div>
+        ${m.camera && cams.length > 1 ? `<div class="chips cm">${cams.map((c) => chip("", c, m.camera === c, fname(c))).join("")}</div>` : ""}`,
+        `<div class="row">${st0.id ? `<button class="del"><ha-icon icon="mdi:delete-outline"></ha-icon><span>${esc(t("Löschen"))}</span></button>` : ""}
+          <button class="test" ${ph.length ? "" : "disabled"}><ha-icon icon="mdi:send-outline"></ha-icon>${esc(t("Test"))}</button>
+          <button class="pri ok" ${ph.length ? "" : "disabled"}><ha-icon icon="mdi:check"></ha-icon>${esc(t("Speichern"))}</button></div>`);
+      const again = (patch) => openPushMenu("edit", { ...st0, cur: { ...m, ...patch } });
+      const ti = menu.querySelector("input.ti"), tx = menu.querySelector("textarea.tx"), pv = menu.querySelector(".npv");
+      const preview = () => { const a = pushNow(m.title, e), b = pushNow(m.text, e); pv.textContent = a || b ? `${t("So kommt es an")}: ${a}${b ? " — " + b : ""}` : ""; };
+      let last = ti;
+      ti.addEventListener("input", () => { m.title = ti.value; preview(); }); tx.addEventListener("input", () => { m.text = tx.value; preview(); });
+      ti.addEventListener("focus", () => { last = ti; }); tx.addEventListener("focus", () => { last = tx; });
+      preview();
+      menu.querySelectorAll(".ph button").forEach((b) => b.addEventListener("mousedown", (ev) => ev.preventDefault()));   // Fokus bleibt im Feld
+      menu.querySelectorAll(".ph button").forEach((b) => b.addEventListener("click", () => {
+        const f = last, a = f.selectionStart ?? f.value.length, z = f.selectionEnd ?? a;
+        f.value = f.value.slice(0, a) + b.dataset.p + f.value.slice(z); f.focus(); f.setSelectionRange(a + b.dataset.p.length, a + b.dataset.p.length);
+        f.dispatchEvent(new Event("input"));
+      }));
+      menu.querySelectorAll(".wh button").forEach((b) => b.addEventListener("click", () => {
+        const w = b.dataset.v, p = { when: w };
+        if (w === "num") { p.dir = m.dir || "above"; p.value = m.value ?? (isFinite(parseFloat(s?.state)) ? Math.round(parseFloat(s.state)) : 0); }
+        if (w === "time") { p.at = m.at || "08:00"; p.days = m.days?.length ? m.days : [0, 1, 2, 3, 4, 5, 6]; }
+        if (w !== "time" && !e) { openPushMenu("ent", { ...st0, cur: { ...m, ...p } }); return; }
+        again(p);
+      }));
+      menu.querySelector(".ent")?.addEventListener("click", () => openPushMenu("ent", { ...st0, q: "" }));
+      menu.querySelectorAll(".to button").forEach((b) => b.addEventListener("click", () => again({ to: b.dataset.v })));
+      menu.querySelectorAll(".dir button").forEach((b) => b.addEventListener("click", () => again({ dir: b.dataset.v })));
+      menu.querySelector("input.val")?.addEventListener("input", (ev) => { m.value = ev.target.value; });
+      menu.querySelectorAll(".fr button").forEach((b) => b.addEventListener("click", () => again({ for: +b.dataset.v })));
+      menu.querySelector("input.at")?.addEventListener("input", (ev) => { m.at = ev.target.value; });
+      menu.querySelectorAll(".dy button").forEach((b) => b.addEventListener("click", () => { const i = +b.dataset.v, D = new Set(m.days || []);
+        if (D.has(i)) D.delete(i); else D.add(i); again({ days: [...D].sort() }); }));
+      menu.querySelectorAll(".to2 button").forEach((b) => b.addEventListener("click", () => { const P = new Set(m.phones || []);
+        if (P.has(b.dataset.v)) P.delete(b.dataset.v); else P.add(b.dataset.v); again({ phones: [...P] }); }));
+      menu.querySelectorAll(".only button").forEach((b) => b.addEventListener("click", () => again({ only: b.dataset.v })));
+      menu.querySelectorAll(".cm button").forEach((b) => b.addEventListener("click", () => again({ camera: b.dataset.v })));
+      menu.querySelector('.or[data-o="quiet"]').addEventListener("click", () => again({ quiet: !m.quiet }));
+      menu.querySelector('.or[data-o="imp"]').addEventListener("click", () => again({ important: !m.important }));
+      menu.querySelector('.or[data-o="cam"]')?.addEventListener("click", () => again({ camera: m.camera ? "" : (alertsOf()[0]?.camera || cams[0]) }));
+      const check = () => {
+        if (m.when !== "time" && !e) return t("Bitte ein Gerät wählen.");
+        if (m.when === "num" && !isFinite(parseFloat(m.value))) return t("Bitte einen Wert eingeben.");
+        if (m.when === "time" && !/^\d{2}:\d{2}$/.test(m.at || "")) return t("Bitte eine Uhrzeit eingeben.");
+        if (m.when === "time" && !m.days?.length) return t("Bitte mindestens einen Tag wählen.");
+        if (!String(m.title || "").trim() && !String(m.text || "").trim()) return t("Bitte einen Titel oder Text eingeben.");
+        return "";
+      };
+      menu.querySelector(".test").addEventListener("click", async () => {
+        const bad = check(); if (bad) { fail(bad); return; }
+        const a = pushNow(m.title, e), b = pushNow(m.text, e), extra = pushExtra(m, `${PUSH_ID}test`);
+        busy(t("Sende …"));
+        try {
+          for (const svc of pushTargets(m)) await hass.callService("notify", svc, { ...(b ? { title: a, message: b } : { message: a }), data: extra });
+          busy(""); const s2 = menu.querySelector(".st"); if (s2) s2.textContent = t("Gesendet — schau aufs Handy.");
+        } catch (err) { fail(err); }
+      });
+      menu.querySelector(".ok").addEventListener("click", async () => {
+        const bad = check(); if (bad) { fail(bad); return; }
+        const id = st0.id || PUSH_ID + Date.now().toString(36), model = { ...m };
+        busy(t("Speichere …"));
+        try {
+          await hass.callApi("POST", `config/automation/config/${id}`, pushAutomation(model, id));
+          for (let i = 0; i < 30 && !pushRules().some((x) => x.attributes.id === id); i++) await new Promise((r) => setTimeout(r, 200));
+          flashNote(t("Benachrichtigung gespeichert"));
+          openPushMenu("main");
+        } catch (err) { fail(err); }
+      });
+      const del = menu.querySelector(".del");
+      del?.addEventListener("click", async () => {
+        if (!del.classList.contains("sure")) { del.classList.add("sure"); del.querySelector("span").textContent = t("Wirklich löschen?"); return; }
+        busy(t("Lösche …"));
+        try {
+          await hass.callApi("DELETE", `config/automation/config/${st0.id}`);
+          for (let i = 0; i < 30 && pushRules().some((x) => x.attributes.id === st0.id); i++) await new Promise((r) => setTimeout(r, 200));
+          flashNote(t("Benachrichtigung gelöscht"));
+          openPushMenu("main");
+        } catch (err) { fail(err); }
       });
     }
   }
