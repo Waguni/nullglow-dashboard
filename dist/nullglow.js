@@ -3,9 +3,9 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
-window.__NULLGLOW_VERSION = "2.11.1";
-window.__NULLGLOW_BUILD = "441d0bf";
-console.info("%c NULLGLOW %c v2.11.1 · 441d0bf ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
+window.__NULLGLOW_VERSION = "2.12.0";
+window.__NULLGLOW_BUILD = "50f65c0";
+console.info("%c NULLGLOW %c v2.12.0 · 50f65c0 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -9682,6 +9682,1671 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
   window.customCards.push({ type: "nullglow-design-card", name: "Nullglow Design", description: t("Design-Auswahl (Farbvarianten)") });
 })();
 
+// ───── nullglow-vehicle-card.js ─────
+(() => {
+  if (customElements.get("nullglow-vehicle-card")) return;
+  // Sprache: Deutsch, wenn das HA-Profil Deutsch ist, sonst Englisch. Texte stehen deutsch im Code, Englisch in EN.
+  const EN = {
+    "Auto": "Car", "Fahrzeug": "Vehicle", "Fahrzeuge": "Vehicles", "Akku": "Battery", "Tank": "Tank", "Reichweite": "Range",
+    "lädt": "charging", "lädt · {p}": "charging · {p}", "voll ca. {t}": "full approx. {t}", "angesteckt": "plugged in", "zu Hause": "at home",
+    "unterwegs": "away", "fährt": "driving", "{n} km entfernt": "{n} km away", "Tür offen": "Door open", "{n} Türen offen": "{n} doors open",
+    "Fenster offen": "Window open", "nicht abgeschlossen": "unlocked", "verriegelt": "locked", "Akku niedrig": "battery low", "Tank fast leer": "fuel low",
+    "gerade aktualisiert": "just updated", "Stand vor {n} min": "{n} min ago", "Stand vor {n} h": "{n} h ago", "Stand vor {n} Tagen": "{n} days ago",
+    "Verriegelt": "Locked", "Offen": "Unlocked", "Lädt": "Charging", "Angesteckt": "Plugged in", "Warnung": "Warning", "Offline": "Offline",
+    "Kosten vergleichen": "Compare costs", "Einstellungen": "Settings", "Schließen": "Close", "Draufsicht": "Top view", "Karte": "Map",
+    "Kilometerstand": "Odometer", "Standort": "Location", "Stecker": "Plug", "gesteckt": "plugged in", "getrennt": "unplugged", "Ladeleistung": "Charging power",
+    "Ladeziel": "Charge limit", "12-V-Batterie": "12 V battery", "Außen": "Outside", "Innen": "Inside", "Stand": "Updated", "Akku nutzbar": "Usable battery",
+    "Abschließen": "Lock", "ist offen": "is unlocked", "fehlgeschlagen": "failed", "Aufschließen in den Details": "unlock in details", "Schloss": "Lock",
+    "Details": "Details", "Klima": "Climate", "AN": "ON", "Kälter": "Cooler", "Wärmer": "Warmer", "Laden": "Charging", "Laden starten": "Start charging",
+    "Laden stoppen": "Stop charging", "nochmal tippen": "tap again", "gesendet ✓": "sent ✓", "Lichthupe": "Flash lights", "Hupe": "Horn", "Finden": "Find",
+    "Jetzt abfragen": "Refresh now", "kann das Auto wecken": "may wake the car", "Früher": "Lower", "Höher": "Higher",
+    "Tag": "Day", "Woche": "Week", "Monat": "Month", "Jahr": "Year", "Seit Kauf": "Since purchase", "Strecke": "Distance", "Strom": "Electricity", "Sprit": "Fuel",
+    "Verbrauch": "Consumption", "seit {d}": "since {d}", "Fahrtkosten": "Driving costs", "Kosten werden berechnet …": "Calculating costs …",
+    "Kein Kilometerstand mit Statistik — die Kosten brauchen einen Kilometerstand-Sensor mit Verlauf.": "No odometer with statistics — costs need an odometer sensor with history.",
+    "laut Auto": "from the car", "eingestellt": "set", "angenommen": "assumed", "Strompreis fehlt": "electricity price missing", "Spritpreis fehlt": "fuel price missing",
+    "+{n} % Ladeverlust": "+{n} % charging loss", "Spritpreis eintragen (⚙)": "enter a fuel price (⚙)", "Strompreis eintragen (⚙)": "enter an electricity price (⚙)",
+    "Mit …": "With …", "gespart": "saved", "Kosten": "Cost", "Letztes Laden": "Last charge", "Zuletzt getankt": "Last refuel", "Akku · 7 Tage": "Battery · 7 days",
+    "Tank · 7 Tage": "Tank · 7 days", "noch nichts in den HA-Daten": "nothing in the HA data yet", "heute": "today", "gestern": "yesterday", "{a} Uhr": "{a}",
+    "Füllstand ohne Verlauf (keine Statistik)": "level has no history (no statistics)", "wird geladen …": "loading …",
+    "VORNE LINKS": "FRONT LEFT", "VORNE RECHTS": "FRONT RIGHT", "HINTEN LINKS": "REAR LEFT", "HINTEN RECHTS": "REAR RIGHT", "KEIN WERT": "NO VALUE", "VORN": "FRONT",
+    "TANK": "TANK", "AKKU": "BATTERY", "LÄDT": "CHARGING",
+    "Fahrzeug-Einstellungen": "Vehicle settings", "Gilt für dieses Auto, gespeichert im Dashboard.": "Applies to this car, saved in the dashboard.",
+    "Name": "Name", "Verbrauch (kWh/100 km)": "Consumption (kWh/100 km)", "Verbrauch (l/100 km)": "Consumption (l/100 km)", "Strompreis (je kWh)": "Electricity price (per kWh)",
+    "Spritpreis (je Liter)": "Fuel price (per litre)", "Zahl oder Sensor, z. B. Tankerkönig": "number or sensor, e.g. a fuel price integration",
+    "Ladeverlust (%)": "Charging loss (%)", "Akku nutzbar (kWh)": "Usable battery (kWh)", "Tank (Liter)": "Tank (litres)", "Elektrisch gefahren (%)": "Driven electrically (%)",
+    "Kraftstoff": "Fuel", "Benzin": "Petrol", "Diesel": "Diesel", "Elektro": "Electric", "Vergleichsauto": "Comparison car",
+    "Gedachtes Auto für den Kostenvergleich — gilt für alle Autos.": "Imaginary car for the cost comparison — applies to all cars.",
+    "Vergleichsauto hinzufügen": "Add comparison car", "Abbrechen": "Cancel", "Speichern": "Save", "Speichere …": "Saving …", "Preis (leer = wie oben)": "Price (empty = as above)",
+    "z. B. altes Auto": "e.g. old car", "aus dem Energie-Dashboard: {p}": "from the Energy dashboard: {p}", "laut Auto: {v}": "from the car: {v}", "Annahme: {v}": "assumed: {v}",
+    "Preis-Sensoren": "Price sensors", "Foto": "Photo", "Foto hochladen": "Upload photo", "Bild des Autos": "Picture from the car",
+    "Zeichnung": "Drawing", "oder Adresse, z. B. /local/auto.png": "or an address, e.g. /local/car.png", "lädt hoch …": "uploading …",
+    "Freigestellt (PNG mit durchsichtigem Hintergrund) sieht am besten aus. Gilt nur für dieses Auto.": "A cut-out (PNG with a transparent background) looks best. Only for this car.",
+    "Hochladen ging nicht: {e}": "Upload failed: {e}", "Kein Bild": "Not an image", "Entfernen": "Remove", "Nur Administratoren können das Dashboard ändern.": "Only administrators can change the dashboard.",
+    // Vergleich
+    "Fahrtkosten-Vergleich": "Driving cost comparison", "Gefahren": "Driven", "Bezahlt": "Paid", "Mit dem {n}": "With the {n}", "Gespart": "Saved",
+    "{n} ct je km": "{n} ct per km", "ohne {n} (Preis fehlt)": "without {n} (price missing)", "{x} × so teuer · +{d}": "{x} × as expensive · +{d}", "aufs Jahr ≈ {v}": "per year ≈ {v}",
+    "Vergleich": "Comparison", "Noch kein Vergleichsauto — im Fahrzeug-Fenster unter ⚙ eintragen.": "No comparison car yet — add one under ⚙ in the vehicle window.",
+    "gedacht": "imaginary", "mehr als bezahlt": "more than paid", "gedacht: alle km mit {c} {u}/100 km zu {p}": "imaginary: all km at {c} {u}/100 km for {p}",
+    "Kosten je 100 km": "Cost per 100 km", "Dieselben {k}, wenn alles mit … gefahren wäre": "The same {k}, had everything been driven with …",
+    "nur {n}": "only {n}", "so gefahren": "as driven", "Verlauf · {p}": "History · {p}", "HA-Daten seit {d}": "HA data since {d}",
+    "Für diesen Zeitraum gibt es noch keine Fahrten in der HA-Statistik.": "No trips in the HA statistics for this period yet.",
+    "(gedacht)": "(imaginary)", "Je Auto seit Kauf: bezahlt · mit dem {n}": "Per car since purchase: paid · with the {n}", "zu heutigen Preisen": "at today's prices",
+    "{p} {u}, bei dem der {a} so günstig wäre wie der {b}": "{p} {u} at which the {a} would be as cheap as the {b}",
+    "Spritpreis, bei dem der {a} so günstig wäre wie der {b}": "Fuel price at which the {a} would be as cheap as the {b}",
+    "Strompreis, ab dem der {a} so teuer wäre wie der {b}": "Electricity price at which the {a} would cost as much as the {b}",
+    "weniger Sprit als mit dem {n}": "less fuel than with the {n}", " = {t} Tankfüllungen": " = {t} tank fills",
+    "elektrisch: {a} von {b}": "electric: {a} of {b}", "weniger als mit dem {n} = {t} Buchen ein Jahr lang": "less than with the {n} = {t} beech trees for a year",
+    "{v} am Tag": "{v} a day", "gespart im Schnitt — aufs Jahr {v}": "saved on average — {v} per year",
+    "Annahmen": "Assumptions", "Ohne Kilometer-Statistik: {n}": "No odometer statistics: {n}", "Schätzwerte": "estimates", "seit Kauf zu heutigen Preisen": "since purchase at today's prices",
+    "CO₂: Benzin 2,37 kg/l · Diesel 2,65 kg/l · Strom 0,363 kg/kWh (Strommix DE)": "CO₂: petrol 2.37 kg/l · diesel 2.65 kg/l · electricity 0.363 kg/kWh (German grid mix)",
+    "aufs Jahr: Ersparnis je Tag seit Beginn der HA-Daten × 365": "per year: savings per day since the HA data began × 365",
+    "Keine Kostendaten — die Autos brauchen einen Kilometerstand mit Statistik.": "No cost data — the cars need an odometer with statistics.",
+    "Zurück": "Back", "km": "km",
+    // Karte
+    "Näher": "Zoom in", "Weiter weg": "Zoom out", "Alles zeigen": "Show all", "Keine Position bekannt": "No position known", "keine Position": "no position",
+    "hin und zurück {n} km": "there and back {n} km", "Position {t}": "position {t}",
+    // Editor
+    "Nullglow Fahrzeug": "Nullglow Vehicle", "Auto aus HA: Akku/Tank, Reichweite, Zustand; Antippen = Übersicht mit Karte und Fahrtkosten":
+      "Any car from HA: battery/fuel, range, status; tap = overview with map and driving costs",
+    "nullglow-vehicle-card: Fahrzeug (device) angeben": "nullglow-vehicle-card: device required",
+  };
+  let ngH = null;   // zuletzt bekanntes hass (set hass setzt es) — Sprache für t()
+  const ngLang = () => (String(ngH?.locale?.language || ngH?.language || document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de") ? "de" : "en");
+  const t = (s, v) => { let o = ngLang() === "de" ? s : (EN[s] ?? s); if (v) for (const [k, x] of Object.entries(v)) o = o.split(`{${k}}`).join(String(x)); return o; };
+  const numLoc = () => (ngLang() === "de" ? "de-DE" : (ngH?.locale?.language || "en"));
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const fin = (x) => typeof x === "number" && isFinite(x);
+  const num = (s) => { const v = parseFloat(s?.state); return isFinite(v) ? v : null; };
+  const de = (n, d = 0) => (fin(n) ? n.toLocaleString(numLoc(), { minimumFractionDigits: d, maximumFractionDigits: d }) : "–");
+  const pad = (n) => String(n).padStart(2, "0");
+  const clamp = (v, a = 0, b = 100) => Math.max(a, Math.min(b, v));
+  const BAD = ["unavailable", "unknown", "none", ""];
+  const ok = (s) => !!s && !BAD.includes(String(s.state).toLowerCase());
+  const isOn = (s) => ["on", "true", "open", "unlocked"].includes(String(s?.state ?? "").toLowerCase());
+  const parseNum = (v) => { if (fin(v)) return v; const s = String(v ?? "").trim().replace(",", "."); return s !== "" && isFinite(+s) ? +s : null; };
+  // Zahl oder Entität (Zustand bzw. Attribut attr)
+  const valOf = (h, v, attr) => {
+    const n = parseNum(v);
+    if (n !== null) return n;
+    const st = typeof v === "string" ? h?.states[v] : null;
+    if (!st) return null;
+    const a = attr ? parseNum(st.attributes?.[attr]) : null;
+    return a !== null ? a : num(st);
+  };
+  const cur = () => { const c = ngH?.config?.currency || "EUR"; return { EUR: "€", USD: "$", GBP: "£", SEK: "kr", NOK: "kr", DKK: "kr", PLN: "zł", CZK: "Kč" }[c] || c; };
+  const money = (v, d) => (fin(v) ? `${de(v, d ?? (Math.abs(v) >= 100 ? 0 : 2))} ${cur()}` : "–");
+  const kmT = (v) => (fin(v) ? `${de(v, v < 100 ? 1 : 0)} km` : "–");
+  const kwT = (w) => (w >= 1000 ? `${de(w / 1000, 1)} kW` : `${de(w)} W`);
+  const tm = (d) => d.toLocaleTimeString(numLoc(), { hour: "2-digit", minute: "2-digit" });
+  const CO2 = { petrol: 2.37, diesel: 2.65, kwh: 0.363 };   // kg je Liter bzw. kWh (Strommix DE 2024, UBA)
+  const PER = { day: "Tag", week: "Woche", month: "Monat", year: "Jahr" };
+  function periodStart(p) {   // Ortszeit, Woche ab Montag (wie der Statistik-Kalender von HA)
+    const d = new Date(); d.setHours(0, 0, 0, 0);
+    if (p === "week") d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+    else if (p === "month") d.setDate(1);
+    else if (p === "year") d.setMonth(0, 1);
+    return d;
+  }
+  const distKm = (a, b) => {   // Luftlinie
+    const r = Math.PI / 180, x = Math.sin((b[0] - a[0]) * r / 2) ** 2 + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin((b[1] - a[1]) * r / 2) ** 2;
+    return 12742 * Math.asin(Math.sqrt(x));
+  };
+  const dayLbl = (d) => {
+    const n = new Date();
+    if (d.toDateString() === n.toDateString()) return t("heute");
+    if (d.toDateString() === new Date(n - 864e5).toDateString()) return t("gestern");
+    return n - d < 6 * 864e5 ? d.toLocaleDateString(numLoc(), { weekday: "short" }) : d.toLocaleDateString(numLoc(), { day: "2-digit", month: "2-digit" });
+  };
+  // Netzbezug-Preis aus dem Energie-Dashboard (Zahl oder Preis-Entität) — einmal je Seite
+  const gridPrice = (h) => (window.__ngVehGrid = window.__ngVehGrid || h.callWS({ type: "energy/get_prefs" }).then((pr) => {
+    for (const src of pr?.energy_sources || []) {
+      if (src.type !== "grid") continue;
+      for (const f of src.flow_from?.length ? src.flow_from : [src]) {
+        if (fin(f.number_energy_price)) return f.number_energy_price;
+        if (f.entity_energy_price) return f.entity_energy_price;
+      }
+    }
+    return null;
+  }, () => null));
+
+  // ======== Erkennung ========
+  // Integrationen, deren Geräte immer Autos sind (sonst reicht: Kilometerstand + Position, Akku/Tank oder Reichweite)
+  const PLATFORMS = new Set(["tesla_fleet", "teslemetry", "tessie", "tesla_custom", "volkswagencarnet", "volkswagen_we_connect_id", "myskoda", "skodaconnect",
+    "audiconnect", "bmw_connected_drive", "kia_uvo", "hyundai_kia_connect", "renault", "polestar_api", "polestar", "mbapi2020", "mercedes_me", "toyota",
+    "toyota_na", "byd_vehicle", "fordpass", "ford", "nissan_leaf", "volvo", "volvooncall", "mazda", "subaru", "porscheconnect", "seatconnect", "cupra_we_connect",
+    "jlrincontrol", "stellantis_vehicles", "psa_car_controller", "mg_saic", "saic_ismart", "rivian", "smart", "leaf", "honda", "mitsubishi"]);
+  const TRUNK = /trunk|boot|tailgate|liftgate|heck|hood|motorhaube|bonnet|frunk|kofferraum|tonneau/;
+  const NOT_SOC = /12v|12_v|lv_batt|aux|starter|key|fob|tpms|tire|tyre|reifen|health|soh|oil|fuel|kraftstoff|tank|remote|phone|range|reichweite|limit|target|max_|min_|charge_level_set/;
+  function tirePos(k) {
+    const ab = /(?:^|[_\s])(fl|fr|rl|rr)(?:[_\s]|$)/.exec(k);
+    if (ab) return { fl: "vl", fr: "vr", rl: "hl", rr: "hr" }[ab[1]];
+    const f = /front|vorne|vorn/.test(k), b = /rear|hinten|back/.test(k), l = /left|links/.test(k), r = /right|rechts/.test(k);
+    return (f !== b) && (l !== r) ? (f ? "v" : "h") + (l ? "l" : "r") : null;
+  }
+  // Rollen der Entitäten eines Geräts. Rückgabe: { soc, fuel, range_ev, range_fuel, range_total, odo, where, lock, climate, … , doors: [], windows: [],
+  // locks: [], problems: [], tires: { vl, vr, hl, hr }, kind: ev|fuel|hybrid|phev }
+  const classCache = new Map();
+  function classify(h, dev, over) {
+    const ck = `${dev}|${JSON.stringify(over || {})}`, cc = classCache.get(ck);
+    if (cc && cc.reg === h.entities) return cc.E;
+    const reg = h.entities || {}, S = h.states, R = {}, sc = {}, L = { doors: [], windows: [], locks: [], problems: [], tires: {} };
+    const list = Object.values(reg).filter((e) => e.device_id === dev && S[e.entity_id]);
+    // gemeinsamen Präfix der Objekt-IDs (Gerätename, Bereich) weglassen — sonst zählen Wörter wie „front“ aus einem Bereich wie „vorgarten_front_…“
+    const objs = list.map((e) => e.entity_id.split(".")[1]);
+    let pre = objs.length > 1 ? objs.reduce((p, o) => { let i = 0; while (i < p.length && p[i] === o[i]) i++; return p.slice(0, i); }) : "";
+    pre = pre.slice(0, pre.lastIndexOf("_") + 1);
+    const put = (role, id, s = 1) => { if (!(role in sc) || s > sc[role]) { sc[role] = s; R[role] = id; } };
+    for (const e of list) {
+      const id = e.entity_id, dom = id.split(".")[0], st = S[id], a = st.attributes || {}, dc = a.device_class;
+      const k = `${e.translation_key || ""} ${id.split(".")[1].slice(pre.length)}`.toLowerCase(), u = String(a.unit_of_measurement || "").toLowerCase().replace(/\s/g, "");
+      const x = (re) => re.test(k), avg = x(/lifetime|total|gesamt|overall/) ? 3 : x(/last_|trip|fahrt|recent|letzte/) ? 1 : x(/average|avg|durchschnitt|mean/) ? 2 : 1;
+      if (dom === "sensor") {
+        if (u === "%" && !x(NOT_SOC) && (dc === "battery" || x(/soc|state_of_charge|battery|batterie|elec_percent|charge_level|ladezustand|akkustand|ladestand/)))
+          put("soc", id, (dc === "battery" ? 2 : 0) + (x(/soc|state_of_charge|battery_level|elec_percent|charge_level|ladezustand|akkustand|ladestand/) ? 2 : 0) + (a.state_class ? 1 : 0) - (x(/usable|nutzbar/) ? 1 : 0));
+        if ((u === "%" || ["l", "gal"].includes(u)) && x(/fuel|kraftstoff|tank|oil_percent|benzin|petrol|gas_level/) && !x(/range|reichweite|consum|verbrauch|price|preis|type|cost|kosten/))
+          put("fuel", id, u === "%" ? 2 : 1);
+        if (dc === "distance" || ["km", "mi"].includes(u)) {
+          if (x(/odometer|mileage|kilometer|(^|[_\s])odo([_\s]|$)|total_distance|kilometerstand|kilometerzahler|km_stand|laufleistung/) && !x(/trip|range|statist|daily|today|week|month|year|since|service|inspection|oil|reichweite|reise/))
+            put("odo", id, (["total", "total_increasing"].includes(a.state_class) ? 2 : 0) + 1);
+          else if (x(/range|reichweite|endurance|remaining|distance_to_empty|(^|[_\s])dte([_\s]|$)/) && !x(/max|ideal|full|service|inspection|oil|wartung/)) {
+            const sub = x(/fuel|tank|kraftstoff|benzin|petrol|gas|combustion|verbrenn|diesel/) ? "range_fuel" : x(/total|gesamt|combined|hybrid/) ? "range_total" : "range_ev";
+            put(sub, id, x(/est|estimate/) ? 1 : 2);
+          }
+        }
+        if (dc === "power" && x(/charg|lade|battery_power|charger/)) put("power", id, x(/charg|lade/) ? 2 : 1);
+        if (/^(kwh\/100(km|mi)|wh\/km|km\/kwh|mi\/kwh|wh\/mi)$/.test(u)) put("cons_ev", id, avg);
+        if (/^(l\/100km|mpg|km\/l)$/.test(u)) put("cons_fuel", id, avg);
+        if (isFinite(parseFloat(a.Average_fuel_consumed)) && x(/year|jahr/)) put("cons_fuel_attr", id, 1);   // Toyota: Ø-Verbrauch im Attribut der Jahresstatistik
+        if (["energy_storage", "energy"].includes(dc) && u === "kwh" && x(/capacity|kapazit|battery_size|usable|nutzbar/)) put("capacity", id, 1);
+        if (dc === "timestamp" && x(/last_update|updated|reported|last_seen|successful|data_time|zuletzt|last_contact|status_time|aktualisiert/) && !x(/gps|error|fehler|service|charge|trip|fahrt/))
+          put("updated", id, x(/reported|gemeldet/) ? 3 : x(/last_update|updated|aktualisiert/) ? 2 : 1);
+        if (dc === "timestamp" && x(/gps|location|position/)) put("gps_at", id, 1);
+        if ((dc === "pressure" || ["kpa", "bar", "psi"].includes(u)) && x(/tire|tyre|reifen|tpms|wheel/)) { const p = tirePos(k); if (p) L.tires[p] = id; }
+        if (dc === "temperature" && x(/outside|exterior|outdoor|aussen|ausen|ambient/)) put("t_out", id, 1);
+        if (dc === "temperature" && x(/inside|interior|cabin|innen|inner/)) put("t_in", id, 1);
+        if (x(/12v|12_v|lv_battery|aux_battery|starter_battery|12_volt|bordnetz/)) put("v12", id, u === "v" || dc === "voltage" ? 2 : 1);
+        if (x(/charging_state|charge_state|charging_status|charger_state|ladestatus|charge_status|ladezustand_status/) && !isFinite(parseFloat(st.state))) put("chg_state", id, 1);
+      } else if (dom === "binary_sensor") {
+        if (dc === "battery_charging" || x(/is_charging|(^|[_\s])charging$|(^|[_\s])laden$|ladt/)) put("charging", id, dc === "battery_charging" ? 2 : 1);
+        if (dc === "plug" || x(/plug|charger_connected|charging_cable|cable_connected|stecker/)) put("plug", id, dc === "plug" ? 2 : 1);
+        if (dc === "door" || dc === "opening" || (dc === "window" && x(TRUNK))) { if (!x(/charge_port|charging_port|ladeklappe|fuel_door|tankdeckel/)) L.doors.push(id); }
+        else if (dc === "window") L.windows.push(id);
+        if (dc === "lock") L.locks.push(id);
+        if (dc === "connectivity") put("online", id, x(/online|connect/) ? 2 : 1);
+        if (dc === "moving" || x(/driving|in_motion|is_moving/)) put("moving", id, 1);
+        if (dc === "problem") L.problems.push(id);
+      } else if (dom === "device_tracker") put("where", id, (isFinite(parseFloat(a.latitude)) ? 2 : 0) + (x(/location|standort|position|gps/) ? 1 : 0));
+      else if (dom === "lock") { if (!x(/charge|cable|port|tonneau|frunk|trunk|glove|boot|tailgate|kabel/)) put("lock", id, x(/door|central|lock$|schloss|abschliess|verriegel/) ? 2 : 1); }
+      else if (dom === "climate") put("climate", id, 2);
+      else if (dom === "switch") {
+        if (x(/climate|hvac|precondition|air_condition|klima|defrost|heater/) && !x(/seat|steering|window|mirror|sitz|lenkrad|spiegel/)) put("climate_sw", id, 1);
+        if (x(/(^|[_\s])charge($|[_\s])|charge_switch|charging_enable|start_stop_charg|(^|[_\s])charging$|charge_start|(^|[_\s])laden$/) && !x(/full|schedule|port|cable|plan|limit|amps|current|repeat|daily|voll/))
+          put("charge_sw", id, 1);
+      } else if (dom === "number") {
+        if (x(/charge_limit|charging_limit|target_soc|charge_target|max_charge|soc_limit|target_state_of_charge|ladelimit|ladeziel|charge_level|target_battery|charging_target/)) put("limit", id, 1);
+      } else if (dom === "button") {
+        if (x(/force_poll|refresh|update|poll|wake|abfrage|aktualis|vehicle_status/) && !x(/trip|energy|fahrten|firmware|ota/)) put("poll", id, x(/status|force|wake/) ? 2 : 1);
+        if (x(/horn|honk|hupe/) && !x(/licht|light|flash/)) put("horn", id, 1);
+        if (x(/flash|lichthupe|headlight|blink/)) put("flash", id, 1);
+        if (x(/find|locate|finden/)) put("find", id, 1);
+        if (x(/start_charg|charge_start|ladestart|laden_starten/)) put("chg_start", id, 1);
+        if (x(/stop_charg|charge_stop|ladestopp|laden_stoppen/)) put("chg_stop", id, 1);
+      } else if (dom === "image") put("image", id, 1);
+    }
+    for (const [k, v] of Object.entries(over || {})) if (typeof v === "string" && S[v]) R[k] = v;   // von Hand gesetzte Rollen
+    if (R.fuel && num(S[R.fuel]) !== null && num(S[R.fuel]) < 0) delete R.fuel;   // Elektroauto meldet z. B. -1 % Kraftstoff
+    const plug = !!(R.plug || R.charging || R.charge_sw || R.limit || R.chg_start || R.power || R.chg_state);
+    const kind = R.soc ? (R.fuel || R.range_fuel ? (plug ? "phev" : "hybrid") : "ev") : "fuel";
+    const E = { ...R, ...L, kind, platform: list[0]?.platform || "" };
+    classCache.set(ck, { reg: h.entities, E });
+    return E;
+  }
+  // Autos in HA: Geräte mit Kilometerstand + (Position | Akku/Tank | Reichweite) oder aus einer Auto-Integration (mit Akku/Tank/Kilometerstand)
+  let findCache = null;
+  function findVehicles(h) {
+    if (findCache && findCache.reg === h.entities && findCache.dev === h.devices) return findCache.list;
+    const reg = h.entities || {}, D = h.devices || {}, by = new Map();
+    for (const e of Object.values(reg)) {
+      if (!e.device_id || !h.states[e.entity_id]) continue;
+      if (!by.has(e.device_id)) by.set(e.device_id, { known: false, dist: false });
+      const b = by.get(e.device_id), a = h.states[e.entity_id].attributes || {};
+      if (PLATFORMS.has(e.platform)) b.known = true;
+      if (a.device_class === "distance" || ["km", "mi"].includes(a.unit_of_measurement)) b.dist = true;
+    }
+    const list = [];
+    for (const [dev, b] of by) {
+      const d = D[dev];
+      if (!d || d.entry_type === "service" || d.disabled_by || (!b.known && !b.dist)) continue;
+      const E = classify(h, dev);
+      if ((E.odo && (E.where || E.soc || E.fuel || E.range_ev || E.range_fuel)) || (b.known && (E.odo || E.soc || E.fuel)))
+        list.push({ device: dev, ...vehName(h, dev), kind: E.kind, entities: Object.values(reg).filter((e) => e.device_id === dev).map((e) => e.entity_id),
+          battery: [E.soc, E.fuel, E.v12].filter(Boolean) });
+    }
+    findCache = { reg: h.entities, dev: h.devices, list };
+    return list;
+  }
+  // Name: vom Nutzer gesetzt › Gerätename (ohne Marke, nicht die Fahrgestellnummer) › Modell
+  function vehName(h, dev) {
+    const d = (h.devices || {})[dev] || {}, brand0 = String(d.manufacturer || "").trim(), raw = String(d.name_by_user || d.name || "").trim();
+    const vinish = (s) => /^[A-HJ-NPR-Z0-9]{11,17}$/i.test(s.replace(/[\s-]/g, "")) && /\d/.test(s);
+    const title = (s) => (s === s.toUpperCase() && /[A-Z]{3}/.test(s) ? s.toLowerCase().replace(/(^|[\s-])\S/g, (m) => m.toUpperCase()) : s);
+    // Marke vorn weg („TESLA MODEL Y“, „SkodaOctaviaRS“), zusammengeschriebene Namen trennen („Octavia RS“)
+    const strip = (s) => { const b = brand0.toLowerCase(), r = b && s.toLowerCase().startsWith(b) ? s.slice(b.length) : null;
+      return r !== null && r.trim() && /^([\s_-]|[A-Z0-9])/.test(r) ? r.replace(/^[\s_-]+/, "").trim() : s; };
+    const split = (s) => (/\s/.test(s) || s.length < 6 ? s : s.replace(/([a-z])([A-Z0-9])/g, "$1 $2"));   // „iX3“ bleibt
+    let name = raw && !vinish(raw) && raw.toLowerCase() !== brand0.toLowerCase() ? split(title(strip(raw))) : "";
+    if (!name) name = split(title(strip(String(d.model || "").replace(/\s+-\s+.*$/, "").trim())));
+    const brand = brand0.length <= 4 ? brand0.toUpperCase() : title(brand0);
+    return { brand, name: name || t("Auto") };
+  }
+  window.__ngVehicles = { find: findVehicles, classify };
+
+  // Zustand eines Autos (für Kachel und Fenster)
+  function vstate(h, E, c) {
+    const S = (id) => (id ? h.states[id] : undefined);
+    const soc = E.soc ? num(S(E.soc)) : null, fuelRaw = E.fuel ? num(S(E.fuel)) : null;
+    const fuelU = String(S(E.fuel)?.attributes?.unit_of_measurement || "%").toLowerCase(), tank = parseNum(c.tank);
+    const fuel = fuelRaw === null || fuelRaw < 0 ? null : fuelU === "%" ? fuelRaw : tank > 0 ? fuelRaw / tank * 100 : null;
+    const rEv = num(S(E.range_ev)), rFu = num(S(E.range_fuel)), rTot = num(S(E.range_total));
+    const range = rTot ?? (rEv !== null && rFu !== null ? rEv + rFu : rEv ?? rFu);
+    const cs = String(S(E.chg_state)?.state || "").toLowerCase();
+    const csOn = /charg|laden|ladt|lädt/.test(cs) && !/not|no_|nicht|stop|complete|finish|disconn|ready|idle|off|end|fehl|error|fault|paus|wait|schedul|abgeschlossen/.test(cs);
+    const w0 = num(S(E.power)), wu = String(S(E.power)?.attributes?.unit_of_measurement || "W").toLowerCase();
+    const watt = w0 === null ? null : Math.abs(wu === "kw" ? w0 * 1000 : w0);
+    const charging = E.charging && ok(S(E.charging)) ? isOn(S(E.charging)) : csOn;
+    const plugged = charging || (E.plug ? isOn(S(E.plug)) : false);
+    const lk = S(E.lock);
+    const lock = lk && ok(lk) ? lk.state : E.locks.length ? (E.locks.some((x) => isOn(S(x))) ? "unlocked" : E.locks.every((x) => ok(S(x))) ? "locked" : null) : null;
+    const wh = S(E.where), wa = wh?.attributes || {}, zh = h.states["zone.home"]?.attributes;
+    const lat = parseFloat(wa.latitude), lon = parseFloat(wa.longitude);
+    let place = "", dist = null;
+    if (ok(wh)) {
+      if (isFinite(lat) && zh && isFinite(+zh.latitude)) dist = distKm([+zh.latitude, +zh.longitude], [lat, lon]);
+      if (wh.state === "home" || (dist !== null && dist < 0.15)) place = t("zu Hause");
+      else if (wh.state === "not_home") place = dist !== null ? t("{n} km entfernt", { n: de(dist, dist < 10 ? 1 : 0) }) : t("unterwegs");
+      else place = h.states[`zone.${wh.state}`]?.attributes?.friendly_name || wh.state;
+    }
+    // Stand: Zeitstempel-Sensor des Autos, sonst letzte Änderung der wichtigsten Werte
+    const up = S(E.updated), ts = up && !isNaN(Date.parse(up.state)) ? Date.parse(up.state)
+      : Math.max(0, ...[E.soc, E.fuel, E.odo, E.range_ev, E.range_fuel].filter(Boolean).map((id) => Date.parse(S(id)?.last_updated) || 0));
+    const ageMin = ts ? Math.round((Date.now() - ts) / 60000) : null;
+    const age = ageMin === null ? "" : ageMin < 2 ? t("gerade aktualisiert") : ageMin < 120 ? t("Stand vor {n} min", { n: ageMin })
+      : ageMin < 2880 ? t("Stand vor {n} h", { n: Math.round(ageMin / 60) }) : t("Stand vor {n} Tagen", { n: Math.round(ageMin / 1440) });
+    return { soc, fuel, rEv, rFu, range, charging, plugged, watt, lock, place, dist, lat, lon, age, ageMin,
+      doorsOpen: E.doors.filter((x) => isOn(S(x))), windowsOpen: E.windows.filter((x) => isOn(S(x))), problem: E.problems.some((x) => isOn(S(x))),
+      online: E.online && ok(S(E.online)) ? isOn(S(E.online)) : null, moving: E.moving ? isOn(S(E.moving)) : false, odo: num(S(E.odo)) };
+  }
+  // Verbrauch aus einem Sensor des Autos (Einheiten umrechnen)
+  function consOf(st, ev) {
+    const v = num(st);
+    if (v === null || v <= 0) return null;
+    const u = String(st.attributes?.unit_of_measurement || "").toLowerCase().replace(/\s/g, "");
+    if (ev) return u.startsWith("kwh/100km") ? v : u === "kwh/100mi" ? v / 1.609344 : u === "wh/km" ? v / 10 : u === "km/kwh" ? 100 / v : u === "mi/kwh" ? 100 / (v * 1.609344) : u === "wh/mi" ? v / 16.09344 : null;
+    return u.startsWith("l/100") ? v : u === "km/l" ? 100 / v : u === "mpg" ? 235.215 / v : null;
+  }
+  const sumFrom = (rows, a, b = Infinity) => rows.reduce((x, r) => (r.t >= a && r.t < b && fin(r.v) ? x + r.v : x), 0);
+  // erster Wert der Statistik: Monatswerte beginnen am Monatsersten — liegt er im Bereich der Tageswerte, gilt der erste Tag
+  const firstT = (R) => {
+    const m = R.months.find((r) => fin(r.v))?.t, d = R.days.find((r) => fin(r.v))?.t;
+    return fin(d) && fin(m) && d - m < 32 * 864e5 && d >= m ? d : fin(m) ? m : fin(d) ? d : null;
+  };
+  // Füllstand-Anstiege (Stundenmittel): Laden bzw. Tanken. Pausen bis 5 h gehören zum selben Vorgang; ab min Prozentpunkten
+  function rises(rows, min) {
+    const out = [];
+    let ep = null, prev = null;
+    for (const r of rows) {
+      if (!fin(r.m)) continue;
+      if (prev) {
+        const d = r.m - prev.m;
+        if (ep && (d < -1 || r.t - ep.last > 5 * 3600e3)) { out.push(ep); ep = null; }
+        if (d > 0.3) { if (!ep) ep = { a: prev.t, from: prev.m, to: r.m, last: r.t }; ep.to = Math.max(ep.to, r.m); ep.last = r.t; }
+      }
+      prev = r;
+    }
+    if (ep) out.push(ep);
+    return out.filter((x) => x.to - x.from >= min).map((x) => ({ ...x, b: x.last + 3600e3 }));
+  }
+
+  // ======== Kachel ========
+  const ico = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+  const I = {
+    lock: ico('<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>'),
+    unlock: ico('<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 7.7-1.5"/>'),
+    fan: ico('<circle cx="12" cy="12" r="2"/><path d="M12 10c-1-4 1-7 3.5-6.5S17 8 12 10zM14 12c4-1 7 1 6.5 3.5S16 17 14 12zM12 14c1 4-1 7-3.5 6.5S7 16 12 14zM10 12c-4 1-7-1-6.5-3.5S8 7 10 12z"/>'),
+    find: ico('<path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>'),
+    beam: ico('<path d="M9 6c-3 0-5 2.7-5 6s2 6 5 6c1.2 0 2-1 2-2V8c0-1-.8-2-2-2z"/><path d="M14 8h7M14 12h7M14 16h7"/>'),
+    horn: ico('<path d="M3 10v4h3l6 4V6L6 10z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/>'),
+    sync: ico('<path d="M20 12a8 8 0 0 1-14 5.3M4 12a8 8 0 0 1 14-5.3"/><path d="M18 3v4h-4M6 21v-4h4"/>'),
+    bolt: ico('<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'),
+    gear: ico('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
+    chart: ico('<path d="M5 20V11M12 20V4M19 20v-6"/>'),
+  };
+  // Bild des Autos aus HA (image-Entität des Geräts, sonst entity_picture der Positions-Entität — z. B. Toyota in Wagenfarbe)
+  const autoImg = (h, E) => h.states[E.image]?.attributes?.entity_picture || h.states[E.where]?.attributes?.entity_picture || "";
+  const KIND_ICON = { ev: "mdi:car-electric", phev: "mdi:car-electric-outline", hybrid: "mdi:car-electric-outline", fuel: "mdi:car-side" };
+  // Seitenansicht (Front rechts), nur Linien in Theme-Farben — passt zu hellen und dunklen Designs
+  const SIDE = `<svg class="car" viewBox="0 0 320 112" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+    <ellipse class="floor" cx="160" cy="104" rx="150" ry="7"/>
+    <path class="body" d="M18 80 C16 71 18 63 27 59 L72 50 C90 34 106 25 134 23 L196 22 C214 22 229 27 243 37 L264 51 L293 57 C303 59 307 65 307 73 L307 82 C307 86 304 88 300 88 L279 88 A24 24 0 0 0 231 88 L97 88 A24 24 0 0 0 49 88 L24 88 C20 88 18 85 18 80 Z"/>
+    <path class="glass" d="M88 50 C100 38 114 31 134 29 L160 29 L160 50 Z M168 29 L196 29 C210 29 223 33 235 43 L245 50 L168 50 Z"/>
+    <path class="line" d="M164 29 V84 M36 66 H300"/>
+    <path class="lamp" d="M293 64 h10"/><path class="tail" d="M20 66 h8"/>
+    <circle class="wheel" cx="73" cy="88" r="19"/><circle class="hub" cx="73" cy="88" r="8"/>
+    <circle class="wheel" cx="255" cy="88" r="19"/><circle class="hub" cx="255" cy="88" r="8"/>
+    <circle class="port" cx="282" cy="62" r="4"/>
+  </svg>`;
+  const STYLE = `
+    :host { display: block; height: 100%; }
+    .card { height: 100%; box-sizing: border-box; position: relative; overflow: hidden; border-radius: var(--ha-card-border-radius, var(--ngs-r-card, 20px));
+      background: var(--ha-card-background, rgba(var(--rgb-ng-txt, 255, 255, 255), .045));
+      box-shadow: var(--ha-card-box-shadow, inset 0 0 0 1px rgba(var(--rgb-ng-txt, 255, 255, 255), .09));
+      -webkit-backdrop-filter: var(--ha-card-backdrop-filter, none); backdrop-filter: var(--ha-card-backdrop-filter, none);
+      color: var(--ng-txt, #e8f5ee); font-family: var(--ng-font, inherit); padding: 12px 14px; display: flex; flex-direction: column; gap: 9px;
+      cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .mono { font-family: var(--ha-font-family-code, 'JetBrains Mono', monospace); font-variant-numeric: tabular-nums; }
+    .hd { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .ic { flex: none; width: 42px; height: 42px; border-radius: var(--ngs-round, 50%); display: grid; place-items: center; --mdc-icon-size: 24px;
+      background: rgba(var(--rgb-ng-txt, 255, 255, 255), .06); color: var(--ng-txt-dim, #93a79d); }
+    .chg .ic { color: var(--ng-acc, #7cffb2); background: rgba(var(--rgb-ng-acc, 124, 255, 178), .16);
+      box-shadow: 0 0 18px -4px rgba(var(--rgb-ng-acc, 124, 255, 178), calc(.6 * var(--ng-glow-k, 1))); }
+    .warn .ic { color: var(--ng-warn, #ffd166); background: rgba(var(--rgb-ng-warn, 255, 209, 102), .14); }
+    .ic.pic { width: 78px; height: 46px; border-radius: calc(12px * var(--ngs-rk, 1)); background: none; box-shadow: none; }
+    .ic.pic img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .35)); }
+    .chg .ic.pic { background: radial-gradient(closest-side, rgba(var(--rgb-ng-acc, 124, 255, 178), calc(.35 * var(--ng-glow-k, 1))), transparent); }
+    .warn .ic.pic { background: rgba(var(--rgb-ng-warn, 255, 209, 102), .1); box-shadow: inset 0 0 0 1.5px rgba(var(--rgb-ng-warn, 255, 209, 102), .6); }
+    .nm { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; line-height: 1.15; }
+    .nm small { font: 500 9.5px/1.1 var(--ha-font-family-code, monospace); letter-spacing: .16em; text-transform: uppercase; color: var(--ng-txt-mute, #5f6f68);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .nm b { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .nm span { font-size: 12px; color: var(--ng-txt-dim, #93a79d); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .warn .nm span { color: var(--ng-warn, #ffd166); } .chg .nm span { color: var(--ng-acc, #7cffb2); }
+    .lv { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+    .lv b { font-size: 22px; font-weight: 600; line-height: 1; } .lv b small { font-size: 12px; font-weight: 500; color: var(--ng-txt-dim, #93a79d); margin-left: 1px; }
+    .lv span { font-size: 11.5px; color: var(--ng-txt-dim, #93a79d); white-space: nowrap; }
+    .low { color: var(--ng-warn, #ffd166); }
+    .bars { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
+    .bar { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; height: 6px; }
+    .bar i { border-radius: calc(2px * var(--ngs-rk, 1)); background: rgba(var(--rgb-ng-txt, 255, 255, 255), .08); }
+    .bar i.f { background: var(--ng-acc, #7cffb2); box-shadow: 0 0 8px rgba(var(--rgb-ng-acc, 124, 255, 178), calc(.45 * var(--ng-glow-k, 1))); }
+    .bar.fu i.f { background: rgba(var(--rgb-ng-txt, 255, 255, 255), .55); box-shadow: none; }
+    .bar.low i.f { background: var(--ng-warn, #ffd166); box-shadow: none; }
+    .bar i.c { animation: ngvpulse 1.6s ease-in-out infinite; }
+    @keyframes ngvpulse { 50% { opacity: .35; } }
+    .stage { display: none; flex: 1 1 0; min-height: 0; position: relative; align-items: flex-end; justify-content: center; }
+    .tall .stage { display: flex; }
+    .stage .car { width: 100%; height: 100%; max-height: 140px; display: block; overflow: visible; }
+    .stage img { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .35)); }
+    .car .body { fill: rgba(var(--rgb-ng-txt, 255, 255, 255), .05); stroke: rgba(var(--rgb-ng-txt, 255, 255, 255), .4); stroke-width: 1.4; }
+    .car .glass { fill: rgba(var(--rgb-ng-txt, 255, 255, 255), .06); stroke: rgba(var(--rgb-ng-txt, 255, 255, 255), .24); stroke-width: 1; }
+    .car .line { fill: none; stroke: rgba(var(--rgb-ng-txt, 255, 255, 255), .12); stroke-width: 1; }
+    .car .lamp { stroke: rgba(var(--rgb-ng-txt, 255, 255, 255), .75); stroke-width: 2.6; stroke-linecap: round; }
+    .car .tail { stroke: var(--ng-danger, #ff6b6b); opacity: .65; stroke-width: 2.6; stroke-linecap: round; }
+    .car .wheel { fill: var(--ng-bg, #05070a); stroke: rgba(var(--rgb-ng-txt, 255, 255, 255), .45); stroke-width: 1.4; }
+    .car .hub { fill: none; stroke: rgba(var(--rgb-ng-txt, 255, 255, 255), .22); stroke-width: 1.2; }
+    .car .floor { fill: rgba(var(--rgb-ng-txt, 255, 255, 255), .05); }
+    .car .port { fill: none; stroke: none; }
+    .chg .car .body { stroke: rgba(var(--rgb-ng-acc, 124, 255, 178), .7); }
+    .chg .car .floor { fill: rgba(var(--rgb-ng-acc, 124, 255, 178), .18); animation: ngvpulse 3s ease-in-out infinite; }
+    .chg .car .port { fill: var(--ng-acc, #7cffb2); filter: drop-shadow(0 0 4px var(--ng-acc, #7cffb2)); animation: ngvpulse 1.6s ease-in-out infinite; }
+    .card.eco *, .card.eco *::after { animation: none !important; }
+    @media (prefers-reduced-motion: reduce) { .card * { animation: none !important; } }
+  `;
+
+  class NullglowVehicleCard extends HTMLElement {
+    // ── Editor ──
+    static _ngEn() {
+      const h = document.querySelector("home-assistant")?.hass;
+      return !String(h?.locale?.language || h?.language || "de").toLowerCase().startsWith("de");
+    }
+    static _ngForm(schema, labels, helpers = {}, en = {}) {
+      if (!this._ngEn()) return { schema, computeLabel: (s) => labels[s.name] ?? s.name, computeHelper: (s) => helpers[s.name] };
+      const tr = (x) => (typeof x === "string" ? en[x] ?? x : x);
+      const walk = (list) => list.map((s) => {
+        const o = { ...s }, sel = s.selector;
+        if (Array.isArray(o.schema)) o.schema = walk(o.schema);
+        if (sel?.select?.options) o.selector = { ...sel, select: { ...sel.select, options: sel.select.options.map((p) => (p && typeof p === "object" ? { ...p, label: tr(p.label) } : p)) } };
+        return o;
+      });
+      return { schema: walk(schema), computeLabel: (s) => tr(labels[s.name]) ?? s.name, computeHelper: (s) => tr(helpers[s.name]) };
+    }
+    static getConfigForm() {
+      return this._ngForm([
+        { name: "device", required: true, selector: { device: {} } },
+        { name: "name", selector: { text: {} } },
+        { name: "consumption", selector: { number: { min: 0, max: 60, step: 0.1, mode: "box" } } },
+        { name: "price", selector: { text: {} } },
+        { name: "fuel_price", selector: { text: {} } },
+        { name: "fuel_type", selector: { select: { mode: "dropdown", options: [{ value: "petrol", label: "Benzin" }, { value: "diesel", label: "Diesel" }] } } },
+        { name: "tank", selector: { number: { min: 0, max: 200, step: 1, mode: "box" } } },
+        { name: "capacity", selector: { number: { min: 0, max: 250, step: 0.1, mode: "box" } } },
+        { name: "image", selector: { text: {} } },
+        { name: "compare", selector: { object: {} } },
+      ], { device: "Fahrzeug (Gerät)", name: "Name", consumption: "Verbrauch (kWh bzw. l je 100 km)", price: "Strompreis je kWh", fuel_price: "Spritpreis je Liter",
+        fuel_type: "Kraftstoff", tank: "Tank (Liter)", capacity: "Akku nutzbar (kWh)", image: "Foto (URL, optional)", compare: "Vergleichsautos (YAML, optional)" },
+      { consumption: "leer = laut Auto", price: "Zahl oder Entität — leer = Netzbezug-Preis aus dem Energie-Dashboard", fuel_price: "Zahl oder Entität (z. B. Tankerkönig)",
+        compare: "- { name: Alter Diesel, consumption: 6.5, fuel: diesel, price: 1.75 }" },
+      { "Fahrzeug (Gerät)": "Vehicle (device)", "Name": "Name", "Verbrauch (kWh bzw. l je 100 km)": "Consumption (kWh or l per 100 km)", "Strompreis je kWh": "Electricity price per kWh",
+        "Spritpreis je Liter": "Fuel price per litre", "Kraftstoff": "Fuel", "Benzin": "Petrol", "Diesel": "Diesel", "Tank (Liter)": "Tank (litres)", "Akku nutzbar (kWh)": "Usable battery (kWh)",
+        "Foto (URL, optional)": "Photo (URL, optional)", "Vergleichsautos (YAML, optional)": "Comparison cars (YAML, optional)", "leer = laut Auto": "empty = from the car",
+        "Zahl oder Entität — leer = Netzbezug-Preis aus dem Energie-Dashboard": "number or entity — empty = grid price from the Energy dashboard",
+        "Zahl oder Entität (z. B. Tankerkönig)": "number or entity (e.g. a fuel price integration)" });
+    }
+    static async getStubConfig(hass) { const v = findVehicles(hass)[0]; return { device: v?.device || "" }; }
+    // ── Editor Ende ──
+    setConfig(config) {
+      if (!config?.device && !config?.entities) throw new Error(t("nullglow-vehicle-card: Fahrzeug (device) angeben"));
+      this._cfg = { tire_low: 200, tire_high: 320, ...config };
+      if (!this.shadowRoot) this.attachShadow({ mode: "open" });
+      const card = document.createElement(customElements.get("ha-card") ? "ha-card" : "div");
+      card.className = "card";
+      this.shadowRoot.innerHTML = `<style>${STYLE}</style>`;
+      this.shadowRoot.appendChild(card);
+      card.addEventListener("click", () => this._openDetail());
+      this._card = card;
+      this._key = null;
+      this._E = null;
+    }
+    connectedCallback() {
+      if (!this._ro) this._ro = new ResizeObserver(() => { const tall = this.clientHeight >= 165; if (tall !== this._tall) { this._tall = tall; this._key = null; if (this._hass) this.hass = this._hass; } });
+      this._ro.observe(this);
+    }
+    disconnectedCallback() { this._ro?.disconnect(); this._closeDetail(); }
+    getCardSize() { return 2; }
+    getGridOptions() { return { columns: 12, rows: 2, min_rows: 2 }; }
+    _ents() {
+      const h = this._hass;
+      if (this._E && this._Ereg === h.entities) return this._E;
+      const base = this._cfg.device ? classify(h, this._cfg.device, this._cfg.entities) : null;
+      this._E = base || { doors: [], windows: [], locks: [], problems: [], tires: {}, kind: "fuel", ...(this._cfg.entities || {}) };
+      if (!base) this._E.kind = this._E.soc ? (this._E.fuel ? "phev" : "ev") : "fuel";
+      if (["ev", "fuel", "hybrid", "phev"].includes(this._cfg.kind)) this._E = { ...this._E, kind: this._cfg.kind };
+      this._Ereg = h.entities;
+      return this._E;
+    }
+    _img() { const c = this._cfg; return c.image === "none" ? "" : c.image || autoImg(this._hass, this._ents()); }
+    _names() {
+      const n = this._cfg.device ? vehName(this._hass, this._cfg.device) : { brand: "", name: t("Auto") };
+      return { brand: n.brand, name: this._cfg.name || n.name };
+    }
+    set hass(h) {
+      this._hass = h; ngH = h;
+      if (!this._cfg) return;
+      // nach dem Speichern der Einstellungen baut HA das Dashboard neu — Fenster dieses Autos wieder öffnen
+      const ro = window.__ngVehReopen;
+      if (ro && ro.dev === this._cfg.device && Date.now() < ro.until && this.isConnected && !this._host) { window.__ngVehReopen = null; setTimeout(() => this._openDetail(), 350); }
+      if (this._pop) this._paint();
+      const E = this._ents(), c = this._cfg, V = vstate(h, E, c), K = E.kind, N = this._names();
+      const eco = document.documentElement.dataset.ngEco === "1";
+      const key = JSON.stringify([V, N, this._tall, eco, K, Math.floor(Date.now() / 60000)]);
+      if (key === this._key) return;
+      this._key = key;
+      const lvl = K === "fuel" ? V.fuel : V.soc, low = lvl !== null && lvl < 20;
+      const warn = V.doorsOpen.length || V.windowsOpen.length || V.lock === "unlocked" || V.problem;
+      // Zeile unter dem Namen: Laden › offen › fährt › Ort · Schloss › Stand
+      let line;
+      const open = V.doorsOpen.length ? (V.doorsOpen.length > 1 ? t("{n} Türen offen", { n: V.doorsOpen.length }) : t("Tür offen")) : V.windowsOpen.length ? t("Fenster offen") : "";
+      if (V.charging) {
+        const cap = parseNum(c.capacity) || num(h.states[E.capacity]);
+        const full = cap > 0 && V.watt > 500 && V.soc !== null && V.soc < 100 ? new Date(Date.now() + (100 - V.soc) / 100 * cap / (V.watt / 1000) * 3600e3) : null;
+        line = [open, V.watt > 50 ? t("lädt · {p}", { p: kwT(V.watt) }) : t("lädt"), open ? "" : full ? t("voll ca. {t}", { t: tm(full) }) : ""].filter(Boolean).join(" · ");
+      } else if (open) line = [open, V.lock === "unlocked" ? t("nicht abgeschlossen") : ""].filter(Boolean).join(" · ");
+      else if (V.moving) line = t("fährt");
+      else {
+        const parts = [V.place, V.lock === "locked" ? t("verriegelt") : V.lock === "unlocked" ? t("nicht abgeschlossen") : "", V.plugged ? t("angesteckt") : ""].filter(Boolean);
+        line = parts.length ? parts.join(" · ") : low ? t(K === "fuel" ? "Tank fast leer" : "Akku niedrig") : V.age;
+      }
+      this._card.className = `card${V.charging ? " chg" : ""}${warn ? " warn" : ""}${this._tall ? " tall" : ""}${eco ? " eco" : ""}`;
+      const seg = (v, fu) => { const n = v === null ? 0 : clamp(Math.round(v / 10), 0, 10), lo = v !== null && v < 20;
+        return `<div class="bar${fu ? " fu" : ""}${lo ? " low" : ""}">${Array.from({ length: 10 }, (_, i) => `<i class="${i < n ? "f" : ""}${!fu && V.charging && i === n && n < 10 ? " c" : ""}"></i>`).join("")}</div>`; };
+      const img = this._img(), small = img && !this._tall;
+      this._card.innerHTML = `<div class="hd"><div class="ic${small ? " pic" : ""}">${small ? `<img src="${esc(img)}" alt="">` : `<ha-icon icon="${V.charging ? "mdi:ev-station" : KIND_ICON[K]}"></ha-icon>`}</div>
+        <div class="nm">${N.brand ? `<small>${esc(N.brand)}</small>` : ""}<b>${esc(N.name)}</b><span>${esc(line || "")}</span></div>
+        <div class="lv"><b class="mono${low ? " low" : ""}">${lvl === null ? "–" : Math.round(lvl)}<small>%</small></b><span class="mono">${V.range === null ? "" : `${de(V.range)} km`}</span></div></div>
+        <div class="stage">${img ? `<img src="${esc(img)}" alt="">` : SIDE}</div>
+        <div class="bars">${K === "fuel" ? seg(V.fuel, true) : seg(V.soc, false)}${K === "phev" || K === "hybrid" ? seg(V.fuel, true) : ""}</div>`;
+    }
+
+    // ======== Fahrzeug-Fenster (am body, über allem) ========
+    _openDetail() {
+      if (this._host || !this._hass || !this._cfg?.device && !this._cfg?.entities) return;
+      const host = document.createElement("div");
+      host.className = "ng-vehicle-detail";
+      copyVars(this, host);
+      if (document.documentElement.dataset.ngEco === "1") host.classList.add("eco");
+      const root = host.attachShadow({ mode: "open" });
+      root.innerHTML = `<style>${DSTYLE}</style><div class="bg"></div><div class="pop" role="dialog" aria-modal="true" aria-label="${esc(this._names().name)}"></div>`;
+      this._pop = root.querySelector(".pop");
+      this._ui = { arm: null, sent: {}, err: {}, busy: {}, tgt: null, lim: null, per: "week", view: "draw", set: null };
+      root.querySelector(".bg").addEventListener("click", () => this._closeDetail());
+      root.addEventListener("click", (e) => {
+        this._touch();
+        const b = e.target.closest("[data-a]");
+        if (b && root.contains(b)) this._act(b.dataset.a, b);
+      });
+      root.addEventListener("change", (e) => { if (e.target.matches?.("input.file") && e.target.files?.[0]) this._upload(e.target.files[0]); });
+      const close = () => this._closeDetail();
+      this._off = [["keydown", (e) => { if (e.key === "Escape" && !document.querySelector(".ng-vehicle-cmp")) close(); }], ["location-changed", close], ["popstate", close]];
+      this._off.forEach(([k, f]) => window.addEventListener(k, f));
+      this._vis = () => { if (document.hidden) close(); };
+      document.addEventListener("visibilitychange", this._vis);
+      document.body.appendChild(host);
+      this._host = host;
+      this._dkey = null;
+      this._paint();
+      this._tick = setInterval(() => { this._paint(); this._loadStats(); }, 30000);
+      this._touch();
+      this._loadStats();
+    }
+    _openSettings() { this._openDetail(); if (this._ui && !this._ui.set) this._openSet(); }   // aus dem Bearbeiten-Menü der Vorlage
+    _closeDetail() {
+      if (!this._host) return;
+      this._host.remove();
+      this._host = this._pop = this._map = null;
+      clearInterval(this._tick); clearTimeout(this._idle); clearTimeout(this._tgtT); clearTimeout(this._limT); clearTimeout(this._armT);
+      (this._off || []).forEach(([k, f]) => window.removeEventListener(k, f));
+      document.removeEventListener("visibilitychange", this._vis);
+    }
+    _touch() { clearTimeout(this._idle); this._idle = setTimeout(() => this._closeDetail(), 300000); }
+    _paint(force) {
+      if (!this._pop) return;
+      if (this._ui.set && !force) return;   // Einstellungen offen: nicht neu zeichnen (Eingaben blieben sonst nicht stehen)
+      const h = this._hass, E = this._ents();
+      const ids = Object.values(E).flat().filter((x) => typeof x === "string" && x.includes("."));
+      const key = JSON.stringify([ids.map((id) => h.states[id]?.last_updated), this._ui, this._st?.at, Math.floor(Date.now() / 30000)]);
+      if (key === this._dkey && !force) return;
+      this._dkey = key;
+      this._pop.innerHTML = this._ui.set ? this._setHTML() : this._detailHTML();
+      this._mountMap();
+    }
+    _mountMap() {
+      const slot = this._pop?.querySelector(".mapslot");
+      if (!slot) return;
+      if (!this._map) this._map = document.createElement("ng-veh-map");
+      slot.replaceWith(this._map);
+      this._map.data = mapData(this, this._hass);
+    }
+    // Für Karte und Vergleich: Farbe = Platz dieses Autos unter allen Fahrzeug-Karten der Seite
+    _mapInfo() {
+      const h = this._hass, E = this._ents(), V = vstate(h, E, this._cfg), N = this._names();
+      if (!E.where || !isFinite(V.lat)) return E.where ? { key: this._cfg.device, short: N.name, name: `${N.brand} ${N.name}`.trim(), lat: NaN, lon: NaN } : null;
+      const g = E.gps_at && h.states[E.gps_at], at = g && !isNaN(Date.parse(g.state)) ? new Date(g.state) : new Date(h.states[E.where].last_updated);
+      const when = at.toDateString() === new Date().toDateString() ? tm(at) : `${at.toLocaleDateString(numLoc(), { day: "2-digit", month: "2-digit" })} ${tm(at)}`;
+      return { key: this._cfg.device, short: N.name, name: `${N.brand} ${N.name}`.trim(), lat: V.lat, lon: V.lon, place: V.place, since: t("Position {t}", { t: when }), range: V.range };
+    }
+    // Dienst aufrufen; busy bis HA antwortet, Ergebnis kurz am Knopf
+    _call(tag, dom, svc, data) {
+      const ui = this._ui;
+      ui.busy = { ...ui.busy, [tag]: 1 };
+      this._paint();
+      const done = (okk, msg) => {
+        if (!this._ui) return;
+        const b = { ...this._ui.busy }; delete b[tag];
+        this._ui.busy = b;
+        if (okk) this._ui.sent = { ...this._ui.sent, [tag]: Date.now() }; else this._ui.err = { ...this._ui.err, [tag]: msg || "Fehler" };
+        this._paint();
+        setTimeout(() => {
+          if (!this._ui) return;
+          const s = { ...this._ui.sent }, er = { ...this._ui.err }; delete s[tag]; delete er[tag];
+          this._ui.sent = s; this._ui.err = er; this._paint();
+        }, okk ? 4000 : 6000);
+      };
+      this._hass.callService(dom, svc, data).then(() => done(true), (e) => done(false, e?.message));
+    }
+    _arm(k, fire) {   // zweimal tippen (Hupe, Laden …)
+      const ui = this._ui;
+      if (ui.arm === k) { ui.arm = null; fire(); return; }
+      ui.arm = k; this._paint();
+      clearTimeout(this._armT); this._armT = setTimeout(() => { if (this._ui?.arm === k) { this._ui.arm = null; this._paint(); } }, 3000);
+    }
+    _more(id) {   // HA-Details (z. B. Aufschließen mit der Rückfrage von HA) — Fenster dafür schließen, sonst läge es darüber
+      if (!id) return;
+      this._closeDetail();
+      document.querySelector("home-assistant")?.dispatchEvent(new CustomEvent("hass-more-info", { detail: { entityId: id }, bubbles: true, composed: true }));
+    }
+    _act(a, el) {
+      const h = this._hass, E = this._ents(), ui = this._ui, S = (k) => (E[k] ? h.states[E[k]] : undefined);
+      if (a === "close") return this._closeDetail();
+      if (a.startsWith("per:")) { ui.per = a.slice(4); this._paint(); return; }
+      if (a.startsWith("view:")) { ui.view = a.slice(5); this._paint(); return; }
+      if (a === "cmp") { cmpOpen(this); return; }
+      if (a.startsWith("more:")) return this._more(E[a.slice(5)] || a.slice(5));
+      if (a === "set") { this._openSet(); return; }
+      if (a.startsWith("set")) { this._setAct(a, el); return; }
+      if (a === "lock") { if (S("lock")?.state === "unlocked") this._call("lock", "lock", "lock", { entity_id: E.lock }); return; }
+      if (["flash", "horn", "find"].includes(a)) return this._arm(a, () => this._call(a, "button", "press", { entity_id: E[a] }));
+      if (a === "poll") return this._call("poll", "button", "press", { entity_id: E.poll });
+      if (a === "chg") {
+        const V = vstate(h, E, this._cfg);
+        if (E.charge_sw) return this._arm("chg", () => this._call("chg", "switch", S("charge_sw")?.state === "on" ? "turn_off" : "turn_on", { entity_id: E.charge_sw }));
+        const b = V.charging ? E.chg_stop : E.chg_start;
+        if (b) return this._arm("chg", () => this._call("chg", "button", "press", { entity_id: b }));
+        return;
+      }
+      if (a === "l-" || a === "l+") {   // Ladeziel in Schritten des number-Elements, nach 0,8 s senden
+        const st = S("limit"), at = st?.attributes || {}, step = +at.step || 5, now = ui.lim ?? num(st) ?? 80;
+        ui.lim = clamp(now + (a === "l+" ? step : -step), +at.min || 0, +at.max || 100);
+        this._paint();
+        clearTimeout(this._limT);
+        this._limT = setTimeout(() => { const v = this._ui?.lim; if (v === null || v === undefined) return; this._ui.lim = null; this._call("limit", "number", "set_value", { entity_id: E.limit, value: v }); }, 800);
+        return;
+      }
+      const cl = S("climate");
+      if (a === "clim") {
+        if (cl) return this._call("clim", "climate", "set_hvac_mode", { entity_id: E.climate, hvac_mode: cl.state === "off" ? (cl.attributes.hvac_modes || []).find((m) => m !== "off") || "heat_cool" : "off" });
+        if (E.climate_sw) return this._call("clim", "switch", S("climate_sw")?.state === "on" ? "turn_off" : "turn_on", { entity_id: E.climate_sw });
+        return;
+      }
+      if ((a === "t-" || a === "t+") && cl) {
+        const at = cl.attributes, step = at.target_temp_step || (at.temperature_unit === "°F" ? 1 : 0.5), now = ui.tgt ?? at.temperature ?? 21;
+        ui.tgt = clamp(now + (a === "t+" ? step : -step), at.min_temp ?? 15, at.max_temp ?? 31);
+        this._paint();
+        clearTimeout(this._tgtT);
+        this._tgtT = setTimeout(() => { const v = this._ui?.tgt; if (v === null || v === undefined) return; this._ui.tgt = null; this._call("temp", "climate", "set_temperature", { entity_id: E.climate, temperature: v }); }, 800);
+        return;
+      }
+      if (a.startsWith("preset:") && cl) return this._call(a, "climate", "set_preset_mode", { entity_id: E.climate, preset_mode: a.slice(7) });
+    }
+
+    // ---------- Statistik (Kilometerstand, Akku/Tank), höchstens alle 10 Min ----------
+    _loadStats() {
+      const h = this._hass, E = this._ents();
+      if (this._statP) return this._statP;
+      if (!h || (this._st && Date.now() - this._st.at < 600000)) return Promise.resolve(this._st);
+      this._statP = (async () => {
+        try {
+          const odo = E.odo, lv = [E.soc, E.fuel].filter(Boolean), iso = (d) => new Date(d).toISOString();
+          const q = (period, start, ids, types) => (ids.length ? h.callWS({ type: "recorder/statistics_during_period", start_time: iso(start), statistic_ids: ids, period, types }) : Promise.resolve({}));
+          const y0 = Math.min(periodStart("year").getTime(), periodStart("week").getTime());
+          const [hr, dy, mo, grid] = await Promise.all([q("hour", Date.now() - 8 * 864e5, [odo, ...lv].filter(Boolean), ["change", "mean"]),
+            q("day", y0, odo ? [odo] : [], ["change"]), q("month", new Date(2015, 0, 1), odo ? [odo] : [], ["change"]), gridPrice(h)]);
+          const f = odo && String(h.states[odo]?.attributes?.unit_of_measurement).toLowerCase() === "mi" ? 1.609344 : 1;   // intern km
+          const rows = (res, id, k = 1) => (id && res?.[id] ? res[id].map((r) => ({ t: fin(r.start) ? r.start : Date.parse(r.start), v: fin(r.change) ? r.change * k : null, m: r.mean })) : []);
+          this._st = { at: Date.now(), hours: rows(hr, odo, f), days: rows(dy, odo, f), months: rows(mo, odo, f), soc: rows(hr, E.soc), fuel: rows(hr, E.fuel), grid, f };
+        } catch (e) { this._st = { at: Date.now(), err: e?.message || "Fehler" }; }
+        this._statP = null;
+        this._dkey = null;
+        this._paint();
+        return this._st;
+      })();
+      return this._statP;
+    }
+    // Energie je 100 km und Preis je Einheit: [{ unit: kWh|l, v100, cons, price, co2, src, share }] — Plug-in: beide Teile nach ev_share
+    _parts() {
+      const h = this._hass, c = this._cfg, E = this._ents(), K = E.kind, S = (id) => (id ? h.states[id] : undefined);
+      const loss = (parseNum(c.loss) ?? 10) / 100, out = [];
+      const share = K === "phev" ? clamp(parseNum(c.ev_share) ?? 0) / 100 : K === "ev" ? 1 : 0;
+      if (share > 0) {
+        let cons = parseNum(K === "phev" ? c.consumption_ev : c.consumption), src = "eingestellt";
+        if (!(cons > 3)) { cons = consOf(S(E.cons_ev), true); src = "laut Auto"; }
+        if (!(cons > 3)) { cons = 17; src = "angenommen"; }
+        const g = this._st?.grid ?? null, price = valOf(h, c.price) ?? (fin(g) ? g : valOf(h, g));
+        out.push({ unit: "kWh", v100: cons * (1 + loss) * share, cons, loss, price: fin(price) ? price : null, co2: CO2.kwh, src, share });
+      }
+      if (share < 1) {
+        let cons = parseNum(c.consumption), src = "eingestellt";
+        if (!(cons > 1)) { cons = consOf(S(E.cons_fuel), false) ?? parseNum(S(E.cons_fuel_attr)?.attributes?.Average_fuel_consumed); src = "laut Auto"; }
+        if (!(cons > 1)) { cons = 6.5; src = "angenommen"; }
+        const fp = valOf(h, c.fuel_price);
+        out.push({ unit: "l", v100: cons * (1 - share), cons, price: fin(fp) ? fp : null, co2: CO2[c.fuel_type === "diesel" ? "diesel" : "petrol"], src, share: 1 - share });
+      }
+      return out;
+    }
+    _kmFor(per) {
+      const st = this._st;
+      if (!st || st.err) return null;
+      return per === "day" ? sumFrom(st.hours, periodStart("day").getTime()) : sumFrom(st.days, periodStart(per).getTime());
+    }
+    // gedachte Vergleichsautos mit Preis (leer = Preis dieses Autos bzw. Strompreis)
+    _virt(parts) {
+      const list = Array.isArray(this._cfg.compare) ? this._cfg.compare : this._cfg.compare ? [this._cfg.compare] : [];
+      const fp = parts.find((p) => p.unit === "l")?.price ?? null, g = this._st?.grid ?? null, ep = parts.find((p) => p.unit === "kWh")?.price ?? (fin(g) ? g : valOf(this._hass, g));
+      return list.map((x) => {
+        const el = x?.fuel === "electric", cons = parseNum(x?.consumption), price = parseNum(x?.price) ?? (el ? ep : fp);
+        return cons > 0 && fin(price) ? { name: String(x.name || t("Vergleichsauto")), unit: el ? "kWh" : "l", cons, price, per100: cons * price, fuel: x.fuel || "petrol" } : null;
+      }).filter(Boolean);
+    }
+    _costFor(per) {
+      const st = this._st;
+      if (!st || st.err) return st ? { err: st.err } : null;
+      if (!this._ents().odo || (!st.days.length && !st.months.length && !st.hours.length)) return { err: t("Kein Kilometerstand mit Statistik — die Kosten brauchen einen Kilometerstand-Sensor mit Verlauf.") };
+      const km = this._kmFor(per), parts = this._parts().map((p) => ({ ...p, amount: km * p.v100 / 100 }));
+      const priced = parts.every((p) => fin(p.price)), cost = priced ? parts.reduce((a, p) => a + p.amount * p.price, 0) : null;
+      const first = firstT(st), t0 = periodStart(per).getTime();
+      const virt = this._virt(parts).map((v) => ({ ...v, cost: km * v.per100 / 100 }));
+      return { km, parts, cost, virt, since: first !== null && first > t0 ? first : null, per100: priced ? parts.reduce((a, p) => a + p.v100 * p.price, 0) : null,
+        co2: parts.reduce((a, p) => a + p.amount * p.co2, 0) };
+    }
+    // Für den Fahrtkosten-Vergleich: alles, was er je Auto braucht (Statistik-Zeilen inklusive)
+    async _cmpInfo() {
+      const h = this._hass, E = this._ents();
+      if (!h || !E.odo) return null;
+      await this._loadStats();
+      const st = this._st;
+      if (!st || st.err) return null;
+      const N = this._names(), parts = this._parts(), V = vstate(h, E, this._cfg);
+      return { key: this._cfg.device || N.name, short: N.name, name: `${N.brand} ${N.name}`.trim(), kind: E.kind, parts, rows: st, grid: st.grid,
+        kmTotal: V.odo === null ? null : V.odo * (st.f || 1), tank: parseNum(this._cfg.tank), compare: Array.isArray(this._cfg.compare) ? this._cfg.compare : this._cfg.compare ? [this._cfg.compare] : [],
+        evShare: parts.filter((p) => p.unit === "kWh").reduce((a, p) => a + p.share, 0) };
+    }
+
+    // ---------- Darstellung ----------
+    _detailHTML() {
+      const h = this._hass, c = this._cfg, E = this._ents(), K = E.kind, ui = this._ui, V = vstate(h, E, c), N = this._names();
+      const S = (k) => (E[k] ? h.states[E[k]] : undefined), busy = (k) => (ui.busy[k] ? " busy" : "");
+      const chip = (cls, txt) => `<span class="chip ${cls}"><i></i>${esc(txt)}</span>`;
+      const chips = [
+        V.lock === "locked" ? chip("ok", t("Verriegelt")) : V.lock === "unlocked" ? chip("warn", t("Offen")) : "",
+        V.doorsOpen.length ? chip("warn", V.doorsOpen.length > 1 ? t("{n} Türen offen", { n: V.doorsOpen.length }) : t("Tür offen")) : "",
+        V.windowsOpen.length ? chip("warn", t("Fenster offen")) : "",
+        V.charging ? chip("ok", t("Lädt") + (V.watt > 50 ? ` · ${kwT(V.watt)}` : "")) : V.plugged ? chip("", t("Angesteckt")) : "",
+        V.problem ? chip("warn", t("Warnung")) : "", V.online === false ? chip("warn", t("Offline")) : "", V.age ? chip("", V.age) : "",
+      ].join("");
+      const admin = c.strategy && window.__ngSaveStrategy && h.user?.is_admin;
+      const pic = this._img();
+      const head = `<div class="head">${pic ? `<img class="hpic" src="${esc(pic)}" alt="">` : ""}<div class="t"><span class="label">${esc(N.brand || t("Fahrzeug"))}</span><b>${esc(N.name)}</b></div><div class="chips">${chips}</div>
+        <div class="hbtn"><button class="chip go" data-a="cmp">${I.chart}${esc(t("Kosten vergleichen"))}</button>${admin ? `<button class="x" data-a="set" title="${esc(t("Einstellungen"))}" aria-label="${esc(t("Einstellungen"))}">${I.gear}</button>` : ""}
+        <button class="x" data-a="close" aria-label="${esc(t("Schließen"))}">✕</button></div></div>`;
+      // links: Akku/Tank, Werte, Verlauf
+      const level = (lab, v, r, fu) => `<div class="lvl"><div class="row"><span class="label">${esc(lab)}</span><span class="mono dim">${r === null ? "" : `${de(r)} km`}</span></div>
+        <div class="big${v !== null && v < 20 ? " low" : ""}">${v === null ? "–" : Math.round(v)}<small>%</small></div><div class="bar2${fu ? " fu" : ""}${v !== null && v < 20 ? " low" : ""}"><i style="width:${v === null ? 0 : clamp(v)}%"></i></div></div>`;
+      const en = K === "ev" ? level(t("Akku"), V.soc, V.rEv ?? V.range, false) : K === "fuel" ? level(t("Tank"), V.fuel, V.rFu ?? V.range, true)
+        : level(t("Akku"), V.soc, V.rEv, false) + level(t("Tank"), V.fuel, V.rFu, true);
+      const showRange = K === "ev" || K === "fuel" ? "" : V.range !== null ? `<div class="row" style="margin-top:4px"><span class="dim">${esc(t("Reichweite"))}</span><span class="mid mono">${de(V.range)} km</span></div>` : "";
+      const tempOf = (k) => { const s = S(k), v = num(s); return v === null ? null : `${de(v, 1)} ${s.attributes.unit_of_measurement || "°C"}`; };
+      const v12 = S("v12"), lim = ui.lim ?? num(S("limit")), cap = parseNum(c.capacity) || num(S("capacity"));
+      const kv = [
+        [t("Kilometerstand"), V.odo === null ? null : `${de(V.odo)} ${S("odo")?.attributes?.unit_of_measurement || "km"}`],
+        [t("Standort"), E.where ? V.place || "–" : null, V.place === t("zu Hause") ? "on" : ""],
+        K !== "fuel" && K !== "hybrid" && (E.plug || E.charging) ? [t("Stecker"), V.plugged ? t("gesteckt") : t("getrennt"), V.plugged ? "on" : ""] : null,
+        K !== "fuel" && K !== "hybrid" && E.power ? [t("Ladeleistung"), V.watt === null ? "–" : kwT(V.watt), V.watt > 50 ? "on" : ""] : null,
+        K !== "fuel" && K !== "hybrid" && E.limit && !this._ctlLimit() ? [t("Ladeziel"), lim === null ? "–" : `${Math.round(lim)} %`] : null,
+        cap > 0 && K !== "fuel" ? [t("Akku nutzbar"), `${de(cap, 1)} kWh`] : null,
+        v12 && num(v12) !== null ? [t("12-V-Batterie"), `${de(num(v12), 1)} ${v12.attributes.unit_of_measurement || ""}`.trim()] : null,
+        tempOf("t_out") ? [t("Außen"), tempOf("t_out")] : null, tempOf("t_in") ? [t("Innen"), tempOf("t_in")] : null,
+      ].filter((x) => x && x[1] !== null);
+      const left = `<div class="col">
+        <div class="card">${en}${showRange}</div>
+        ${kv.length ? `<div class="card"><div class="kv">${kv.map(([k, v, cl]) => `<span>${esc(k)}</span><span class="${cl || ""}">${esc(v)}</span>`).join("")}</div></div>` : ""}
+        ${this._histHTML()}</div>`;
+      // Mitte: Draufsicht | Karte
+      const canMap = !!E.where && customElements.get("ng-veh-map");
+      const d = { kind: K, soc: V.soc, fuel: V.fuel, range: V.range, charging: V.charging, watt: V.watt, doors: V.doorsOpen.length > 0, windows: V.windowsOpen.length > 0,
+        tires: Object.fromEntries(["vl", "vr", "hl", "hr"].map((p) => [p, kpaOf(h.states[E.tires[p]])])), tireLow: c.tire_low, tireHigh: c.tire_high,
+        tireUnit: String(h.states[E.tires.vl || E.tires.vr || E.tires.hl || E.tires.hr]?.attributes?.unit_of_measurement || "").toLowerCase(), title: `${N.brand} ${N.name}`.trim(), odo: V.odo };
+      const mid = `<div class="card draw">${canMap ? `<div class="vsw"><button class="${ui.view !== "map" ? "on" : ""}" data-a="view:draw">${esc(t("Draufsicht"))}</button><button class="${ui.view === "map" ? "on" : ""}" data-a="view:map">${esc(t("Karte"))}</button></div>` : ""}
+        ${canMap && ui.view === "map" ? '<div class="mapslot"></div>' : drawing(d)}</div>`;
+      // rechts: Schalter und Kosten
+      const lock = S("lock");
+      const lockBtn = lock ? (lock.state === "unlocked"
+        ? `<button class="btn warn${busy("lock")}" data-a="lock">${I.unlock}${esc(t("Abschließen"))}<span class="s">${esc(ui.err.lock ? t("fehlgeschlagen") : t("ist offen"))}</span></button>`
+        : `<button class="btn${lock.state === "locked" ? " on" : " na2"}" data-a="more:lock">${I.lock}${esc(lock.state === "locked" ? t("Verriegelt") : t("Schloss"))}<span class="s">${esc(lock.state === "locked" ? t("Aufschließen in den Details") : lock.state)}</span></button>`)
+        : V.lock ? `<div class="btn${V.lock === "locked" ? " on" : " warn"}">${V.lock === "locked" ? I.lock : I.unlock}${esc(V.lock === "locked" ? t("Verriegelt") : t("Offen"))}</div>` : "";
+      const cl = S("climate"), at = cl?.attributes || {}, clOn = cl ? ok(cl) && cl.state !== "off" : S("climate_sw")?.state === "on", tgt = ui.tgt ?? at.temperature;
+      const presets = (at.preset_modes || []).filter((p) => !["none", "off", "eco"].includes(String(p).toLowerCase())).slice(0, 3);
+      const clim = cl || S("climate_sw") ? `<div class="card ctl"><button class="line" data-a="clim"><span class="li">${I.fan}${esc(t("Klima"))}${clOn ? ` <span class="acc mono">${esc(t("AN"))}</span>` : ""}</span>
+          <span class="tog${clOn ? " on" : ""}${busy("clim")}"></span></button>
+        ${cl && tgt !== undefined && tgt !== null ? `<div class="temp"><button class="r" data-a="t-" aria-label="${esc(t("Kälter"))}">−</button><span class="mid mono${busy("temp")}">${de(tgt, 1)} ${esc(at.temperature_unit || "°C")}</span><button class="r" data-a="t+" aria-label="${esc(t("Wärmer"))}">+</button></div>` : ""}
+        ${presets.length ? `<div class="seg">${presets.map((p) => `<button class="${at.preset_mode === p ? "on" : ""}${busy(`preset:${p}`)}" data-a="preset:${esc(p)}">${esc(presetName(h, E.climate, p))}</button>`).join("")}</div>` : ""}</div>` : "";
+      const av = (k) => !!E[k] && S(k) && S(k).state !== "unavailable";
+      const hasChg = K !== "fuel" && K !== "hybrid" && (av("charge_sw") || av("chg_start") || av("chg_stop"));
+      const chgOn = E.charge_sw ? S("charge_sw")?.state === "on" : V.charging;
+      const pressLbl = (k) => (ui.err[k] ? t("fehlgeschlagen") : ui.sent[k] ? t("gesendet ✓") : ui.arm === k ? t("nochmal tippen") : "");
+      const charge = hasChg || this._ctlLimit() ? `<div class="card ctl">${hasChg ? `<button class="line${ui.arm === "chg" ? " arm" : ""}" data-a="chg"><span class="li">${I.bolt}${esc(E.charge_sw ? t("Laden") : chgOn ? t("Laden stoppen") : t("Laden starten"))}${pressLbl("chg") ? ` <span class="acc mono">${esc(pressLbl("chg"))}</span>` : ""}</span>
+          ${E.charge_sw ? `<span class="tog${chgOn ? " on" : ""}${busy("chg")}"></span>` : ""}</button>` : ""}
+        ${this._ctlLimit() ? `<div class="row"><span class="dim">${esc(t("Ladeziel"))}</span><div class="temp sm"><button class="r sm" data-a="l-" aria-label="${esc(t("Früher"))}">−</button><span class="mid mono${busy("limit")}">${lim === null ? "–" : `${Math.round(lim)} %`}</span><button class="r sm" data-a="l+" aria-label="${esc(t("Höher"))}">+</button></div></div>` : ""}</div>` : "";
+      const press = (k, icon, name) => (av(k) ? `<button class="btn${ui.arm === k ? " arm" : ""}${ui.sent[k] ? " done" : ""}${ui.err[k] ? " err" : ""}${busy(k)}" data-a="${k}">${icon}<span>${esc(name)}${pressLbl(k) ? `<span class="s2">${esc(pressLbl(k))}</span>` : ""}</span></button>` : "");
+      const btns = [press("flash", I.beam, t("Lichthupe")), press("horn", I.horn, t("Hupe")), press("find", I.find, t("Finden"))].filter(Boolean);
+      const poll = av("poll") ? `<button class="btn${busy("poll")}${ui.sent.poll ? " done" : ""}${ui.err.poll ? " err" : ""}" data-a="poll">${I.sync}${esc(t("Jetzt abfragen"))}<span class="s">${esc(ui.err.poll ? t("fehlgeschlagen") : ui.sent.poll ? t("gesendet ✓") : t("kann das Auto wecken"))}</span></button>` : "";
+      const right = `<div class="col">${lockBtn}${clim}${charge}${btns.length ? `<div class="two">${btns.join("")}</div>` : ""}${poll}${this._costHTML(admin)}</div>`;
+      return `${head}<div class="grid">${left}${mid}${right}</div>`;
+    }
+    _ctlLimit() { const s = this._hass.states[this._ents().limit]; return !!s && ok(s) && this._ents().kind !== "fuel"; }
+    // Letztes Laden / zuletzt getankt (aus den Anstiegen des Füllstands) + Verlauf 7 Tage
+    _histHTML() {
+      const st = this._st, E = this._ents(), K = E.kind, c = this._cfg, h = this._hass, ev = K === "ev" || K === "phev";
+      const lab = ev ? t("Letztes Laden") : t("Zuletzt getankt"), lab2 = ev ? t("Akku · 7 Tage") : t("Tank · 7 Tage");
+      if (!st || st.err) return `<div class="card fill"><span class="label">${esc(lab)}</span><div class="note">${esc(st ? st.err : t("wird geladen …"))}</div></div>`;
+      const rows = (ev ? st.soc : st.fuel).filter((r) => fin(r.m));
+      if (!rows.length) return `<div class="card fill"><span class="label">${esc(lab)}</span><div class="note">${esc(t("Füllstand ohne Verlauf (keine Statistik)"))}</div></div>`;
+      const last = rises(rows, ev ? 4 : 10).pop();
+      let head = `<div class="note" style="margin-top:6px;padding-top:0">${esc(t("noch nichts in den HA-Daten"))}</div>`;
+      if (last) {
+        const a = new Date(last.a), b = new Date(last.b - 1), hh = (x) => pad(x.getHours());
+        const span = a.toDateString() === b.toDateString() ? `${dayLbl(a)} ${hh(a)}–${pad(new Date(last.b).getHours())}` : `${dayLbl(a)} ${hh(a)} – ${dayLbl(b)} ${pad(new Date(last.b).getHours())}`;
+        const parts = this._parts(), loss = parts.find((p) => p.unit === "kWh")?.loss ?? 0.1;
+        const cap = parseNum(c.capacity) || num(h.states[E.capacity]), tank = parseNum(c.tank);
+        const rise = last.to - last.from, amt = ev ? (cap > 0 ? rise / 100 * cap * (1 + loss) : null) : tank > 0 ? rise / 100 * tank : null;
+        const price = parts.find((p) => p.unit === (ev ? "kWh" : "l"))?.price;
+        head = `<div class="chg2">${esc(t("{a} Uhr", { a: span }))}</div><div class="chg3"><span>${amt === null ? "" : `≈ ${de(amt, 1)} ${ev ? "kWh" : "l"}${fin(price) ? ` · ${money(amt * price)}` : ""}`}</span>
+          <span>${Math.round(last.from)} → ${Math.round(last.to)} %</span></div>`;
+      }
+      const W = 240, H = 64, t7 = Date.now() - 7 * 864e5, X = (ms) => ((ms - t7) / (7 * 864e5)) * W, Y = (v) => 3 + (1 - clamp(v) / 100) * (H - 16);
+      const pts = rows.filter((r) => r.t >= t7).map((r) => [X(r.t + 1800e3), Y(r.m)]);
+      let svg = "";
+      for (let i = 0; i <= 7; i++) {
+        const d = new Date(t7); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + i);
+        const x = X(d.getTime());
+        if (x > 0 && x < W) svg += `<line class="dl" x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="0" y2="${H - 12}"/><text x="${(x + 2).toFixed(1)}" y="${H - 2}">${esc(d.toLocaleDateString(numLoc(), { weekday: "short" }).slice(0, 2))}</text>`;
+      }
+      for (const r of rises(rows.filter((x) => x.t >= t7 - 864e5), ev ? 2 : 5)) svg += `<rect class="cb" x="${X(r.a).toFixed(1)}" y="${H - 15}" width="${Math.max(2, X(r.b) - X(r.a)).toFixed(1)}" height="3"/>`;
+      if (pts.length > 1) {
+        const line = pts.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join("");
+        svg += `<path class="ar${ev ? "" : " fu"}" d="${line}L${pts[pts.length - 1][0].toFixed(1)} ${Y(0).toFixed(1)}L${pts[0][0].toFixed(1)} ${Y(0).toFixed(1)}Z"/><path class="ln${ev ? "" : " fu"}" d="${line}"/>`;
+      }
+      const r7 = rows.filter((r) => r.t >= t7).map((r) => r.m);
+      return `<div class="card fill"><span class="label">${esc(lab)}</span>${head}
+        <div class="row" style="margin-top:auto;padding-top:8px"><span class="label">${esc(lab2)}</span><span class="when">${r7.length ? `${Math.round(Math.min(...r7))}–${Math.round(Math.max(...r7))} %` : ""}</span></div>
+        <svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(lab2)}">${svg}</svg></div>`;
+    }
+    _costHTML(admin) {
+      const ui = this._ui, K = this._costFor(ui.per);
+      const seg = `<div class="seg">${Object.entries(PER).map(([k, n]) => `<button class="${ui.per === k ? "on" : ""}" data-a="per:${k}">${esc(t(n))}</button>`).join("")}</div>`;
+      if (!K || K.err) return `<div class="card fill">${seg}<div class="note">${esc(K ? K.err : t("Kosten werden berechnet …"))}</div></div>`;
+      const miss = K.parts.find((p) => !fin(p.price));
+      const since = K.since ? t("seit {d}", { d: new Date(K.since).toLocaleDateString(numLoc(), { day: "2-digit", month: "2-digit" }) }) : t("Fahrtkosten");
+      const amt = K.parts.map((p) => `<span>${esc(p.unit === "kWh" ? t("Strom") : t("Sprit"))}</span><span>${de(p.amount, 1)} ${p.unit}</span>`).join("");
+      const note = K.parts.map((p) => `${de(p.cons, 1)} ${p.unit}/100 km ${t(p.src)}${p.unit === "kWh" ? ` · ${t("+{n} % Ladeverlust", { n: Math.round(p.loss * 100) })}` : ""} · ${fin(p.price)
+        ? `${p.unit === "kWh" ? `${de(p.price * 100, 1)} ct/kWh` : `${de(p.price, 2)} ${cur()}/l`}` : t(p.unit === "kWh" ? "Strompreis fehlt" : "Spritpreis fehlt")}`).join(" · ");
+      const fix = miss && admin ? `<button class="fix" data-a="set">${esc(t(miss.unit === "kWh" ? "Strompreis eintragen (⚙)" : "Spritpreis eintragen (⚙)"))}</button>` : "";
+      return `<div class="card fill">${seg}
+        <div class="row" style="margin:12px 0 10px;align-items:flex-end"><div class="big s mono">${K.cost === null ? "–" : de(K.cost, 2)}<small>${esc(cur())}</small></div><span class="when">${esc(since)}</span></div>
+        <div class="kv"><span>${esc(t("Strecke"))}</span><span>${kmT(K.km)}</span>${amt}${K.per100 === null ? "" : `<span>${esc(t("Kosten je 100 km"))}</span><span>${money(K.per100)}</span>`}
+          ${K.km > 0 ? `<span>CO₂</span><span>${de(K.co2, K.co2 < 100 ? 1 : 0)} kg</span>` : ""}</div>
+        ${K.virt.length ? `<div class="cmp"><span class="label">${esc(t("Mit …"))}</span><span class="label cr">${esc(t("Kosten"))}</span><span class="label cr">${esc(t("gespart"))}</span>
+          ${K.virt.map((x) => `<span>${esc(x.name)}<small>${de(x.cons, 1)} ${x.unit}</small></span><span class="mono cr">${money(x.cost)}</span><span class="mono cr on">${K.cost === null ? "–" : money(Math.max(0, x.cost - K.cost))}</span>`).join("")}</div>` : ""}
+        ${fix}<div class="note">${esc(note)}</div></div>`;
+    }
+
+    // ---------- Einstellungen (Vorlage, Admin) ----------
+    _openSet() {
+      const c = this._cfg, cmp = (Array.isArray(c.compare) ? c.compare : c.compare ? [c.compare] : []).map((x) => ({ name: x.name || "", consumption: x.consumption ?? "", fuel: x.fuel || "petrol", price: x.price ?? "" }));
+      const sv = (k) => (c[k] === undefined || c[k] === null ? "" : String(c[k]));
+      this._ui.set = { name: c.name || "", consumption: sv("consumption"), consumption_ev: sv("consumption_ev"), price: sv("price"), fuel_price: sv("fuel_price"), loss: sv("loss"),
+        capacity: sv("capacity"), tank: sv("tank"), ev_share: sv("ev_share"), fuel_type: c.fuel_type === "diesel" ? "diesel" : "petrol", image: sv("image"), cmp, err: "", saving: false };
+      this._paint(true);
+      if (!this._st) this._loadStats().then(() => { if (this._ui?.set) { this._syncSet(); this._paint(true); } });   // Strompreis-Vorschlag kommt mit den Daten
+    }
+    _syncSet() {   // Eingaben ins Formular-Objekt übernehmen (vor jedem Neuzeichnen)
+      const S = this._ui.set;
+      if (!S || !this._pop) return;
+      this._pop.querySelectorAll("[data-f]").forEach((el) => { S[el.dataset.f] = el.dataset.f === "image" ? el.value.trim() || (S.image === "none" ? "none" : "") : el.value; });
+      this._pop.querySelectorAll("[data-cf]").forEach((el) => { const [i, k] = el.dataset.cf.split(":"); if (S.cmp[+i]) S.cmp[+i][k] = el.value; });
+    }
+    _setAct(a, el) {
+      const S = this._ui.set;
+      if (!S) return;
+      this._syncSet();
+      if (a === "set-cancel") { this._ui.set = null; this._paint(true); return; }
+      if (a.startsWith("set-fuel:")) S.fuel_type = a.slice(9);
+      else if (a === "set-add") S.cmp.push({ name: "", consumption: "", fuel: "petrol", price: "" });
+      else if (a.startsWith("set-del:")) S.cmp.splice(+a.slice(8), 1);
+      else if (a.startsWith("set-cfuel:")) { const [, i, f] = a.split(":"); if (S.cmp[+i]) S.cmp[+i].fuel = f; }
+      else if (a.startsWith("set-fp:")) S.fuel_price = a.slice(7);
+      else if (a === "set-up") { this._pop.querySelector("input.file")?.click(); return; }
+      else if (a.startsWith("set-img:")) S.image = a.slice(8) === "none" ? "none" : "";
+      else if (a === "set-save") { this._saveSet(); return; }
+      this._paint(true);
+    }
+    async _upload(file) {
+      const S = this._ui?.set;
+      if (!S || !this._hass?.fetchWithAuth) return;
+      this._syncSet();
+      S.uploading = true; S.err = ""; this._paint(true);
+      try {
+        if (!/^image\//.test(file.type)) throw new Error(t("Kein Bild"));
+        const bmp = await createImageBitmap(file, { imageOrientation: "from-image" }), k = Math.min(1, 1024 / Math.max(bmp.width, bmp.height));
+        const cv = document.createElement("canvas"); cv.width = Math.round(bmp.width * k); cv.height = Math.round(bmp.height * k);
+        cv.getContext("2d").drawImage(bmp, 0, 0, cv.width, cv.height);
+        const alpha = /png|webp|gif/.test(file.type), blob = await new Promise((r) => cv.toBlob(r, alpha ? "image/png" : "image/jpeg", 0.9));
+        const fd = new FormData();
+        fd.append("file", blob, alpha ? "fahrzeug.png" : "fahrzeug.jpg");
+        const res = await this._hass.fetchWithAuth("/api/image/upload", { method: "POST", body: fd });
+        if (!res.ok) throw new Error(`${res.status} ${res.statusText || ""}`.trim());
+        const j = await res.json();
+        if (!j?.id) throw new Error("?");
+        if (this._ui?.set) this._ui.set.image = `/api/image/serve/${j.id}/512x512`;
+      } catch (e) { if (this._ui?.set) this._ui.set.err = t("Hochladen ging nicht: {e}", { e: String(e?.message || e) }); }
+      if (this._ui?.set) { this._ui.set.uploading = false; this._paint(true); }
+    }
+    async _saveSet() {
+      const S = this._ui.set, dev = this._cfg.device;
+      if (!S || S.saving || S.uploading) return;
+      const veh = {};
+      for (const k of ["consumption", "consumption_ev", "loss", "capacity", "tank", "ev_share"]) { const n = parseNum(S[k]); if (n !== null && n >= 0) veh[k] = n; }
+      for (const k of ["price", "fuel_price"]) { const v = String(S[k] || "").trim(), n = parseNum(v); if (n !== null) veh[k] = n; else if (/^[a-z_]+\.[\w]+$/.test(v)) veh[k] = v; }
+      if (S.name.trim()) veh.name = S.name.trim();
+      if (S.fuel_type === "diesel") veh.fuel_type = "diesel";
+      if (S.image) veh.image = S.image;
+      const cmp = S.cmp.map((x) => ({ name: String(x.name || "").trim(), consumption: parseNum(x.consumption), fuel: ["diesel", "electric"].includes(x.fuel) ? x.fuel : "petrol", price: parseNum(x.price) }))
+        .filter((x) => x.name && x.consumption > 0).map((x) => ({ name: x.name, consumption: x.consumption, fuel: x.fuel, ...(x.price !== null ? { price: x.price } : {}) }));
+      S.saving = true; S.err = ""; this._paint(true);
+      try {
+        window.__ngVehReopen = { dev, until: Date.now() + 20000 };
+        await window.__ngSaveStrategy((s) => {
+          s.vehicles = { ...(s.vehicles || {}) };
+          if (Object.keys(veh).length) s.vehicles[dev] = veh; else delete s.vehicles[dev];
+          if (!Object.keys(s.vehicles).length) delete s.vehicles;
+          if (cmp.length) s.vehicle_compare = cmp; else delete s.vehicle_compare;
+        }, "Fahrzeug");
+        if (this._ui?.set) { this._ui.set = null; this._paint(true); }
+      } catch (e) {
+        window.__ngVehReopen = null;
+        if (this._ui?.set) { this._ui.set.saving = false; this._ui.set.err = String(e?.message || e); this._paint(true); }
+      }
+    }
+    _setHTML() {
+      const S = this._ui.set, h = this._hass, E = this._ents(), K = E.kind, N = this._names(), parts = this._parts();
+      const pe = parts.find((p) => p.unit === "kWh"), pf = parts.find((p) => p.unit === "l"), g = this._st?.grid ?? null, gp = fin(g) ? g : valOf(h, g);
+      const auto = autoImg(h, E), shownImg = S.image === "none" ? "" : S.image || auto;
+      const autoE = consOf(h.states[E.cons_ev], true), autoF = consOf(h.states[E.cons_fuel], false) ?? parseNum(h.states[E.cons_fuel_attr]?.attributes?.Average_fuel_consumed);
+      const ph = (v, d, txt) => (v !== null && v !== undefined && fin(v) ? t(txt, { v: de(v, d) }) : "");
+      const inp = (f, label, placeholder, mode = "decimal") => `<label class="fl"><span>${esc(label)}</span><input data-f="${f}" inputmode="${mode}" value="${esc(S[f])}" placeholder="${esc(placeholder || "")}"></label>`;
+      const ev = K === "ev" || K === "phev", fu = K !== "ev";
+      const priceSensors = Object.keys(h.states).filter((id) => id.startsWith("sensor.") && /(€|eur|\$|usd|£|gbp|chf|kr)\s*\/\s*(l|liter|litre)$/i.test(h.states[id].attributes?.unit_of_measurement || "")).slice(0, 8);
+      const row = (x, i) => `<div class="cr2"><input data-cf="${i}:name" value="${esc(x.name)}" placeholder="${esc(t("z. B. altes Auto"))}">
+        <input data-cf="${i}:consumption" inputmode="decimal" value="${esc(x.consumption)}" placeholder="${x.fuel === "electric" ? "kWh/100" : "l/100"}">
+        <div class="seg sm">${[["petrol", "Benzin"], ["diesel", "Diesel"], ["electric", "Elektro"]].map(([k, l]) => `<button class="${x.fuel === k ? "on" : ""}" data-a="set-cfuel:${i}:${k}">${esc(t(l))}</button>`).join("")}</div>
+        <input data-cf="${i}:price" inputmode="decimal" value="${esc(x.price)}" placeholder="${esc(t("Preis (leer = wie oben)"))}">
+        <button class="x sm" data-a="set-del:${i}" aria-label="${esc(t("Entfernen"))}">✕</button></div>`;
+      return `<div class="head"><div class="t"><span class="label">${esc(N.brand || t("Fahrzeug"))} · ${esc(N.name)}</span><b>${esc(t("Fahrzeug-Einstellungen"))}</b></div>
+        <div class="hbtn"><button class="x" data-a="set-cancel" aria-label="${esc(t("Zurück"))}">✕</button></div></div>
+        <div class="setb"><small class="hint">${esc(t("Gilt für dieses Auto, gespeichert im Dashboard."))}</small>
+        <div class="fg">${inp("name", t("Name"), N.name, "text")}
+          ${ev ? inp(K === "phev" ? "consumption_ev" : "consumption", t("Verbrauch (kWh/100 km)"), ph(autoE, 1, "laut Auto: {v}") || t("Annahme: {v}", { v: de(17, 1) })) : ""}
+          ${ev ? inp("price", t("Strompreis (je kWh)"), fin(gp) ? t("aus dem Energie-Dashboard: {p}", { p: `${de(gp, 4)} ${cur()}` }) : "") : ""}
+          ${ev ? inp("loss", t("Ladeverlust (%)"), "10") : ""}
+          ${ev ? inp("capacity", t("Akku nutzbar (kWh)"), ph(num(h.states[E.capacity]), 1, "laut Auto: {v}")) : ""}
+          ${K === "phev" ? inp("ev_share", t("Elektrisch gefahren (%)"), "0") : ""}
+          ${fu ? inp("consumption", t("Verbrauch (l/100 km)"), ph(autoF, 1, "laut Auto: {v}") || t("Annahme: {v}", { v: de(6.5, 1) })) : ""}
+          ${fu ? inp("fuel_price", t("Spritpreis (je Liter)"), t("Zahl oder Sensor, z. B. Tankerkönig"), "text") : ""}
+          ${fu ? inp("tank", t("Tank (Liter)"), "") : ""}
+          ${fu ? `<label class="fl"><span>${esc(t("Kraftstoff"))}</span><div class="seg sm">${[["petrol", "Benzin"], ["diesel", "Diesel"]].map(([k, l]) => `<button class="${S.fuel_type === k ? "on" : ""}" data-a="set-fuel:${k}">${esc(t(l))}</button>`).join("")}</div></label>` : ""}
+        </div>
+        ${fu && priceSensors.length ? `<div class="chips2"><small>${esc(t("Preis-Sensoren"))}</small>${priceSensors.map((id) => `<button class="chip${S.fuel_price === id ? " ok" : ""}" data-a="set-fp:${esc(id)}">${esc(h.states[id].attributes.friendly_name || id)}</button>`).join("")}</div>` : ""}
+        <div class="sect"><b>${esc(t("Foto"))}</b><small class="hint">${esc(t("Freigestellt (PNG mit durchsichtigem Hintergrund) sieht am besten aus. Gilt nur für dieses Auto."))}</small></div>
+        <div class="picrow"><div class="prev">${S.uploading ? `<small class="hint busy">${esc(t("lädt hoch …"))}</small>` : shownImg ? `<img src="${esc(shownImg)}" alt="">` : SIDE}</div>
+          <div class="pbtns"><button class="chip go" data-a="set-up">${esc(t("Foto hochladen"))}</button>
+            ${auto ? `<button class="chip${S.image === "" ? " ok" : ""}" data-a="set-img:auto">${esc(t("Bild des Autos"))}</button>` : ""}
+            <button class="chip${S.image === "none" || (!auto && S.image === "") ? " ok" : ""}" data-a="set-img:none">${esc(t("Zeichnung"))}</button>
+            <input data-f="image" value="${esc(S.image === "none" ? "" : S.image)}" placeholder="${esc(t("oder Adresse, z. B. /local/auto.png"))}"></div>
+          <input type="file" class="file" accept="image/*" hidden></div>
+        <div class="sect"><b>${esc(t("Vergleichsauto"))}</b><small class="hint">${esc(t("Gedachtes Auto für den Kostenvergleich — gilt für alle Autos."))}</small></div>
+        ${S.cmp.map(row).join("")}
+        ${S.cmp.length < 3 ? `<button class="chip go add" data-a="set-add">+ ${esc(t("Vergleichsauto hinzufügen"))}</button>` : ""}
+        ${S.err ? `<div class="err">${esc(S.err)}</div>` : ""}
+        <div class="acts"><button class="btn" data-a="set-cancel">${esc(t("Abbrechen"))}</button><button class="btn on${S.saving ? " busy" : ""}" data-a="set-save">${esc(S.saving ? t("Speichere …") : t("Speichern"))}</button></div></div>`;
+    }
+  }
+  const presetName = (h, id, p) => { try { return h.formatEntityAttributeValue ? h.formatEntityAttributeValue(h.states[id], "preset_mode", p) : p; } catch (e) { return p; } };
+  const kpaOf = (s) => { const v = num(s); if (v === null) return null; const u = String(s.attributes.unit_of_measurement || "kPa").toLowerCase(); return u === "bar" ? v * 100 : u === "psi" ? v * 6.894757 : v; };
+  // Theme-Variablen der Ansicht an Fenster am body weiterreichen
+  const VARS = ["ng-bg", "ng-bg-elev", "ng-glass", "ng-glass-2", "ng-line", "ng-line-2", "ng-txt", "ng-txt-dim", "ng-txt-mute", "ng-acc", "ng-acc-2", "ng-acc-3", "ng-warn",
+    "ng-danger", "ng-info", "rgb-ng-acc", "rgb-ng-acc-2", "rgb-ng-acc-3", "rgb-ng-warn", "rgb-ng-info", "rgb-ng-bg", "rgb-ng-txt", "ng-font", "primary-font-family",
+    "ha-font-family-code", "ha-dialog-border-radius", "ng-glow-k", "ng-shadow-lg", "ng-map-filter", "ng-map-bg", "ngs-rk", "ngs-pill", "ngs-round", "ngs-r-card", "ha-card-border-radius"];
+  function copyVars(from, to) { const cs = getComputedStyle(from); for (const v of VARS) { const x = cs.getPropertyValue(`--${v}`); if (x) to.style.setProperty(`--${v}`, x.trim()); } }
+
+  // Draufsicht, Front oben, 600×600: Türen/Fenster offen = Umriss gelb, Reifendruck je Rad, in der Mitte Akku bzw. Tank als Pegel
+  function drawing(d) {
+    const ev = d.kind !== "fuel", lvl = ev ? d.soc : d.fuel, N = 24, lit = lvl === null ? 0 : Math.round(clamp(lvl) / 100 * N);
+    let cells = "";
+    for (let i = 0; i < N; i++) { const y = 418 - (i + 1) * 8.5 + 2.5, f = i < lit; cells += `<rect x="232" y="${y}" width="136" height="6" rx="1.5" class="cell${f ? " on" : ""}${f && i === lit - 1 ? " top" : ""}${ev ? "" : " fu"}"/>`; }
+    const anyTire = Object.values(d.tires).some((v) => v !== null), psi = d.tireUnit === "psi";
+    const tire = (k, Lf, y) => {
+      const p = d.tires[k], x0 = Lf ? 200 : 376, edge = Lf ? 200 : 400, end = Lf ? 160 : 440, tx = Lf ? 150 : 450, an = Lf ? "end" : "start";
+      const cls = p === null ? "" : p < d.tireLow || p > d.tireHigh ? "low" : "ok";
+      const name = t({ vl: "VORNE LINKS", vr: "VORNE RECHTS", hl: "HINTEN LINKS", hr: "HINTEN RECHTS" }[k]);
+      const val = p === null ? "–" : psi ? de(p / 6.894757) : de(p / 100, 2), unit = psi ? " psi" : " bar";
+      return `<g class="tire ${cls}"><rect x="${x0}" y="${y - 34}" width="24" height="68" rx="7" class="wheel"/><path d="M${x0 + 8} ${y - 29} v58 M${x0 + 16} ${y - 29} v58" class="tread"/>
+        ${anyTire ? `<path d="M${edge} ${y} H${end}" class="lead"/><circle cx="${edge}" cy="${y}" r="2.6" class="dot"/><circle cx="${end}" cy="${y}" r="1.6" class="dot"/>
+        <text x="${tx}" y="${y - 16}" text-anchor="${an}" class="sk">${esc(name)}</text>
+        <text x="${tx}" y="${y + 9}" text-anchor="${an}" class="tv">${val}<tspan class="tu">${unit}</tspan></text>
+        <text x="${tx}" y="${y + 26}" text-anchor="${an}" class="sk">${p === null ? esc(t("KEIN WERT")) : `${Math.round(p)} KPA`}</text>` : ""}</g>`;
+    };
+    const plateTop = d.charging ? `${t("LÄDT")}${d.watt > 50 ? ` · ${kwT(d.watt).toUpperCase()}` : ""}` : ev ? t("AKKU") : t("TANK");
+    return `<svg viewBox="0 0 600 600" class="${lvl !== null && lvl < 20 ? "low" : ""}${d.charging ? " chg" : ""}" role="img" aria-label="${esc(t("Draufsicht"))}">
+    <defs><linearGradient id="ngv-body" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--ng-bg-elev,#0a0f14)"/><stop offset=".5" style="stop-color:var(--ng-bg,#05070a)"/><stop offset="1" style="stop-color:var(--ng-bg-elev,#0a0f14)"/></linearGradient>
+      <radialGradient id="ngv-glow" cx=".5" cy=".5" r=".55"><stop offset="0" style="stop-color:var(--ng-acc,#7cffb2);stop-opacity:.2"/><stop offset="1" style="stop-color:var(--ng-acc,#7cffb2);stop-opacity:0"/></radialGradient>
+      <pattern id="ngv-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0v6" style="stroke:rgba(var(--rgb-ng-txt,232,245,238),.05)" stroke-width="2"/></pattern></defs>
+    <path d="M300 62 V550" class="cl"/><path d="M291 76 l9 -9 l9 9" class="fwd"/><text x="300" y="52" text-anchor="middle" class="sk acc">${esc(t("VORN"))}</text>
+    <ellipse cx="194" cy="228" rx="11" ry="5.5" class="mir"/><ellipse cx="406" cy="228" rx="11" ry="5.5" class="mir"/>
+    <path class="out${d.doors ? " open" : ""}" d="M300 90 C340 90 372 96 384 112 C392 124 394 146 394 170 L394 470 C394 500 392 516 380 524 C366 530 334 530 300 530 C266 530 234 530 220 524 C208 516 206 500 206 470 L206 170 C206 146 208 124 216 112 C228 96 260 90 300 90 Z"/>
+    <path class="in" d="M234 118 C242 156 238 186 228 204 M366 118 C358 156 362 186 372 204 M206 262 h8 M206 352 h8 M394 262 h-8 M394 352 h-8"/>
+    <path class="hl" d="M224 106 C236 99 252 96 266 95 M376 106 C364 99 348 96 334 95"/><path class="tail" d="M214 518 C228 525 246 527 262 527 M386 518 C372 525 354 527 338 527"/>
+    <rect x="226" y="212" width="148" height="210" rx="8" class="pack"/>${ev ? `<ellipse cx="300" cy="317" rx="110" ry="120" fill="url(#ngv-glow)"/>` : ""}${cells}
+    <path class="glass${d.windows ? " open" : ""}" d="M222 206 C260 196 340 196 378 206 L364 258 C336 252 264 252 236 258 Z"/><path class="in" d="M236 258 V440 M364 258 V440"/>
+    <path class="glass${d.windows ? " open" : ""}" d="M236 444 C264 448 336 448 364 444 L372 488 C336 494 264 494 228 488 Z"/><path d="M224 178 H376 M224 453 H376" class="axle"/>
+    ${tire("vl", true, 178)}${tire("hl", true, 453)}${tire("vr", false, 178)}${tire("hr", false, 453)}
+    <rect x="228" y="276" width="144" height="84" rx="12" class="plate"/><text x="300" y="295" text-anchor="middle" class="sk acc">${esc(plateTop)}</text>
+    <text x="300" y="334" text-anchor="middle" class="soc">${lvl === null ? "–" : Math.round(lvl)}<tspan class="tu" style="font-size:16px"> %</tspan></text>
+    <text x="300" y="351" text-anchor="middle" class="sk lt">${d.range === null ? "– KM" : `${de(d.range)} KM`}</text>
+    <g class="tb"><rect x="414" y="514" width="180" height="40" rx="4"/><path d="M414 534 h180"/><text x="422" y="528" class="sk lt">${esc(d.title.toUpperCase().slice(0, 22))}</text>
+      <text x="422" y="548" class="sk">${esc(t("Draufsicht").toUpperCase())}${d.odo === null ? "" : ` · ${de(d.odo)} KM`}</text></g></svg>`;
+  }
+
+  const DSTYLE = `
+    :host { all: initial; position: fixed; inset: 0; z-index: 9000; display: grid; place-items: center; font-family: var(--ng-font, var(--primary-font-family, system-ui, sans-serif));
+      color: var(--ng-txt, #e8f5ee); -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
+    * { box-sizing: border-box; }
+    .bg { position: absolute; inset: 0; background: rgba(var(--rgb-ng-bg, 5, 7, 10), .72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); animation: fade .2s ease-out; }
+    .pop { position: relative; width: min(1340px, calc(100vw - 40px)); height: min(840px, calc(100vh - 24px)); border-radius: var(--ha-dialog-border-radius, 28px);
+      background: radial-gradient(900px 560px at 0% -10%, rgba(var(--rgb-ng-acc-2, 43, 227, 143), .09), transparent 60%), var(--ng-bg-elev, #0a0f14);
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)), var(--ng-shadow-lg, 0 24px 60px -20px #000);
+      padding: 22px 26px; display: flex; flex-direction: column; gap: 16px; overflow: hidden; animation: pop .28s cubic-bezier(.22, 1, .36, 1); }
+    @keyframes fade { from { opacity: 0; } }
+    @keyframes pop { from { opacity: 0; transform: scale(.97) translateY(8px); } }
+    .mono { font-family: var(--ha-font-family-code, 'JetBrains Mono', monospace); font-variant-numeric: tabular-nums; }
+    .label { font-family: var(--ha-font-family-code, 'JetBrains Mono', monospace); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--ng-txt-mute, #5f6f68); }
+    button { all: unset; box-sizing: border-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    button:focus-visible { outline: 2px solid var(--ng-acc, #7cffb2); outline-offset: 2px; }
+    .head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .head .t { display: flex; flex-direction: column; line-height: 1.05; min-width: 0; }
+    .head .t b { font-size: 24px; font-weight: 600; letter-spacing: -.01em; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hpic { height: 54px; max-width: 150px; object-fit: contain; flex: none; margin: -6px 0; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .35)); }
+    .picrow { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .prev { width: 180px; height: 96px; flex: none; border-radius: calc(14px * var(--ngs-rk, 1)); display: grid; place-items: center; padding: 8px;
+      background: rgba(var(--rgb-ng-txt, 232, 245, 238), .035); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)); }
+    .prev img, .prev svg { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .prev .car .body { fill: rgba(var(--rgb-ng-txt, 232, 245, 238), .05); stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .4); stroke-width: 1.4; }
+    .prev .car .glass { fill: rgba(var(--rgb-ng-txt, 232, 245, 238), .06); stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .24); }
+    .prev .car .line, .prev .car .hub { fill: none; stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .15); } .prev .car .floor, .prev .car .port { fill: none; }
+    .prev .car .wheel { fill: var(--ng-bg, #05070a); stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .45); } .prev .car .lamp, .prev .car .tail { stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .5); stroke-width: 2; }
+    .pbtns { flex: 1; min-width: 240px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .pbtns .chip { cursor: pointer; } .pbtns input { flex: 1 1 260px; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; justify-content: flex-end; }
+    .hbtn { display: flex; gap: 8px; align-items: center; margin-left: auto; } .chips + .hbtn { margin-left: 0; }
+    .setb > * { max-width: 1180px; }
+    .chip { display: inline-flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: var(--ngs-pill, 999px); font: 500 11px/1 var(--ha-font-family-code, monospace);
+      letter-spacing: .08em; text-transform: uppercase; color: var(--ng-txt-dim, #93a79d); background: var(--ng-glass, rgba(255, 255, 255, .045));
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)); white-space: nowrap; }
+    .chip i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .chip.ok { color: var(--ng-acc, #7cffb2); background: rgba(var(--rgb-ng-acc, 124, 255, 178), .1); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .3); }
+    .chip.warn { color: var(--ng-warn, #ffd166); background: rgba(var(--rgb-ng-warn, 255, 209, 102), .1); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-warn, 255, 209, 102), .35); }
+    .chip.go { color: var(--ng-acc, #7cffb2); background: rgba(var(--rgb-ng-acc, 124, 255, 178), .1); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .35); padding: 9px 13px; cursor: pointer; }
+    .chip svg { width: 14px; height: 14px; }
+    .x { width: 40px; height: 40px; border-radius: var(--ngs-round, 50%); display: grid; place-items: center; flex: none; background: var(--ng-glass, rgba(255, 255, 255, .045));
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)); color: var(--ng-txt-dim, #93a79d); font-size: 18px; }
+    .x svg { width: 19px; height: 19px; } .x.sm { width: 34px; height: 34px; font-size: 15px; }
+    .grid { display: grid; grid-template-columns: 270px minmax(0, 1fr) 290px; gap: 18px; flex: 1; min-height: 0; }
+    .col { display: flex; flex-direction: column; gap: 12px; min-height: 0; overflow-y: auto; scrollbar-width: none; }
+    .col::-webkit-scrollbar { display: none; }
+    .card { background: var(--ng-glass, rgba(255, 255, 255, .045)); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)); border-radius: calc(20px * var(--ngs-rk, 1)); padding: 14px 16px; position: relative; flex: none; }
+    .card.fill { flex: 1 0 auto; min-height: 150px; display: flex; flex-direction: column; overflow: hidden; padding: 12px 14px; }
+    .draw { display: flex; padding: 8px; background: rgba(var(--rgb-ng-txt, 232, 245, 238), .018); min-height: 0; }
+    .draw svg { width: 100%; height: 100%; display: block; }
+    .draw ng-veh-map { flex: 1; min-height: 0; }
+    .vsw { position: absolute; top: 14px; right: 14px; z-index: 3; display: flex; gap: 4px; padding: 4px; border-radius: calc(15px * var(--ngs-rk, 1)); background: var(--ng-bg-elev, #0a0f14);
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)); }
+    .vsw button { padding: 8px 12px; border-radius: calc(12px * var(--ngs-rk, 1)); font: 500 10.5px var(--ha-font-family-code, monospace); letter-spacing: .06em; text-transform: uppercase; color: var(--ng-txt-dim, #93a79d); }
+    .vsw button.on { color: var(--ng-acc, #7cffb2); background: rgba(var(--rgb-ng-acc, 124, 255, 178), .12); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .35); }
+    .lvl + .lvl { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--ng-line, rgba(255, 255, 255, .09)); }
+    .big { font-size: 44px; font-weight: 600; line-height: 1; letter-spacing: -.02em; margin: 8px 0 12px; }
+    .big small { font-size: 20px; color: var(--ng-txt-dim, #93a79d); font-weight: 500; margin-left: 3px; }
+    .big.s { font-size: 32px; margin: 0; } .big.s small { font-size: 16px; }
+    .mid { font-size: 20px; font-weight: 600; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .dim { color: var(--ng-txt-dim, #93a79d); font-size: 13.5px; } .acc { color: var(--ng-acc, #7cffb2); }
+    .kv { display: grid; grid-template-columns: auto minmax(0, 1fr); row-gap: 9px; column-gap: 10px; font-size: 13.5px; }
+    .kv > span:nth-child(odd) { color: var(--ng-txt-dim, #93a79d); white-space: nowrap; }
+    .kv > span:nth-child(even) { text-align: right; font-family: var(--ha-font-family-code, monospace); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .kv .on { color: var(--ng-acc, #7cffb2); }
+    .bar2 { height: 8px; border-radius: var(--ngs-pill, 999px); background: rgba(var(--rgb-ng-txt, 232, 245, 238), .07); overflow: hidden; }
+    .bar2 i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--ng-acc-3, #0fb87a), var(--ng-acc, #7cffb2));
+      box-shadow: 0 0 12px rgba(var(--rgb-ng-acc, 124, 255, 178), calc(.5 * var(--ng-glow-k, 1))); }
+    .bar2.fu i { background: rgba(var(--rgb-ng-txt, 232, 245, 238), .55); box-shadow: none; }
+    .bar2.low i { background: var(--ng-warn, #ffd166); box-shadow: none; } .low { color: var(--ng-warn, #ffd166); }
+    .btn { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: calc(16px * var(--ngs-rk, 1)); background: var(--ng-glass, rgba(255, 255, 255, .045));
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)); font-size: 14px; font-weight: 500; min-height: 50px; flex: none; transition: background .15s, box-shadow .15s, transform .1s; }
+    button.btn:active { transform: scale(.98); }
+    .btn svg { width: 20px; height: 20px; flex: none; color: var(--ng-txt-dim, #93a79d); }
+    .btn .s { margin-left: auto; font: 500 10.5px/1.25 var(--ha-font-family-code, monospace); color: var(--ng-txt-mute, #5f6f68); letter-spacing: .06em; text-transform: uppercase; text-align: right; }
+    .btn .s2 { display: block; margin-top: 3px; font: 500 10px var(--ha-font-family-code, monospace); color: var(--ng-acc, #7cffb2); letter-spacing: .06em; text-transform: uppercase; }
+    .btn.on { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .1); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .3); }
+    .btn.on svg, .btn.on .s { color: var(--ng-acc, #7cffb2); }
+    .btn.warn { background: rgba(var(--rgb-ng-warn, 255, 209, 102), .1); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-warn, 255, 209, 102), .4); }
+    .btn.warn svg, .btn.warn .s { color: var(--ng-warn, #ffd166); }
+    .btn.arm, .line.arm { box-shadow: inset 0 0 0 1.5px var(--ng-acc, #7cffb2), 0 0 22px -6px rgba(var(--rgb-ng-acc, 124, 255, 178), .7); border-radius: calc(12px * var(--ngs-rk, 1)); }
+    .btn.err .s2, .btn.err .s { color: var(--ng-danger, #ff6b6b); }
+    .busy { animation: busy 1s ease-in-out infinite; }
+    @keyframes busy { 50% { opacity: .45; } }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: none; } .two .btn { padding: 12px; }
+    .ctl { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; }
+    button.line { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 10px; font-size: 14px; font-weight: 500; min-height: 32px; }
+    .line .li { display: flex; gap: 10px; align-items: center; } .line .li svg { width: 20px; height: 20px; color: var(--ng-txt-dim, #93a79d); } .line .acc { font-size: 11px; }
+    .tog { margin-left: auto; width: 44px; height: 26px; border-radius: var(--ngs-pill, 999px); background: rgba(var(--rgb-ng-txt, 232, 245, 238), .12); position: relative; flex: none; transition: background .2s; }
+    .tog::after { content: ""; position: absolute; top: 4px; left: 4px; width: 18px; height: 18px; border-radius: var(--ngs-round, 50%); background: var(--ng-txt-dim, #93a79d); transition: left .2s, background .2s; }
+    .tog.on { background: var(--ng-acc-3, #0fb87a); box-shadow: 0 0 12px -2px rgba(var(--rgb-ng-acc, 124, 255, 178), calc(.6 * var(--ng-glow-k, 1))); }
+    .tog.on::after { left: 22px; background: var(--ng-bg-elev, #eafff3); }
+    .temp { display: flex; align-items: center; gap: 10px; } .temp .mid { flex: 1; text-align: center; } .temp.sm { gap: 8px; } .temp.sm .mid { font-size: 17px; min-width: 56px; }
+    .r { width: 40px; height: 40px; border-radius: var(--ngs-round, 50%); display: grid; place-items: center; background: var(--ng-glass-2, rgba(255, 255, 255, .075));
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)); font-size: 20px; color: var(--ng-txt-dim, #93a79d); flex: none; }
+    .r.sm { width: 32px; height: 32px; font-size: 17px; }
+    button.r:active { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .15); color: var(--ng-acc, #7cffb2); }
+    .seg { display: flex; gap: 6px; }
+    .seg button { flex: 1; text-align: center; padding: 9px 6px; border-radius: calc(12px * var(--ngs-rk, 1)); font: 500 10.5px var(--ha-font-family-code, monospace); letter-spacing: .06em;
+      text-transform: uppercase; color: var(--ng-txt-dim, #93a79d); background: var(--ng-glass, rgba(255, 255, 255, .045)); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09));
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .seg button.on { color: var(--ng-acc, #7cffb2); background: rgba(var(--rgb-ng-acc, 124, 255, 178), .1); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .3); }
+    .seg.sm button { padding: 7px 6px; }
+    .when { font: 500 11px var(--ha-font-family-code, monospace); color: var(--ng-txt-mute, #5f6f68); letter-spacing: .04em; white-space: nowrap; }
+    .note { margin-top: auto; padding-top: 10px; font-size: 11px; line-height: 1.35; color: var(--ng-txt-mute, #5f6f68); }
+    .fix { margin-top: 10px; font: 500 11px var(--ha-font-family-code, monospace); letter-spacing: .06em; text-transform: uppercase; color: var(--ng-warn, #ffd166); }
+    .chg2 { font: 600 14px var(--ha-font-family-code, monospace); margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chg3 { display: flex; justify-content: space-between; gap: 8px; margin-top: 4px; font: 500 12px var(--ha-font-family-code, monospace); color: var(--ng-txt-dim, #93a79d); white-space: nowrap; }
+    .spark { display: block; width: 100%; height: 64px; flex: none; margin-top: 6px; }
+    .spark .ar { fill: rgba(var(--rgb-ng-acc, 124, 255, 178), .1); } .spark .ln { fill: none; stroke: var(--ng-acc, #7cffb2); stroke-width: 1.6; stroke-linejoin: round; }
+    .spark .ar.fu { fill: rgba(var(--rgb-ng-txt, 232, 245, 238), .08); } .spark .ln.fu { stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .6); }
+    .spark .cb { fill: var(--ng-acc, #7cffb2); opacity: .75; } .spark .dl { stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .08); }
+    .spark text { font: 500 9px var(--ha-font-family-code, monospace); fill: var(--ng-txt-mute, #5f6f68); }
+    .cmp { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 5px 12px; margin-top: 12px; font-size: 12.5px; align-items: baseline; }
+    .cmp .label { font-size: 9.5px; } .cmp .cr { text-align: right; } .cmp .mono { white-space: nowrap; }
+    .cmp > span:not(.label):nth-child(3n+1) { color: var(--ng-txt-dim, #93a79d); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cmp small { font: 500 10px var(--ha-font-family-code, monospace); color: var(--ng-txt-mute, #5f6f68); margin-left: 4px; }
+    .cmp .on { color: var(--ng-acc, #7cffb2); }
+    /* Einstellungen */
+    .setb { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-right: 4px; }
+    .hint { font-size: 12px; color: var(--ng-txt-mute, #5f6f68); }
+    .fg { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px 16px; }
+    .fl { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--ng-txt-dim, #93a79d); }
+    input { all: unset; box-sizing: border-box; width: 100%; min-width: 0; padding: 11px 13px; border-radius: calc(12px * var(--ngs-rk, 1)); font-family: inherit; font-size: 14px; font-weight: 500; color: var(--ng-txt, #e8f5ee);
+      background: rgba(var(--rgb-ng-txt, 232, 245, 238), .05); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .12)); }
+    input:focus { box-shadow: inset 0 0 0 1.5px var(--ng-acc, #7cffb2); } input::placeholder { color: var(--ng-txt-mute, #5f6f68); }
+    input.file { display: none !important; }
+    .chips2 { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .chips2 small { font-size: 12px; color: var(--ng-txt-mute, #5f6f68); margin-right: 4px; }
+    .chips2 .chip { cursor: pointer; text-transform: none; letter-spacing: 0; font-size: 12px; }
+    .sect { display: flex; flex-direction: column; gap: 3px; margin-top: 6px; } .sect b { font-size: 15px; }
+    .cr2 { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .8fr) minmax(0, 1.6fr) minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+    .add { align-self: flex-start; }
+    .err { color: var(--ng-danger, #ff6b6b); font-size: 13px; }
+    .acts { display: flex; gap: 10px; justify-content: flex-end; margin-top: auto; padding-top: 6px; } .acts .btn { min-width: 130px; justify-content: center; }
+    /* Zeichnung */
+    svg text { font-family: var(--ha-font-family-code, 'JetBrains Mono', monospace); }
+    .out { fill: url(#ngv-body); stroke: rgba(var(--rgb-ng-acc, 124, 255, 178), .6); stroke-width: 1.6; } .out.open { stroke: var(--ng-warn, #ffd166); stroke-width: 2.4; }
+    .in { fill: none; stroke: rgba(var(--rgb-ng-acc, 124, 255, 178), .2); stroke-width: 1; }
+    .glass { fill: rgba(var(--rgb-ng-info, 107, 227, 255), .045); stroke: rgba(var(--rgb-ng-info, 107, 227, 255), .32); stroke-width: 1; } .glass.open { stroke: var(--ng-warn, #ffd166); stroke-width: 2; }
+    .mir { fill: var(--ng-bg-elev, #0a0f14); stroke: rgba(var(--rgb-ng-acc, 124, 255, 178), .45); stroke-width: 1.2; }
+    .hl { fill: none; stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .7); stroke-width: 2.2; stroke-linecap: round; }
+    .tail { fill: none; stroke: var(--ng-danger, #ff6b6b); opacity: .7; stroke-width: 2.2; stroke-linecap: round; }
+    .cl { stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .14); stroke-dasharray: 14 4 2 4; } .axle { stroke: rgba(var(--rgb-ng-acc, 124, 255, 178), .22); stroke-dasharray: 3 4; }
+    .fwd { fill: none; stroke: var(--ng-acc, #7cffb2); stroke-width: 1.6; }
+    .wheel { fill: var(--ng-bg, #05070a); stroke-width: 1.4; stroke: var(--ng-txt-mute, #5f6f68); } .tread { stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .16); stroke-width: 1; }
+    .tire.ok .wheel { stroke: var(--ng-acc, #7cffb2); } .tire.low .wheel { stroke: var(--ng-warn, #ffd166); }
+    .tire .dot { fill: var(--ng-txt-mute, #5f6f68); } .tire.ok .dot { fill: var(--ng-acc, #7cffb2); } .tire.low .dot, .tire.low .tv { fill: var(--ng-warn, #ffd166); }
+    .lead { fill: none; stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .32); stroke-width: 1; }
+    .sk { fill: var(--ng-txt-mute, #5f6f68); font-size: 9.5px; letter-spacing: .14em; } .sk.acc { fill: var(--ng-acc, #7cffb2); } .sk.lt { fill: var(--ng-txt-dim, #93a79d); }
+    .tv { fill: var(--ng-txt, #e8f5ee); font-size: 22px; font-family: var(--ng-font, var(--primary-font-family, sans-serif)) !important; font-weight: 600; }
+    .tu { fill: var(--ng-txt-dim, #93a79d); font-size: 12px; font-weight: 500; }
+    .pack { fill: url(#ngv-hatch); stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .25); stroke-width: 1.2; stroke-dasharray: 5 3; }
+    .cell { fill: rgba(var(--rgb-ng-txt, 232, 245, 238), .035); stroke: rgba(var(--rgb-ng-acc, 124, 255, 178), .12); stroke-width: .8; }
+    .cell.on { fill: rgba(var(--rgb-ng-acc, 124, 255, 178), .5); stroke: rgba(var(--rgb-ng-acc, 124, 255, 178), .8); }
+    .cell.top { fill: var(--ng-acc, #7cffb2); filter: drop-shadow(0 0 4px var(--ng-acc, #7cffb2)); }
+    .cell.fu { stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .1); } .cell.fu.on { fill: rgba(var(--rgb-ng-txt, 232, 245, 238), .35); stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .5); }
+    .cell.fu.top { fill: rgba(var(--rgb-ng-txt, 232, 245, 238), .7); filter: none; }
+    .low .cell.on { fill: rgba(var(--rgb-ng-warn, 255, 209, 102), .55); stroke: rgba(var(--rgb-ng-warn, 255, 209, 102), .8); } .low .cell.top { fill: var(--ng-warn, #ffd166); filter: none; }
+    .chg .cell.top { animation: busy 1.4s ease-in-out infinite; }
+    .plate { fill: rgba(var(--rgb-ng-bg, 5, 7, 10), .86); stroke: rgba(var(--rgb-ng-acc, 124, 255, 178), .4); stroke-width: 1; }
+    .soc { fill: var(--ng-txt, #e8f5ee); font-family: var(--ng-font, var(--primary-font-family, sans-serif)) !important; font-size: 36px; font-weight: 600; letter-spacing: -.02em; }
+    .tb rect { fill: rgba(var(--rgb-ng-bg, 5, 7, 10), .6); stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .22); } .tb path { stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .22); }
+    :host(.eco) *, :host(.eco) *::after { animation: none !important; transition: none !important; }
+    @media (prefers-reduced-motion: reduce) { *, *::after { animation: none !important; transition: none !important; } }
+    /* Handy / schmal: eine Spalte, Zeichnung nach dem Akku, alles scrollt */
+    @media (max-width: 900px), (max-height: 560px) {
+      .pop { width: 100vw; height: 100vh; height: 100dvh; border-radius: 0; padding: calc(14px + env(safe-area-inset-top)) 14px calc(14px + env(safe-area-inset-bottom)); overflow-y: auto; gap: 12px; }
+      .grid { display: flex; flex-direction: column; flex: none; gap: 12px; }
+      .col { display: contents; }
+      .draw { order: 0; height: min(100vw, 460px); flex: none; }
+      .col > * { order: 1; } .col:first-child > * { order: 2; } .col:first-child > .card:first-child { order: -1; }   /* Akku, Zeichnung, Schalter + Kosten, Werte */
+      .card.fill { flex: none; min-height: 0; }
+      .head .t b { font-size: 21px; } .chips { margin-left: 0; justify-content: flex-start; width: 100%; order: 3; } .hbtn { margin-left: auto; }
+      .chip.go { padding: 8px 10px; }
+      .setb { overflow: visible; } .cr2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .cr2 .seg { grid-column: 1 / -1; }
+    }
+  `;
+
+  // ======== Karte (alle Autos der Seite + Zuhause) ========
+  const COL = ["var(--ng-acc, #7cffb2)", "var(--ng-info, #6be3ff)", "var(--ng-acc-2, #2be38f)", "var(--ng-txt-dim, #93a79d)"];
+  function vehicleCards() {   // alle Fahrzeug-Karten der Seite, je Gerät eine (Reihenfolge = Platz auf der Seite)
+    const out = [], seen = new Set(), walk = (root) => {
+      for (const el of root.querySelectorAll("*")) {
+        if (el.localName === "nullglow-vehicle-card" && el._cfg && el._hass && !seen.has(el._cfg.device || el)) { seen.add(el._cfg.device || el); out.push(el); }
+        if (el.shadowRoot) walk(el.shadowRoot);
+      }
+    };
+    walk(document);
+    return out;
+  }
+  const colorOf = (el, all) => { const i = all.findIndex((x) => x === el || (x._cfg?.device && x._cfg.device === el._cfg?.device)); return COL[(i < 0 ? 0 : i) % COL.length]; };
+  function mapData(src, hass) {
+    const all = vehicleCards();
+    if (src && !all.some((x) => x._cfg?.device === src._cfg?.device)) all.unshift(src);
+    const cars = all.map((el) => { try { const i = el._mapInfo(); return i && { ...i, col: colorOf(el, all) }; } catch (e) { return null; } }).filter(Boolean);
+    const fi = cars.findIndex((c) => c.key === src?._cfg?.device);
+    if (fi > 0) cars.unshift(...cars.splice(fi, 1));   // offenes Auto zuerst in der Liste
+    const z = hass.states["zone.home"]?.attributes;
+    return { cars, focus: src?._cfg?.device, home: z && fin(+z.latitude) && fin(+z.longitude) ? [+z.latitude, +z.longitude] : null };
+  }
+  const RM = 6378137, TILE = 256;
+  const merc = (lat, lon) => [lon * Math.PI / 180 * RM, Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)) * RM];
+  const mpp = (z) => 2 * Math.PI * RM / (TILE * 2 ** z);   // Meter je CSS-Pixel
+  const MCSS = `
+    :host { display: block; position: relative; min-height: 0; border-radius: calc(14px * var(--ngs-rk, 1)); overflow: hidden; }
+    * { box-sizing: border-box; }
+    button { all: unset; box-sizing: border-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .map { position: absolute; inset: 0; overflow: hidden; background: var(--ng-map-bg, #0b0e12); touch-action: none; cursor: grab; } .map.drag { cursor: grabbing; }
+    .pan { position: absolute; inset: 0; will-change: transform; }
+    .tiles, .tiles img { position: absolute; } .tiles { inset: 0; filter: var(--ng-map-filter, invert(1) hue-rotate(180deg) saturate(.3) brightness(.78) contrast(1.15)); }
+    .tiles img { width: 256px; height: 256px; user-select: none; -webkit-user-drag: none; }
+    .shade { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(130% 110% at 50% 45%, transparent 55%, rgba(var(--rgb-ng-bg, 5, 7, 10), .55) 100%); }
+    .mk { position: absolute; inset: 0; pointer-events: none; }
+    .home { position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(var(--rgb-ng-bg, 5, 7, 10), .82); box-shadow: inset 0 0 0 1.5px rgba(var(--rgb-ng-txt, 232, 245, 238), .55); color: var(--ng-txt, #e8f5ee); }
+    .home svg { width: 16px; height: 16px; }
+    .car { position: absolute; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .car .lbl { padding: 5px 10px; border-radius: var(--ngs-pill, 999px); white-space: nowrap; font: 600 11px var(--ha-font-family-code, 'JetBrains Mono', monospace); letter-spacing: .06em;
+      text-transform: uppercase; color: var(--ng-txt, #e8f5ee); background: rgba(var(--rgb-ng-bg, 5, 7, 10), .86); box-shadow: inset 0 0 0 1px var(--c); }
+    .car .lbl small { font-weight: 500; color: var(--ng-txt-dim, #93a79d); margin-left: 6px; }
+    .car .pin { width: 14px; height: 14px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 3px rgba(var(--rgb-ng-bg, 5, 7, 10), .8), 0 0 14px var(--c); position: relative; margin-bottom: -7px; }
+    .car.focus .pin::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--c); animation: ping 2.2s ease-out infinite; }
+    .car.focus { z-index: 2; } .car.focus .lbl { font-size: 12px; padding: 6px 12px; }
+    @keyframes ping { 0% { transform: scale(.6); opacity: .9; } 100% { transform: scale(2.6); opacity: 0; } }
+    .ctl { position: absolute; right: 12px; bottom: 44px; display: flex; flex-direction: column; gap: 8px; }
+    .ctl button { width: 40px; height: 40px; border-radius: calc(12px * var(--ngs-rk, 1)); display: grid; place-items: center; font: 500 20px/1 var(--ha-font-family-code, monospace);
+      color: var(--ng-txt, #e8f5ee); background: rgba(var(--rgb-ng-bg, 5, 7, 10), .82); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .12)); }
+    .info { position: absolute; left: 12px; bottom: 12px; right: 64px; display: flex; flex-wrap: wrap; gap: 8px; pointer-events: none; }
+    .info span { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border-radius: calc(12px * var(--ngs-rk, 1)); font-size: 12px; color: var(--ng-txt-dim, #93a79d);
+      background: rgba(var(--rgb-ng-bg, 5, 7, 10), .84); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .1)); white-space: nowrap; }
+    .info b { color: var(--ng-txt, #e8f5ee); font-weight: 600; } .info i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+    .opt { position: absolute; left: 12px; top: 12px; display: flex; gap: 4px; padding: 4px; border-radius: calc(15px * var(--ngs-rk, 1)); background: var(--ng-bg-elev, #0a0f14);
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)); }
+    .opt button { padding: 8px 12px; border-radius: calc(12px * var(--ngs-rk, 1)); font: 500 10.5px var(--ha-font-family-code, monospace); letter-spacing: .06em; text-transform: uppercase; color: var(--ng-txt-dim, #93a79d); }
+    .opt button.on { color: var(--ng-acc, #7cffb2); background: rgba(var(--rgb-ng-acc, 124, 255, 178), .12); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .35); }
+    .ov { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+    .ov .rg { fill: rgba(var(--rgb-ng-txt, 232, 245, 238), .03); stroke-width: 2; } .ov .rg2 { fill: none; stroke-width: 1.5; stroke-dasharray: 7 6; }
+    .ov text { font: 600 11px var(--ha-font-family-code, 'JetBrains Mono', monospace); fill: var(--ng-txt, #e8f5ee); paint-order: stroke; stroke: rgba(var(--rgb-ng-bg, 5, 7, 10), .9); stroke-width: 4px; stroke-linejoin: round; }
+    .ov text.dim { fill: var(--ng-txt-dim, #93a79d); font-weight: 500; }
+    .att { position: absolute; right: 8px; bottom: 6px; font-size: 10px; color: var(--ng-txt-mute, #5f6f68); pointer-events: none; }
+    .none { position: absolute; inset: 0; display: grid; place-items: center; font-size: 13px; color: var(--ng-txt-mute, #5f6f68); text-align: center; padding: 20px; }
+    @media (prefers-reduced-motion: reduce) { .car.focus .pin::after { animation: none; } }
+  `;
+  const HOME = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg>';
+  class NgVehMap extends HTMLElement {
+    constructor() {
+      super();
+      const r = this.attachShadow({ mode: "open" });
+      r.innerHTML = `<style>${MCSS}</style><div class="map"><div class="pan"><div class="tiles"></div><svg class="ov"></svg><div class="mk"></div></div><div class="shade"></div><div class="opt"></div>
+        <div class="ctl"><button data-z="in" aria-label="${esc(t("Näher"))}">+</button><button data-z="out" aria-label="${esc(t("Weiter weg"))}">−</button><button data-z="fit" aria-label="${esc(t("Alles zeigen"))}">⌖</button></div>
+        <div class="info"></div><div class="att">© OpenStreetMap</div></div>`;
+      this._el = { map: r.querySelector(".map"), pan: r.querySelector(".pan"), tiles: r.querySelector(".tiles"), mk: r.querySelector(".mk"), info: r.querySelector(".info"), ov: r.querySelector(".ov"), opt: r.querySelector(".opt") };
+      this._range = false;
+      this._el.opt.addEventListener("click", (e) => { if (!e.target.closest("[data-o]")) return; e.stopPropagation(); this._range = !this._range; this._fit(); this._render(); });
+      r.querySelector(".ctl").addEventListener("click", (e) => {
+        const z = e.target.closest("[data-z]")?.dataset.z;
+        if (!z) return;
+        e.stopPropagation();
+        if (z === "fit") { this._fit(); this._render(); return; }
+        this._zoom = clamp(this._zoom + (z === "in" ? 1 : -1), 4, 18);
+        this._render();
+      });
+      const m = this._el.map;   // Ziehen: während der Bewegung nur verschieben, danach neu kacheln
+      m.addEventListener("pointerdown", (e) => { if (e.target.closest(".ctl, .opt")) return; this._drag = { x: e.clientX, y: e.clientY, dx: 0, dy: 0, id: e.pointerId }; m.setPointerCapture(e.pointerId); m.classList.add("drag"); });
+      m.addEventListener("pointermove", (e) => { const d = this._drag; if (!d || d.id !== e.pointerId) return; d.dx = e.clientX - d.x; d.dy = e.clientY - d.y; this._el.pan.style.transform = `translate(${d.dx}px, ${d.dy}px)`; });
+      const end = (e) => {
+        const d = this._drag;
+        if (!d || d.id !== e.pointerId) return;
+        this._drag = null; m.classList.remove("drag");
+        if (Math.abs(d.dx) + Math.abs(d.dy) > 2 && this._center) { const s = mpp(this._zoom); this._center = [this._center[0] - d.dx * s, this._center[1] + d.dy * s]; this._user = true; }
+        this._el.pan.style.transform = "";
+        this._render();
+      };
+      m.addEventListener("pointerup", end); m.addEventListener("pointercancel", end);
+    }
+    connectedCallback() { if (!this._ro) this._ro = new ResizeObserver(() => { if (!this._user) this._fit(); this._render(); }); this._ro.observe(this); }
+    disconnectedCallback() { this._ro?.disconnect(); }
+    set data(d) { const first = !this._d; this._d = d; if (first || !this._user) this._fit(); this._render(); }
+    _pts() {
+      const d = this._d || {}, cars = (d.cars || []).filter((c) => fin(c.lat) && fin(c.lon)), p = cars.map((c) => merc(c.lat, c.lon));
+      if (d.home) p.push(merc(d.home[0], d.home[1]));
+      if (this._range) for (const c of cars) if (c.range > 0) { const [x, y] = merc(c.lat, c.lon), rm = c.range * 1000 / Math.cos(c.lat * Math.PI / 180); p.push([x - rm, y - rm], [x + rm, y + rm]); }
+      return p;
+    }
+    _fit() {
+      const p = this._pts(), W = this.clientWidth || 600, H = this.clientHeight || 500;
+      this._user = false;
+      if (!p.length) { this._center = null; return; }
+      const xs = p.map((q) => q[0]), ys = p.map((q) => q[1]);
+      this._center = [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
+      const w = Math.max(...xs) - Math.min(...xs), hh = Math.max(...ys) - Math.min(...ys);
+      let z = 16;
+      while (z > 4 && (w / mpp(z) > W - 180 || hh / mpp(z) > H - 190)) z--;
+      this._zoom = z;
+      this._center[1] -= 18 * mpp(z);   // Beschriftungen stehen über den Punkten
+    }
+    _render() {
+      const W = this.clientWidth, H = this.clientHeight, d = this._d;
+      if (!W || !H || !d) return;
+      if (!this._center) { this._el.tiles.innerHTML = ""; this._el.mk.innerHTML = `<div class="none">${esc(t("Keine Position bekannt"))}</div>`; this._el.info.innerHTML = ""; this._el.opt.style.display = "none"; return; }
+      const z = this._zoom, s = mpp(z), [cx, cy] = this._center, key = `${W}x${H}@${z}:${Math.round(cx)},${Math.round(cy)}`;
+      if (key !== this._key) {
+        this._key = key;
+        const px0 = (cx - W / 2 * s + Math.PI * RM) / s, py0 = (Math.PI * RM - (cy + H / 2 * s)) / s, n = 2 ** z;
+        let html = "";
+        for (let ty = Math.floor(py0 / TILE); ty * TILE < py0 + H; ty++) for (let tx = Math.floor(px0 / TILE); tx * TILE < px0 + W; tx++) {
+          if (ty < 0 || ty >= n) continue;
+          html += `<img referrerpolicy="strict-origin-when-cross-origin" src="https://tile.openstreetmap.org/${z}/${((tx % n) + n) % n}/${ty}.png" style="left:${Math.round(tx * TILE - px0)}px;top:${Math.round(ty * TILE - py0)}px" alt="">`;
+        }
+        this._el.tiles.innerHTML = html;
+      }
+      const pos = (lat, lon) => { const [mx, my] = merc(lat, lon); return [(mx - cx) / s + W / 2, (cy - my) / s + H / 2]; };
+      let mk = "", ov = "";
+      if (d.home) { const [x, y] = pos(d.home[0], d.home[1]); mk += `<div class="home" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px">${HOME}</div>`; }
+      const info = [];
+      for (const c of d.cars || []) {
+        const has = fin(c.lat) && fin(c.lon);
+        if (has) { const [x, y] = pos(c.lat, c.lon); mk += `<div class="car${c.key === d.focus ? " focus" : ""}" style="--c:${c.col};left:${x.toFixed(1)}px;top:${y.toFixed(1)}px"><span class="lbl">${esc(c.short)}${c.place ? `<small>${esc(c.place)}</small>` : ""}</span><span class="pin"></span></div>`; }
+        info.push(`<span style="--c:${c.col}"><i></i><b>${esc(c.name)}</b>${has ? `${esc(c.place || "")}${c.since ? ` · ${esc(c.since)}` : ""}` : esc(t("keine Position"))}</span>`);
+        if (this._range && has && c.range > 0) {
+          const [x, y] = pos(c.lat, c.lon), rp = c.range * 1000 / Math.cos(c.lat * Math.PI / 180) / s;
+          ov += `<circle class="rg" style="stroke:${c.col}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rp.toFixed(1)}"/><circle class="rg2" style="stroke:${c.col}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(rp / 2).toFixed(1)}"/>
+            <text x="${x.toFixed(1)}" y="${(y - rp - 8).toFixed(1)}" text-anchor="middle">${esc(c.short)} · ${de(c.range)} km</text>
+            <text class="dim" x="${x.toFixed(1)}" y="${(y - rp / 2 - 8).toFixed(1)}" text-anchor="middle">${esc(t("hin und zurück {n} km", { n: de(c.range / 2) }))}</text>`;
+        }
+      }
+      this._el.mk.innerHTML = mk;
+      this._el.info.innerHTML = info.join("");
+      this._el.ov.setAttribute("width", W); this._el.ov.setAttribute("height", H);
+      this._el.ov.innerHTML = ov;
+      const anyRange = (d.cars || []).some((c) => c.range > 0 && fin(c.lat));
+      this._el.opt.innerHTML = anyRange ? `<button class="${this._range ? "on" : ""}" data-o="range">${esc(t("Reichweite"))}</button>` : "";
+      this._el.opt.style.display = anyRange ? "" : "none";
+    }
+  }
+  if (!customElements.get("ng-veh-map")) customElements.define("ng-veh-map", NgVehMap);
+
+  // ======== Fahrtkosten-Vergleich (alle Autos der Seite + gedachte Vergleichsautos) ========
+  const CPER = { day: "Tag", week: "Woche", month: "Monat", year: "Jahr", total: "Seit Kauf" };
+  const WD = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+  function cmpCompute(cars, per) {
+    const now = Date.now(), t0 = per === "total" ? null : periodStart(per).getTime();
+    const real = cars.map((c) => {
+      const R = c.rows, km = per === "total" ? c.kmTotal : per === "day" ? sumFrom(R.hours, t0) : sumFrom(R.days, t0);
+      const priced = c.parts.every((p) => fin(p.price));
+      const parts = c.parts.map((p) => ({ ...p, amount: fin(km) ? km * p.v100 / 100 : null }));
+      const first = firstT(R);
+      return { ...c, km, parts, per100: priced ? c.parts.reduce((a, p) => a + p.v100 * p.price, 0) : null,
+        cost: priced && fin(km) ? parts.reduce((a, p) => a + p.amount * p.price, 0) : null, co2: fin(km) ? parts.reduce((a, p) => a + p.amount * p.co2, 0) : null,
+        since: t0 !== null && first !== null && first > t0 ? first : null, first,
+        info: c.parts.map((p) => `${de(p.cons, 1)} ${p.unit}/100 km ${t(p.src)}`).join(" · ") };
+    });
+    // gedachte Autos (Preis leer = erster Spritpreis bzw. Strompreis der echten Autos)
+    const fuelP = real.flatMap((r) => r.parts).find((p) => p.unit === "l" && fin(p.price))?.price ?? null;
+    const g0 = cars.find((c) => c.grid !== null && c.grid !== undefined)?.grid, elP = real.flatMap((r) => r.parts).find((p) => p.unit === "kWh" && fin(p.price))?.price ?? (fin(g0) ? g0 : null);
+    const seen = new Set(), list = cars.flatMap((c) => c.compare || []).filter((x) => { const k = String(x?.name || "").toLowerCase(); if (!k || seen.has(k)) return false; seen.add(k); return true; });
+    const kmAll = real.reduce((a, r) => a + (fin(r.km) ? r.km : 0), 0), paid = real.reduce((a, r) => a + (fin(r.cost) ? r.cost : 0), 0);
+    const virt = list.map((x) => {
+      const el = x.fuel === "electric", cons = parseNum(x.consumption), price = parseNum(x.price) ?? (el ? elP : fuelP);
+      if (!(cons > 0) || !fin(price)) return null;
+      const energy = kmAll * cons / 100;
+      return { name: String(x.name), virt: true, unit: el ? "kWh" : "l", cons, price, per100: cons * price, km: kmAll, energy, cost: energy * price, co2: energy * (el ? CO2.kwh : CO2[x.fuel === "diesel" ? "diesel" : "petrol"]) };
+    }).filter(Boolean);
+    const V = virt[0] || null;
+    // aufs Jahr: Ersparnis je Tag (seit Beginn der HA-Daten, mind. 7 Tage) × 365 gegen das erste gedachte Auto
+    let year = null;
+    if (V) {
+      year = 0;
+      for (const r of real) {
+        if (r.first === null || !fin(r.per100)) continue;
+        const kmD = sumFrom(r.rows.months, 0), days = Math.max(7, (now - r.first) / 864e5);
+        year += kmD / days * 365 * (V.per100 - r.per100) / 100;
+      }
+    }
+    const scen = [...real.filter((r) => fin(r.per100)).map((r) => ({ name: t("nur {n}", { n: r.short }), col: r.col, v: kmAll * r.per100 / 100 })),
+      { name: t("so gefahren"), mix: true, v: paid, parts: real.map((r) => ({ col: r.col, v: r.cost || 0 })) },
+      ...virt.map((v) => ({ name: t("nur {n}", { n: v.name }), virt: true, v: v.cost }))].sort((a, b) => a.v - b.v);
+    const p100 = [...real.filter((r) => fin(r.per100)).map((r) => ({ name: r.short, col: r.col, v: r.per100 })), ...virt.map((v) => ({ name: v.name, virt: true, v: v.per100 }))].sort((a, b) => a.v - b.v);
+    // Fakten: Gleichstand Elektro ↔ Sprit, gesparter Sprit, elektrisch gefahrener Anteil
+    const evR = real.find((r) => r.parts.length === 1 && r.parts[0].unit === "kWh" && fin(r.per100)), fuR = real.find((r) => r.parts.length === 1 && r.parts[0].unit === "l" && fin(r.per100));
+    const litReal = real.reduce((a, r) => a + r.parts.filter((p) => p.unit === "l").reduce((x, p) => x + (fin(p.amount) ? p.amount : 0), 0), 0);
+    const facts = {
+      evR, fuR, eqFuel: evR && fuR ? evR.per100 / fuR.parts[0].cons : null, eqPower: evR && fuR ? fuR.per100 / evR.parts[0].v100 : null,
+      fuelSaved: V && V.unit === "l" ? V.energy - litReal : null, tank: real.find((r) => r.tank > 0)?.tank || null,
+      elKm: real.reduce((a, r) => a + (fin(r.km) ? r.km * (r.evShare || 0) : 0), 0),
+    };
+    return { per, real, virt, V, kmAll, paid, saved: V ? V.cost - paid : null, year, scen, p100, facts,
+      co2: real.reduce((a, r) => a + (fin(r.co2) ? r.co2 : 0), 0), co2V: V ? V.co2 : null, chart: cmpChart(per, real, V) };
+  }
+  // Verlauf: Stunden (Tag), Tage (Woche/Monat), Monate (Jahr/seit Beginn der Daten)
+  function cmpChart(per, real, V) {
+    const B = [], t0 = periodStart(per === "total" ? "year" : per), loc = numLoc();
+    if (per === "day") for (let i = 0; i < 24; i++) { const a = t0.getTime() + i * 3600e3; B.push({ a, b: a + 3600e3, lab: i % 6 ? "" : `${pad(i)}:00`, tip: `${pad(i)}–${pad(i + 1)}` }); }
+    else if (per === "week") for (let i = 0; i < 7; i++) { const d = new Date(t0); d.setDate(d.getDate() + i); const e = new Date(d); e.setDate(e.getDate() + 1);
+      B.push({ a: d.getTime(), b: e.getTime(), lab: ngLang() === "de" ? WD[i] : d.toLocaleDateString(loc, { weekday: "short" }), tip: d.toLocaleDateString(loc, { weekday: "short", day: "2-digit", month: "2-digit" }) }); }
+    else if (per === "month") { const n = new Date(t0.getFullYear(), t0.getMonth() + 1, 0).getDate();
+      for (let i = 0; i < n; i++) { const d = new Date(t0); d.setDate(i + 1); const e = new Date(d); e.setDate(e.getDate() + 1); B.push({ a: d.getTime(), b: e.getTime(), lab: i === 0 || (i + 1) % 5 === 0 ? String(i + 1) : "", tip: d.toLocaleDateString(loc, { day: "2-digit", month: "2-digit" }) }); } }
+    else {
+      let s = new Date(t0);
+      if (per === "total") { const f = real.map((r) => r.rows.months.find((x) => fin(x.v))?.t).filter(fin); if (f.length) { s = new Date(Math.min(...f)); s = new Date(s.getFullYear(), s.getMonth(), 1); } }
+      const end = new Date(), n = per === "year" ? 12 : Math.max(1, (end.getFullYear() - s.getFullYear()) * 12 + end.getMonth() - s.getMonth() + 1);
+      for (let i = 0; i < n; i++) { const d = new Date(s.getFullYear(), s.getMonth() + i, 1), e = new Date(s.getFullYear(), s.getMonth() + i + 1, 1);
+        B.push({ a: d.getTime(), b: e.getTime(), lab: n <= 12 || i % 3 === 0 ? d.toLocaleDateString(loc, { month: "short" }).replace(".", "").slice(0, 3) : "", tip: d.toLocaleDateString(loc, { month: "long", year: "numeric" }) }); }
+    }
+    const src = (r) => (per === "day" ? r.rows.hours : per === "week" || per === "month" ? r.rows.days : r.rows.months);
+    let any = false;
+    for (const b of B) {
+      b.cars = real.map((r) => { const km = sumFrom(src(r), b.a, b.b); if (km > 0) any = true; return { col: r.col, short: r.short, km, c: fin(r.per100) ? km * r.per100 / 100 : 0 }; });
+      b.cV = V ? b.cars.reduce((a, x) => a + x.km, 0) * V.per100 / 100 : 0;
+      b.future = b.a > Date.now();
+    }
+    const first = real.map((r) => r.first).filter(fin);
+    return { B, any, since: first.length ? Math.min(...first) : null };
+  }
+  const CCSS = `
+    :host { all: initial; position: fixed; inset: 0; z-index: 9100; display: grid; place-items: center; font-family: var(--ng-font, var(--primary-font-family, system-ui, sans-serif));
+      color: var(--ng-txt, #e8f5ee); -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; }
+    * { box-sizing: border-box; }
+    .bg { position: absolute; inset: 0; background: rgba(var(--rgb-ng-bg, 5, 7, 10), .6); animation: fade .2s ease-out; }
+    .pop { position: relative; width: min(1340px, calc(100vw - 40px)); height: min(840px, calc(100vh - 24px)); border-radius: var(--ha-dialog-border-radius, 28px);
+      background: radial-gradient(900px 560px at 100% -10%, rgba(var(--rgb-ng-acc-2, 43, 227, 143), .08), transparent 60%), var(--ng-bg-elev, #0a0f14);
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)), var(--ng-shadow-lg, 0 24px 60px -20px #000);
+      padding: 22px 26px; display: flex; flex-direction: column; gap: 14px; overflow: hidden; animation: pop .28s cubic-bezier(.22, 1, .36, 1); }
+    @keyframes fade { from { opacity: 0; } } @keyframes pop { from { opacity: 0; transform: scale(.97) translateY(8px); } }
+    button { all: unset; box-sizing: border-box; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    button:focus-visible { outline: 2px solid var(--ng-acc, #7cffb2); outline-offset: 2px; }
+    .mono { font-family: var(--ha-font-family-code, 'JetBrains Mono', monospace); font-variant-numeric: tabular-nums; }
+    .label { font-family: var(--ha-font-family-code, 'JetBrains Mono', monospace); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--ng-txt-mute, #5f6f68); }
+    .head { display: flex; align-items: center; gap: 14px; }
+    .head .t { display: flex; flex-direction: column; line-height: 1.05; min-width: 0; } .head .t b { font-size: 24px; font-weight: 600; letter-spacing: -.01em; margin-top: 3px; }
+    .head .t .label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .seg { display: flex; gap: 6px; margin-left: auto; }
+    .seg button { padding: 9px 14px; border-radius: calc(12px * var(--ngs-rk, 1)); font: 500 11px var(--ha-font-family-code, monospace); letter-spacing: .06em; text-transform: uppercase;
+      color: var(--ng-txt-dim, #93a79d); background: var(--ng-glass, rgba(255, 255, 255, .045)); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)); white-space: nowrap; }
+    .seg button.on { color: var(--ng-acc, #7cffb2); background: rgba(var(--rgb-ng-acc, 124, 255, 178), .1); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .3); }
+    .x { width: 40px; height: 40px; border-radius: var(--ngs-round, 50%); display: grid; place-items: center; flex: none; background: var(--ng-glass, rgba(255, 255, 255, .045));
+      box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)); color: var(--ng-txt-dim, #93a79d); font-size: 18px; }
+    .body { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: auto auto minmax(0, 1fr) auto auto; gap: 12px; }
+    .card { background: var(--ng-glass, rgba(255, 255, 255, .045)); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .09)); border-radius: calc(20px * var(--ngs-rk, 1)); padding: 14px 16px;
+      min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+    .kpi { grid-column: span 3; padding: 12px 16px; gap: 4px; }
+    .kpi .v { font-size: 30px; font-weight: 600; letter-spacing: -.02em; line-height: 1.05; } .kpi .v small { font-size: 16px; color: var(--ng-txt-dim, #93a79d); font-weight: 500; margin-left: 3px; }
+    .kpi .s { font-size: 12px; color: var(--ng-txt-mute, #5f6f68); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .kpi.good { background: rgba(var(--rgb-ng-acc, 124, 255, 178), .08); box-shadow: inset 0 0 0 1px rgba(var(--rgb-ng-acc, 124, 255, 178), .3); } .kpi.good .v, .kpi.good .s { color: var(--ng-acc, #7cffb2); }
+    .car { gap: 7px; } .car > * { flex: none; } .car .kv { row-gap: 5px; }
+    .car.virt { background: transparent; box-shadow: none; border: 1px dashed var(--ng-line-2, rgba(255, 255, 255, .14)); }
+    .car .nm { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .car .nm i { width: 10px; height: 10px; border-radius: calc(3px * var(--ngs-rk, 1)); flex: none; background: var(--c); }
+    .car .big { font-size: 32px; font-weight: 600; letter-spacing: -.02em; line-height: 1; margin: 4px 0 2px; } .car .big small { font-size: 16px; color: var(--ng-txt-dim, #93a79d); margin-left: 3px; font-weight: 500; }
+    .kv { display: grid; grid-template-columns: auto minmax(0, 1fr); row-gap: 7px; column-gap: 10px; font-size: 13px; }
+    .kv > span:nth-child(odd) { color: var(--ng-txt-dim, #93a79d); white-space: nowrap; }
+    .kv > span:nth-child(even) { text-align: right; font-family: var(--ha-font-family-code, monospace); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .kv .on { color: var(--ng-acc, #7cffb2); } .kv .warn { color: var(--ng-warn, #ffd166); }
+    .sub { font-size: 11px; color: var(--ng-txt-mute, #5f6f68); margin-top: auto; padding-top: 6px; line-height: 1.35; }
+    .p100 { grid-column: span 4; } .chartc { grid-column: span 8; } .scen { grid-column: span 5; } .facts { grid-column: span 7; }
+    .bars { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 9px 10px; align-items: center; font-size: 12.5px; margin-top: 12px; }
+    .bars .n { color: var(--ng-txt-dim, #93a79d); white-space: nowrap; max-width: 150px; overflow: hidden; text-overflow: ellipsis; } .bars .n.b { color: var(--ng-txt, #e8f5ee); font-weight: 600; }
+    .bars .v { font-family: var(--ha-font-family-code, monospace); text-align: right; white-space: nowrap; }
+    .bar { height: 14px; display: flex; gap: 2px; } .bar i { display: block; height: 100%; min-width: 2px; background: var(--c); } .bar i:last-child { border-radius: 0 4px 4px 0; }
+    .k-virt { background: repeating-linear-gradient(135deg, rgba(var(--rgb-ng-txt, 232, 245, 238), .28) 0 4px, rgba(var(--rgb-ng-txt, 232, 245, 238), .1) 4px 8px) !important; }
+    .lg { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: var(--ng-txt-mute, #5f6f68); margin-top: auto; padding-top: 8px; }
+    .lg span { display: inline-flex; align-items: center; gap: 5px; } .lg i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; background: var(--c); }
+    .lg i.line { height: 0; border-top: 2px dashed var(--ng-txt-mute, #5f6f68); border-radius: 0; background: none; }
+    .row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+    .tip { font: 500 11.5px var(--ha-font-family-code, monospace); color: var(--ng-txt-dim, #93a79d); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chartc svg { flex: 1; min-height: 0; width: 100%; margin-top: 8px; display: block; }
+    svg text { font-family: var(--ha-font-family-code, 'JetBrains Mono', monospace); font-size: 10.5px; fill: var(--ng-txt-mute, #5f6f68); }
+    .grid line { stroke: rgba(var(--rgb-ng-txt, 232, 245, 238), .07); }
+    .sel { stroke: var(--ng-txt, #e8f5ee); stroke-width: 1.5; fill: none; } .mline { fill: none; stroke: var(--ng-txt-mute, #5f6f68); stroke-width: 2; stroke-dasharray: 5 4; } .hit { fill: transparent; cursor: pointer; }
+    .empty { flex: 1; display: grid; place-items: center; text-align: center; font-size: 13px; color: var(--ng-txt-mute, #5f6f68); padding: 0 20px; }
+    .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-content: start; }
+    .facts > div { padding: 9px 12px; border-radius: calc(14px * var(--ngs-rk, 1)); background: rgba(var(--rgb-ng-txt, 232, 245, 238), .035); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .08)); }
+    .facts b { display: block; font: 600 17px var(--ha-font-family-code, monospace); color: var(--ng-txt, #e8f5ee); }
+    .facts span { display: block; font-size: 11px; line-height: 1.3; color: var(--ng-txt-dim, #93a79d); margin-top: 2px; }
+    .foot { grid-column: 1 / -1; font-size: 11px; color: var(--ng-txt-mute, #5f6f68); line-height: 1.4; }
+    :host(.eco) *, :host(.eco) *::after { animation: none !important; transition: none !important; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+    @media (max-width: 900px), (max-height: 560px) {
+      .pop { width: 100vw; height: 100vh; height: 100dvh; border-radius: 0; padding: calc(14px + env(safe-area-inset-top)) 14px calc(14px + env(safe-area-inset-bottom)); overflow-y: auto; }
+      .head { flex-wrap: wrap; } .seg { margin-left: 0; order: 3; width: 100%; } .seg button { flex: 1; text-align: center; padding: 9px 2px; font-size: 10px; } .x { margin-left: auto; }
+      .body { flex: none; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: none; }
+      .kpi { grid-column: span 3; } .car, .p100, .chartc, .scen, .facts { grid-column: 1 / -1 !important; } .chartc { height: 300px; } .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  `;
+  function cmpBars(list, maxV, fmt, bold) {
+    return `<div class="bars">${list.map((x) => {
+      const w = maxV > 0 ? Math.max(0.5, x.v / maxV * 100) : 0;
+      const inner = x.parts ? x.parts.filter((p) => p.v > 0).map((p) => `<i style="--c:${p.col};flex:${p.v}"></i>`).join("") : `<i class="${x.virt ? "k-virt" : ""}" style="--c:${x.col || "transparent"};flex:1"></i>`;
+      return `<span class="n${x.mix || x.name === bold ? " b" : ""}">${esc(x.name)}</span><div class="bar" style="width:${w.toFixed(1)}%">${inner}</div><span class="v">${fmt(x)}</span>`;
+    }).join("")}</div>`;
+  }
+  function cmpSVG(C, sel, W = 700, H = 240) {
+    const B = C.B, n = B.length, L = 46, Rr = 8, T = 10, Bo = 22, iw = W - L - Rr, ih = H - T - Bo;
+    const max = Math.max(0.01, ...B.map((b) => Math.max(b.cars.reduce((a, x) => a + x.c, 0), b.cV)));
+    const step = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000].find((s) => max / s <= 4) || 5000, top = Math.ceil(max / step) * step;
+    const y = (v) => T + ih - v / top * ih, bw = iw / n, gap = Math.min(6, bw * 0.25);
+    let g = `<g class="grid">`;
+    for (let v = 0; v <= top + 1e-9; v += step) g += `<line x1="${L}" x2="${W - Rr}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/><text x="${L - 6}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end">${de(v, step < 1 ? 1 : 0)} ${esc(cur())}</text>`;
+    g += `</g>`;
+    let bars = "", line = "", hits = "";
+    B.forEach((b, i) => {
+      const x = L + i * bw + gap / 2, w = Math.max(1, bw - gap);
+      let acc = 0;
+      b.cars.forEach((c) => { if (c.c <= 0) return; const hh = c.c / top * ih; bars += `<rect style="fill:${c.col}" x="${x.toFixed(1)}" y="${(T + ih - acc - hh).toFixed(1)}" width="${w.toFixed(1)}" height="${Math.max(0.5, hh - (acc ? 1.5 : 0)).toFixed(1)}" rx="${Math.min(3, w / 3).toFixed(1)}"/>`; acc += hh; });
+      if (sel === i) bars += `<rect class="sel" x="${(x - 2).toFixed(1)}" y="${T}" width="${(w + 4).toFixed(1)}" height="${ih}" rx="4"/>`;
+      if (!b.future && b.cV > 0) { const yv = y(b.cV).toFixed(1); line += `${line ? "L" : "M"}${(L + i * bw).toFixed(1)} ${yv}H${(L + (i + 1) * bw).toFixed(1)}`; }
+      if (b.lab) bars += `<text x="${(L + i * bw + bw / 2).toFixed(1)}" y="${H - 6}" text-anchor="middle">${esc(b.lab)}</text>`;
+      hits += `<rect class="hit" data-a="b:${i}" x="${(L + i * bw).toFixed(1)}" y="${T}" width="${bw.toFixed(1)}" height="${ih + Bo}"/>`;
+    });
+    return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(t("Verlauf · {p}", { p: "" }))}">${g}${bars}${line ? `<path class="mline" d="${line}"/>` : ""}${hits}</svg>`;
+  }
+  function cmpRender(st) {
+    const R = st.R, ui = st.ui, C = R.chart, V = R.V, F = R.facts, dd = (ms, o) => new Date(ms).toLocaleDateString(numLoc(), o);
+    const seg = `<div class="seg">${Object.entries(CPER).map(([k, n]) => `<button class="${ui.per === k ? "on" : ""}" data-a="per:${k}">${esc(t(n))}</button>`).join("")}</div>`;
+    const head = `<div class="head"><div class="t"><span class="label">${R.real.map((r) => esc(r.short)).join(" · ")}${V ? ` · ${esc(V.name)}` : ""}</span><b>${esc(t("Fahrtkosten-Vergleich"))}</b></div>${seg}<button class="x" data-a="close" aria-label="${esc(t("Zurück"))}">✕</button></div>`;
+    const split = R.real.map((r) => `${esc(r.short)} ${de(r.km, r.km < 100 ? 1 : 0)}`).join(" · "), noP = R.real.filter((r) => !fin(r.per100)).map((r) => r.short);
+    const kpis = `<div class="card kpi"><span class="label">${esc(t("Gefahren"))}</span><div class="v mono">${de(R.kmAll, R.kmAll < 100 ? 1 : 0)}<small>km</small></div><div class="s">${split}</div></div>
+      <div class="card kpi"><span class="label">${esc(t("Bezahlt"))}</span><div class="v mono">${de(R.paid, R.paid >= 100 ? 0 : 2)}<small>${esc(cur())}</small></div><div class="s">${noP.length ? esc(t("ohne {n} (Preis fehlt)", { n: noP.join(", ") })) : R.kmAll > 0 ? esc(t("{n} ct je km", { n: de(R.paid / R.kmAll * 100, 1) })) : "–"}</div></div>
+      ${V ? `<div class="card kpi"><span class="label">${esc(t("Mit dem {n}", { n: V.name }))}</span><div class="v mono">${de(V.cost, V.cost >= 100 ? 0 : 2)}<small>${esc(cur())}</small></div><div class="s">${R.paid > 0 ? esc(t("{x} × so teuer · +{d}", { x: de(V.cost / R.paid, 1), d: money(V.cost - R.paid) })) : "–"}</div></div>
+      <div class="card kpi good"><span class="label">${esc(t("Gespart"))}</span><div class="v mono">${de(Math.max(0, R.saved), R.saved >= 100 ? 0 : 2)}<small>${esc(cur())}</small></div><div class="s">${fin(R.year) ? esc(t("aufs Jahr ≈ {v}", { v: money(R.year) })) : ""}</div></div>`
+      : `<div class="card kpi" style="grid-column: span 6"><span class="label">${esc(t("Vergleich"))}</span><div class="s" style="white-space:normal">${esc(t("Noch kein Vergleichsauto — im Fahrzeug-Fenster unter ⚙ eintragen."))}</div></div>`}`;
+    const shown = [...R.real.slice(0, V ? 3 : 4), ...(V ? [V] : [])], span = Math.max(3, Math.floor(12 / shown.length));
+    const carCard = (r) => {
+      const v = !!r.virt, rows = v ? [[t("Strecke"), kmT(r.km)], [r.unit === "kWh" ? t("Strom") : t("Sprit"), `${de(r.energy, 1)} ${r.unit}`], [t("Kosten je 100 km"), money(r.per100)],
+        ["CO₂", `${de(r.co2, r.co2 < 100 ? 1 : 0)} kg`], [t("mehr als bezahlt"), `+${money(r.cost - R.paid)}`, "warn"]]
+        : [[t("Strecke"), kmT(r.km)], ...r.parts.map((p) => [p.unit === "kWh" ? t("Strom") : t("Sprit"), fin(p.amount) ? `${de(p.amount, 1)} ${p.unit}` : "–"]), [t("Kosten je 100 km"), money(r.per100)],
+          ["CO₂", fin(r.co2) ? `${de(r.co2, r.co2 < 100 ? 1 : 0)} kg` : "–"], ...(r.evShare > 0 && r.evShare < 1 ? [[t("Elektro"), `${de(r.evShare * 100)} %`, "on"]] : [])];
+      const sub = v ? t("gedacht: alle km mit {c} {u}/100 km zu {p}", { c: de(r.cons, 1), u: r.unit, p: `${de(r.price, r.unit === "kWh" ? 3 : 2)} ${cur()}` })
+        : `${r.info}${r.since ? ` · ${t("seit {d}", { d: dd(r.since, { day: "2-digit", month: "2-digit" }) })}` : ""}`;
+      return `<div class="card car${v ? " virt" : ""}" style="grid-column: span ${span};--c:${r.col || "transparent"}"><div class="nm"><i class="${v ? "k-virt" : ""}"></i>${esc(r.name)}${v ? ` <span class="label" style="margin-left:4px">${esc(t("gedacht"))}</span>` : ""}</div>
+        <div class="big mono">${fin(r.cost) ? de(r.cost, r.cost >= 100 ? 0 : 2) : "–"}<small>${esc(cur())}</small></div>
+        <div class="kv">${rows.map(([k, x, cl]) => `<span>${esc(k)}</span><span class="${cl || ""}">${esc(x)}</span>`).join("")}</div><div class="sub">${esc(sub)}</div></div>`;
+    };
+    const pm = Math.max(...R.p100.map((x) => x.v), 0), sm = Math.max(...R.scen.map((x) => x.v), 0);
+    const p100 = `<div class="card p100"><span class="label">${esc(t("Kosten je 100 km"))}</span>${cmpBars(R.p100, pm, (x) => money(x.v))}
+      ${noP.length ? `<div class="sub">${esc(t("ohne {n} (Preis fehlt)", { n: noP.join(", ") }))}</div>` : ""}</div>`;
+    const scen = `<div class="card scen"><span class="label">${esc(t("Dieselben {k}, wenn alles mit … gefahren wäre", { k: kmT(R.kmAll) }))}</span>${cmpBars(R.scen, sm, (x) => money(x.v))}</div>`;
+    let tip = C.since ? t("HA-Daten seit {d}", { d: dd(C.since, { day: "2-digit", month: "2-digit", year: "numeric" }) }) : "";
+    if (ui.sel !== null && C.B[ui.sel]) { const b = C.B[ui.sel]; tip = `${b.tip}: ${[...b.cars.map((x) => `${x.short} ${kmT(x.km)} = ${money(x.c)}`), V ? `${V.name} ${money(b.cV)}` : ""].filter(Boolean).join(" · ")}`; }
+    const pairs = V ? R.real.filter((r) => fin(r.cost) && fin(r.km)).map((r) => ({ r, v: r.km * V.per100 / 100 })) : [], pmax = Math.max(0, ...pairs.map((x) => Math.max(x.v, x.r.cost)));
+    const legend = `<div class="lg">${R.real.map((r) => `<span><i style="--c:${r.col}"></i>${esc(r.short)}</span>`).join("")}${V ? `<span><i class="line"></i>${esc(V.name)} ${esc(t("(gedacht)"))}</span>` : ""}</div>`;
+    const chartc = R.per === "total" && pairs.length ? `<div class="card chartc"><span class="label">${esc(t("Je Auto seit Kauf: bezahlt · mit dem {n}", { n: V.name }))}</span>
+      <div class="bars" style="margin-top:16px;row-gap:6px">${pairs.map(({ r, v }) => `<span class="n b">${esc(r.short)}</span><div class="bar" style="width:${(r.cost / pmax * 100).toFixed(1)}%"><i style="--c:${r.col};flex:1"></i></div><span class="v">${money(r.cost)}</span>
+        <span class="n">${esc(V.name)}</span><div class="bar" style="width:${(v / pmax * 100).toFixed(1)}%"><i class="k-virt" style="flex:1"></i></div><span class="v">${money(v)}</span>
+        <span></span><span class="tip" style="margin-bottom:8px">${kmT(r.km)} · ${esc(t("gespart"))} <b style="color:var(--ng-acc,#7cffb2);font-weight:600">${money(v - r.cost)}</b></span><span></span>`).join("")}</div>
+      <div class="lg"><span>${esc(t("zu heutigen Preisen"))}</span></div></div>`
+      : `<div class="card chartc"><div class="row"><span class="label">${esc(t("Verlauf · {p}", { p: t(CPER[R.per]) }))}</span><span class="tip">${esc(tip)}</span></div>
+      ${C.any ? cmpSVG(C, ui.sel, st.cw, st.ch) : `<div class="empty">${esc(t("Für diesen Zeitraum gibt es noch keine Fahrten in der HA-Statistik."))}</div>`}${legend}</div>`;
+    const fact = (v, x) => `<div><b>${v}</b><span>${esc(x)}</span></div>`;
+    const facts = [
+      fin(F.eqFuel) ? fact(`${de(F.eqFuel, 2)} ${esc(cur())}/l`, t("Spritpreis, bei dem der {a} so günstig wäre wie der {b}", { a: F.fuR.short, b: F.evR.short })) : "",
+      fin(F.eqPower) ? fact(`${de(F.eqPower * 100)} ct/kWh`, t("Strompreis, ab dem der {a} so teuer wäre wie der {b}", { a: F.evR.short, b: F.fuR.short })) : "",
+      V && fin(F.fuelSaved) ? fact(`${de(Math.max(0, F.fuelSaved), F.fuelSaved < 100 ? 1 : 0)} l`, t("weniger Sprit als mit dem {n}", { n: V.name }) + (F.tank ? t(" = {t} Tankfüllungen", { t: de(Math.max(0, F.fuelSaved) / F.tank, 1) }) : "")) : "",
+      R.kmAll > 0 && F.elKm > 0 ? fact(`${de(F.elKm / R.kmAll * 100)} %`, t("elektrisch: {a} von {b}", { a: kmT(F.elKm), b: kmT(R.kmAll) })) : "",
+      V && fin(R.co2V) ? fact(`${de(Math.max(0, R.co2V - R.co2), R.co2V - R.co2 < 100 ? 1 : 0)} kg CO₂`, t("weniger als mit dem {n} = {t} Buchen ein Jahr lang", { n: V.name, t: de(Math.max(0, R.co2V - R.co2) / 12.5, 1) })) : "",
+      fin(R.year) ? fact(t("{v} am Tag", { v: money(R.year / 365) }), t("gespart im Schnitt — aufs Jahr {v}", { v: money(R.year) })) : "",
+    ].filter(Boolean);
+    const factsC = `<div class="facts${facts.length ? "" : " card"}">${facts.join("")}</div>`;
+    const assume = R.real.map((r) => `${r.short}: ${r.parts.map((p) => `${de(p.cons, 1)} ${p.unit}/100 km · ${fin(p.price) ? (p.unit === "kWh" ? `${de(p.price * 100, 1)} ct/kWh` : `${de(p.price, 2)} ${cur()}/l`) : "–"}`).join(" + ")}`).join(" · ");
+    const foot = `<div class="foot">${st.none?.length ? `${esc(t("Ohne Kilometer-Statistik: {n}", { n: st.none.join(", ") }))} · ` : ""}${esc(t("Annahmen"))}: ${esc(assume)}${V ? ` · ${esc(V.name)} ${de(V.cons, 1)} ${V.unit}/100 km` : ""} · ${esc(t("CO₂: Benzin 2,37 kg/l · Diesel 2,65 kg/l · Strom 0,363 kg/kWh (Strommix DE)"))}${V ? ` · ${esc(t("aufs Jahr: Ersparnis je Tag seit Beginn der HA-Daten × 365"))}` : ""} · ${esc(t("Schätzwerte"))}${R.per === "total" ? ` · ${esc(t("seit Kauf zu heutigen Preisen"))}` : ""}</div>`;
+    st.pop.innerHTML = `${head}<div class="body">${kpis}${shown.map(carCard).join("")}${p100}${chartc}${scen}${factsC}${foot}</div>`;
+    const sv = st.pop.querySelector(".chartc svg"), r = sv?.getBoundingClientRect();
+    if (r && r.width > 50 && r.height > 50 && (Math.abs(r.width - (st.cw || 700)) > 4 || Math.abs(r.height - (st.ch || 240)) > 4) && !st.again) {
+      st.cw = Math.round(r.width); st.ch = Math.round(r.height); st.again = true; cmpRender(st); st.again = false;
+    }
+  }
+  async function cmpOpen(src) {
+    if (document.querySelector(".ng-vehicle-cmp")) return;
+    const all = vehicleCards();
+    if (src && !all.some((x) => x._cfg?.device === src._cfg?.device)) all.unshift(src);
+    const order = src ? [src, ...all.filter((x) => x._cfg?.device !== src._cfg?.device)] : all;
+    const host = document.createElement("div");
+    host.className = "ng-vehicle-cmp";
+    copyVars(src || all[0] || document.documentElement, host);
+    if (document.documentElement.dataset.ngEco === "1") host.classList.add("eco");
+    const root = host.attachShadow({ mode: "open" });
+    root.innerHTML = `<style>${CCSS}</style><div class="bg"></div><div class="pop" role="dialog" aria-modal="true" aria-label="${esc(t("Fahrtkosten-Vergleich"))}"><div class="empty">${esc(t("Kosten werden berechnet …"))}</div></div>`;
+    const st = { pop: root.querySelector(".pop"), ui: { per: "week", sel: null }, cars: [], R: null };
+    const close = () => {
+      host.remove(); clearTimeout(st.idle); clearInterval(st.tick);
+      window.removeEventListener("keydown", onKey, true); window.removeEventListener("location-changed", close); window.removeEventListener("popstate", close);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+    const onKey = (e) => { if (e.key === "Escape") { e.stopImmediatePropagation(); close(); } };   // nur dieses Fenster, das Fahrzeug-Fenster darunter bleibt
+    const onVis = () => { if (document.hidden) close(); };
+    const touch = () => { clearTimeout(st.idle); st.idle = setTimeout(close, 300000); };
+    window.addEventListener("keydown", onKey, true); window.addEventListener("location-changed", close); window.addEventListener("popstate", close);
+    document.addEventListener("visibilitychange", onVis);
+    root.querySelector(".bg").addEventListener("click", close);
+    root.addEventListener("click", (e) => {
+      touch();
+      const a = e.target.closest("[data-a]")?.dataset.a;
+      if (!a) return;
+      if (a === "close") return close();
+      if (a.startsWith("per:")) { st.ui = { per: a.slice(4), sel: null }; st.R = cmpCompute(st.cars, st.ui.per); cmpRender(st); }
+      else if (a.startsWith("b:")) { const i = +a.slice(2); st.ui.sel = st.ui.sel === i ? null : i; cmpRender(st); }
+    });
+    document.body.appendChild(host);
+    touch();
+    const refresh = async () => {
+      const cars = [], none = [];
+      for (const el of order) {
+        try {
+          const i = await el._cmpInfo();
+          if (i && (i.rows.days.length || i.rows.months.length || i.rows.hours.length)) cars.push({ ...i, col: colorOf(el, all) }); else none.push(el._names().name);
+        } catch (e) { /* Auto ohne Daten */ }
+      }
+      st.none = none;
+      if (!host.isConnected) return;
+      if (!cars.length) { st.pop.innerHTML = `<div class="head"><div class="t"><b>${esc(t("Fahrtkosten-Vergleich"))}</b></div><button class="x" data-a="close" style="margin-left:auto">✕</button></div><div class="empty">${esc(t("Keine Kostendaten — die Autos brauchen einen Kilometerstand mit Statistik."))}</div>`; return; }
+      st.cars = cars;
+      st.R = cmpCompute(cars, st.ui.per);
+      cmpRender(st);
+    };
+    await refresh();
+    st.tick = setInterval(refresh, 600000);
+  }
+  window.__ngVehCompare = { open: cmpOpen };
+
+  customElements.define("nullglow-vehicle-card", NullglowVehicleCard);
+  window.customCards = window.customCards || [];
+  window.customCards.push({ type: "nullglow-vehicle-card", name: t("Nullglow Fahrzeug"), description: t("Auto aus HA: Akku/Tank, Reichweite, Zustand; Antippen = Übersicht mit Karte und Fahrtkosten") });
+})();
+
 // ───── nullglow-strategy.js ─────
 (() => {
   if (customElements.get("ll-strategy-dashboard-nullglow")) return;
@@ -10030,7 +11695,8 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     "Im Kamera-Fenster immer Livebild — auch wenn die Kamera-Kachel bei Monitor aus pausiert.": "The camera window always shows live — even if the camera tile pauses while the monitor is off.",
     "Steckdose des Wandmonitors im Assistenten wählen (Schritt 6) — bis dahin nur bei verdeckter Seite": "pick the wall display's plug in the wizard (step 6) — until then only while the page is hidden",
     "ist sie aus, pausiert das Nordlicht im Hintergrund — und Kameras mit „Pausieren, wenn der Monitor aus ist“ zeigen ein Standbild (nur am Wandmonitor)":
-      "when it is off, the aurora background pauses — and cameras with “Pause while the monitor is off” show a still image (on the wall display only)", "Person erkannt": "Person detected", "Fahrzeug erkannt": "Vehicle detected", "Tier erkannt": "Animal detected",
+      "when it is off, the aurora background pauses — and cameras with “Pause while the monitor is off” show a still image (on the wall display only)", "Person erkannt": "Person detected", "Fahrzeug erkannt": "Vehicle detected", "Fahrzeuge": "Vehicles", "Fahrzeug": "Vehicle", "Fahrzeug-Einstellungen": "Vehicle settings",
+    "Foto, Verbrauch, Preise, Vergleichsauto": "Photo, consumption, prices, comparison car", "Tier erkannt": "Animal detected",
     "Bewegung erkannt": "Motion detected", "Kamera-Meldung": "Camera alert", "Kamera-Fenster": "Camera window", "Kamera-Fenster an": "Camera window on",
     "Klingel & Kameras: was aufgeht, Bild, Knöpfe": "Doorbell & cameras: what opens, picture, buttons", "öffnet sich bei: {x}": "opens on: {x}",
     "groß zeigen bei Klingel, Person, Bewegung …": "show big on doorbell, person, motion …", "Zusätzlich beim Antippen": "Also on tap",
@@ -10198,7 +11864,10 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     const devName = (id) => { const d = devs[ents[id]?.device_id]; return d ? d.name_by_user || d.name : null; };
     const areaOf = (id) => { const e = ents[id]; return e ? (e.area_id || devs[e.device_id]?.area_id || null) : null; };
     const dc = (id) => st[id]?.attributes?.device_class;
-    const ids = Object.keys(st).filter(visible);
+    // Autos (nullglow-vehicle-card): eigene Gruppe „Fahrzeuge“ — ihre Entitäten (Klima, Schloss, Temperatur …) nicht in Räumen/Zuhause
+    const vehs = has("nullglow-vehicle-card") && window.__ngVehicles ? window.__ngVehicles.find(hass) : [];
+    const vehEnt = new Set(vehs.flatMap((v) => v.entities));
+    const ids = Object.keys(st).filter((id) => visible(id) && !vehEnt.has(id));
     const isGroup = (id) => { const a = st[id]?.attributes || {}; return !!a.is_hue_group || Array.isArray(a.entity_id); };
     const lightOk = (id) => DOMAIN(id) === "light" && !/_segment_/.test(id);
     const measure = (id, cls) => DOMAIN(id) === "sensor" && dc(id) === cls && !!st[id].attributes.state_class
@@ -10269,6 +11938,7 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
       locks: ids.filter((id) => DOMAIN(id) === "lock"),
       garages: ids.filter((id) => DOMAIN(id) === "cover" && ["garage", "gate"].includes(dc(id))),
       lightsAll: ids.filter((id) => lightOk(id)),
+      vehicles: vehs,
       sameDevice: onDevice, devName, niceName: (id, extra = []) => niceName(hass, id, [...extra, devName(id)], short),
     };
   }
@@ -11054,6 +12724,7 @@ ha-tile-info {
     { key: "klima", name: "Klima", icon: "mdi:thermometer", width: 1 },
     { key: "rolllaeden", name: "Rollläden", icon: "mdi:window-shutter", width: 1 },
     { key: "zuhause", name: "Zuhause", icon: "mdi:home-account", width: 1 },
+    { key: "fahrzeuge", name: "Fahrzeuge", icon: "mdi:car", width: 1 },
     { key: "termine", name: "Termine", icon: "mdi:calendar-heart", width: 1 },
   ];
   // Gruppe je nach Lage zeigen (layout.show: { <gruppe>: modus }) — HA wertet die Bedingungen der Section selbst aus
@@ -11084,7 +12755,7 @@ ha-tile-info {
   const carePopup = (base, cfg) => ({ type: "custom:bubble-card", card_type: "pop-up", hash: "#wartung", name: t("Batterien & Wartung"),
     icon: "mdi:battery-heart-variant", width_desktop: "620px", bg_opacity: 92, close_by_clicking_outside: true, auto_close: 120000,
     cards: [{ type: "custom:nullglow-care-card", mode: "full", battery: { warn: 30, crit: 15 }, dashboard: base,
-      ...(cfg.hints?.ignore?.length ? { ignore: cfg.hints.ignore } : {}) }] });
+      ...(ignOf(cfg).length ? { ignore: ignOf(cfg) } : {}) }] });
   function powerCard(energy) {
     const grid = list(energy.grid), solar = list(energy.solar), bat = list(energy.battery), bcharge = list(energy.battery_charge);
     return { type: "custom:nullglow-power-card", grid, ...(solar[0] ? { solar: solar[0] } : {}), ...(energy.grid_invert ? { grid_invert: true } : {}),
@@ -11092,6 +12763,12 @@ ha-tile-info {
       hours: 24, grid_options: { columns: "full", rows: 6 } };
   }
   const roomsWith = (inv, k) => inv.shown.filter((r) => r[k].length);
+  const vehicleCard = (v, cfg) => ({ type: "custom:nullglow-vehicle-card", device: v.device, ...(((cfg.vehicles || {})[v.device]) || {}),
+    ...(Array.isArray(cfg.vehicle_compare) && cfg.vehicle_compare.length ? { compare: cfg.vehicle_compare } : {}), strategy: true,
+    grid_options: { columns: 12, rows: 2 }, view_layout: { ng_edit: { id: `vehicle:${v.device}`, kind: "card" } } });
+  // Akkus/Tanks der Autos gehören nicht zu „Batterien & Wartung“ und nicht in die Hinweise (25 % Akku ist beim Auto normal)
+  let vehIgn = [];
+  const ignOf = (cfg) => [...new Set([...(cfg.hints?.ignore || []), ...vehIgn])];
   const BLOCKS = [
     ["clock", "Uhr", "mdi:clock-outline", () => true],
     ["weather", "Wetter heute", "mdi:weather-partly-cloudy", (x) => !!x.inv.weather],
@@ -11128,7 +12805,7 @@ ha-tile-info {
       case "media": return { type: "custom:nullglow-media-card", entities: inv.media, hide_idle: false, idle: "rest", size: "compact", grid_options: { columns: 12, rows: 2 } };
       case "calendar": return calendarPro(inv.calendars, 14, x.on.kalender ? `${x.base}/kalender` : null);
       case "care": return { type: "custom:nullglow-care-card", mode: "summary", tap_hash: "#wartung", battery: { warn: 30, crit: 15 }, dashboard: x.base,
-        ...(x.cfg.hints?.ignore?.length ? { ignore: x.cfg.hints.ignore } : {}), grid_options: { columns: 6, rows: 1 } };
+        ...(ignOf(x.cfg).length ? { ignore: ignOf(x.cfg) } : {}), grid_options: { columns: 6, rows: 1 } };
       default: return null;
     }
   }
@@ -11248,7 +12925,7 @@ ha-tile-info {
   // (Raum, sonst Kartentyp + erste Entität — sprachunabhängig), Name aus der Überschrift. Marker an der ersten Karte wie auf der Übersicht.
   const GROUP_TYPE_NAMES = { "nullglow-power-card": "Leistung 24 h", "nullglow-month-card": "Monatsbilanz", "nullglow-flow-card": "Energiefluss",
     "nullglow-media-card": "Medien", "nullglow-mower-map-card": "Garten", "nullglow-mower-stats-card": "Statistik", "calendar": "Kalender",
-    "calendar-card-pro": "Termine", "nullglow-floorplan-card": "Grundriss" };
+    "calendar-card-pro": "Termine", "nullglow-floorplan-card": "Grundriss", "nullglow-vehicle-card": "Fahrzeug" };
   // Entitäten einer Section (für den Abgleich mit der Fassung ohne ausgeblendete Kacheln)
   const secEnts = (sec) => {
     const out = new Set(), add = (c) => {
@@ -11440,7 +13117,7 @@ ha-tile-info {
     if (h.mode === "off" || !has("nullglow-hints-card")) return null;
     return { type: "custom:nullglow-hints-card", dashboard: base, ...(h.mode === "float" ? { floating: "bottom" } : {}),
       ...(h.rules ? { rules: h.rules } : {}), ...(h.battery_threshold ? { battery_threshold: h.battery_threshold } : {}),
-      ...(h.waste ? { waste: h.waste } : {}), ...(h.ignore?.length ? { ignore: h.ignore } : {}),
+      ...(h.waste ? { waste: h.waste } : {}), ...(ignOf(cfg).length ? { ignore: ignOf(cfg) } : {}),
       tap: { battery: "#wartung", ...(contactsPopup ? { rain: "#fenster" } : {}), ...(on.kalender ? { waste: `${base}/kalender` } : {}) },
       grid_options: { columns: "full", rows: "auto" } };
   }
@@ -11493,7 +13170,7 @@ ha-tile-info {
         cards.push(allOff());
       }
       cards.push({ type: "custom:nullglow-care-card", mode: "summary", tap_hash: "#wartung", battery: { warn: 30, crit: 15 }, dashboard: base,
-        ...(cfg.hints?.ignore?.length ? { ignore: cfg.hints.ignore } : {}),
+        ...(ignOf(cfg).length ? { ignore: ignOf(cfg) } : {}),
         grid_options: { columns: 6, rows: 1 } });
       S.push("licht", { type: "grid", cards });
     }
@@ -11547,6 +13224,9 @@ ha-tile-info {
       else contacts.forEach(([c, r, i]) => cards.push(contactTile(c, contactName(inv, r, c, i), hass, 6)));
       S.push("zuhause", { type: "grid", cards });
     }
+    // Autos: je Auto eine Kachel (Antippen = Fahrzeug-Fenster mit Karte und Fahrtkosten), Einstellungen aus vehicles.<gerät>
+    if (inv.vehicles.length) S.push("fahrzeuge", { type: "grid", cards: [heading(t(inv.vehicles.length > 1 ? "Fahrzeuge" : "Fahrzeug"), "mdi:car"),
+      ...inv.vehicles.map((v) => vehicleCard(v, cfg))] });
     if (inv.calendars.length && has("calendar-card-pro"))
       S.push("termine", { type: "grid", cards: [heading(t("Termine"), "mdi:calendar-heart", on.kalender ? `${base}/kalender` : null), calendarPro(inv.calendars, 14, on.kalender ? `${base}/kalender` : null)] });
 
@@ -13355,6 +15035,9 @@ ha-tile-info {
     }, 100);
   }
 
+  // Element eines Typs in einer Kachel finden (auch in Shadow-Roots) — z. B. die Fahrzeug-Karte für ihre Einstellungen
+  const findIn = (root, tag) => { if (!root) return null; if (root.localName === tag) return root;
+    for (const el of [...(root.children || []), ...(root.shadowRoot ? root.shadowRoot.children : [])]) { const r = findIn(el, tag); if (r) return r; } return null; };
   function closeMenu(quiet) { ngEdit.root?.querySelector(".menu")?.remove(); ngEdit.sel = ngEdit.selSec = null; if (!quiet) placeBoxes(); }
   function openMenu(c) {
     if (c.meta.kind === "group") { openGroupMenu(c); return; }
@@ -13363,7 +15046,8 @@ ha-tile-info {
     root.querySelector(".menu")?.remove();
     ngEdit.sel = m.id; ngEdit.selSec = c.section;
     const inner = editCard(c.config), key = labelKey(inner), o = tileOpt(m.id);
-    const cur = card ? (m.own ? ownName(m.own) : m.block ? t(BLOCKS.find((b) => b.k === m.block)?.name || "Karte") : t(GROUP_TYPE_NAMES[String(inner.type || "").replace("custom:", "")] || "Karte"))
+    const veh = inner.type === "custom:nullglow-vehicle-card" ? findIn(c.el, "nullglow-vehicle-card") : null;
+    const cur = card ? (m.own ? ownName(m.own) : m.block ? t(BLOCKS.find((b) => b.k === m.block)?.name || "Karte") : veh?._names ? veh._names().name : t(GROUP_TYPE_NAMES[String(inner.type || "").replace("custom:", "")] || "Karte"))
       : room ? (inner.name || inner.primary || "") : (key && inner[key]) || hass.states[m.id]?.attributes?.friendly_name || m.id;
     const label = room ? String(cur).replace(/ · .*$/, "") : String(cur);
     const sib = siblings(c), pos = sib.findIndex((x) => x.meta.id === m.id);
@@ -13373,6 +15057,7 @@ ha-tile-info {
     if (card) {   // große Karte (Kalender, Energie …): Platz, Größe, Gruppe und Seite — Kalender zusätzlich: wie viele Termine
       if (inner.type === "custom:calendar-card-pro") rows.push(optRow("cal", "mdi:calendar-text-outline", t("Termine"), calTxt(o)));
       if (m.own) rows.push(optRow("own", "mdi:code-braces", t("Karten-Code"), t("ansehen und ändern")));
+      if (veh?._openSettings) rows.push(optRow("veh", "mdi:car-cog", t("Fahrzeug-Einstellungen"), t("Foto, Verbrauch, Preise, Vergleichsauto")));
     }
     else if (!room) {
       rows.push(optRow("swap", "mdi:swap-horizontal", t("Gerät"), fname(ent)));
@@ -13451,6 +15136,7 @@ ha-tile-info {
       else if (k === "camname") run((s) => setCam(s, `${curView()}|${m.id}`, { name: inner.show_name === false }));
       else if (k === "pause") run((s) => setTile(s, m.id, { pause: o.pause ? null : true }));
       else if (k === "idle") run((s) => setTile(s, m.id, { idle: o.idle === "hide" ? null : "hide" }));
+      else if (k === "veh") { closeMenu(); veh?._openSettings(); }   // Fahrzeug-Fenster gleich mit den Einstellungen (liegt über dem Bearbeiten)
       else tileSub(c, menu, k);
     }));
     menu.querySelector(".hide")?.addEventListener("click", () => run((s) => hideTiles(s, curView(), [c])));
@@ -14192,11 +15878,12 @@ ha-tile-info {
       return false;
     };
     const byDev = new Map(), out = [];
+    const cars = new Set((window.__ngVehicles?.find(hass) || []).map((v) => v.device));   // Autos haben ihre eigene Gruppe
     for (const e of ents) {
       if (e.hidden || e.entity_category || e.area_id || !hass.states[e.entity_id] || !useful(e.entity_id)) continue;
       const d = e.device_id && devs[e.device_id];
       if (d) {
-        if (d.area_id || d.disabled_by || d.entry_type === "service") continue;
+        if (d.area_id || d.disabled_by || d.entry_type === "service" || cars.has(d.id)) continue;
         if (!byDev.has(d.id)) byDev.set(d.id, { device: d.id, name: d.name_by_user || d.name || e.entity_id, sub: [d.manufacturer, d.model].filter(Boolean).join(" "), ents: [] });
         byDev.get(d.id).ents.push(e.entity_id);
       } else if (!e.device_id) out.push({ entity: e.entity_id, name: hass.states[e.entity_id]?.attributes?.friendly_name || e.entity_id, sub: e.entity_id, ents: [e.entity_id] });
@@ -16069,6 +17756,7 @@ ha-tile-info {
       window.__ngProfile = { name: prof, own: !!cfg0.profiles?.[prof], base: base0 };
       window.__ngLastCfg0 = cfg0;
       const inv = inventory(hass, cfg);
+      vehIgn = inv.vehicles.flatMap((v) => v.battery);
       window.__ngRoomNames = Object.fromEntries(inv.rooms.map((r) => [r.id, r.name]));   // Gruppen-Namen je Raum (Klima-Seite hat keine Überschriften)
       let energy = await energyCfg(cfg, hass);
       if (energy && Array.isArray(cfg.energy_consumers)) {   // auf der Karte gewählt (Bearbeiten → Energie): nur die Verbraucher, Rest bleibt automatisch

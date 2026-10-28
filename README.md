@@ -17,7 +17,7 @@ setup wizard. Works on your **phone** (HA app) and on a **Full HD wall monitor**
 
 | Page | Content |
 |---|---|
-| **Overview** | big clock with greeting, weather + next hours (tap = **rain radar**), energy flow, lights per room, room temperatures with 24 h graphs, blinds, people (optional map), locks, windows & doors, agenda, batteries & maintenance |
+| **Overview** | big clock with greeting, weather + next hours (tap = **rain radar**), energy flow, lights per room, room temperatures with 24 h graphs, blinds, people (optional map), locks, windows & doors, **vehicles**, agenda, batteries & maintenance |
 | **Lights** | every lamp per room as a slider in its real colour, scenes, "all off" |
 | **Climate** | big temperature per room with a coloured 24 h curve, heating and air conditioning |
 | **Energy** | particle energy flow (solar, grid, battery, consumers), grid per phase, solar with forecast, power 24 h, monthly balance with costs — browse past months or the whole year |
@@ -165,6 +165,12 @@ devices) and — on a wall display — while the screen is off.
 **Room pop-up** (long-press a light tile or tap a temperature)
 ![Room pop-up](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/room-popup.jpg?v=2.2.0)
 
+**Vehicles** — any brand: battery or fuel, top view with doors and tyres, lock, climate, charging, driving costs
+![Vehicles](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/vehicles.jpg?v=2.12.0)
+
+**Driving cost comparison** — all your cars side by side, plus an imaginary one (e.g. your old car)
+![Driving cost comparison](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/vehicle-costs.jpg?v=2.12.0)
+
 **On the phone**
 ![Phone](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/phone.jpg?v=2.2.0)
 
@@ -196,6 +202,16 @@ devices) and — on a wall display — while the screen is off.
 - **Notifications:** rules from the edit mode are stored as normal automations (id `nullglow_push_…`, alias *Nullglow: …*, the
   rule's settings in `variables.nullglow_push`); targets are the `notify.mobile_app_*` services of the companion app. Needs an admin
   (like editing). If you change such an automation in Home Assistant, edit it there from then on.
+- **Vehicles:** cars are found automatically, whatever the brand (Tesla, VW/Škoda/Audi, BMW, Kia/Hyundai, Toyota, BYD, Mercedes,
+  Renault, Polestar …) — a group *Vehicles* on the overview with battery or fuel, range and status (charging, at home, door open …).
+  Tap a car for its window: top view with doors, windows and tyre pressures, a **map** of all cars and home (with range circles),
+  lock, climate, charging and charge limit, and **driving costs** per day / week / month / year: kilometres driven (from the
+  odometer's statistics) × consumption (from the car, or set your own) × price (electricity from the Energy dashboard, fuel price
+  entered or from a sensor such as Tankerkönig). A **photo per car** (upload it under ⚙, or the picture your integration
+  provides) shows on the tile and in the window. *Compare costs* puts all cars side by side — plus an imaginary **comparison car**
+  (e.g. your old diesel): what you saved, cost per 100 km, CO₂, break-even prices. Settings: ⚙ in the vehicle window (admins).
+  Safe by design: locking works with one tap, unlocking only through Home Assistant's dialog; horn, flash, find and charging need two
+  taps; *Refresh now* (it may wake the car) is never triggered automatically.
 - **Lights:** tap = on/off (default) or open a pop-up with every lamp of the room; long-press opens the room.
 - **Many blinds / window contacts:** 7 or more become *one* tile with a bar/dot per device; tap opens them grouped by floor.
 - **People map:** optional map of everyone's location, tinted in your design colour.
