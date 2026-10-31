@@ -99,13 +99,20 @@ calendars, people, cameras, rooms) and the same **templates** as a one-click sta
 **Language:** follows your Home Assistant profile — English or German (other languages fall back to English).
 Room and device names come from your own setup.
 
-## 13 designs — each dark and light
+## 15 designs — each dark and light
 
 **Nullglow** (green), **Violetnoir** (violet), **Halcyon** (teal), **Emberglow** (orange), **Aurum** (gold), **Sakura** (rose),
 **Nocturne** (blue), **Glacier** (ice blue), **Chartreuse** (lime), **Neonwave** (magenta), **Graphite** (silver),
-**Nebula** (indigo) and **Dune** (sand) — same tiles and effects, own accent, background and font.
+**Nebula** (indigo), **Dune** (sand), **Noël** (Christmas: candle gold, a snowy forest, snow on the tiles) and **Weihnacht** (classic Christmas: fir green, red and gold, a garland and gifts) — same tiles and effects, own accent, background and font.
 
 ![13 designs](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/designs.jpg?v=2.2.0)
+
+**Christmas:** *Noël* and *Weihnacht* put snow on every tile and on the navigation bar, and use the new *Snowfall* background: real flakes fall in
+front of your tiles (taps go straight through). Tap the clock and, under *Background*, turn on **Snow settles** — snow slowly piles up along the
+bottom edge, even while the screen is off. Wipe it away with your finger, or turn on the **Santa button** and let the sleigh blow it all away.
+Both are off by default, per device, and not offered on phones.
+
+![Santa's sleigh blowing the snow away](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/christmas.jpg?v=2.13.0)
 
 Every design also comes in **light** ("tinted daylight": soft page colour, white glass, stronger accent). Light/dark:
 *like device / HA profile* (default), *always dark*, *always light* or *by the sun* (light during the day — nice on a
@@ -133,7 +140,7 @@ device with a tap on the clock. Sizes and spacing stay the same, so a page that 
 | **Synthwave** | neon edges, a striped sun and a grid horizon | Horizon |
 | **Neo-brutalism** | thick borders, hard offset shadows, bold type | Shapes |
 
-Each style works with all 13 designs, dark and light, on phones and large screens. Beveled corners (*Sci-fi HUD*) need a
+Each style works with all 15 designs, dark and light, on phones and large screens. Beveled corners (*Sci-fi HUD*) need a
 Chromium-based browser (Chrome, Edge, the HA app on Android); other browsers show plain corners.
 
 ![11 styles](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/styles.jpg?v=2.6.0)
@@ -142,8 +149,8 @@ Chromium-based browser (Chrome, Edge, the HA app on Android); other browsers sho
 
 Each style brings its own **background animation** (last column) — or pick one yourself: tap the clock → **Background**, or in
 the wizard (*step 6*). **Aurora** (grows with your solar power), **Colour clouds**, **Waves**, **Bokeh**, **Bubbles**, **Radar**,
-**Code rain**, **Starfield**, **Lines**, **Shapes**, **Horizon** (a moving synthwave floor) or **Off**. It runs behind the
-tiles at 30 frames per second in half resolution, pauses when the page is hidden or power saving is on (automatic on slow
+**Code rain**, **Starfield**, **Lines**, **Shapes**, **Horizon** (a moving synthwave floor), **Snowfall** (in front of the tiles) or **Off**.
+The others run behind the tiles. All run at 30 frames per second in half resolution, pauses when the page is hidden or power saving is on (automatic on slow
 devices) and — on a wall display — while the screen is off.
 
 ![11 background animations](https://raw.githubusercontent.com/Waguni/nullglow-dashboard/main/images/backgrounds.jpg?v=2.7.0)

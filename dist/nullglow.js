@@ -3,9 +3,9 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
-window.__NULLGLOW_VERSION = "2.12.0";
-window.__NULLGLOW_BUILD = "50f65c0";
-console.info("%c NULLGLOW %c v2.12.0 · 50f65c0 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
+window.__NULLGLOW_VERSION = "2.13.0";
+window.__NULLGLOW_BUILD = "9dd6871";
+console.info("%c NULLGLOW %c v2.13.0 · 9dd6871 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -22,7 +22,9 @@ console.info("%c NULLGLOW %c v2.12.0 · 50f65c0 ", "background:#7cffb2;color:#04
     "https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap",
     "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap",
     "https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap",
-    "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap",
+    "https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap",
+    "https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
 ];
   urls.forEach((href, i) => {
     const id = `nullglow-fonts-2-${i}`;
@@ -2660,6 +2662,416 @@ window.__NULLGLOW_THEMES = {
 "app-header-background-color": "rgba(var(--rgb-ng-bg), 0.72)",
 "app-theme-color": "#090806",
 "ng-design-title": "Dune — Sand"
+},
+"noel": {
+"primary-font-family": "'Fraunces', system-ui, sans-serif",
+"paper-font-common-base_-_font-family": "var(--primary-font-family)",
+"paper-font-body1_-_font-family": "var(--primary-font-family)",
+"mdc-typography-font-family": "var(--primary-font-family)",
+"ha-font-family-body": "var(--primary-font-family)",
+"ha-font-family-heading": "var(--primary-font-family)",
+"ha-font-family-code": "'DM Mono', ui-monospace, monospace",
+"code-font-family": "var(--ha-font-family-code)",
+"primary-background-color": "var(--ng-bg)",
+"secondary-background-color": "var(--ng-bg-elev)",
+"card-background-color": "var(--ng-bg-elev)",
+"mdc-theme-surface": "var(--ng-bg-elev)",
+"material-background-color": "var(--ng-bg-elev)",
+"clear-background-color": "var(--ng-glass)",
+"ha-card-background": "var(--ng-glass)",
+"ha-card-border-radius": "20px",
+"ha-card-border-width": "0px",
+"ha-card-backdrop-filter": "var(--ng-blur)",
+"ha-card-box-shadow": "inset 0 0 0 1px var(--ng-line), var(--ng-shadow)",
+"divider-color": "var(--ng-line)",
+"app-header-text-color": "var(--ng-txt)",
+"app-header-backdrop-filter": "var(--ng-blur)",
+"sidebar-background-color": "var(--ng-bg-elev)",
+"sidebar-icon-color": "var(--ng-txt-mute)",
+"sidebar-text-color": "var(--ng-txt-dim)",
+"sidebar-selected-icon-color": "var(--ng-acc)",
+"sidebar-selected-text-color": "var(--ng-acc)",
+"sidebar-selected-background-color": "var(--ng-acc-wash)",
+"primary-text-color": "var(--ng-txt)",
+"secondary-text-color": "var(--ng-txt-dim)",
+"disabled-text-color": "var(--ng-txt-mute)",
+"text-primary-color": "var(--ng-acc-ink)",
+"text-light-primary-color": "var(--ng-acc-ink)",
+"ha-color-text-secondary": "var(--ng-txt-dim)",
+"primary-color": "var(--ng-acc)",
+"accent-color": "var(--ng-acc)",
+"light-primary-color": "var(--ng-acc-2)",
+"dark-primary-color": "var(--ng-acc-2)",
+"ha-color-primary-05": "var(--ng-acc-ink)",
+"ha-color-primary-40": "var(--ng-acc)",
+"ha-color-primary-50": "var(--ng-acc-2)",
+"ha-color-primary-90": "var(--ng-acc-wash)",
+"ha-color-primary-95": "var(--ng-acc-wash)",
+"ha-color-fill-primary-quiet-resting": "var(--ng-acc-wash)",
+"ha-color-fill-primary-quiet-hover": "var(--ng-acc-wash)",
+"state-icon-color": "var(--ng-txt-dim)",
+"state-icon-active-color": "var(--ng-acc)",
+"state-active-color": "var(--ng-acc)",
+"state-inactive-color": "var(--ng-txt-mute)",
+"state-icon-unavailable-color": "var(--ng-txt-mute)",
+"state-light-active-color": "var(--ng-acc)",
+"state-switch-active-color": "var(--ng-acc)",
+"state-climate-heat-color": "var(--ng-warn)",
+"state-climate-cool-color": "var(--ng-info)",
+"state-climate-auto-color": "var(--ng-acc)",
+"state-climate-dry-color": "var(--ng-info)",
+"state-climate-fan_only-color": "var(--ng-info)",
+"state-humidifier-on-color": "var(--ng-info)",
+"paper-item-icon-active-color": "var(--ng-acc)",
+"green-color": "var(--ng-acc)",
+"light-green-color": "var(--ng-acc)",
+"teal-color": "var(--ng-acc-2)",
+"success-color": "var(--ng-ok)",
+"warning-color": "var(--ng-warn)",
+"error-color": "var(--ng-danger)",
+"info-color": "var(--ng-info)",
+"yellow-color": "var(--ng-warn)",
+"amber-color": "var(--ng-warn)",
+"orange-color": "var(--ng-warn)",
+"red-color": "var(--ng-danger)",
+"blue-color": "var(--ng-info)",
+"light-blue-color": "var(--ng-info)",
+"cyan-color": "var(--ng-info)",
+"grey-color": "var(--ng-txt-mute)",
+"rgb-primary-color": "var(--rgb-ng-acc)",
+"rgb-accent-color": "var(--rgb-ng-acc)",
+"rgb-green": "var(--rgb-ng-acc)",
+"rgb-light-green": "var(--rgb-ng-acc)",
+"rgb-teal": "var(--rgb-ng-acc)",
+"rgb-amber": "var(--rgb-ng-warn)",
+"rgb-yellow": "var(--rgb-ng-warn)",
+"rgb-orange": "var(--rgb-ng-warn)",
+"rgb-red": "var(--rgb-ng-danger)",
+"rgb-blue": "var(--rgb-ng-info)",
+"rgb-light-blue": "var(--rgb-ng-info)",
+"rgb-cyan": "var(--rgb-ng-info)",
+"rgb-grey": "var(--rgb-ng-mute)",
+"rgb-disabled": "var(--rgb-ng-mute)",
+"energy-grid-consumption-color": "var(--ng-info)",
+"energy-grid-return-color": "var(--ng-acc)",
+"energy-solar-color": "var(--ng-warn)",
+"energy-non-fossil-color": "var(--ng-acc-2)",
+"switch-checked-color": "var(--ng-acc)",
+"switch-checked-button-color": "var(--ng-acc)",
+"switch-checked-track-color": "var(--ng-acc-2)",
+"switch-unchecked-button-color": "var(--ng-txt-dim)",
+"switch-unchecked-track-color": "var(--ng-glass-hi)",
+"slider-color": "var(--ng-acc)",
+"slider-track-color": "var(--ng-glass-hi)",
+"ha-dialog-surface-background": "var(--ng-bg-elev)",
+"ha-dialog-surface-backdrop-filter": "var(--ng-blur)",
+"dialog-box-shadow": "inset 0 0 0 1px var(--ng-line-2), var(--ng-shadow-lg)",
+"ha-dialog-border-radius": "28px",
+"more-info-header-background": "var(--ng-bg-elev)",
+"markdown-code-background-color": "var(--ng-glass-2)",
+"code-editor-background-color": "var(--ng-bg-elev)",
+"input-fill-color": "var(--ng-glass)",
+"input-ink-color": "var(--ng-txt)",
+"input-label-ink-color": "var(--ng-txt-dim)",
+"input-idle-line-color": "var(--ng-line-2)",
+"input-hover-line-color": "var(--ng-acc-line)",
+"ha-color-form-background": "var(--ng-glass)",
+"ha-color-form-background-hover": "var(--ng-glass-2)",
+"wa-border-width-s": "0px",
+"wa-border-radius-m": "20px",
+"mush-rgb-state-light": "var(--rgb-ng-acc)",
+"mush-rgb-state-switch": "var(--rgb-ng-acc)",
+"mush-rgb-state-fan": "var(--rgb-ng-acc)",
+"mush-rgb-state-climate-heat": "var(--rgb-ng-warn)",
+"mush-rgb-state-climate-cool": "var(--rgb-ng-info)",
+"mush-rgb-state-climate-auto": "var(--rgb-ng-acc)",
+"mush-rgb-state-climate-dry": "var(--rgb-ng-info)",
+"mush-rgb-state-climate-fan-only": "var(--rgb-ng-info)",
+"mush-rgb-state-climate-heat-cool": "var(--rgb-ng-acc)",
+"mush-rgb-state-climate-off": "var(--rgb-ng-mute)",
+"mush-rgb-state-humidifier": "var(--rgb-ng-info)",
+"mush-rgb-state-cover-open": "var(--rgb-ng-acc)",
+"mush-rgb-disabled": "var(--rgb-ng-mute)",
+"mush-rgb-state-entity": "var(--rgb-ng-mute)",
+"mush-card-primary-font-weight": "600",
+"mush-card-secondary-font-weight": "500",
+"mush-control-border-radius": "14px",
+"mush-chip-border-radius": "999px",
+"mush-chip-background": "var(--ng-glass)",
+"mush-chip-box-shadow": "inset 0 0 0 1px var(--ng-line)",
+"mush-chip-height": "44px",
+"mush-control-height": "44px",
+"mush-icon-border-radius": "14px",
+"mush-badge-border-radius": "999px",
+"bubble-main-background-color": "var(--ng-glass)",
+"bubble-secondary-background-color": "var(--ng-glass-2)",
+"bubble-accent-color": "var(--ng-acc)",
+"bubble-button-accent-color": "var(--ng-acc)",
+"bubble-icon-background-color": "var(--ng-glass-2)",
+"bubble-border-radius": "28px",
+"bubble-button-border-radius": "999px",
+"bubble-box-shadow": "inset 0 0 0 1px var(--ng-line)",
+"bubble-border": "none",
+"bubble-pop-up-background-color": "var(--ng-bg-elev)",
+"bubble-backdrop-background-color": "rgba(var(--rgb-ng-bg), 0.6)",
+"bubble-horizontal-buttons-stack-background-color": "var(--ng-bg)",
+"card-mod-theme": "noel",
+"card-mod-card": "ha-card {\n  position: relative;\n  transition: transform .14s cubic-bezier(.22,1,.36,1);\n}\nha-card:active:not(:has(mushroom-slider:active)) { transform: scale(.98); }\n/* Durchsichtige Karten (Überschriften, Abstandhalter/Text-Markdown) ohne Glas-Unschärfe — sonst verwischt ein unsichtbarer\n   Streifen das Hintergrund-Gitter (sichtbar auf großen Bildschirmen unter der Navigation) */\n:host(.type-heading) ha-card, ha-card.text-only { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\n/* Navigation unten (Glas-Dock) steht NICHT hier: card-mod bringt das Theme erst einen Moment nach dem ersten Zeichnen,\n   dann blitzte die alte Bubble-Optik auf. Quelle: NAV_DOCK in nullglow-strategy.js (Vorlage), Kiosk per tools/build-nav-dock.py. */\nha-card::before {\n  content: \"\"; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;\n  opacity: 0; transition: opacity .26s cubic-bezier(.22,1,.36,1);\n  background: radial-gradient(130% 150% at 0% 0%, rgba(var(--ng-glow-rgb, 0, 0, 0), .14), transparent 62%);\n  box-shadow: inset 0 0 0 1px rgba(var(--ng-glow-rgb, 0, 0, 0), .34), 0 0 26px -10px rgba(var(--ng-glow-rgb, 0, 0, 0), .65);\n}\n/* Lebendige Geräte-Symbole: Effekte als ::after am Symbol-Rahmen (ha-tile-icon = Mushroom-Template, mushroom-shape-icon =\n   Mushroom-Climate); Klimaanlagen setzen zusätzlich --ng-fan (Umdrehungsdauer je Lüfterstufe) -> Lüfter-Symbol dreht */\nha-tile-icon, mushroom-shape-icon { position: relative; }\nha-tile-icon::after, mushroom-shape-icon::after {\n  content: \"\"; position: absolute; pointer-events: none; opacity: 0; transition: opacity .4s ease;\n}\n@container style(--ng-state: on) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { filter: drop-shadow(0 0 6px rgba(var(--rgb-ng-acc), calc(.75 * var(--ng-glow-k, 1)))); }\n}\n/* Waschmaschine läuft: Lichtkomet kreist um die Trommel, Symbol zittert fein (Schleudern) */\n@container style(--ng-state: wash) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-shake .16s linear infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 13px; height: 13px; left: 50%; top: 50%; margin: -5px 0 0 -6.5px; border-radius: 50%;\n    background: conic-gradient(from 0deg, transparent 0 55%, rgba(var(--rgb-ng-acc), .15) 70%, rgba(var(--rgb-ng-acc), 1) 97%, transparent 100%);\n    -webkit-mask: radial-gradient(circle, transparent 0 4.2px, #000 4.6px 6.5px, transparent 6.8px);\n            mask: radial-gradient(circle, transparent 0 4.2px, #000 4.6px 6.5px, transparent 6.8px);\n    filter: drop-shadow(0 0 3px rgba(var(--rgb-ng-acc), calc(.9 * var(--ng-glow-k, 1))));\n    animation: ng-spin .7s linear infinite;\n  }\n}\n@container style(--ng-state: charge) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-pulse 1.6s ease-in-out infinite; }\n}\n/* Heizt: Wärmewellen steigen über dem Symbol auf (♨) */\n@container style(--ng-state: heat) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-warn); opacity: 1; }\n  ha-state-icon { animation: ng-glow-warm 2.4s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 20px; height: 16px; left: 50%; bottom: 84%; margin-left: -10px;\n    background: rgba(var(--rgb-ng-warn), .95);\n    -webkit-mask: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><g fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'><path d='M4 16c-2-2 2-4 0-6s2-4 0-6s1-3 0-4'/><path d='M10 12c-2-2 2-4 0-6s2-4 0-6'/><path d='M16 16c-2-2 2-4 0-6s2-4 0-6s1-3 0-4'/></g></svg>\") 0 0 / 20px 16px repeat-y, linear-gradient(to top, #000 25%, transparent 100%);\n    -webkit-mask-composite: source-in; mask-composite: intersect;\n    filter: drop-shadow(0 0 2.5px rgba(var(--rgb-ng-warn), calc(.8 * var(--ng-glow-k, 1))));\n    animation: ng-rise 1.7s linear infinite;\n  }\n}\n/* Kühlt: Schneeflocken schweben aus dem Gerät nach unten */\n@container style(--ng-state: cool) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-info); opacity: 1; }\n  ha-state-icon { animation: ng-glow-cool 2.8s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 22px; height: 18px; left: 50%; top: 86%; margin-left: -11px;\n    background: rgba(var(--rgb-ng-info), .95);\n    -webkit-mask: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 20'><g stroke='black' stroke-width='1.1' stroke-linecap='round'><path d='M5 1v5M2.8 2.2l4.4 2.6M2.8 4.8l4.4-2.6'/><path d='M16 7v5M13.8 8.2l4.4 2.6M13.8 10.8l4.4-2.6'/><path d='M9 13.5v4M7.3 14.5l3.4 2M7.3 16.5l3.4-2'/></g></svg>\") 0 0 / 22px 20px repeat-y, linear-gradient(to bottom, #000 25%, transparent 100%);\n    -webkit-mask-composite: source-in; mask-composite: intersect;\n    filter: drop-shadow(0 0 2.5px rgba(var(--rgb-ng-info), calc(.8 * var(--ng-glow-k, 1))));\n    animation: ng-fall 2.6s linear infinite, ng-sway 3s ease-in-out infinite;\n  }\n}\n/* Lüfter dreht nur bei echten Lüfterstufen der Klimaanlagen (tools/build-klima-view.py setzt 2.4s … .45s, sonst 0s).\n   Früher lief ng-spin mit 0 s Dauer endlos auch bei Heizungen -> Stil-Neuberechnung bei jedem Bild. */\n@container (style(--ng-state: heat) or style(--ng-state: cool)) and (style(--ng-fan: 2.4s) or style(--ng-fan: 1.8s) or style(--ng-fan: 1.1s) or style(--ng-fan: .7s) or style(--ng-fan: .45s)) {\n  ha-state-icon { animation: ng-spin var(--ng-fan) linear infinite, var(--ng-glow-anim) !important; }\n}\n@container style(--ng-state: heat) { ha-state-icon { --ng-glow-anim: ng-glow-warm 2.4s ease-in-out infinite; } }\n@container style(--ng-state: cool) { ha-state-icon { --ng-glow-anim: ng-glow-cool 2.8s ease-in-out infinite; } }\n@container style(--ng-state: warn) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-warn); opacity: 1; }\n}\n@container style(--ng-state: crit) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-danger); opacity: 1; }\n  ha-state-icon { animation: ng-alarm 1.4s ease-in-out infinite; }\n}\n@container style(--ng-state: idle) {\n  mushroom-card { opacity: .45; }\n}\n/* Sauger reinigt: Roboter schlingert auf seiner Bahn, ein Lichtkomet zieht die Reinigungsrunde um ihn */\n@container style(--ng-state: clean) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-drive 3.2s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 32px; height: 32px; left: 50%; top: 50%; margin: -16px 0 0 -16px; border-radius: 50%;\n    background: conic-gradient(from 0deg, transparent 0 58%, rgba(var(--rgb-ng-acc), .12) 74%, rgba(var(--rgb-ng-acc), .95) 98%, transparent 100%);\n    -webkit-mask: radial-gradient(circle, transparent 0 14.3px, #000 14.8px 16px, transparent 16.3px);\n            mask: radial-gradient(circle, transparent 0 14.3px, #000 14.8px 16px, transparent 16.3px);\n    filter: drop-shadow(0 0 3px rgba(var(--rgb-ng-acc), calc(.9 * var(--ng-glow-k, 1))));\n    animation: ng-spin 2.6s linear infinite;\n  }\n}\n@container style(--ng-state: move) {\n  ha-state-icon { animation: ng-slide 1.1s ease-in-out infinite; }\n}\n@keyframes ng-pulse {\n  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(var(--rgb-ng-acc), calc(0 * var(--ng-glow-k, 1)))); }\n  50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(var(--rgb-ng-acc), calc(.9 * var(--ng-glow-k, 1)))); }\n}\n@keyframes ng-alarm {\n  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(var(--rgb-ng-danger), calc(0 * var(--ng-glow-k, 1)))); }\n  50% { transform: scale(1.12); filter: drop-shadow(0 0 8px rgba(var(--rgb-ng-danger), calc(.95 * var(--ng-glow-k, 1)))); }\n}\n@keyframes ng-slide { 0%, 100% { transform: translateY(1.5px); } 50% { transform: translateY(-1.5px); } }\n@keyframes ng-spin { to { transform: rotate(360deg); } }\n@keyframes ng-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(.4px, -.3px); } 50% { transform: translate(-.3px, .3px); } 75% { transform: translate(.3px, .4px); } }\n@keyframes ng-rise { from { -webkit-mask-position: 0 0, 0 0; } to { -webkit-mask-position: 0 -16px, 0 0; } }\n@keyframes ng-sway { 0%, 100% { transform: translateX(-1px); } 50% { transform: translateX(1.2px); } }\n@keyframes ng-fall { from { -webkit-mask-position: 0 0, 0 0; } to { -webkit-mask-position: 0 20px, 0 0; } }\n@keyframes ng-glow-warm { 0%, 100% { filter: drop-shadow(0 0 2px rgba(var(--rgb-ng-warn), calc(.5 * var(--ng-glow-k, 1)))); } 50% { filter: drop-shadow(0 0 7px rgba(var(--rgb-ng-warn), calc(.95 * var(--ng-glow-k, 1)))); } }\n@keyframes ng-glow-cool { 0%, 100% { filter: drop-shadow(0 0 2px rgba(var(--rgb-ng-info), calc(.45 * var(--ng-glow-k, 1)))); } 50% { filter: drop-shadow(0 0 7px rgba(var(--rgb-ng-info), calc(.9 * var(--ng-glow-k, 1)))); } }\n@keyframes ng-drive {\n  0%, 100% { transform: translate(-2px, 0) rotate(-10deg); } 25% { transform: translate(0, -1.5px) rotate(0); }\n  50% { transform: translate(2px, 0) rotate(10deg); } 75% { transform: translate(0, 1.5px) rotate(0); }\n}\n@media (prefers-reduced-motion: reduce) {\n  ha-state-icon, ha-tile-icon::after, mushroom-shape-icon::after { animation: none !important; }\n}\n/* Stromsparen (Uhr-Pop-up der Vorlage): --ng-eco: 1 an <html> erbt bis hierher -> Symbole stehen still, Farben bleiben */\n@container style(--ng-eco: 1) {\n  ha-state-icon, ha-tile-icon::after, mushroom-shape-icon::after { animation: none !important; }\n}\n/* Schneehäubchen auf jeder Kachel: liegt auf der Oberkante, nimmt keine Klicks */\nha-card::after {\n  content: \"\"; position: absolute; left: 8px; right: 8px; top: -6px; height: 18px; z-index: 4; pointer-events: none;\n  background: var(--ng-snowcap, none); -webkit-mask: var(--ng-snowcap-mask, none); mask: var(--ng-snowcap-mask, none);\n}\n/* nicht auf Überschriften und rahmenlosen Karten; die Leiste unten hat ihr eigenes Häubchen (NAV_DOCK) und keine Fläche */\n:host(hui-heading-card) ha-card::after, :host(.type-heading) ha-card::after, ha-card.text-only::after,\nha-card.horizontal-buttons-stack-card::after { display: none; }\nha-card.horizontal-buttons-stack-card { background: none !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }\n/* Karten mit overflow: hidden würden das Häubchen abschneiden: dort am Host statt an der Karte, der Inhalt bleibt gekappt */\n:host(nullglow-flow-card), :host(nullglow-toyota-card), :host(nullglow-printer-card), :host(nullglow-car-card), :host(nullglow-vehicle-card), :host(nullglow-media-card), :host(nullglow-mower-map-card), :host(nullglow-mower-stats-card), :host(nullglow-floorplan-card), :host(nullglow-radar-card), :host(nullglow-door-card), :host(calendar-card-pro), :host(hui-calendar-card), :host(hui-picture-entity-card), :host(hui-picture-card), :host(hui-picture-glance-card), :host(hui-map-card), :host(hui-iframe-card) { position: relative; }\n:host(nullglow-flow-card) ha-card::after, :host(nullglow-toyota-card) ha-card::after, :host(nullglow-printer-card) ha-card::after, :host(nullglow-car-card) ha-card::after, :host(nullglow-vehicle-card) ha-card::after, :host(nullglow-media-card) ha-card::after, :host(nullglow-mower-map-card) ha-card::after, :host(nullglow-mower-stats-card) ha-card::after, :host(nullglow-floorplan-card) ha-card::after, :host(nullglow-radar-card) ha-card::after, :host(nullglow-door-card) ha-card::after, :host(calendar-card-pro) ha-card::after, :host(hui-calendar-card) ha-card::after, :host(hui-picture-entity-card) ha-card::after, :host(hui-picture-card) ha-card::after, :host(hui-picture-glance-card) ha-card::after, :host(hui-map-card) ha-card::after, :host(hui-iframe-card) ha-card::after { display: none; }\n:host(nullglow-flow-card)::after, :host(nullglow-toyota-card)::after, :host(nullglow-printer-card)::after, :host(nullglow-car-card)::after, :host(nullglow-vehicle-card)::after, :host(nullglow-media-card)::after, :host(nullglow-mower-map-card)::after, :host(nullglow-mower-stats-card)::after, :host(nullglow-floorplan-card)::after, :host(nullglow-radar-card)::after, :host(nullglow-door-card)::after, :host(calendar-card-pro)::after, :host(hui-calendar-card)::after, :host(hui-picture-entity-card)::after, :host(hui-picture-card)::after, :host(hui-picture-glance-card)::after, :host(hui-map-card)::after, :host(hui-iframe-card)::after {\n  content: \"\"; position: absolute; left: 8px; right: 8px; top: -6px; height: 18px; z-index: 4; pointer-events: none;\n  background: var(--ng-snowcap, none); -webkit-mask: var(--ng-snowcap-mask, none); mask: var(--ng-snowcap-mask, none);\n}\n",
+"ng-bg": "#1a0c0a",
+"ng-bg-elev": "#28140f",
+"ng-glass": "rgba(255, 214, 180, calc(0.045 * var(--ng-glass-k, 1)))",
+"ng-glass-2": "rgba(255, 214, 180, calc(0.075 * var(--ng-glass-k, 1)))",
+"ng-glass-hi": "rgba(255, 214, 180, calc(0.13 * var(--ng-glass-k, 1)))",
+"ng-line": "rgba(255, 214, 180, 0.10)",
+"ng-line-2": "rgba(255, 214, 180, 0.18)",
+"ng-txt": "#fdf3e3",
+"ng-txt-dim": "#d0b6a0",
+"ng-txt-mute": "#a08570",
+"ng-acc": "#f7c266",
+"ng-acc-2": "#e2573f",
+"ng-acc-3": "#b3262e",
+"ng-acc-ink": "#2a1204",
+"ng-acc-wash": "rgba(247, 194, 102, 0.12)",
+"ng-acc-line": "rgba(247, 194, 102, 0.34)",
+"ng-ok": "#9ad67a",
+"ng-warn": "#ff9a4d",
+"ng-danger": "#ff5f6b",
+"ng-info": "#6fcfb0",
+"ng-shadow": "0 8px 30px -12px rgba(0, 0, 0, 0.92)",
+"ng-shadow-lg": "0 26px 64px -20px rgba(0, 0, 0, 0.96)",
+"ng-glow-sm": "0 0 18px -2px rgba(247, 194, 102, 0.34)",
+"ng-blur": "blur(18px) saturate(150%)",
+"rgb-ng-acc": "247, 194, 102",
+"rgb-ng-acc-2": "226, 87, 63",
+"rgb-ng-acc-3": "179, 38, 46",
+"rgb-ng-warn": "255, 154, 77",
+"rgb-ng-danger": "255, 95, 107",
+"rgb-ng-info": "111, 207, 176",
+"rgb-ng-mute": "208, 182, 160",
+"rgb-ng-bg": "26, 12, 10",
+"rgb-ng-txt": "253, 243, 227",
+"nf-acc": "var(--ng-acc)",
+"nf-acc-ink": "var(--ng-acc-ink)",
+"nf-txt": "var(--ng-txt)",
+"nf-txt-dim": "var(--ng-txt-dim)",
+"nf-txt-mute": "var(--ng-txt-mute)",
+"nf-warn": "var(--ng-warn)",
+"nf-background": "var(--ng-glass)",
+"ng-glow-k": "1",
+"ng-is-light": "0",
+"rgb-ng-shade": "0, 0, 0",
+"lovelace-background": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='64' viewBox='0 0 640 64'%3E%3Cpath fill='none' stroke='%236b5040' stroke-width='1.4' d='M0 6.0L8 8.9L16 11.7L24 14.3L32 16.8L40 19.1L48 21.3L56 23.3L64 25.2L72 26.9L80 28.5L88 29.9L96 31.2L104 32.3L112 33.3L120 34.1L128 34.8L136 35.3L144 35.7L152 35.9L160 36.0L168 35.9L176 35.7L184 35.3L192 34.8L200 34.1L208 33.3L216 32.3L224 31.2L232 29.9L240 28.5L248 26.9L256 25.2L264 23.3L272 21.3L280 19.1L288 16.8L296 14.3L304 11.7L312 8.9L320 6.0L328 8.9L336 11.7L344 14.3L352 16.8L360 19.1L368 21.3L376 23.3L384 25.2L392 26.9L400 28.5L408 29.9L416 31.2L424 32.3L432 33.3L440 34.1L448 34.8L456 35.3L464 35.7L472 35.9L480 36.0L488 35.9L496 35.7L504 35.3L512 34.8L520 34.1L528 33.3L536 32.3L544 31.2L552 29.9L560 28.5L568 26.9L576 25.2L584 23.3L592 21.3L600 19.1L608 16.8L616 14.3L624 11.7L632 8.9L640 6.0'/%3E%3Ccircle cx='20' cy='20.0' r='11' fill='%23ffcf7a' fill-opacity='.20'/%3E%3Ccircle cx='20' cy='20.0' r='4' fill='%23ffcf7a'/%3E%3Ccircle cx='60' cy='31.3' r='11' fill='%23ff6f5e' fill-opacity='.20'/%3E%3Ccircle cx='60' cy='31.3' r='4' fill='%23ff6f5e'/%3E%3Ccircle cx='100' cy='38.8' r='11' fill='%23ffcf7a' fill-opacity='.20'/%3E%3Ccircle cx='100' cy='38.8' r='4' fill='%23ffcf7a'/%3E%3Ccircle cx='140' cy='42.5' r='11' fill='%238fe0b0' fill-opacity='.20'/%3E%3Ccircle cx='140' cy='42.5' r='4' fill='%238fe0b0'/%3E%3Ccircle cx='180' cy='42.5' r='11' fill='%23ffcf7a' fill-opacity='.20'/%3E%3Ccircle cx='180' cy='42.5' r='4' fill='%23ffcf7a'/%3E%3Ccircle cx='220' cy='38.8' r='11' fill='%23ff6f5e' fill-opacity='.20'/%3E%3Ccircle cx='220' cy='38.8' r='4' fill='%23ff6f5e'/%3E%3Ccircle cx='260' cy='31.3' r='11' fill='%23ffcf7a' fill-opacity='.20'/%3E%3Ccircle cx='260' cy='31.3' r='4' fill='%23ffcf7a'/%3E%3Ccircle cx='300' cy='20.0' r='11' fill='%238fe0b0' fill-opacity='.20'/%3E%3Ccircle cx='300' cy='20.0' r='4' fill='%238fe0b0'/%3E%3Ccircle cx='340' cy='20.0' r='11' fill='%23ffcf7a' fill-opacity='.20'/%3E%3Ccircle cx='340' cy='20.0' r='4' fill='%23ffcf7a'/%3E%3Ccircle cx='380' cy='31.3' r='11' fill='%23ff6f5e' fill-opacity='.20'/%3E%3Ccircle cx='380' cy='31.3' r='4' fill='%23ff6f5e'/%3E%3Ccircle cx='420' cy='38.8' r='11' fill='%23ffcf7a' fill-opacity='.20'/%3E%3Ccircle cx='420' cy='38.8' r='4' fill='%23ffcf7a'/%3E%3Ccircle cx='460' cy='42.5' r='11' fill='%238fe0b0' fill-opacity='.20'/%3E%3Ccircle cx='460' cy='42.5' r='4' fill='%238fe0b0'/%3E%3Ccircle cx='500' cy='42.5' r='11' fill='%23ffcf7a' fill-opacity='.20'/%3E%3Ccircle cx='500' cy='42.5' r='4' fill='%23ffcf7a'/%3E%3Ccircle cx='540' cy='38.8' r='11' fill='%23ff6f5e' fill-opacity='.20'/%3E%3Ccircle cx='540' cy='38.8' r='4' fill='%23ff6f5e'/%3E%3Ccircle cx='580' cy='31.3' r='11' fill='%23ffcf7a' fill-opacity='.20'/%3E%3Ccircle cx='580' cy='31.3' r='4' fill='%23ffcf7a'/%3E%3Ccircle cx='620' cy='20.0' r='11' fill='%238fe0b0' fill-opacity='.20'/%3E%3Ccircle cx='620' cy='20.0' r='4' fill='%238fe0b0'/%3E%3C/svg%3E\") center top / 640px 64px repeat-x fixed, url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='430' viewBox='0 0 1600 430'%3E%3Cpath fill='%232a1c1c' d='M0 330Q200 280 420 318T860 300T1280 322T1600 330V430H0Z'/%3E%3Cpath fill='%23132a22' d='M8 196L39 272L-23 272ZM8 236L55 316L-39 316ZM8 276L68 362L-52 362ZM4 360h8v12h-8ZM1608 196L1639 272L1577 272ZM1608 236L1655 316L1561 316ZM1608 276L1668 362L1548 362ZM1604 360h8v12h-8ZM45 246L66 298L24 298ZM45 273L77 327L13 327ZM45 300L86 359L4 359ZM42 357h6v8h-6ZM1645 246L1666 298L1624 298ZM1645 273L1677 327L1613 327ZM1645 300L1686 359L1604 359ZM1642 357h6v8h-6ZM100 255L119 302L81 302ZM100 280L129 329L71 329ZM100 304L137 358L63 358ZM97 356h5v7h-5ZM170 257L191 308L149 308ZM170 284L201 337L139 337ZM170 310L210 368L130 368ZM167 366h6v8h-6ZM227 239L251 298L203 298ZM227 270L263 331L191 331ZM227 300L273 367L181 367ZM224 365h6v9h-6ZM279 277L296 320L262 320ZM279 299L305 344L253 344ZM279 322L312 370L246 370ZM277 368h5v7h-5ZM324 257L344 306L304 306ZM324 282L354 333L294 333ZM324 308L362 363L286 363ZM321 361h5v7h-5ZM364 251L385 303L343 303ZM364 278L396 332L332 332ZM364 305L405 364L323 364ZM361 362h6v8h-6ZM433 219L461 287L405 287ZM433 255L475 326L391 326ZM433 290L486 367L380 367ZM429 365h7v10h-7ZM493 205L522 276L464 276ZM493 242L537 317L449 317ZM493 279L549 360L437 360ZM489 358h8v11h-8ZM528 242L551 299L505 299ZM528 272L563 331L493 331ZM528 302L573 366L483 366ZM525 364h6v9h-6ZM606 253L627 305L585 305ZM606 280L637 334L575 334ZM606 307L646 365L566 365ZM603 363h6v8h-6ZM655 230L680 290L630 290ZM655 261L692 324L618 324ZM655 293L702 361L608 361ZM652 359h7v9h-7ZM690 226L716 289L664 289ZM690 259L729 325L651 325ZM690 292L740 364L640 364ZM687 362h7v10h-7ZM763 274L781 318L745 318ZM763 297L790 343L736 343ZM763 320L798 370L728 370ZM761 368h5v7h-5ZM802 226L827 288L777 288ZM802 258L840 323L764 323ZM802 291L851 361L753 361ZM799 359h7v9h-7ZM878 267L897 313L859 313ZM878 291L906 339L850 339ZM878 315L914 367L842 367ZM876 365h5v7h-5ZM913 234L936 291L890 291ZM913 264L948 323L878 323ZM913 293L957 357L869 357ZM910 355h6v9h-6ZM979 254L1000 305L958 305ZM979 281L1010 334L948 334ZM979 307L1019 365L939 365ZM976 363h6v8h-6ZM1038 215L1067 286L1009 286ZM1038 252L1081 326L995 326ZM1038 289L1093 369L983 369ZM1034 367h8v11h-8ZM1093 234L1117 292L1069 292ZM1093 264L1128 325L1058 325ZM1093 294L1138 360L1048 360ZM1090 358h6v9h-6ZM1137 240L1161 298L1113 298ZM1137 270L1173 331L1101 331ZM1137 301L1183 367L1091 367ZM1134 365h6v9h-6ZM1180 192L1211 268L1149 268ZM1180 232L1226 311L1134 311ZM1180 271L1239 357L1121 357ZM1176 355h8v12h-8ZM1243 257L1264 308L1222 308ZM1243 284L1274 337L1212 337ZM1243 310L1283 368L1203 368ZM1240 366h6v8h-6ZM1302 225L1327 286L1277 286ZM1302 257L1339 321L1265 321ZM1302 289L1350 358L1254 358ZM1299 356h7v9h-7ZM1351 251L1371 301L1331 301ZM1351 277L1381 329L1321 329ZM1351 303L1390 359L1312 359ZM1348 357h5v8h-5ZM1405 239L1428 296L1382 296ZM1405 269L1440 329L1370 329ZM1405 299L1450 364L1360 364ZM1402 362h6v9h-6ZM1460 248L1482 303L1438 303ZM1460 277L1494 334L1426 334ZM1460 306L1503 368L1417 368ZM1457 366h6v8h-6ZM1515 245L1538 302L1492 302ZM1515 275L1550 334L1480 334ZM1515 304L1559 368L1471 368ZM1512 366h6v9h-6ZM1554 257L1574 307L1534 307ZM1554 283L1585 335L1523 335ZM1554 309L1593 366L1515 366ZM1551 364h5v8h-5Z'/%3E%3Cpath fill='%2354473f' d='M8 196L18.6 222.0L12.2 216.8L8 223.3L3.2 216.3L-2.6 222.0ZM8 236L23.8 262.9L14.3 257.5L8 264.3L0.9 257.0L-7.8 262.9ZM8 276L28.3 305.0L16.1 299.2L8 306.5L-1.1 298.6L-12.3 305.0ZM1608 196L1618.6 222.0L1612.2 216.8L1608 223.3L1603.2 216.3L1597.4 222.0ZM1608 236L1623.8 262.9L1614.3 257.5L1608 264.3L1600.9 257.0L1592.2 262.9ZM1608 276L1628.3 305.0L1616.1 299.2L1608 306.5L1598.9 298.6L1587.7 305.0ZM45 246L52.2 263.7L47.9 260.1L45 264.6L41.8 259.8L37.8 263.7ZM45 273L55.8 291.6L49.3 287.9L45 292.5L40.1 287.5L34.2 291.6ZM45 300L58.8 320.2L50.5 316.2L45 321.2L38.8 315.8L31.2 320.2ZM1645 246L1652.2 263.7L1647.9 260.1L1645 264.6L1641.8 259.8L1637.8 263.7ZM1645 273L1655.8 291.6L1649.3 287.9L1645 292.5L1640.1 287.5L1634.2 291.6ZM1645 300L1658.8 320.2L1650.5 316.2L1645 321.2L1638.8 315.8L1631.2 320.2ZM100 255L106.6 271.1L102.6 267.9L100 271.9L97.0 267.6L93.4 271.1ZM100 280L109.8 296.5L103.9 293.2L100 297.4L95.6 292.8L90.2 296.5ZM100 304L112.6 322.7L105.0 319.0L100 323.6L94.3 318.6L87.4 322.7ZM170 257L177.1 274.4L172.8 270.9L170 275.2L166.8 270.5L162.9 274.4ZM170 284L180.6 301.8L174.2 298.1L170 302.7L165.2 297.8L159.4 301.8ZM170 310L183.6 329.9L175.4 326.0L170 330.9L163.9 325.6L156.4 329.9ZM227 239L235.1 259.0L230.3 255.0L227 260.0L223.3 254.6L218.9 259.0ZM227 270L239.2 290.6L231.9 286.4L227 291.7L221.5 286.0L214.8 290.6ZM227 300L242.7 323.1L233.3 318.5L227 324.2L219.9 318.1L211.3 323.1ZM279 277L284.9 291.5L281.4 288.6L279 292.3L276.3 288.3L273.1 291.5ZM279 299L287.9 314.5L282.6 311.5L279 315.3L275.0 311.2L270.1 314.5ZM279 322L290.4 338.1L283.6 334.8L279 338.9L273.9 334.5L267.6 338.1ZM324 257L330.7 273.6L326.7 270.3L324 274.4L321.0 269.9L317.3 273.6ZM324 282L334.1 299.7L328.0 296.3L324 300.6L319.4 295.9L313.9 299.7ZM324 308L337.0 326.6L329.2 322.9L324 327.6L318.2 322.5L311.0 326.6ZM364 251L371.2 268.7L366.9 265.1L364 269.6L360.8 264.8L356.8 268.7ZM364 278L374.8 296.6L368.3 292.9L364 297.5L359.1 292.5L353.2 296.6ZM364 305L377.8 325.2L369.5 321.2L364 326.2L357.8 320.8L350.2 325.2ZM433 219L442.4 242.1L436.8 237.5L433 243.3L428.8 237.1L423.6 242.1ZM433 255L447.1 278.7L438.7 273.8L433 279.9L426.6 273.4L418.9 278.7ZM433 290L451.1 316.2L440.2 311.0L433 317.5L424.8 310.4L414.9 316.2ZM493 205L502.9 229.2L496.9 224.4L493 230.5L488.6 223.9L483.1 229.2ZM493 242L507.8 267.5L498.9 262.4L493 268.8L486.3 261.9L478.2 267.5ZM493 279L512.0 306.8L500.6 301.3L493 308.2L484.5 300.8L474.0 306.8ZM528 242L535.9 261.4L531.2 257.5L528 262.4L524.4 257.1L520.1 261.4ZM528 272L539.8 292.0L532.7 287.9L528 293.0L522.7 287.5L516.2 292.0ZM528 302L543.2 323.4L534.1 319.1L528 324.5L521.2 318.6L512.8 323.4ZM606 253L613.1 270.5L608.9 267.0L606 271.4L602.8 266.7L598.9 270.5ZM606 280L616.7 298.2L610.3 294.5L606 299.1L601.2 294.1L595.3 298.2ZM606 307L619.7 326.6L611.5 322.6L606 327.6L599.8 322.2L592.3 326.6ZM655 230L663.3 250.5L658.3 246.4L655 251.5L651.2 246.0L646.7 250.5ZM655 261L667.5 282.8L660.0 278.5L655 283.9L649.4 278.1L642.5 282.8ZM655 293L671.0 316.0L661.4 311.4L655 317.2L647.8 310.9L639.0 316.0ZM690 226L698.8 247.6L693.5 243.3L690 248.7L686.0 242.8L681.2 247.6ZM690 259L703.2 281.6L695.3 277.1L690 282.8L684.1 276.7L676.8 281.6ZM690 292L706.9 316.6L696.8 311.8L690 317.9L682.4 311.3L673.1 316.6ZM763 274L769.1 289.0L765.4 286.0L763 289.8L760.3 285.7L756.9 289.0ZM763 297L772.2 312.7L766.7 309.6L763 313.5L758.9 309.3L753.8 312.7ZM763 320L774.8 337.1L767.7 333.7L763 337.9L757.7 333.3L751.2 337.1ZM802 226L810.6 247.1L805.4 242.9L802 248.2L798.1 242.5L793.4 247.1ZM802 258L814.9 280.4L807.2 276.0L802 281.5L796.2 275.6L789.1 280.4ZM802 291L818.5 314.7L808.6 309.9L802 315.9L794.6 309.4L785.5 314.7ZM878 267L884.4 282.6L880.5 279.5L878 283.4L875.1 279.2L871.6 282.6ZM878 291L887.5 307.3L881.8 304.1L878 308.1L873.7 303.7L868.5 307.3ZM878 315L890.2 332.7L882.9 329.1L878 333.6L872.5 328.8L865.8 332.7ZM913 234L920.8 253.2L916.1 249.4L913 254.2L909.5 249.0L905.2 253.2ZM913 264L924.7 283.6L917.7 279.6L913 284.6L907.7 279.2L901.3 283.6ZM913 293L928.1 314.8L919.0 310.4L913 315.9L906.2 310.0L897.9 314.8ZM979 254L986.1 271.4L981.8 267.9L979 272.2L975.8 267.5L971.9 271.4ZM979 281L989.6 298.8L983.2 295.1L979 299.7L974.2 294.8L968.4 298.8ZM979 307L992.6 326.9L984.4 323.0L979 327.9L972.9 322.6L965.4 326.9ZM1038 215L1047.8 239.1L1041.9 234.3L1038 240.3L1033.6 233.8L1028.2 239.1ZM1038 252L1052.7 277.1L1043.9 272.1L1038 278.3L1031.4 271.6L1023.3 277.1ZM1038 289L1056.8 316.1L1045.5 310.7L1038 317.5L1029.5 310.2L1019.2 316.1ZM1093 234L1101.0 253.7L1096.2 249.8L1093 254.7L1089.4 249.4L1085.0 253.7ZM1093 264L1105.0 284.8L1097.8 280.7L1093 285.8L1087.6 280.3L1081.0 284.8ZM1093 294L1108.4 316.8L1099.2 312.3L1093 317.9L1086.1 311.9L1077.6 316.8ZM1137 240L1145.1 259.9L1140.2 255.9L1137 260.9L1133.4 255.5L1128.9 259.9ZM1137 270L1149.1 291.2L1141.8 287.1L1137 292.2L1131.5 286.6L1124.9 291.2ZM1137 301L1152.5 323.4L1143.2 318.9L1137 324.5L1130.0 318.5L1121.5 323.4ZM1180 192L1190.5 217.8L1184.2 212.6L1180 219.1L1175.3 212.1L1169.5 217.8ZM1180 232L1195.8 258.5L1186.3 253.1L1180 259.9L1172.9 252.6L1164.2 258.5ZM1180 271L1200.2 300.4L1188.1 294.5L1180 301.8L1170.9 294.0L1159.8 300.4ZM1243 257L1250.1 274.4L1245.8 270.9L1243 275.2L1239.8 270.5L1235.9 274.4ZM1243 284L1253.6 301.8L1247.2 298.1L1243 302.7L1238.2 297.8L1232.4 301.8ZM1243 310L1256.6 329.9L1248.4 326.0L1243 330.9L1236.9 325.6L1229.4 329.9ZM1302 225L1310.5 245.8L1305.4 241.6L1302 246.8L1298.2 241.2L1293.5 245.8ZM1302 257L1314.7 278.6L1307.1 274.3L1302 279.7L1296.3 273.9L1289.3 278.6ZM1302 289L1318.3 312.4L1308.5 307.7L1302 313.5L1294.7 307.2L1285.7 312.4ZM1351 251L1357.9 267.9L1353.7 264.5L1351 268.7L1347.9 264.2L1344.1 267.9ZM1351 277L1361.3 294.5L1355.1 291.0L1351 295.4L1346.4 290.7L1340.7 294.5ZM1351 303L1364.2 321.9L1356.3 318.1L1351 322.9L1345.1 317.7L1337.8 321.9ZM1405 239L1413.0 258.6L1408.2 254.6L1405 259.5L1401.4 254.2L1397.0 258.6ZM1405 269L1416.9 289.4L1409.8 285.3L1405 290.4L1399.6 284.9L1393.1 289.4ZM1405 299L1420.3 321.1L1411.1 316.7L1405 322.2L1398.1 316.2L1389.7 321.1ZM1460 248L1467.6 266.8L1463.1 263.0L1460 267.7L1456.6 262.6L1452.4 266.8ZM1460 277L1471.5 296.4L1464.6 292.5L1460 297.4L1454.8 292.1L1448.5 296.4ZM1460 306L1474.7 326.8L1465.9 322.6L1460 327.9L1453.4 322.1L1445.3 326.8ZM1515 245L1522.8 264.2L1518.1 260.4L1515 265.2L1511.5 260.0L1507.2 264.2ZM1515 275L1526.7 294.6L1519.7 290.6L1515 295.6L1509.7 290.2L1503.3 294.6ZM1515 304L1530.1 325.8L1521.0 321.4L1515 326.9L1508.2 321.0L1499.9 325.8ZM1554 257L1560.9 274.0L1556.8 270.6L1554 274.9L1550.9 270.3L1547.1 274.0ZM1554 283L1564.4 300.9L1558.2 297.4L1554 301.8L1549.3 297.0L1543.6 300.9ZM1554 309L1567.3 328.6L1559.3 324.7L1554 329.6L1548.0 324.4L1540.7 328.6Z'/%3E%3Cpath fill='%233d302d' d='M0 372Q240 344 520 366T1020 356T1600 372V430H0Z'/%3E%3Cellipse cx='800' cy='372' rx='210' ry='38' fill='%233d302d'/%3E%3Cpath fill='%232b1812' d='M738 338v-58h124v58Z'/%3E%3Cpath fill='%232b1812' d='M828 246h18v38h-18Z'/%3E%3Cpath fill='%2347201a' d='M722 284L800 226L878 284Z'/%3E%3Cpath fill='%238f7f76' d='M722 284L800 226L878 284L858 278L836 282L812 272L784 280L758 274Z'/%3E%3Cpath fill='%238f7f76' d='M826 246q11-8 22 0v4h-22Z'/%3E%3Ccircle cx='800' cy='312' r='78' fill='%23ffc76a' fill-opacity='.10'/%3E%3Crect x='754' y='298' width='24' height='24' rx='2' fill='%23ffcf7a'/%3E%3Cpath stroke='%232b1812' stroke-width='2' d='M766 298v24M754 310h24'/%3E%3Crect x='822' y='298' width='24' height='24' rx='2' fill='%23ffcf7a'/%3E%3Cpath stroke='%232b1812' stroke-width='2' d='M834 298v24M822 310h24'/%3E%3Crect x='789' y='294' width='22' height='44' rx='2' fill='%2347201a'/%3E%3Ccircle cx='806' cy='316' r='1.8' fill='%23ffcf7a'/%3E%3Cpath fill='%230e3326' d='M38 143L86 261L-10 261ZM38 204L110 327L-34 327ZM38 266L130 399L-54 399ZM32 397h13v18h-13ZM1638 143L1686 261L1590 261ZM1638 204L1710 327L1566 327ZM1638 266L1730 399L1546 399ZM1632 397h13v18h-13ZM165 116L219 248L111 248ZM165 185L245 322L85 322ZM165 253L268 402L62 402ZM158 400h14v20h-14ZM274 114L327 245L221 245ZM274 182L354 319L194 319ZM274 251L377 399L171 399ZM267 397h14v20h-14ZM391 180L431 279L351 279ZM391 232L452 336L330 336ZM391 284L469 396L313 396ZM386 394h11v15h-11ZM550 173L592 276L508 276ZM550 227L613 334L487 334ZM550 281L631 397L469 397ZM544 395h11v16h-11ZM684 138L733 258L635 258ZM684 200L757 325L611 325ZM684 263L778 398L590 398ZM678 396h13v18h-13ZM1012 94L1069 234L955 234ZM1012 167L1098 314L926 314ZM1012 240L1122 399L902 399ZM1004 397h15v21h-15ZM1132 168L1175 274L1089 274ZM1132 223L1197 334L1067 334ZM1132 278L1215 398L1049 398ZM1126 396h12v16h-12ZM1245 127L1297 254L1193 254ZM1245 193L1323 326L1167 326ZM1245 260L1345 404L1145 404ZM1238 402h14v19h-14ZM1362 143L1411 263L1313 263ZM1362 206L1435 331L1289 331ZM1362 268L1456 404L1268 404ZM1355 402h13v18h-13ZM1496 141L1546 263L1446 263ZM1496 205L1570 332L1422 332ZM1496 268L1591 406L1401 406ZM1489 404h13v19h-13ZM-104 141L-54 263L-154 263ZM-104 205L-30 332L-178 332ZM-104 268L-9 406L-199 406ZM-111 404h13v19h-13ZM1567 139L1615 257L1519 257ZM1567 200L1639 323L1495 323ZM1567 262L1659 395L1475 395ZM1561 393h13v18h-13ZM-33 139L15 257L-81 257ZM-33 200L39 323L-105 323ZM-33 262L59 395L-125 395ZM-39 393h13v18h-13Z'/%3E%3Cpath fill='%238f7f76' d='M38 143L54.3 183.0L44.5 175.0L38 185.0L30.7 174.2L21.7 183.0ZM38 204L62.4 246.2L47.8 237.9L38 248.3L27.0 237.0L13.6 246.2ZM38 266L69.3 311.1L50.5 302.1L38 313.4L23.9 301.2L6.7 311.1ZM1638 143L1654.3 183.0L1644.5 175.0L1638 185.0L1630.7 174.2L1621.7 183.0ZM1638 204L1662.4 246.2L1647.8 237.9L1638 248.3L1627.0 237.0L1613.6 246.2ZM1638 266L1669.3 311.1L1650.5 302.1L1638 313.4L1623.9 301.2L1606.7 311.1ZM165 116L183.2 160.7L172.3 151.8L165 163.0L156.8 150.9L146.8 160.7ZM165 185L192.3 231.3L175.9 222.0L165 233.6L152.7 221.0L137.7 231.3ZM165 253L200.0 303.8L179.0 293.7L165 306.4L149.2 292.7L130.0 303.8ZM274 114L292.1 158.6L281.3 149.7L274 160.8L265.8 148.8L255.9 158.6ZM274 182L301.2 228.9L284.9 219.6L274 231.2L261.8 218.7L246.8 228.9ZM274 251L308.9 301.2L288.0 291.1L274 303.7L258.3 290.1L239.1 301.2ZM391 180L404.7 213.8L396.5 207.0L391 215.5L384.8 206.4L377.3 213.8ZM391 232L411.6 267.1L399.2 260.0L391 268.9L381.7 259.3L370.4 267.1ZM391 284L417.4 321.9L401.6 314.2L391 323.8L379.1 313.5L364.6 321.9ZM550 173L564.3 208.0L555.7 201.0L550 209.8L543.6 200.3L535.7 208.0ZM550 227L571.4 263.3L558.6 256.0L550 265.1L540.4 255.3L528.6 263.3ZM550 281L577.4 320.1L561.0 312.2L550 322.1L537.7 311.4L522.6 320.1ZM684 138L700.5 178.7L690.6 170.5L684 180.7L676.6 169.7L667.5 178.7ZM684 200L708.8 242.8L693.9 234.3L684 245.0L672.8 233.5L659.2 242.8ZM684 263L715.8 308.8L696.7 299.6L684 311.1L669.7 298.7L652.2 308.8ZM1012 94L1031.4 141.7L1019.8 132.2L1012 144.1L1003.3 131.2L992.6 141.7ZM1012 167L1041.1 217.0L1023.6 207.0L1012 219.5L998.9 206.0L982.9 217.0ZM1012 240L1049.3 294.3L1026.9 283.5L1012 297.0L995.2 282.5L974.7 294.3ZM1132 168L1146.6 204.0L1137.9 196.8L1132 205.8L1125.4 196.1L1117.4 204.0ZM1132 223L1154.0 260.7L1140.8 253.2L1132 262.6L1122.1 252.5L1110.0 260.7ZM1132 278L1160.2 319.1L1143.3 310.9L1132 321.1L1119.3 310.1L1103.8 319.1ZM1245 127L1262.6 170.3L1252.1 161.7L1245 172.5L1237.1 160.8L1227.4 170.3ZM1245 193L1271.4 238.7L1255.6 229.6L1245 240.9L1233.1 228.7L1218.6 238.7ZM1245 260L1278.9 308.9L1258.6 299.1L1245 311.4L1229.7 298.2L1211.1 308.9ZM1362 143L1378.6 183.8L1368.6 175.7L1362 185.9L1354.5 174.8L1345.4 183.8ZM1362 206L1386.9 248.2L1372.0 239.7L1362 250.4L1350.8 238.9L1337.1 248.2ZM1362 268L1393.9 314.4L1374.8 305.2L1362 316.7L1347.6 304.3L1330.1 314.4ZM1496 141L1512.9 182.4L1502.7 174.2L1496 184.5L1488.4 173.3L1479.1 182.4ZM1496 205L1521.3 247.8L1506.1 239.2L1496 250.0L1484.6 238.3L1470.7 247.8ZM1496 268L1528.4 315.1L1509.0 305.7L1496 317.4L1481.4 304.7L1463.6 315.1ZM-104 141L-87.1 182.4L-97.3 174.2L-104 184.5L-111.6 173.3L-120.9 182.4ZM-104 205L-78.7 247.8L-93.9 239.2L-104 250.0L-115.4 238.3L-129.3 247.8ZM-104 268L-71.6 315.1L-91.0 305.7L-104 317.4L-118.6 304.7L-136.4 315.1ZM1567 139L1583.3 179.0L1573.5 171.0L1567 181.0L1559.7 170.2L1550.7 179.0ZM1567 200L1591.4 242.2L1576.8 233.9L1567 244.3L1556.0 233.0L1542.6 242.2ZM1567 262L1598.3 307.1L1579.5 298.1L1567 309.4L1552.9 297.2L1535.7 307.1ZM-33 139L-16.7 179.0L-26.5 171.0L-33 181.0L-40.3 170.2L-49.3 179.0ZM-33 200L-8.6 242.2L-23.2 233.9L-33 244.3L-44.0 233.0L-57.4 242.2ZM-33 262L-1.7 307.1L-20.5 298.1L-33 309.4L-47.1 297.2L-64.3 307.1Z'/%3E%3Ccircle cx='60' cy='266' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='60' cy='266' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='33' cy='206' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='33' cy='206' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='20' cy='240' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='20' cy='240' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='64' cy='257' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='64' cy='257' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='51' cy='200' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='51' cy='200' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='61' cy='275' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='61' cy='275' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='55' cy='201' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='55' cy='201' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='155' cy='292' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='155' cy='292' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='135' cy='346' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='135' cy='346' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='153' cy='234' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='153' cy='234' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='184' cy='338' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='184' cy='338' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='227' cy='361' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='227' cy='361' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='155' cy='316' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='155' cy='316' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='131' cy='360' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='131' cy='360' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='234' cy='252' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='234' cy='252' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='230' cy='334' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='230' cy='334' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='278' cy='344' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='278' cy='344' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='219' cy='365' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='219' cy='365' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='254' cy='194' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='254' cy='194' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='282' cy='363' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='282' cy='363' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='290' cy='181' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='290' cy='181' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='391' cy='245' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='391' cy='245' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='393' cy='316' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='393' cy='316' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='399' cy='263' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='399' cy='263' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='383' cy='295' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='383' cy='295' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='373' cy='276' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='373' cy='276' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='388' cy='251' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='388' cy='251' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='410' cy='267' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='410' cy='267' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='564' cy='267' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='564' cy='267' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='546' cy='366' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='546' cy='366' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='573' cy='252' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='573' cy='252' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='591' cy='312' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='591' cy='312' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='518' cy='329' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='518' cy='329' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='511' cy='368' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='511' cy='368' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='523' cy='336' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='523' cy='336' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='711' cy='317' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='711' cy='317' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='653' cy='357' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='653' cy='357' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='691' cy='367' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='691' cy='367' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='692' cy='235' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='692' cy='235' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='666' cy='364' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='666' cy='364' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='736' cy='339' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='736' cy='339' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='656' cy='252' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='656' cy='252' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='1003' cy='258' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1003' cy='258' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1013' cy='179' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1013' cy='179' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1017' cy='294' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1017' cy='294' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='996' cy='283' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='996' cy='283' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1053' cy='355' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1053' cy='355' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1050' cy='233' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1050' cy='233' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1024' cy='268' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1024' cy='268' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1153' cy='262' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1153' cy='262' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1092' cy='354' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1092' cy='354' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1083' cy='362' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='1083' cy='362' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='1102' cy='366' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='1102' cy='366' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='1165' cy='372' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1165' cy='372' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1159' cy='365' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1159' cy='365' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1145' cy='371' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1145' cy='371' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1299' cy='314' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1299' cy='314' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1201' cy='374' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1201' cy='374' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1217' cy='302' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1217' cy='302' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1316' cy='374' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1316' cy='374' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1233' cy='276' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1233' cy='276' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1266' cy='276' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1266' cy='276' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1194' cy='379' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1194' cy='379' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1362' cy='300' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1362' cy='300' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1400' cy='333' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1400' cy='333' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1330' cy='303' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1330' cy='303' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1408' cy='308' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='1408' cy='308' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='1324' cy='312' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1324' cy='312' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1347' cy='260' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1347' cy='260' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1323' cy='316' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='1323' cy='316' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='1472' cy='285' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1472' cy='285' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1496' cy='277' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1496' cy='277' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1498' cy='331' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1498' cy='331' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1474' cy='215' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1474' cy='215' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1530' cy='332' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1530' cy='332' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1483' cy='294' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1483' cy='294' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1529' cy='272' r='7' fill='%23ff6f5e' fill-opacity='.22'/%3E%3Ccircle cx='1529' cy='272' r='2.6' fill='%23ff6f5e'/%3E%3Ccircle cx='1601' cy='346' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1601' cy='346' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1' cy='346' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1' cy='346' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1559' cy='217' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1559' cy='217' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1533' cy='352' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='1533' cy='352' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='1614' cy='365' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='1614' cy='365' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='14' cy='365' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='14' cy='365' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='1599' cy='353' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1599' cy='353' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='-1' cy='353' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='-1' cy='353' r='2.6' fill='%23ffcf7a'/%3E%3Ccircle cx='1613' cy='304' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='1613' cy='304' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='13' cy='304' r='7' fill='%238fe0b0' fill-opacity='.22'/%3E%3Ccircle cx='13' cy='304' r='2.6' fill='%238fe0b0'/%3E%3Ccircle cx='1565' cy='270' r='7' fill='%23ffcf7a' fill-opacity='.22'/%3E%3Ccircle cx='1565' cy='270' r='2.6' fill='%23ffcf7a'/%3E%3Cpath fill='%236a5850' d='M0 400Q300 378 640 394T1240 386T1600 400V430H0Z'/%3E%3C/svg%3E\") center bottom / 1280px 344px repeat-x fixed, radial-gradient(900px 620px at 8% -8%, var(--ng-amb-1, rgba(var(--rgb-ng-acc-2), 0.24)), transparent 62%), radial-gradient(760px 540px at 96% 4%, var(--ng-amb-2, rgba(var(--rgb-ng-acc), 0.13)), transparent 62%), radial-gradient(1300px 620px at 50% 118%, var(--ng-amb-3, rgba(var(--rgb-ng-acc-3), 0.30)), transparent 68%), radial-gradient(1300px 900px at 88% -25%, var(--ng-amb-4, rgba(0, 0, 0, 0)), transparent 65%), url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' fill='%23f7c266'%3E%3Cpath transform='translate(34 46) scale(6)' fill-opacity='0.12' d='M0-1Q.12-.12 1 0Q.12 .12 0 1Q-.12 .12-1 0Q-.12-.12 0-1Z'/%3E%3Cpath transform='translate(128 22) scale(3)' fill-opacity='0.09' d='M0-1Q.12-.12 1 0Q.12 .12 0 1Q-.12 .12-1 0Q-.12-.12 0-1Z'/%3E%3Cpath transform='translate(186 92) scale(5)' fill-opacity='0.1' d='M0-1Q.12-.12 1 0Q.12 .12 0 1Q-.12 .12-1 0Q-.12-.12 0-1Z'/%3E%3Cpath transform='translate(82 118) scale(3)' fill-opacity='0.09' d='M0-1Q.12-.12 1 0Q.12 .12 0 1Q-.12 .12-1 0Q-.12-.12 0-1Z'/%3E%3Cpath transform='translate(150 172) scale(6)' fill-opacity='0.1' d='M0-1Q.12-.12 1 0Q.12 .12 0 1Q-.12 .12-1 0Q-.12-.12 0-1Z'/%3E%3Cpath transform='translate(36 186) scale(3)' fill-opacity='0.09' d='M0-1Q.12-.12 1 0Q.12 .12 0 1Q-.12 .12-1 0Q-.12-.12 0-1Z'/%3E%3C/svg%3E\") 0 0 / 220px 220px, var(--ng-bg) fixed",
+"app-header-background-color": "rgba(var(--rgb-ng-bg), 0.72)",
+"app-theme-color": "#1a0c0a",
+"ng-design-title": "Noël — Weihnachten",
+"ng-motion-auto": "snow",
+"ng-snowcap-mask": "linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%)",
+"ng-snowcap": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='18' viewBox='0 0 240 18'%3E%3Cpath fill='rgba(40, 15, 10, 0.45)' transform='translate(0 1.5)' d='M0 6.5L6 6.7L12 5.4L18 4.7L24 5.4L30 5.9L36 5.5L42 5.7L48 5.8L54 4.2L60 2.3L66 2.1L72 2.4L78 2.3L84 3.1L90 4.6L96 4.8L102 3.9L108 3.9L114 4.6L120 4.6L126 5.2L132 6.9L138 7.7L144 6.7L150 5.7L156 5.2L162 4.1L168 3.0L174 3.5L180 4.5L186 4.0L192 3.3L198 3.3L204 2.8L210 1.8L216 2.4L222 4.3L228 5.3L234 5.7L240 6.5L240 13.8L234 12.6L228 12.1L222 12.3L216 12.5L210 11.9L204 10.8L198 10.4L192 11.2L186 12.8L180 13.9L174 14.0L168 13.3L162 13.0L156 13.3L150 13.7L144 13.3L138 11.9L132 10.6L126 10.3L120 11.2L114 12.4L108 12.9L102 12.7L96 12.5L90 13.1L84 14.2L78 14.6L72 13.8L66 12.2L60 11.1L54 11.0L48 11.7L42 12.0L36 11.7L30 11.3L24 11.7L18 13.1L12 14.4L6 14.7L0 13.8Z'/%3E%3Cpath fill='%23fff8f0' d='M0 6.5L6 6.7L12 5.4L18 4.7L24 5.4L30 5.9L36 5.5L42 5.7L48 5.8L54 4.2L60 2.3L66 2.1L72 2.4L78 2.3L84 3.1L90 4.6L96 4.8L102 3.9L108 3.9L114 4.6L120 4.6L126 5.2L132 6.9L138 7.7L144 6.7L150 5.7L156 5.2L162 4.1L168 3.0L174 3.5L180 4.5L186 4.0L192 3.3L198 3.3L204 2.8L210 1.8L216 2.4L222 4.3L228 5.3L234 5.7L240 6.5L240 13.8L234 12.6L228 12.1L222 12.3L216 12.5L210 11.9L204 10.8L198 10.4L192 11.2L186 12.8L180 13.9L174 14.0L168 13.3L162 13.0L156 13.3L150 13.7L144 13.3L138 11.9L132 10.6L126 10.3L120 11.2L114 12.4L108 12.9L102 12.7L96 12.5L90 13.1L84 14.2L78 14.6L72 13.8L66 12.2L60 11.1L54 11.0L48 11.7L42 12.0L36 11.7L30 11.3L24 11.7L18 13.1L12 14.4L6 14.7L0 13.8Z'/%3E%3C/svg%3E\") 0 0 / 240px 18px repeat-x"
+},
+"weihnacht": {
+"primary-font-family": "'Lora', system-ui, sans-serif",
+"paper-font-common-base_-_font-family": "var(--primary-font-family)",
+"paper-font-body1_-_font-family": "var(--primary-font-family)",
+"mdc-typography-font-family": "var(--primary-font-family)",
+"ha-font-family-body": "var(--primary-font-family)",
+"ha-font-family-heading": "var(--primary-font-family)",
+"ha-font-family-code": "'DM Mono', ui-monospace, monospace",
+"code-font-family": "var(--ha-font-family-code)",
+"primary-background-color": "var(--ng-bg)",
+"secondary-background-color": "var(--ng-bg-elev)",
+"card-background-color": "var(--ng-bg-elev)",
+"mdc-theme-surface": "var(--ng-bg-elev)",
+"material-background-color": "var(--ng-bg-elev)",
+"clear-background-color": "var(--ng-glass)",
+"ha-card-background": "var(--ng-glass)",
+"ha-card-border-radius": "20px",
+"ha-card-border-width": "0px",
+"ha-card-backdrop-filter": "var(--ng-blur)",
+"ha-card-box-shadow": "inset 0 0 0 1px var(--ng-line), var(--ng-shadow)",
+"divider-color": "var(--ng-line)",
+"app-header-text-color": "var(--ng-txt)",
+"app-header-backdrop-filter": "var(--ng-blur)",
+"sidebar-background-color": "var(--ng-bg-elev)",
+"sidebar-icon-color": "var(--ng-txt-mute)",
+"sidebar-text-color": "var(--ng-txt-dim)",
+"sidebar-selected-icon-color": "var(--ng-acc)",
+"sidebar-selected-text-color": "var(--ng-acc)",
+"sidebar-selected-background-color": "var(--ng-acc-wash)",
+"primary-text-color": "var(--ng-txt)",
+"secondary-text-color": "var(--ng-txt-dim)",
+"disabled-text-color": "var(--ng-txt-mute)",
+"text-primary-color": "var(--ng-acc-ink)",
+"text-light-primary-color": "var(--ng-acc-ink)",
+"ha-color-text-secondary": "var(--ng-txt-dim)",
+"primary-color": "var(--ng-acc)",
+"accent-color": "var(--ng-acc)",
+"light-primary-color": "var(--ng-acc-2)",
+"dark-primary-color": "var(--ng-acc-2)",
+"ha-color-primary-05": "var(--ng-acc-ink)",
+"ha-color-primary-40": "var(--ng-acc)",
+"ha-color-primary-50": "var(--ng-acc-2)",
+"ha-color-primary-90": "var(--ng-acc-wash)",
+"ha-color-primary-95": "var(--ng-acc-wash)",
+"ha-color-fill-primary-quiet-resting": "var(--ng-acc-wash)",
+"ha-color-fill-primary-quiet-hover": "var(--ng-acc-wash)",
+"state-icon-color": "var(--ng-txt-dim)",
+"state-icon-active-color": "var(--ng-acc)",
+"state-active-color": "var(--ng-acc)",
+"state-inactive-color": "var(--ng-txt-mute)",
+"state-icon-unavailable-color": "var(--ng-txt-mute)",
+"state-light-active-color": "var(--ng-acc)",
+"state-switch-active-color": "var(--ng-acc)",
+"state-climate-heat-color": "var(--ng-warn)",
+"state-climate-cool-color": "var(--ng-info)",
+"state-climate-auto-color": "var(--ng-acc)",
+"state-climate-dry-color": "var(--ng-info)",
+"state-climate-fan_only-color": "var(--ng-info)",
+"state-humidifier-on-color": "var(--ng-info)",
+"paper-item-icon-active-color": "var(--ng-acc)",
+"green-color": "var(--ng-acc)",
+"light-green-color": "var(--ng-acc)",
+"teal-color": "var(--ng-acc-2)",
+"success-color": "var(--ng-ok)",
+"warning-color": "var(--ng-warn)",
+"error-color": "var(--ng-danger)",
+"info-color": "var(--ng-info)",
+"yellow-color": "var(--ng-warn)",
+"amber-color": "var(--ng-warn)",
+"orange-color": "var(--ng-warn)",
+"red-color": "var(--ng-danger)",
+"blue-color": "var(--ng-info)",
+"light-blue-color": "var(--ng-info)",
+"cyan-color": "var(--ng-info)",
+"grey-color": "var(--ng-txt-mute)",
+"rgb-primary-color": "var(--rgb-ng-acc)",
+"rgb-accent-color": "var(--rgb-ng-acc)",
+"rgb-green": "var(--rgb-ng-acc)",
+"rgb-light-green": "var(--rgb-ng-acc)",
+"rgb-teal": "var(--rgb-ng-acc)",
+"rgb-amber": "var(--rgb-ng-warn)",
+"rgb-yellow": "var(--rgb-ng-warn)",
+"rgb-orange": "var(--rgb-ng-warn)",
+"rgb-red": "var(--rgb-ng-danger)",
+"rgb-blue": "var(--rgb-ng-info)",
+"rgb-light-blue": "var(--rgb-ng-info)",
+"rgb-cyan": "var(--rgb-ng-info)",
+"rgb-grey": "var(--rgb-ng-mute)",
+"rgb-disabled": "var(--rgb-ng-mute)",
+"energy-grid-consumption-color": "var(--ng-info)",
+"energy-grid-return-color": "var(--ng-acc)",
+"energy-solar-color": "var(--ng-warn)",
+"energy-non-fossil-color": "var(--ng-acc-2)",
+"switch-checked-color": "var(--ng-acc)",
+"switch-checked-button-color": "var(--ng-acc)",
+"switch-checked-track-color": "var(--ng-acc-2)",
+"switch-unchecked-button-color": "var(--ng-txt-dim)",
+"switch-unchecked-track-color": "var(--ng-glass-hi)",
+"slider-color": "var(--ng-acc)",
+"slider-track-color": "var(--ng-glass-hi)",
+"ha-dialog-surface-background": "var(--ng-bg-elev)",
+"ha-dialog-surface-backdrop-filter": "var(--ng-blur)",
+"dialog-box-shadow": "inset 0 0 0 1px var(--ng-line-2), var(--ng-shadow-lg)",
+"ha-dialog-border-radius": "28px",
+"more-info-header-background": "var(--ng-bg-elev)",
+"markdown-code-background-color": "var(--ng-glass-2)",
+"code-editor-background-color": "var(--ng-bg-elev)",
+"input-fill-color": "var(--ng-glass)",
+"input-ink-color": "var(--ng-txt)",
+"input-label-ink-color": "var(--ng-txt-dim)",
+"input-idle-line-color": "var(--ng-line-2)",
+"input-hover-line-color": "var(--ng-acc-line)",
+"ha-color-form-background": "var(--ng-glass)",
+"ha-color-form-background-hover": "var(--ng-glass-2)",
+"wa-border-width-s": "0px",
+"wa-border-radius-m": "20px",
+"mush-rgb-state-light": "var(--rgb-ng-acc)",
+"mush-rgb-state-switch": "var(--rgb-ng-acc)",
+"mush-rgb-state-fan": "var(--rgb-ng-acc)",
+"mush-rgb-state-climate-heat": "var(--rgb-ng-warn)",
+"mush-rgb-state-climate-cool": "var(--rgb-ng-info)",
+"mush-rgb-state-climate-auto": "var(--rgb-ng-acc)",
+"mush-rgb-state-climate-dry": "var(--rgb-ng-info)",
+"mush-rgb-state-climate-fan-only": "var(--rgb-ng-info)",
+"mush-rgb-state-climate-heat-cool": "var(--rgb-ng-acc)",
+"mush-rgb-state-climate-off": "var(--rgb-ng-mute)",
+"mush-rgb-state-humidifier": "var(--rgb-ng-info)",
+"mush-rgb-state-cover-open": "var(--rgb-ng-acc)",
+"mush-rgb-disabled": "var(--rgb-ng-mute)",
+"mush-rgb-state-entity": "var(--rgb-ng-mute)",
+"mush-card-primary-font-weight": "600",
+"mush-card-secondary-font-weight": "500",
+"mush-control-border-radius": "14px",
+"mush-chip-border-radius": "999px",
+"mush-chip-background": "var(--ng-glass)",
+"mush-chip-box-shadow": "inset 0 0 0 1px var(--ng-line)",
+"mush-chip-height": "44px",
+"mush-control-height": "44px",
+"mush-icon-border-radius": "14px",
+"mush-badge-border-radius": "999px",
+"bubble-main-background-color": "var(--ng-glass)",
+"bubble-secondary-background-color": "var(--ng-glass-2)",
+"bubble-accent-color": "var(--ng-acc)",
+"bubble-button-accent-color": "var(--ng-acc)",
+"bubble-icon-background-color": "var(--ng-glass-2)",
+"bubble-border-radius": "28px",
+"bubble-button-border-radius": "999px",
+"bubble-box-shadow": "inset 0 0 0 1px var(--ng-line)",
+"bubble-border": "none",
+"bubble-pop-up-background-color": "var(--ng-bg-elev)",
+"bubble-backdrop-background-color": "rgba(var(--rgb-ng-bg), 0.6)",
+"bubble-horizontal-buttons-stack-background-color": "var(--ng-bg)",
+"card-mod-theme": "weihnacht",
+"card-mod-card": "ha-card {\n  position: relative;\n  transition: transform .14s cubic-bezier(.22,1,.36,1);\n}\nha-card:active:not(:has(mushroom-slider:active)) { transform: scale(.98); }\n/* Durchsichtige Karten (Überschriften, Abstandhalter/Text-Markdown) ohne Glas-Unschärfe — sonst verwischt ein unsichtbarer\n   Streifen das Hintergrund-Gitter (sichtbar auf großen Bildschirmen unter der Navigation) */\n:host(.type-heading) ha-card, ha-card.text-only { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\n/* Navigation unten (Glas-Dock) steht NICHT hier: card-mod bringt das Theme erst einen Moment nach dem ersten Zeichnen,\n   dann blitzte die alte Bubble-Optik auf. Quelle: NAV_DOCK in nullglow-strategy.js (Vorlage), Kiosk per tools/build-nav-dock.py. */\nha-card::before {\n  content: \"\"; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;\n  opacity: 0; transition: opacity .26s cubic-bezier(.22,1,.36,1);\n  background: radial-gradient(130% 150% at 0% 0%, rgba(var(--ng-glow-rgb, 0, 0, 0), .14), transparent 62%);\n  box-shadow: inset 0 0 0 1px rgba(var(--ng-glow-rgb, 0, 0, 0), .34), 0 0 26px -10px rgba(var(--ng-glow-rgb, 0, 0, 0), .65);\n}\n/* Lebendige Geräte-Symbole: Effekte als ::after am Symbol-Rahmen (ha-tile-icon = Mushroom-Template, mushroom-shape-icon =\n   Mushroom-Climate); Klimaanlagen setzen zusätzlich --ng-fan (Umdrehungsdauer je Lüfterstufe) -> Lüfter-Symbol dreht */\nha-tile-icon, mushroom-shape-icon { position: relative; }\nha-tile-icon::after, mushroom-shape-icon::after {\n  content: \"\"; position: absolute; pointer-events: none; opacity: 0; transition: opacity .4s ease;\n}\n@container style(--ng-state: on) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { filter: drop-shadow(0 0 6px rgba(var(--rgb-ng-acc), calc(.75 * var(--ng-glow-k, 1)))); }\n}\n/* Waschmaschine läuft: Lichtkomet kreist um die Trommel, Symbol zittert fein (Schleudern) */\n@container style(--ng-state: wash) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-shake .16s linear infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 13px; height: 13px; left: 50%; top: 50%; margin: -5px 0 0 -6.5px; border-radius: 50%;\n    background: conic-gradient(from 0deg, transparent 0 55%, rgba(var(--rgb-ng-acc), .15) 70%, rgba(var(--rgb-ng-acc), 1) 97%, transparent 100%);\n    -webkit-mask: radial-gradient(circle, transparent 0 4.2px, #000 4.6px 6.5px, transparent 6.8px);\n            mask: radial-gradient(circle, transparent 0 4.2px, #000 4.6px 6.5px, transparent 6.8px);\n    filter: drop-shadow(0 0 3px rgba(var(--rgb-ng-acc), calc(.9 * var(--ng-glow-k, 1))));\n    animation: ng-spin .7s linear infinite;\n  }\n}\n@container style(--ng-state: charge) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-pulse 1.6s ease-in-out infinite; }\n}\n/* Heizt: Wärmewellen steigen über dem Symbol auf (♨) */\n@container style(--ng-state: heat) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-warn); opacity: 1; }\n  ha-state-icon { animation: ng-glow-warm 2.4s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 20px; height: 16px; left: 50%; bottom: 84%; margin-left: -10px;\n    background: rgba(var(--rgb-ng-warn), .95);\n    -webkit-mask: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><g fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round'><path d='M4 16c-2-2 2-4 0-6s2-4 0-6s1-3 0-4'/><path d='M10 12c-2-2 2-4 0-6s2-4 0-6'/><path d='M16 16c-2-2 2-4 0-6s2-4 0-6s1-3 0-4'/></g></svg>\") 0 0 / 20px 16px repeat-y, linear-gradient(to top, #000 25%, transparent 100%);\n    -webkit-mask-composite: source-in; mask-composite: intersect;\n    filter: drop-shadow(0 0 2.5px rgba(var(--rgb-ng-warn), calc(.8 * var(--ng-glow-k, 1))));\n    animation: ng-rise 1.7s linear infinite;\n  }\n}\n/* Kühlt: Schneeflocken schweben aus dem Gerät nach unten */\n@container style(--ng-state: cool) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-info); opacity: 1; }\n  ha-state-icon { animation: ng-glow-cool 2.8s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 22px; height: 18px; left: 50%; top: 86%; margin-left: -11px;\n    background: rgba(var(--rgb-ng-info), .95);\n    -webkit-mask: url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 20'><g stroke='black' stroke-width='1.1' stroke-linecap='round'><path d='M5 1v5M2.8 2.2l4.4 2.6M2.8 4.8l4.4-2.6'/><path d='M16 7v5M13.8 8.2l4.4 2.6M13.8 10.8l4.4-2.6'/><path d='M9 13.5v4M7.3 14.5l3.4 2M7.3 16.5l3.4-2'/></g></svg>\") 0 0 / 22px 20px repeat-y, linear-gradient(to bottom, #000 25%, transparent 100%);\n    -webkit-mask-composite: source-in; mask-composite: intersect;\n    filter: drop-shadow(0 0 2.5px rgba(var(--rgb-ng-info), calc(.8 * var(--ng-glow-k, 1))));\n    animation: ng-fall 2.6s linear infinite, ng-sway 3s ease-in-out infinite;\n  }\n}\n/* Lüfter dreht nur bei echten Lüfterstufen der Klimaanlagen (tools/build-klima-view.py setzt 2.4s … .45s, sonst 0s).\n   Früher lief ng-spin mit 0 s Dauer endlos auch bei Heizungen -> Stil-Neuberechnung bei jedem Bild. */\n@container (style(--ng-state: heat) or style(--ng-state: cool)) and (style(--ng-fan: 2.4s) or style(--ng-fan: 1.8s) or style(--ng-fan: 1.1s) or style(--ng-fan: .7s) or style(--ng-fan: .45s)) {\n  ha-state-icon { animation: ng-spin var(--ng-fan) linear infinite, var(--ng-glow-anim) !important; }\n}\n@container style(--ng-state: heat) { ha-state-icon { --ng-glow-anim: ng-glow-warm 2.4s ease-in-out infinite; } }\n@container style(--ng-state: cool) { ha-state-icon { --ng-glow-anim: ng-glow-cool 2.8s ease-in-out infinite; } }\n@container style(--ng-state: warn) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-warn); opacity: 1; }\n}\n@container style(--ng-state: crit) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-danger); opacity: 1; }\n  ha-state-icon { animation: ng-alarm 1.4s ease-in-out infinite; }\n}\n@container style(--ng-state: idle) {\n  mushroom-card { opacity: .45; }\n}\n/* Sauger reinigt: Roboter schlingert auf seiner Bahn, ein Lichtkomet zieht die Reinigungsrunde um ihn */\n@container style(--ng-state: clean) {\n  ha-card::before { --ng-glow-rgb: var(--rgb-ng-acc); opacity: 1; }\n  ha-state-icon { animation: ng-drive 3.2s ease-in-out infinite; }\n  ha-tile-icon::after, mushroom-shape-icon::after {\n    opacity: 1; width: 32px; height: 32px; left: 50%; top: 50%; margin: -16px 0 0 -16px; border-radius: 50%;\n    background: conic-gradient(from 0deg, transparent 0 58%, rgba(var(--rgb-ng-acc), .12) 74%, rgba(var(--rgb-ng-acc), .95) 98%, transparent 100%);\n    -webkit-mask: radial-gradient(circle, transparent 0 14.3px, #000 14.8px 16px, transparent 16.3px);\n            mask: radial-gradient(circle, transparent 0 14.3px, #000 14.8px 16px, transparent 16.3px);\n    filter: drop-shadow(0 0 3px rgba(var(--rgb-ng-acc), calc(.9 * var(--ng-glow-k, 1))));\n    animation: ng-spin 2.6s linear infinite;\n  }\n}\n@container style(--ng-state: move) {\n  ha-state-icon { animation: ng-slide 1.1s ease-in-out infinite; }\n}\n@keyframes ng-pulse {\n  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(var(--rgb-ng-acc), calc(0 * var(--ng-glow-k, 1)))); }\n  50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(var(--rgb-ng-acc), calc(.9 * var(--ng-glow-k, 1)))); }\n}\n@keyframes ng-alarm {\n  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(var(--rgb-ng-danger), calc(0 * var(--ng-glow-k, 1)))); }\n  50% { transform: scale(1.12); filter: drop-shadow(0 0 8px rgba(var(--rgb-ng-danger), calc(.95 * var(--ng-glow-k, 1)))); }\n}\n@keyframes ng-slide { 0%, 100% { transform: translateY(1.5px); } 50% { transform: translateY(-1.5px); } }\n@keyframes ng-spin { to { transform: rotate(360deg); } }\n@keyframes ng-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(.4px, -.3px); } 50% { transform: translate(-.3px, .3px); } 75% { transform: translate(.3px, .4px); } }\n@keyframes ng-rise { from { -webkit-mask-position: 0 0, 0 0; } to { -webkit-mask-position: 0 -16px, 0 0; } }\n@keyframes ng-sway { 0%, 100% { transform: translateX(-1px); } 50% { transform: translateX(1.2px); } }\n@keyframes ng-fall { from { -webkit-mask-position: 0 0, 0 0; } to { -webkit-mask-position: 0 20px, 0 0; } }\n@keyframes ng-glow-warm { 0%, 100% { filter: drop-shadow(0 0 2px rgba(var(--rgb-ng-warn), calc(.5 * var(--ng-glow-k, 1)))); } 50% { filter: drop-shadow(0 0 7px rgba(var(--rgb-ng-warn), calc(.95 * var(--ng-glow-k, 1)))); } }\n@keyframes ng-glow-cool { 0%, 100% { filter: drop-shadow(0 0 2px rgba(var(--rgb-ng-info), calc(.45 * var(--ng-glow-k, 1)))); } 50% { filter: drop-shadow(0 0 7px rgba(var(--rgb-ng-info), calc(.9 * var(--ng-glow-k, 1)))); } }\n@keyframes ng-drive {\n  0%, 100% { transform: translate(-2px, 0) rotate(-10deg); } 25% { transform: translate(0, -1.5px) rotate(0); }\n  50% { transform: translate(2px, 0) rotate(10deg); } 75% { transform: translate(0, 1.5px) rotate(0); }\n}\n@media (prefers-reduced-motion: reduce) {\n  ha-state-icon, ha-tile-icon::after, mushroom-shape-icon::after { animation: none !important; }\n}\n/* Stromsparen (Uhr-Pop-up der Vorlage): --ng-eco: 1 an <html> erbt bis hierher -> Symbole stehen still, Farben bleiben */\n@container style(--ng-eco: 1) {\n  ha-state-icon, ha-tile-icon::after, mushroom-shape-icon::after { animation: none !important; }\n}\n/* Schneehäubchen auf jeder Kachel: liegt auf der Oberkante, nimmt keine Klicks */\nha-card::after {\n  content: \"\"; position: absolute; left: 8px; right: 8px; top: -6px; height: 18px; z-index: 4; pointer-events: none;\n  background: var(--ng-snowcap, none); -webkit-mask: var(--ng-snowcap-mask, none); mask: var(--ng-snowcap-mask, none);\n}\n/* nicht auf Überschriften und rahmenlosen Karten; die Leiste unten hat ihr eigenes Häubchen (NAV_DOCK) und keine Fläche */\n:host(hui-heading-card) ha-card::after, :host(.type-heading) ha-card::after, ha-card.text-only::after,\nha-card.horizontal-buttons-stack-card::after { display: none; }\nha-card.horizontal-buttons-stack-card { background: none !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }\n/* Karten mit overflow: hidden würden das Häubchen abschneiden: dort am Host statt an der Karte, der Inhalt bleibt gekappt */\n:host(nullglow-flow-card), :host(nullglow-toyota-card), :host(nullglow-printer-card), :host(nullglow-car-card), :host(nullglow-vehicle-card), :host(nullglow-media-card), :host(nullglow-mower-map-card), :host(nullglow-mower-stats-card), :host(nullglow-floorplan-card), :host(nullglow-radar-card), :host(nullglow-door-card), :host(calendar-card-pro), :host(hui-calendar-card), :host(hui-picture-entity-card), :host(hui-picture-card), :host(hui-picture-glance-card), :host(hui-map-card), :host(hui-iframe-card) { position: relative; }\n:host(nullglow-flow-card) ha-card::after, :host(nullglow-toyota-card) ha-card::after, :host(nullglow-printer-card) ha-card::after, :host(nullglow-car-card) ha-card::after, :host(nullglow-vehicle-card) ha-card::after, :host(nullglow-media-card) ha-card::after, :host(nullglow-mower-map-card) ha-card::after, :host(nullglow-mower-stats-card) ha-card::after, :host(nullglow-floorplan-card) ha-card::after, :host(nullglow-radar-card) ha-card::after, :host(nullglow-door-card) ha-card::after, :host(calendar-card-pro) ha-card::after, :host(hui-calendar-card) ha-card::after, :host(hui-picture-entity-card) ha-card::after, :host(hui-picture-card) ha-card::after, :host(hui-picture-glance-card) ha-card::after, :host(hui-map-card) ha-card::after, :host(hui-iframe-card) ha-card::after { display: none; }\n:host(nullglow-flow-card)::after, :host(nullglow-toyota-card)::after, :host(nullglow-printer-card)::after, :host(nullglow-car-card)::after, :host(nullglow-vehicle-card)::after, :host(nullglow-media-card)::after, :host(nullglow-mower-map-card)::after, :host(nullglow-mower-stats-card)::after, :host(nullglow-floorplan-card)::after, :host(nullglow-radar-card)::after, :host(nullglow-door-card)::after, :host(calendar-card-pro)::after, :host(hui-calendar-card)::after, :host(hui-picture-entity-card)::after, :host(hui-picture-card)::after, :host(hui-picture-glance-card)::after, :host(hui-map-card)::after, :host(hui-iframe-card)::after {\n  content: \"\"; position: absolute; left: 8px; right: 8px; top: -6px; height: 18px; z-index: 4; pointer-events: none;\n  background: var(--ng-snowcap, none); -webkit-mask: var(--ng-snowcap-mask, none); mask: var(--ng-snowcap-mask, none);\n}\n",
+"ng-bg": "#0c2119",
+"ng-bg-elev": "#123026",
+"ng-glass": "rgba(255, 240, 220, calc(0.045 * var(--ng-glass-k, 1)))",
+"ng-glass-2": "rgba(255, 240, 220, calc(0.075 * var(--ng-glass-k, 1)))",
+"ng-glass-hi": "rgba(255, 240, 220, calc(0.13 * var(--ng-glass-k, 1)))",
+"ng-line": "rgba(255, 240, 220, 0.10)",
+"ng-line-2": "rgba(255, 240, 220, 0.18)",
+"ng-txt": "#fff7ee",
+"ng-txt-dim": "#c9d6c6",
+"ng-txt-mute": "#93a998",
+"ng-acc": "#e8343a",
+"ng-acc-2": "#f4c24f",
+"ng-acc-3": "#b81d27",
+"ng-acc-ink": "#fff7ee",
+"ng-acc-wash": "rgba(232, 52, 58, 0.12)",
+"ng-acc-line": "rgba(232, 52, 58, 0.34)",
+"ng-ok": "#57d98a",
+"ng-warn": "#ffb347",
+"ng-danger": "#ff7ab0",
+"ng-info": "#7fe0c0",
+"ng-shadow": "0 8px 30px -12px rgba(0, 0, 0, 0.92)",
+"ng-shadow-lg": "0 26px 64px -20px rgba(0, 0, 0, 0.96)",
+"ng-glow-sm": "0 0 18px -2px rgba(232, 52, 58, 0.34)",
+"ng-blur": "blur(18px) saturate(150%)",
+"rgb-ng-acc": "232, 52, 58",
+"rgb-ng-acc-2": "244, 194, 79",
+"rgb-ng-acc-3": "184, 29, 39",
+"rgb-ng-warn": "255, 179, 71",
+"rgb-ng-danger": "255, 122, 176",
+"rgb-ng-info": "127, 224, 192",
+"rgb-ng-mute": "201, 214, 198",
+"rgb-ng-bg": "12, 33, 25",
+"rgb-ng-txt": "255, 247, 238",
+"nf-acc": "var(--ng-acc)",
+"nf-acc-ink": "var(--ng-acc-ink)",
+"nf-txt": "var(--ng-txt)",
+"nf-txt-dim": "var(--ng-txt-dim)",
+"nf-txt-mute": "var(--ng-txt-mute)",
+"nf-warn": "var(--ng-warn)",
+"nf-background": "var(--ng-glass)",
+"ng-glow-k": "1",
+"ng-is-light": "0",
+"rgb-ng-shade": "0, 0, 0",
+"lovelace-background": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='96' viewBox='0 0 640 96'%3E%3Cpath fill='none' stroke-linecap='round' stroke-width='2.2' stroke='%230f4a31' d='M0 9l-4 -8M0 5l1 -3M0 5l-11 -1M3 7l-2 9M3 10l3 12M3 12l11 -11M6 12l-8 3M6 8l1 -10M9 11l4 -1M12 17l6 -5M12 12l-2 7M12 15l-11 5M15 16l9 -4M18 18l4 13M18 14l-3 5M21 16l8 10M24 22l-3 10M24 18l-8 -6M24 16l2 -5M27 21l0 3M30 20l-11 -10M30 19l-4 -11M33 21l3 -8M36 21l-1 0M36 26l-4 -5M36 24l-11 12M39 24l9 5M42 25l-7 1M45 26l11 -3M51 32l-4 8M51 31l-2 12M54 28l-4 2M57 33l-2 10M57 30l-6 -5M60 32l-2 11M63 33l1 -12M63 31l-12 8M63 32l5 2M66 32l1 8M66 36l-6 -5M66 37l1 7M69 38l5 10M72 38l1 12M72 33l-9 -1M75 38l-8 6M78 38l-8 -1M78 39l-7 -4M78 35l1 -1M81 36l7 12M81 37l-11 7M84 41l-2 11M84 40l-10 -11M90 41l-6 -9M90 38l-9 -8M90 42l-5 -4M93 40l0 -8M93 42l-6 -12M93 44l-7 -0M99 40l-2 -3M99 41l-10 7M102 42l-5 -6M105 40l-5 -3M105 41l-1 1M105 41l-12 -5M108 43l-11 -11M108 43l5 10M111 42l6 8M114 42l-6 -11M117 45l3 5M117 45l7 7M120 47l4 -10M120 47l-10 -5M120 45l6 12M123 44l3 -10M123 46l6 -4M126 46l4 -5M126 49l-1 -9M129 44l11 11M129 46l8 12M129 45l-7 12M132 49l-9 1M132 47l-6 10M135 47l-12 0M135 49l-12 7M138 50l10 6M138 50l-3 -2M138 46l-3 -1M141 48l-6 -5M144 50l3 11M144 49l5 -11M144 46l6 4M147 48l10 -9M147 51l-5 6M147 48l4 -4M150 46l-1 -9M153 46l-4 -10M153 49l2 10M153 47l-2 1M156 51l-11 -5M156 50l0 4M156 47l-5 -6M159 50l11 9M159 50l-11 6M162 51l8 9M165 49l-6 11M168 48l-9 -10M168 49l-3 -6M171 46l9 -0M171 47l11 6M171 47l-0 5M174 46l4 11M174 49l-4 -1M174 48l7 6M177 49l11 -4M177 46l-0 -7M180 45l4 12M180 45l-7 12M183 50l6 13M183 49l-8 11M183 46l4 -3M186 46l-8 -12M186 50l11 -9M186 49l-3 9M189 49l-7 -3M189 48l-2 8M192 49l-11 -10M192 45l6 10M195 49l10 4M198 45l-3 -6M198 46l8 7M201 47l-4 -3M201 44l-7 7M204 44l9 13M204 46l-10 0M207 46l6 9M207 45l8 -5M207 43l6 -7M210 45l-8 10M210 44l-2 13M210 47l7 4M213 41l-11 -5M213 46l11 3M216 41l-7 -3M219 43l-6 3M219 44l-12 -4M219 44l-5 -7M222 41l-10 -9M225 41l-5 2M225 41l9 13M228 38l-1 -8M231 38l-3 1M231 38l1 11M231 38l7 12M234 39l11 12M234 41l8 -8M237 41l-2 9M237 39l-7 -2M240 40l-11 2M240 39l8 -9M240 38l3 -4M243 37l-2 4M243 37l-11 3M243 37l6 7M246 34l-1 -9M246 37l-10 -1M249 36l0 -11M252 37l-0 12M252 32l7 11M252 37l6 -8M255 34l-7 -5M258 34l-9 1M261 33l-9 13M261 35l7 -5M261 32l-3 7M264 33l6 -11M264 28l-4 -12M267 31l-9 -6M267 28l-12 -3M270 30l-7 3M273 27l9 8M273 28l-12 4M276 24l-6 11M276 30l-12 2M279 25l8 -8M282 26l-12 9M282 23l6 -1M285 25l5 9M285 25l1 -1M285 26l-6 4M288 21l9 -12M288 24l6 12M291 22l-2 6M294 17l-4 -8M300 15l10 12M300 18l3 9M303 18l-10 -10M303 13l-4 -1M303 15l-5 6M306 15l-4 6M309 15l9 -10M312 11l-6 12M315 10l3 -3M315 13l9 -10M318 11l-7 -5M318 7l-3 10M321 7l4 7M321 6l7 2M324 8l9 -6M324 8l5 9M324 10l-6 -4M327 9l-10 12M327 13l12 8M330 10l-7 4M330 14l5 1M339 16l3 -6M339 19l-8 4M342 15l-0 12M342 21l-8 8M345 21l0 4M348 19l-3 -11M351 22l7 4M354 23l8 8M354 25l1 -9M357 24l8 -5M357 23l-5 -6M360 26l-2 4M363 24l4 -6M363 26l-6 7M369 27l1 -5M369 29l-0 -11M372 30l-12 9M372 29l4 9M375 31l-4 13M378 31l-4 10M378 30l1 7M381 35l-2 2M381 33l8 -2M384 32l-4 -4M384 31l9 2M387 36l3 4M390 36l4 -7M390 33l6 -9M390 36l7 11M393 37l8 8M393 35l-5 -1M393 34l3 11M396 39l-11 -9M396 34l10 -1M396 40l2 11M399 39l-2 -9M402 40l-9 -12M402 40l5 9M405 41l-6 12M405 41l-12 4M408 39l-0 -11M411 41l-3 4M414 42l11 9M417 44l2 10M417 41l-12 -5M420 43l7 10M423 46l-7 7M423 43l3 5M423 45l-6 7M426 45l-10 8M426 46l2 10M426 42l-1 3M429 43l-8 6M429 42l-2 1M432 45l7 -8M432 45l9 0M435 43l8 12M435 42l-7 -7M438 46l10 -10M438 44l-9 12M441 47l3 12M441 44l-7 -11M444 48l10 11M447 45l-9 -4M447 45l-0 -8M450 48l4 -12M450 44l9 10M453 49l-1 -4M453 45l3 -8M456 45l-6 -2M456 45l8 -4M459 48l-11 10M459 46l-1 -5M462 50l-10 -5M462 50l5 -5M465 45l7 -3M465 46l8 1M465 48l10 -7M468 49l-8 7M468 48l-10 -10M471 46l7 3M471 49l6 -2M474 50l-0 -12M474 47l-3 -8M477 48l-12 1M480 51l-11 10M480 48l0 1M480 46l11 -6M483 45l-6 8M483 45l5 -7M483 49l2 1M486 45l9 6M486 47l-0 1M489 49l-8 2M489 47l8 11M492 46l7 -4M492 45l8 9M495 46l11 11M495 48l3 -3M495 45l-2 1M498 50l7 10M498 49l3 -5M501 48l1 11M501 50l0 -1M501 45l-5 4M504 46l11 1M504 45l1 -8M504 46l-5 -2M507 48l-1 2M510 45l-5 -6M510 44l-3 3M510 47l9 -6M513 49l-8 -10M516 48l3 9M519 47l6 7M519 48l7 6M519 47l9 -12M522 46l-0 12M522 46l7 10M522 47l-1 -1M525 44l-3 2M525 45l7 9M525 43l-8 -4M528 47l2 -10M528 47l8 9M528 41l-2 11M531 44l1 13M531 43l4 -2M534 45l-4 12M534 43l-10 -3M534 46l2 10M537 46l-1 4M537 41l1 8M537 43l11 9M540 40l9 -1M540 41l0 1M543 39l-5 5M546 42l8 3M546 42l1 13M549 42l-9 -8M549 38l3 8M552 41l6 -4M552 40l2 -3M555 38l-1 4M558 37l-0 12M561 36l-0 8M561 41l-3 -7M561 38l1 -9M564 35l-4 -6M564 38l-6 -11M567 34l-8 6M570 35l0 -6M570 38l5 -5M573 35l-3 -6M573 35l9 -9M576 33l2 -4M576 33l-9 2M579 32l-5 -10M579 31l-9 6M582 34l5 -6M585 28l6 6M585 30l-8 -7M588 31l-11 -4M588 31l8 2M588 29l-2 5M591 27l8 7M591 26l8 3M594 29l6 -10M594 26l6 9M597 27l6 9M597 26l-11 5M597 28l10 -9M600 24l5 8M600 26l11 4M600 25l-11 -3M603 24l-6 -6M609 21l-9 -5M609 21l-1 -9M612 18l-3 -8M612 18l12 2M615 20l-2 -7M615 18l4 -6M618 20l-11 7M621 19l-4 -7M624 14l-0 0M624 17l2 -10M627 12l-1 12M627 16l-1 -7M627 16l8 9M630 13l-5 5M630 12l10 -8M633 10l2 -3M636 13l-5 2M639 10l-11 -7M639 8l-10 5M639 9l-2 1'/%3E%3Cpath fill='none' stroke-linecap='round' stroke-width='1.8' stroke='%232f9163' d='M6 10l-9 -9M9 14l-1 -5M9 13l-6 2M15 17l2 -1M15 13l-1 5M18 14l-8 -9M21 17l-9 -6M21 18l-10 -1M27 23l-3 2M27 23l10 7M30 19l-3 -2M33 20l-10 -3M33 25l-3 -9M39 25l1 -11M39 25l-8 7M42 28l-4 -6M42 28l8 8M45 26l-11 -5M45 30l11 -1M48 29l-7 -7M48 29l8 -0M48 31l-10 5M51 28l6 -0M54 33l-9 -8M54 33l-8 9M57 32l11 4M60 30l-6 -2M60 33l-4 -1M69 35l3 1M69 35l-1 1M72 38l-10 5M75 35l9 12M75 40l-2 0M81 36l3 1M84 39l-8 11M87 40l-10 11M87 37l-10 9M87 40l-1 -4M96 42l8 -1M96 43l-3 1M96 43l-4 9M99 44l-10 9M102 41l-8 -1M102 41l11 2M108 45l2 1M111 46l12 -8M111 47l-11 9M114 47l0 9M114 46l2 10M117 45l-9 9M123 47l-1 5M126 47l-11 -5M132 49l8 1M135 46l-9 -3M141 46l-10 9M141 50l-3 12M150 46l-8 -8M150 50l-0 -6M159 47l2 -12M162 48l-9 -8M162 49l11 6M165 45l-1 2M165 49l-9 -6M168 51l-5 -0M177 46l-7 7M180 50l-11 -2M189 46l-11 -0M192 45l11 3M195 43l-4 -5M195 49l-6 -0M198 48l10 -7M201 44l-11 2M204 46l-6 -2M213 46l-1 8M216 42l9 -1M216 44l11 -9M222 40l3 -10M222 41l-2 -5M225 38l5 -7M228 40l-2 9M228 38l3 11M234 42l10 -2M237 40l-9 -6M246 38l3 -10M249 38l11 -9M249 34l6 8M255 34l8 -8M255 32l-11 -7M258 31l4 10M258 33l9 2M264 32l3 13M267 30l3 -1M270 27l3 -0M270 27l-6 -8M273 31l3 -1M276 24l-2 -6M279 26l-7 3M279 28l-11 10M282 24l-6 -11M288 21l9 -4M291 22l3 5M291 22l-1 9M294 17l-7 4M294 18l-9 -11M297 20l5 4M297 18l-10 3M297 16l8 10M300 19l-9 -11M306 17l11 1M306 14l-11 -2M309 15l-12 -7M309 13l-12 0M312 11l-8 0M312 10l5 0M315 12l-10 8M318 11l1 7M321 6l-4 -4M327 14l-4 -7M330 12l-3 -11M333 14l-9 3M333 15l10 -1M333 16l-2 -6M336 18l7 6M336 14l3 -1M336 17l-10 -2M339 18l3 -2M342 18l-10 2M345 18l-2 12M345 17l-3 7M348 20l-12 -2M348 19l-4 -5M351 20l11 1M351 20l-3 -7M354 22l-7 12M357 21l-2 -7M360 23l10 9M360 23l10 8M363 24l3 -12M366 26l10 8M366 29l3 8M366 26l7 9M369 28l1 7M372 30l-0 0M375 32l11 -10M375 32l-11 3M378 33l10 -11M381 34l0 12M384 31l3 8M387 37l-12 -7M387 37l4 8M399 35l-8 -12M399 35l-9 12M402 36l6 -7M405 39l3 6M408 38l-5 6M408 38l-1 5M411 43l-3 8M411 38l2 -5M414 40l5 9M414 40l-2 10M417 39l8 10M420 43l8 8M420 43l-4 -10M429 42l12 -3M432 42l0 -11M435 48l7 -1M438 45l1 10M441 48l-1 -8M444 47l7 6M444 48l-11 -8M447 47l4 -5M450 45l-11 11M453 49l-10 11M456 45l5 2M459 45l-4 11M462 50l-3 13M468 48l-5 -7M471 50l7 -4M474 46l9 -5M477 50l-9 6M477 47l-4 6M486 48l-2 -9M489 47l8 1M492 50l-2 13M498 50l11 7M507 49l-10 2M507 45l2 4M513 45l-5 13M513 46l-11 -2M516 49l-9 -6M516 45l-8 -4M531 46l2 0M540 44l9 5M543 41l3 3M543 41l3 -11M546 40l-0 2M549 41l-10 -8M552 37l-8 -5M555 40l-11 10M555 38l10 9M558 39l8 -4M558 37l5 -6M564 35l-2 -10M567 36l8 -9M567 35l7 -8M570 34l-3 12M573 34l-6 7M576 33l-8 9M579 35l10 7M582 29l-9 -5M582 31l4 -3M585 28l3 -7M591 27l-9 8M594 30l11 -1M603 26l-5 -9M603 23l10 -3M606 22l-9 2M606 21l1 7M606 25l2 -0M609 20l-11 -5M612 18l12 7M615 20l10 4M618 20l-8 4M618 20l-8 8M621 16l-3 2M621 17l-6 -11M624 18l8 6M630 14l-4 -1M633 14l-4 -0M633 14l9 12M636 11l7 -10M636 9l4 -5'/%3E%3Cpath stroke='%23f4c24f' stroke-width='1' d='M70 35.34375V42.34375'/%3E%3Ccircle cx='70' cy='50.34375' r='8.5' fill='%23e0262e'/%3E%3Ccircle cx='67.4' cy='47.54375' r='2.2' fill='%23ffffff' fill-opacity='.72'/%3E%3Cpath stroke='%23f4c24f' stroke-width='1' d='M118 45.243750000000006V52.243750000000006'/%3E%3Ccircle cx='118' cy='60.243750000000006' r='8.5' fill='%23f4c24f'/%3E%3Ccircle cx='115.4' cy='57.44375000000001' r='2.2' fill='%23ffffff' fill-opacity='.72'/%3E%3Cpath stroke='%23f4c24f' stroke-width='1' d='M160 48.0V55.0'/%3E%3Ccircle cx='160' cy='63.0' r='8.5' fill='%23e0262e'/%3E%3Ccircle cx='157.4' cy='60.2' r='2.2' fill='%23ffffff' fill-opacity='.72'/%3E%3Cpath stroke='%23f4c24f' stroke-width='1' d='M205 44.8359375V51.8359375'/%3E%3Ccircle cx='205' cy='59.8359375' r='8.5' fill='%23f4c24f'/%3E%3Ccircle cx='202.4' cy='57.0359375' r='2.2' fill='%23ffffff' fill-opacity='.72'/%3E%3Cpath stroke='%23f4c24f' stroke-width='1' d='M250 35.34375V42.34375'/%3E%3Ccircle cx='250' cy='50.34375' r='8.5' fill='%23e0262e'/%3E%3Ccircle cx='247.4' cy='47.54375' r='2.2' fill='%23ffffff' fill-opacity='.72'/%3E%3Cpath stroke='%23f4c24f' stroke-width='1' d='M390 35.34375V42.34375'/%3E%3Ccircle cx='390' cy='50.34375' r='8.5' fill='%23e0262e'/%3E%3Ccircle cx='387.4' cy='47.54375' r='2.2' fill='%23ffffff' fill-opacity='.72'/%3E%3Cpath stroke='%23f4c24f' stroke-width='1' d='M438 45.243750000000006V52.243750000000006'/%3E%3Ccircle cx='438' cy='60.243750000000006' r='8.5' fill='%23f4c24f'/%3E%3Ccircle cx='435.4' cy='57.44375000000001' r='2.2' fill='%23ffffff' fill-opacity='.72'/%3E%3Cpath stroke='%23f4c24f' stroke-width='1' d='M480 48.0V55.0'/%3E%3Ccircle cx='480' cy='63.0' r='8.5' fill='%23e0262e'/%3E%3Ccircle cx='477.4' cy='60.2' r='2.2' fill='%23ffffff' fill-opacity='.72'/%3E%3Cpath stroke='%23f4c24f' stroke-width='1' d='M525 44.8359375V51.8359375'/%3E%3Ccircle cx='525' cy='59.8359375' r='8.5' fill='%23f4c24f'/%3E%3Ccircle cx='522.4' cy='57.0359375' r='2.2' fill='%23ffffff' fill-opacity='.72'/%3E%3Cpath stroke='%23f4c24f' stroke-width='1' d='M570 35.34375V42.34375'/%3E%3Ccircle cx='570' cy='50.34375' r='8.5' fill='%23e0262e'/%3E%3Ccircle cx='567.4' cy='47.54375' r='2.2' fill='%23ffffff' fill-opacity='.72'/%3E%3Cg transform='translate(0 10)' fill='%23e0262e'%3E%3Cpath d='M0 0Q-22-14-24 2Q-22 14 0 0Z'/%3E%3Cpath d='M0 0Q22-14 24 2Q22 14 0 0Z'/%3E%3Cpath d='M-2 0L-13 28L-5 24L0 30Z'/%3E%3Cpath d='M2 0L13 28L5 24L0 30Z'/%3E%3Ccircle r='5' fill='%23f4c24f'/%3E%3C/g%3E%3Cg transform='translate(320 10)' fill='%23e0262e'%3E%3Cpath d='M0 0Q-22-14-24 2Q-22 14 0 0Z'/%3E%3Cpath d='M0 0Q22-14 24 2Q22 14 0 0Z'/%3E%3Cpath d='M-2 0L-13 28L-5 24L0 30Z'/%3E%3Cpath d='M2 0L13 28L5 24L0 30Z'/%3E%3Ccircle r='5' fill='%23f4c24f'/%3E%3C/g%3E%3Cg transform='translate(640 10)' fill='%23e0262e'%3E%3Cpath d='M0 0Q-22-14-24 2Q-22 14 0 0Z'/%3E%3Cpath d='M0 0Q22-14 24 2Q22 14 0 0Z'/%3E%3Cpath d='M-2 0L-13 28L-5 24L0 30Z'/%3E%3Cpath d='M2 0L13 28L5 24L0 30Z'/%3E%3Ccircle r='5' fill='%23f4c24f'/%3E%3C/g%3E%3C/svg%3E\") center top / 640px 96px repeat-x fixed, url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='430' viewBox='0 0 1600 430'%3E%3Cpath fill='%231a4a37' d='M0 330Q200 280 420 318T860 300T1280 322T1600 330V430H0Z'/%3E%3Cpath fill='%23145239' d='M8 196L39 272L-23 272ZM8 236L55 316L-39 316ZM8 276L68 362L-52 362ZM4 360h8v12h-8ZM1608 196L1639 272L1577 272ZM1608 236L1655 316L1561 316ZM1608 276L1668 362L1548 362ZM1604 360h8v12h-8ZM45 246L66 298L24 298ZM45 273L77 327L13 327ZM45 300L86 359L4 359ZM42 357h6v8h-6ZM1645 246L1666 298L1624 298ZM1645 273L1677 327L1613 327ZM1645 300L1686 359L1604 359ZM1642 357h6v8h-6ZM100 255L119 302L81 302ZM100 280L129 329L71 329ZM100 304L137 358L63 358ZM97 356h5v7h-5ZM170 257L191 308L149 308ZM170 284L201 337L139 337ZM170 310L210 368L130 368ZM167 366h6v8h-6ZM227 239L251 298L203 298ZM227 270L263 331L191 331ZM227 300L273 367L181 367ZM224 365h6v9h-6ZM279 277L296 320L262 320ZM279 299L305 344L253 344ZM279 322L312 370L246 370ZM277 368h5v7h-5ZM324 257L344 306L304 306ZM324 282L354 333L294 333ZM324 308L362 363L286 363ZM321 361h5v7h-5ZM364 251L385 303L343 303ZM364 278L396 332L332 332ZM364 305L405 364L323 364ZM361 362h6v8h-6ZM433 219L461 287L405 287ZM433 255L475 326L391 326ZM433 290L486 367L380 367ZM429 365h7v10h-7ZM493 205L522 276L464 276ZM493 242L537 317L449 317ZM493 279L549 360L437 360ZM489 358h8v11h-8ZM528 242L551 299L505 299ZM528 272L563 331L493 331ZM528 302L573 366L483 366ZM525 364h6v9h-6ZM606 253L627 305L585 305ZM606 280L637 334L575 334ZM606 307L646 365L566 365ZM603 363h6v8h-6ZM655 230L680 290L630 290ZM655 261L692 324L618 324ZM655 293L702 361L608 361ZM652 359h7v9h-7ZM690 226L716 289L664 289ZM690 259L729 325L651 325ZM690 292L740 364L640 364ZM687 362h7v10h-7ZM763 274L781 318L745 318ZM763 297L790 343L736 343ZM763 320L798 370L728 370ZM761 368h5v7h-5ZM802 226L827 288L777 288ZM802 258L840 323L764 323ZM802 291L851 361L753 361ZM799 359h7v9h-7ZM878 267L897 313L859 313ZM878 291L906 339L850 339ZM878 315L914 367L842 367ZM876 365h5v7h-5ZM913 234L936 291L890 291ZM913 264L948 323L878 323ZM913 293L957 357L869 357ZM910 355h6v9h-6ZM979 254L1000 305L958 305ZM979 281L1010 334L948 334ZM979 307L1019 365L939 365ZM976 363h6v8h-6ZM1038 215L1067 286L1009 286ZM1038 252L1081 326L995 326ZM1038 289L1093 369L983 369ZM1034 367h8v11h-8ZM1093 234L1117 292L1069 292ZM1093 264L1128 325L1058 325ZM1093 294L1138 360L1048 360ZM1090 358h6v9h-6ZM1137 240L1161 298L1113 298ZM1137 270L1173 331L1101 331ZM1137 301L1183 367L1091 367ZM1134 365h6v9h-6ZM1180 192L1211 268L1149 268ZM1180 232L1226 311L1134 311ZM1180 271L1239 357L1121 357ZM1176 355h8v12h-8ZM1243 257L1264 308L1222 308ZM1243 284L1274 337L1212 337ZM1243 310L1283 368L1203 368ZM1240 366h6v8h-6ZM1302 225L1327 286L1277 286ZM1302 257L1339 321L1265 321ZM1302 289L1350 358L1254 358ZM1299 356h7v9h-7ZM1351 251L1371 301L1331 301ZM1351 277L1381 329L1321 329ZM1351 303L1390 359L1312 359ZM1348 357h5v8h-5ZM1405 239L1428 296L1382 296ZM1405 269L1440 329L1370 329ZM1405 299L1450 364L1360 364ZM1402 362h6v9h-6ZM1460 248L1482 303L1438 303ZM1460 277L1494 334L1426 334ZM1460 306L1503 368L1417 368ZM1457 366h6v8h-6ZM1515 245L1538 302L1492 302ZM1515 275L1550 334L1480 334ZM1515 304L1559 368L1471 368ZM1512 366h6v9h-6ZM1554 257L1574 307L1534 307ZM1554 283L1585 335L1523 335ZM1554 309L1593 366L1515 366ZM1551 364h5v8h-5Z'/%3E%3Cpath fill='%23a9bcae' d='M8 196L18.6 222.0L12.2 216.8L8 223.3L3.2 216.3L-2.6 222.0ZM8 236L23.8 262.9L14.3 257.5L8 264.3L0.9 257.0L-7.8 262.9ZM8 276L28.3 305.0L16.1 299.2L8 306.5L-1.1 298.6L-12.3 305.0ZM1608 196L1618.6 222.0L1612.2 216.8L1608 223.3L1603.2 216.3L1597.4 222.0ZM1608 236L1623.8 262.9L1614.3 257.5L1608 264.3L1600.9 257.0L1592.2 262.9ZM1608 276L1628.3 305.0L1616.1 299.2L1608 306.5L1598.9 298.6L1587.7 305.0ZM45 246L52.2 263.7L47.9 260.1L45 264.6L41.8 259.8L37.8 263.7ZM45 273L55.8 291.6L49.3 287.9L45 292.5L40.1 287.5L34.2 291.6ZM45 300L58.8 320.2L50.5 316.2L45 321.2L38.8 315.8L31.2 320.2ZM1645 246L1652.2 263.7L1647.9 260.1L1645 264.6L1641.8 259.8L1637.8 263.7ZM1645 273L1655.8 291.6L1649.3 287.9L1645 292.5L1640.1 287.5L1634.2 291.6ZM1645 300L1658.8 320.2L1650.5 316.2L1645 321.2L1638.8 315.8L1631.2 320.2ZM100 255L106.6 271.1L102.6 267.9L100 271.9L97.0 267.6L93.4 271.1ZM100 280L109.8 296.5L103.9 293.2L100 297.4L95.6 292.8L90.2 296.5ZM100 304L112.6 322.7L105.0 319.0L100 323.6L94.3 318.6L87.4 322.7ZM170 257L177.1 274.4L172.8 270.9L170 275.2L166.8 270.5L162.9 274.4ZM170 284L180.6 301.8L174.2 298.1L170 302.7L165.2 297.8L159.4 301.8ZM170 310L183.6 329.9L175.4 326.0L170 330.9L163.9 325.6L156.4 329.9ZM227 239L235.1 259.0L230.3 255.0L227 260.0L223.3 254.6L218.9 259.0ZM227 270L239.2 290.6L231.9 286.4L227 291.7L221.5 286.0L214.8 290.6ZM227 300L242.7 323.1L233.3 318.5L227 324.2L219.9 318.1L211.3 323.1ZM279 277L284.9 291.5L281.4 288.6L279 292.3L276.3 288.3L273.1 291.5ZM279 299L287.9 314.5L282.6 311.5L279 315.3L275.0 311.2L270.1 314.5ZM279 322L290.4 338.1L283.6 334.8L279 338.9L273.9 334.5L267.6 338.1ZM324 257L330.7 273.6L326.7 270.3L324 274.4L321.0 269.9L317.3 273.6ZM324 282L334.1 299.7L328.0 296.3L324 300.6L319.4 295.9L313.9 299.7ZM324 308L337.0 326.6L329.2 322.9L324 327.6L318.2 322.5L311.0 326.6ZM364 251L371.2 268.7L366.9 265.1L364 269.6L360.8 264.8L356.8 268.7ZM364 278L374.8 296.6L368.3 292.9L364 297.5L359.1 292.5L353.2 296.6ZM364 305L377.8 325.2L369.5 321.2L364 326.2L357.8 320.8L350.2 325.2ZM433 219L442.4 242.1L436.8 237.5L433 243.3L428.8 237.1L423.6 242.1ZM433 255L447.1 278.7L438.7 273.8L433 279.9L426.6 273.4L418.9 278.7ZM433 290L451.1 316.2L440.2 311.0L433 317.5L424.8 310.4L414.9 316.2ZM493 205L502.9 229.2L496.9 224.4L493 230.5L488.6 223.9L483.1 229.2ZM493 242L507.8 267.5L498.9 262.4L493 268.8L486.3 261.9L478.2 267.5ZM493 279L512.0 306.8L500.6 301.3L493 308.2L484.5 300.8L474.0 306.8ZM528 242L535.9 261.4L531.2 257.5L528 262.4L524.4 257.1L520.1 261.4ZM528 272L539.8 292.0L532.7 287.9L528 293.0L522.7 287.5L516.2 292.0ZM528 302L543.2 323.4L534.1 319.1L528 324.5L521.2 318.6L512.8 323.4ZM606 253L613.1 270.5L608.9 267.0L606 271.4L602.8 266.7L598.9 270.5ZM606 280L616.7 298.2L610.3 294.5L606 299.1L601.2 294.1L595.3 298.2ZM606 307L619.7 326.6L611.5 322.6L606 327.6L599.8 322.2L592.3 326.6ZM655 230L663.3 250.5L658.3 246.4L655 251.5L651.2 246.0L646.7 250.5ZM655 261L667.5 282.8L660.0 278.5L655 283.9L649.4 278.1L642.5 282.8ZM655 293L671.0 316.0L661.4 311.4L655 317.2L647.8 310.9L639.0 316.0ZM690 226L698.8 247.6L693.5 243.3L690 248.7L686.0 242.8L681.2 247.6ZM690 259L703.2 281.6L695.3 277.1L690 282.8L684.1 276.7L676.8 281.6ZM690 292L706.9 316.6L696.8 311.8L690 317.9L682.4 311.3L673.1 316.6ZM763 274L769.1 289.0L765.4 286.0L763 289.8L760.3 285.7L756.9 289.0ZM763 297L772.2 312.7L766.7 309.6L763 313.5L758.9 309.3L753.8 312.7ZM763 320L774.8 337.1L767.7 333.7L763 337.9L757.7 333.3L751.2 337.1ZM802 226L810.6 247.1L805.4 242.9L802 248.2L798.1 242.5L793.4 247.1ZM802 258L814.9 280.4L807.2 276.0L802 281.5L796.2 275.6L789.1 280.4ZM802 291L818.5 314.7L808.6 309.9L802 315.9L794.6 309.4L785.5 314.7ZM878 267L884.4 282.6L880.5 279.5L878 283.4L875.1 279.2L871.6 282.6ZM878 291L887.5 307.3L881.8 304.1L878 308.1L873.7 303.7L868.5 307.3ZM878 315L890.2 332.7L882.9 329.1L878 333.6L872.5 328.8L865.8 332.7ZM913 234L920.8 253.2L916.1 249.4L913 254.2L909.5 249.0L905.2 253.2ZM913 264L924.7 283.6L917.7 279.6L913 284.6L907.7 279.2L901.3 283.6ZM913 293L928.1 314.8L919.0 310.4L913 315.9L906.2 310.0L897.9 314.8ZM979 254L986.1 271.4L981.8 267.9L979 272.2L975.8 267.5L971.9 271.4ZM979 281L989.6 298.8L983.2 295.1L979 299.7L974.2 294.8L968.4 298.8ZM979 307L992.6 326.9L984.4 323.0L979 327.9L972.9 322.6L965.4 326.9ZM1038 215L1047.8 239.1L1041.9 234.3L1038 240.3L1033.6 233.8L1028.2 239.1ZM1038 252L1052.7 277.1L1043.9 272.1L1038 278.3L1031.4 271.6L1023.3 277.1ZM1038 289L1056.8 316.1L1045.5 310.7L1038 317.5L1029.5 310.2L1019.2 316.1ZM1093 234L1101.0 253.7L1096.2 249.8L1093 254.7L1089.4 249.4L1085.0 253.7ZM1093 264L1105.0 284.8L1097.8 280.7L1093 285.8L1087.6 280.3L1081.0 284.8ZM1093 294L1108.4 316.8L1099.2 312.3L1093 317.9L1086.1 311.9L1077.6 316.8ZM1137 240L1145.1 259.9L1140.2 255.9L1137 260.9L1133.4 255.5L1128.9 259.9ZM1137 270L1149.1 291.2L1141.8 287.1L1137 292.2L1131.5 286.6L1124.9 291.2ZM1137 301L1152.5 323.4L1143.2 318.9L1137 324.5L1130.0 318.5L1121.5 323.4ZM1180 192L1190.5 217.8L1184.2 212.6L1180 219.1L1175.3 212.1L1169.5 217.8ZM1180 232L1195.8 258.5L1186.3 253.1L1180 259.9L1172.9 252.6L1164.2 258.5ZM1180 271L1200.2 300.4L1188.1 294.5L1180 301.8L1170.9 294.0L1159.8 300.4ZM1243 257L1250.1 274.4L1245.8 270.9L1243 275.2L1239.8 270.5L1235.9 274.4ZM1243 284L1253.6 301.8L1247.2 298.1L1243 302.7L1238.2 297.8L1232.4 301.8ZM1243 310L1256.6 329.9L1248.4 326.0L1243 330.9L1236.9 325.6L1229.4 329.9ZM1302 225L1310.5 245.8L1305.4 241.6L1302 246.8L1298.2 241.2L1293.5 245.8ZM1302 257L1314.7 278.6L1307.1 274.3L1302 279.7L1296.3 273.9L1289.3 278.6ZM1302 289L1318.3 312.4L1308.5 307.7L1302 313.5L1294.7 307.2L1285.7 312.4ZM1351 251L1357.9 267.9L1353.7 264.5L1351 268.7L1347.9 264.2L1344.1 267.9ZM1351 277L1361.3 294.5L1355.1 291.0L1351 295.4L1346.4 290.7L1340.7 294.5ZM1351 303L1364.2 321.9L1356.3 318.1L1351 322.9L1345.1 317.7L1337.8 321.9ZM1405 239L1413.0 258.6L1408.2 254.6L1405 259.5L1401.4 254.2L1397.0 258.6ZM1405 269L1416.9 289.4L1409.8 285.3L1405 290.4L1399.6 284.9L1393.1 289.4ZM1405 299L1420.3 321.1L1411.1 316.7L1405 322.2L1398.1 316.2L1389.7 321.1ZM1460 248L1467.6 266.8L1463.1 263.0L1460 267.7L1456.6 262.6L1452.4 266.8ZM1460 277L1471.5 296.4L1464.6 292.5L1460 297.4L1454.8 292.1L1448.5 296.4ZM1460 306L1474.7 326.8L1465.9 322.6L1460 327.9L1453.4 322.1L1445.3 326.8ZM1515 245L1522.8 264.2L1518.1 260.4L1515 265.2L1511.5 260.0L1507.2 264.2ZM1515 275L1526.7 294.6L1519.7 290.6L1515 295.6L1509.7 290.2L1503.3 294.6ZM1515 304L1530.1 325.8L1521.0 321.4L1515 326.9L1508.2 321.0L1499.9 325.8ZM1554 257L1560.9 274.0L1556.8 270.6L1554 274.9L1550.9 270.3L1547.1 274.0ZM1554 283L1564.4 300.9L1558.2 297.4L1554 301.8L1549.3 297.0L1543.6 300.9ZM1554 309L1567.3 328.6L1559.3 324.7L1554 329.6L1548.0 324.4L1540.7 328.6Z'/%3E%3Cpath fill='%236f8a7c' d='M0 372Q240 344 520 366T1020 356T1600 372V430H0Z'/%3E%3Cellipse cx='800' cy='372' rx='210' ry='38' fill='%236f8a7c'/%3E%3Cpath fill='%235a2c1c' d='M738 338v-58h124v58Z'/%3E%3Cpath fill='%235a2c1c' d='M828 246h18v38h-18Z'/%3E%3Cpath fill='%23a81f28' d='M722 284L800 226L878 284Z'/%3E%3Cpath fill='%23dfe9e2' d='M722 284L800 226L878 284L858 278L836 282L812 272L784 280L758 274Z'/%3E%3Cpath fill='%23dfe9e2' d='M826 246q11-8 22 0v4h-22Z'/%3E%3Ccircle cx='800' cy='312' r='78' fill='%23ffc76a' fill-opacity='.10'/%3E%3Crect x='754' y='298' width='24' height='24' rx='2' fill='%23ffcf7a'/%3E%3Cpath stroke='%235a2c1c' stroke-width='2' d='M766 298v24M754 310h24'/%3E%3Crect x='822' y='298' width='24' height='24' rx='2' fill='%23ffcf7a'/%3E%3Cpath stroke='%235a2c1c' stroke-width='2' d='M834 298v24M822 310h24'/%3E%3Crect x='789' y='294' width='22' height='44' rx='2' fill='%23a81f28'/%3E%3Ccircle cx='806' cy='316' r='1.8' fill='%23ffcf7a'/%3E%3Cpath fill='%2317704a' d='M38 143L86 261L-10 261ZM38 204L110 327L-34 327ZM38 266L130 399L-54 399ZM32 397h13v18h-13ZM1638 143L1686 261L1590 261ZM1638 204L1710 327L1566 327ZM1638 266L1730 399L1546 399ZM1632 397h13v18h-13ZM165 116L219 248L111 248ZM165 185L245 322L85 322ZM165 253L268 402L62 402ZM158 400h14v20h-14ZM274 114L327 245L221 245ZM274 182L354 319L194 319ZM274 251L377 399L171 399ZM267 397h14v20h-14ZM403 131L454 258L352 258ZM403 197L480 329L326 329ZM403 263L502 406L304 406ZM396 404h14v19h-14ZM552 135L601 256L503 256ZM552 198L626 324L478 324ZM552 261L646 397L458 397ZM545 395h13v18h-13ZM668 147L714 261L622 261ZM668 206L737 325L599 325ZM668 266L757 394L579 394ZM662 392h12v17h-12ZM988 109L1042 242L934 242ZM988 179L1069 318L907 318ZM988 248L1092 399L884 399ZM981 397h14v20h-14ZM1113 155L1159 267L1067 267ZM1113 214L1182 331L1044 331ZM1113 272L1201 399L1025 399ZM1107 397h12v17h-12ZM1265 92L1324 236L1206 236ZM1265 167L1353 318L1177 318ZM1265 243L1378 406L1152 406ZM1257 404h16v22h-16ZM1357 115L1411 247L1303 247ZM1357 184L1438 322L1276 322ZM1357 253L1460 402L1254 402ZM1350 400h14v20h-14ZM1484 157L1529 267L1439 267ZM1484 214L1551 329L1417 329ZM1484 272L1570 396L1398 396ZM1478 394h12v17h-12ZM1561 156L1608 271L1514 271ZM1561 216L1631 335L1491 335ZM1561 276L1651 405L1471 405ZM1555 403h12v17h-12ZM-39 156L8 271L-86 271ZM-39 216L31 335L-109 335ZM-39 276L51 405L-129 405ZM-45 403h12v17h-12Z'/%3E%3Cpath fill='%23dfe9e2' d='M38 143L54.3 183.0L44.5 175.0L38 185.0L30.7 174.2L21.7 183.0ZM38 204L62.4 246.2L47.8 237.9L38 248.3L27.0 237.0L13.6 246.2ZM38 266L69.3 311.1L50.5 302.1L38 313.4L23.9 301.2L6.7 311.1ZM1638 143L1654.3 183.0L1644.5 175.0L1638 185.0L1630.7 174.2L1621.7 183.0ZM1638 204L1662.4 246.2L1647.8 237.9L1638 248.3L1627.0 237.0L1613.6 246.2ZM1638 266L1669.3 311.1L1650.5 302.1L1638 313.4L1623.9 301.2L1606.7 311.1ZM165 116L183.2 160.7L172.3 151.8L165 163.0L156.8 150.9L146.8 160.7ZM165 185L192.3 231.3L175.9 222.0L165 233.6L152.7 221.0L137.7 231.3ZM165 253L200.0 303.8L179.0 293.7L165 306.4L149.2 292.7L130.0 303.8ZM274 114L292.1 158.6L281.3 149.7L274 160.8L265.8 148.8L255.9 158.6ZM274 182L301.2 228.9L284.9 219.6L274 231.2L261.8 218.7L246.8 228.9ZM274 251L308.9 301.2L288.0 291.1L274 303.7L258.3 290.1L239.1 301.2ZM403 131L420.5 174.0L410.0 165.4L403 176.2L395.1 164.5L385.5 174.0ZM403 197L429.3 241.9L413.5 232.9L403 244.1L391.2 232.0L376.7 241.9ZM403 263L436.7 311.6L416.5 301.9L403 314.1L387.9 300.9L369.3 311.6ZM552 135L568.7 176.0L558.7 167.8L552 178.0L544.5 167.0L535.3 176.0ZM552 198L577.0 240.6L562.0 232.1L552 242.8L540.7 231.2L527.0 240.6ZM552 261L584.1 307.1L564.8 297.8L552 309.4L537.6 296.9L519.9 307.1ZM668 147L683.7 185.6L674.3 177.9L668 187.6L660.9 177.1L652.3 185.6ZM668 206L691.6 246.6L677.4 238.5L668 248.6L657.4 237.7L644.4 246.6ZM668 266L698.2 309.2L680.1 300.5L668 311.4L654.4 299.6L637.8 309.2ZM988 109L1006.5 154.4L995.4 145.3L988 156.6L979.7 144.4L969.5 154.4ZM988 179L1015.7 225.9L999.1 216.5L988 228.3L975.5 215.5L960.3 225.9ZM988 248L1023.5 299.5L1002.2 289.2L988 302.0L972.0 288.2L952.5 299.5ZM1113 155L1128.5 193.2L1119.2 185.5L1113 195.1L1106.0 184.8L1097.5 193.2ZM1113 214L1136.3 253.4L1122.3 245.4L1113 255.4L1102.5 244.6L1089.7 253.4ZM1113 272L1142.9 315.3L1124.9 306.6L1113 317.4L1099.6 305.8L1083.1 315.3ZM1265 92L1285.0 141.1L1273.0 131.3L1265 143.6L1256.0 130.3L1245.0 141.1ZM1265 167L1295.0 218.6L1277.0 208.4L1265 221.2L1251.5 207.3L1235.0 218.6ZM1265 243L1303.4 298.2L1280.4 287.1L1265 301.0L1247.7 286.0L1226.6 298.2ZM1357 115L1375.3 159.9L1364.3 150.9L1357 162.1L1348.8 150.0L1338.7 159.9ZM1357 184L1384.4 230.7L1368.0 221.4L1357 233.1L1344.7 220.4L1329.6 230.7ZM1357 253L1392.1 303.5L1371.1 293.4L1357 306.0L1341.2 292.3L1321.9 303.5ZM1484 157L1499.2 194.4L1490.1 186.9L1484 196.2L1477.2 186.2L1468.8 194.4ZM1484 214L1506.8 253.4L1493.1 245.6L1484 255.3L1473.7 244.8L1461.2 253.4ZM1484 272L1513.3 314.0L1495.7 305.5L1484 316.1L1470.8 304.7L1454.7 314.0ZM1561 156L1576.8 194.9L1567.3 187.2L1561 196.9L1553.9 186.4L1545.2 194.9ZM1561 216L1584.8 256.4L1570.5 248.3L1561 258.4L1550.3 247.5L1537.2 256.4ZM1561 276L1591.5 319.5L1573.2 310.7L1561 321.7L1547.3 309.9L1530.5 319.5ZM-39 156L-23.2 194.9L-32.7 187.2L-39 196.9L-46.1 186.4L-54.8 194.9ZM-39 216L-15.2 256.4L-29.5 248.3L-39 258.4L-49.7 247.5L-62.8 256.4ZM-39 276L-8.5 319.5L-26.8 310.7L-39 321.7L-52.7 309.9L-69.5 319.5Z'/%3E%3Ccircle cx='60' cy='266' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='60' cy='266' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='33' cy='206' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='33' cy='206' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='20' cy='240' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='20' cy='240' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='19' cy='346' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='19' cy='346' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='-23' cy='361' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='-23' cy='361' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1577' cy='361' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1577' cy='361' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='31' cy='324' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='31' cy='324' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='55' cy='201' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='55' cy='201' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='155' cy='292' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='155' cy='292' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='135' cy='346' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='135' cy='346' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='153' cy='234' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='153' cy='234' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='184' cy='338' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='184' cy='338' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='227' cy='361' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='227' cy='361' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='155' cy='316' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='155' cy='316' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='131' cy='360' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='131' cy='360' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='234' cy='252' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='234' cy='252' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='230' cy='334' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='230' cy='334' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='278' cy='344' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='278' cy='344' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='271' cy='215' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='271' cy='215' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='221' cy='340' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='221' cy='340' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='292' cy='182' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='292' cy='182' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='272' cy='370' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='272' cy='370' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='389' cy='207' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='389' cy='207' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='436' cy='340' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='436' cy='340' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='403' cy='344' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='403' cy='344' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='413' cy='236' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='413' cy='236' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='392' cy='277' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='392' cy='277' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='380' cy='254' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='380' cy='254' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='400' cy='222' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='400' cy='222' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='540' cy='234' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='540' cy='234' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='592' cy='301' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='592' cy='301' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='526' cy='274' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='526' cy='274' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='561' cy='372' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='561' cy='372' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='600' cy='298' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='600' cy='298' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='514' cy='317' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='514' cy='317' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='507' cy='363' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='507' cy='363' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='667' cy='245' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='667' cy='245' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='639' cy='329' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='639' cy='329' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='656' cy='243' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='656' cy='243' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='707' cy='295' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='707' cy='295' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='674' cy='258' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='674' cy='258' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='651' cy='362' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='651' cy='362' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='717' cy='338' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='717' cy='338' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='985' cy='185' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='985' cy='185' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='984' cy='242' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='984' cy='242' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='948' cy='253' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='948' cy='253' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1035' cy='275' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='1035' cy='275' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='993' cy='299' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='993' cy='299' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='973' cy='289' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='973' cy='289' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1027' cy='357' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='1027' cy='357' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='1132' cy='370' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='1132' cy='370' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='1115' cy='359' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='1115' cy='359' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='1101' cy='314' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='1101' cy='314' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='1109' cy='295' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1109' cy='295' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1118' cy='254' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1118' cy='254' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1150' cy='311' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='1150' cy='311' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='1136' cy='246' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1136' cy='246' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1267' cy='186' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1267' cy='186' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1242' cy='345' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='1242' cy='345' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='1283' cy='292' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='1283' cy='292' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='1226' cy='296' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='1226' cy='296' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='1219' cy='377' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='1219' cy='377' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='1244' cy='200' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1244' cy='200' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1282' cy='207' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1282' cy='207' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1344' cy='269' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1344' cy='269' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1379' cy='270' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1379' cy='270' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1304' cy='376' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='1304' cy='376' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='1414' cy='368' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1414' cy='368' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1357' cy='288' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='1357' cy='288' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='1324' cy='327' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1324' cy='327' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1410' cy='333' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='1410' cy='333' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='1508' cy='268' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1508' cy='268' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1449' cy='311' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1449' cy='311' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1470' cy='264' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1470' cy='264' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1448' cy='316' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1448' cy='316' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1499' cy='364' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1499' cy='364' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1462' cy='287' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='1462' cy='287' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='1484' cy='280' r='7' fill='%23ffffff' fill-opacity='.22'/%3E%3Ccircle cx='1484' cy='280' r='4.2' fill='%23ffffff'/%3E%3Ccircle cx='1574' cy='255' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1574' cy='255' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1566' cy='270' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1566' cy='270' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1539' cy='231' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1539' cy='231' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1592' cy='279' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1592' cy='279' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='-8' cy='279' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='-8' cy='279' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1616' cy='353' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='1616' cy='353' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='16' cy='353' r='7' fill='%23ffd25f' fill-opacity='.22'/%3E%3Ccircle cx='16' cy='353' r='4.2' fill='%23ffd25f'/%3E%3Ccircle cx='1594' cy='358' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='1594' cy='358' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='-6' cy='358' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='-6' cy='358' r='4.2' fill='%23ff4148'/%3E%3Ccircle cx='1553' cy='232' r='7' fill='%23ff4148' fill-opacity='.22'/%3E%3Ccircle cx='1553' cy='232' r='4.2' fill='%23ff4148'/%3E%3Cpath fill='%23a9bfb2' d='M0 400Q300 378 640 394T1240 386T1600 400V430H0Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(38 140) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(1638 140) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(165 113) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(274 111) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(403 128) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(552 132) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(668 144) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(988 106) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(1113 152) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(1265 89) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(1357 112) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(1561 153) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Cpath fill='%23ffd25f' transform='translate(-39 153) scale(15)' d='M0-1L.29-.31L1-.31L.43 .12L.62 .81L0 .4L-.62 .81L-.43 .12L-1-.31L-.29-.31Z'/%3E%3Crect x='36' y='370' width='40' height='32' rx='2' fill='%23d92b33'/%3E%3Crect x='53.0' y='370' width='6' height='32' fill='%23f4c24f'/%3E%3Crect x='36' y='383.0' width='40' height='6' fill='%23f4c24f'/%3E%3Cpath fill='%23f4c24f' d='M56.0 370q-13-13-16-2q3 6 16 2q13-13 16-2q-3 6-16 2Z'/%3E%3Crect x='88' y='378' width='30' height='24' rx='2' fill='%23f4c24f'/%3E%3Crect x='100.0' y='378' width='6' height='24' fill='%23d92b33'/%3E%3Crect x='88' y='387.0' width='30' height='6' fill='%23d92b33'/%3E%3Cpath fill='%23d92b33' d='M103.0 378q-13-13-16-2q3 6 16 2q13-13 16-2q-3 6-16 2Z'/%3E%3Crect x='1470' y='370' width='40' height='32' rx='2' fill='%23d92b33'/%3E%3Crect x='1487.0' y='370' width='6' height='32' fill='%23f4c24f'/%3E%3Crect x='1470' y='383.0' width='40' height='6' fill='%23f4c24f'/%3E%3Cpath fill='%23f4c24f' d='M1490.0 370q-13-13-16-2q3 6 16 2q13-13 16-2q-3 6-16 2Z'/%3E%3Crect x='1522' y='378' width='30' height='24' rx='2' fill='%23f4c24f'/%3E%3Crect x='1534.0' y='378' width='6' height='24' fill='%23d92b33'/%3E%3Crect x='1522' y='387.0' width='30' height='6' fill='%23d92b33'/%3E%3Cpath fill='%23d92b33' d='M1537.0 378q-13-13-16-2q3 6 16 2q13-13 16-2q-3 6-16 2Z'/%3E%3C/svg%3E\") center bottom / 1280px 344px repeat-x fixed, radial-gradient(900px 620px at 8% -8%, var(--ng-amb-1, rgba(var(--rgb-ng-acc), 0.20)), transparent 62%), radial-gradient(760px 540px at 96% 4%, var(--ng-amb-2, rgba(var(--rgb-ng-acc-2), 0.12)), transparent 62%), radial-gradient(1300px 620px at 50% 118%, var(--ng-amb-3, rgba(var(--rgb-ng-acc), 0.16)), transparent 68%), radial-gradient(1300px 900px at 88% -25%, var(--ng-amb-4, rgba(0, 0, 0, 0)), transparent 65%), url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' fill='none' stroke='%23ffffff' stroke-linecap='round'%3E%3Cpath transform='translate(36 44) scale(8)' stroke-opacity='0.07' stroke-width='0.16' d='M0-1V1M-.87-.5L.87 .5M-.87 .5L.87-.5'/%3E%3Cpath transform='translate(132 28) scale(5)' stroke-opacity='0.05' stroke-width='0.26' d='M0-1V1M-.87-.5L.87 .5M-.87 .5L.87-.5'/%3E%3Cpath transform='translate(94 104) scale(6)' stroke-opacity='0.06' stroke-width='0.22' d='M0-1V1M-.87-.5L.87 .5M-.87 .5L.87-.5'/%3E%3Cpath transform='translate(158 138) scale(8)' stroke-opacity='0.07' stroke-width='0.16' d='M0-1V1M-.87-.5L.87 .5M-.87 .5L.87-.5'/%3E%3Cpath transform='translate(30 156) scale(5)' stroke-opacity='0.05' stroke-width='0.26' d='M0-1V1M-.87-.5L.87 .5M-.87 .5L.87-.5'/%3E%3C/svg%3E\") 0 0 / 180px 180px, var(--ng-bg) fixed",
+"app-header-background-color": "rgba(var(--rgb-ng-bg), 0.72)",
+"app-theme-color": "#0c2119",
+"ng-design-title": "Weihnacht — Rot & Grün",
+"ng-motion-auto": "snow",
+"ng-snowcap-mask": "linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%)",
+"ng-snowcap": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='18' viewBox='0 0 240 18'%3E%3Cpath fill='rgba(4, 24, 16, 0.5)' transform='translate(0 1.5)' d='M0 6.5L6 6.7L12 5.4L18 4.7L24 5.4L30 5.9L36 5.5L42 5.7L48 5.8L54 4.2L60 2.3L66 2.1L72 2.4L78 2.3L84 3.1L90 4.6L96 4.8L102 3.9L108 3.9L114 4.6L120 4.6L126 5.2L132 6.9L138 7.7L144 6.7L150 5.7L156 5.2L162 4.1L168 3.0L174 3.5L180 4.5L186 4.0L192 3.3L198 3.3L204 2.8L210 1.8L216 2.4L222 4.3L228 5.3L234 5.7L240 6.5L240 13.8L234 12.6L228 12.1L222 12.3L216 12.5L210 11.9L204 10.8L198 10.4L192 11.2L186 12.8L180 13.9L174 14.0L168 13.3L162 13.0L156 13.3L150 13.7L144 13.3L138 11.9L132 10.6L126 10.3L120 11.2L114 12.4L108 12.9L102 12.7L96 12.5L90 13.1L84 14.2L78 14.6L72 13.8L66 12.2L60 11.1L54 11.0L48 11.7L42 12.0L36 11.7L30 11.3L24 11.7L18 13.1L12 14.4L6 14.7L0 13.8Z'/%3E%3Cpath fill='%23ffffff' d='M0 6.5L6 6.7L12 5.4L18 4.7L24 5.4L30 5.9L36 5.5L42 5.7L48 5.8L54 4.2L60 2.3L66 2.1L72 2.4L78 2.3L84 3.1L90 4.6L96 4.8L102 3.9L108 3.9L114 4.6L120 4.6L126 5.2L132 6.9L138 7.7L144 6.7L150 5.7L156 5.2L162 4.1L168 3.0L174 3.5L180 4.5L186 4.0L192 3.3L198 3.3L204 2.8L210 1.8L216 2.4L222 4.3L228 5.3L234 5.7L240 6.5L240 13.8L234 12.6L228 12.1L222 12.3L216 12.5L210 11.9L204 10.8L198 10.4L192 11.2L186 12.8L180 13.9L174 14.0L168 13.3L162 13.0L156 13.3L150 13.7L144 13.3L138 11.9L132 10.6L126 10.3L120 11.2L114 12.4L108 12.9L102 12.7L96 12.5L90 13.1L84 14.2L78 14.6L72 13.8L66 12.2L60 11.1L54 11.0L48 11.7L42 12.0L36 11.7L30 11.3L24 11.7L18 13.1L12 14.4L6 14.7L0 13.8Z'/%3E%3C/svg%3E\") 0 0 / 240px 18px repeat-x"
 }
 };
 
@@ -6516,7 +6928,7 @@ window.__NULLGLOW_THEMES = {
   };
 
   // ── Animationen: Namen, Symbole, Standard je Stil (auch fürs Uhr-Pop-up und den Assistenten) ──
-  const MODES = ["aurora", "blobs", "waves", "bokeh", "bubbles", "scan", "rain", "stars", "lines", "shapes", "grid"];   // Index = uMode
+  const MODES = ["aurora", "blobs", "waves", "bokeh", "bubbles", "scan", "rain", "stars", "lines", "shapes", "grid", "snow"];   // Index = uMode (snow: eigene Ebene, kein Shader)
   const STYLE_DEFAULT = { glas: "aurora", liquid: "blobs", material: "waves", soft: "bokeh", clay: "bubbles", hud: "scan",
     terminal: "rain", konsole: "stars", retro: "lines", synthwave: "grid", brutal: "shapes" };
   const META = {
@@ -6526,11 +6938,12 @@ window.__NULLGLOW_THEMES = {
     bubbles: ["Blasen", "Bubbles", "mdi:chart-bubble"], scan: ["Radar", "Radar", "mdi:radar"],
     rain: ["Datenregen", "Code rain", "mdi:matrix"], stars: ["Sternenflug", "Starfield", "mdi:star-four-points-outline"],
     lines: ["Linien", "Lines", "mdi:vector-polyline"], shapes: ["Formen", "Shapes", "mdi:shape-outline"],
-    grid: ["Horizont", "Horizon", "mdi:grid"],
+    grid: ["Horizont", "Horizon", "mdi:grid"], snow: ["Schneefall", "Snowfall", "mdi:snowflake"],
   };
   const de = () => String(document.querySelector("home-assistant")?.hass?.locale?.language || "de").toLowerCase().startsWith("de");
+  let designMotion = "";   // Animation des Designs bei „Passend“ und Grundstil (--ng-motion-auto, readColors)
   const resolve = (want, style) => (want && want !== "auto" ? (want === "none" || MODES.includes(want) ? want : "aurora")
-    : STYLE_DEFAULT[style] || "aurora");
+    : (!style || style === "glas") && designMotion ? designMotion : STYLE_DEFAULT[style] || "aurora");
   window.__ngMotion = window.__ngMotion || {
     list: ["auto", "none", ...MODES], resolve,
     meta: (k) => { const m = META[k] || META.aurora; return { key: META[k] ? k : "aurora", title: de() ? m[0] : m[1], icon: m[2] }; },
@@ -6867,6 +7280,8 @@ window.__NULLGLOW_THEMES = {
     col.info = rd("--rgb-ng-info", col.info); col.warn = rd("--rgb-ng-warn", col.warn); col.bg = rd("--rgb-ng-bg", col.bg);
     col.light = cs.getPropertyValue("--ng-is-light").trim() === "1" ? 1 : 0;   // hell: multiplizieren statt aufhellen
     style = cs.getPropertyValue("--ngs-style").trim();
+    const dm = cs.getPropertyValue("--ng-motion-auto").trim();
+    designMotion = MODES.includes(dm) ? dm : "";
     // Horizont deckt den Boden (normal gemischt), alle anderen leuchten auf dem Hintergrund (dunkel aufhellen, hell tönen)
     const blend = mode === "grid" ? "normal" : col.light ? "multiply" : "screen";
     if (canvas.style.mixBlendMode !== blend) canvas.style.mixBlendMode = blend;
@@ -6885,6 +7300,7 @@ window.__NULLGLOW_THEMES = {
     // Nordlicht auch, wenn der Flur-Monitor gerade aus ist
     const wall = /kiosk/i.test(h.user?.name || "") || /(^|[?&])kiosk(=|&|$)/.test(location.search);
     const mon = cfg.monitor && wall ? h.states[cfg.monitor] : null;
+    pileDefault = !!cfg.snowPile && wall;
     // Stromsparen (Uhr-Pop-up der Vorlage, data-ng-eco an <html>): kein Nordlicht
     const eco = document.documentElement.dataset.ngEco === "1";
     const want = resolve(document.documentElement.dataset.ngMotion || "auto", style);
@@ -6902,6 +7318,313 @@ window.__NULLGLOW_THEMES = {
     target.night = isFinite(elev) && elev < -4 ? 1 : 0;
   }
 
+  // ── Schneefall: Flocken vor allen Kacheln. Fertige Bildchen statt Shader (scharf, wenige Zeichenbefehle); unter HA-Dialogen ──
+  const snow = { el: null, ctx: null, list: [], sprites: [], light: null, w: 0, h: 0, dpr: 1 };
+  function flakeSprite(kind, light) {
+    const S = 96, c = document.createElement("canvas");
+    c.width = c.height = S;
+    const g = c.getContext("2d"), R = S * 0.4;
+    g.translate(S / 2, S / 2);
+    g.lineCap = "round";
+    g.strokeStyle = light ? "#7fa8c4" : "#ffffff";
+    g.lineWidth = kind === 2 ? 5 : 4;
+    g.shadowColor = light ? "rgba(255, 255, 255, .9)" : "rgba(255, 255, 255, .55)";
+    g.shadowBlur = 6;
+    const twigs = [[[.42, .3], [.72, .24]], [[.32, .22], [.56, .28], [.8, .16]], [[.62, .3]]][kind];
+    for (let i = 0; i < 6; i++) {
+      g.rotate(Math.PI / 3);
+      g.beginPath();
+      g.moveTo(0, 0);
+      g.lineTo(0, -R);
+      for (const [at, len] of twigs) {
+        g.moveTo(0, -R * at); g.lineTo(R * len, -R * (at + len * .7));
+        g.moveTo(0, -R * at); g.lineTo(-R * len, -R * (at + len * .7));
+      }
+      g.stroke();
+    }
+    if (kind === 2) {   // Plättchen in der Mitte
+      g.beginPath();
+      for (let i = 0; i < 6; i++) { const a = Math.PI / 3 * i; g.lineTo(Math.cos(a) * R * .34, Math.sin(a) * R * .34); }
+      g.closePath(); g.stroke();
+    }
+    return c;
+  }
+  function newFlake(anywhere) {
+    const z = Math.random(), r = 4 + 9 * z;   // vorne groß und schnell, hinten klein und blass
+    return { x: Math.random() * snow.w, y: anywhere ? Math.random() * snow.h : -r * 2, r, v: 16 + 42 * z, a: 0.45 + 0.4 * z,
+      sway: 8 + 22 * Math.random(), ph: Math.random() * 6.28, sp: 0.3 + 0.5 * Math.random(), rot: Math.random() * 6.28,
+      spin: (Math.random() - 0.5) * 0.8, s: Math.floor(Math.random() * 3) };
+  }
+  function drawSnow(dt) {
+    const el = snow.el, ctx = snow.ctx;
+    if (!el) return;
+    const w = innerWidth, h = innerHeight, dpr = Math.min(devicePixelRatio || 1, 1.5);
+    if (w !== snow.w || h !== snow.h || dpr !== snow.dpr) {
+      Object.assign(snow, { w, h, dpr });
+      el.width = Math.round(w * dpr); el.height = Math.round(h * dpr);
+      const n = Math.max(18, Math.min(90, Math.round(w * h / 30000)));
+      snow.list = Array.from({ length: n }, () => newFlake(true));
+    }
+    if (snow.light !== col.light) { snow.light = col.light; snow.sprites = [0, 1, 2].map((k) => flakeSprite(k, !!col.light)); }
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, el.width, el.height);
+    snow.list.forEach((f, i) => {
+      f.y += f.v * dt; f.ph += f.sp * dt; f.rot += f.spin * dt;
+      if (f.y > h + f.r * 2 || (pile.shown && f.y > h - pileAt(f.x))) { snow.list[i] = newFlake(false); return; }
+      const x = f.x + Math.sin(f.ph) * f.sway, c = Math.cos(f.rot) * dpr, n = Math.sin(f.rot) * dpr;
+      ctx.setTransform(c, n, -n, c, x * dpr, f.y * dpr);
+      ctx.globalAlpha = f.a;
+      ctx.drawImage(snow.sprites[f.s], -f.r * 1.25, -f.r * 1.25, f.r * 2.5, f.r * 2.5);
+    });
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.globalAlpha = 1;
+    if (pile.shown) {
+      if (pile.w !== w || pile.H !== h) pileLoad(w, h);
+      pileGrow(Date.now());
+      if (pile.fly) santaFrame(dt);
+      pileDraw(ctx, dt);
+    }
+  }
+  function syncSnow() {
+    const show = mode === "snow" && active && canvas.isConnected && !document.hidden;
+    if (show && !snow.el) {
+      snow.el = document.createElement("canvas");
+      snow.el.id = "ng-snow";
+      Object.assign(snow.el.style, { position: "fixed", inset: "0", width: "100vw", height: "100vh", pointerEvents: "none", zIndex: "6", opacity: "0", transition: "opacity 1.5s ease" });
+      snow.ctx = snow.el.getContext("2d");
+      document.body.appendChild(snow.el);
+    }
+    if (!snow.el) return;
+    if (show) { snow.el.style.display = "block"; requestAnimationFrame(() => { snow.el.style.opacity = "1"; }); }
+    else { snow.el.style.opacity = "0"; snow.el.style.display = "none"; }
+  }
+
+  // Knopf: Gesicht des Weihnachtsmanns
+  const SANTA_FACE = `<svg viewBox="0 0 64 64" width="56" height="56" style="display:block" aria-hidden="true">
+    <path d="M14 30 C14 14 30 8 42 12 C50 15 54 22 58 30 L50 34 L14 34 Z" fill="#d6222e"/>
+    <circle cx="58" cy="32" r="5" fill="#fff"/>
+    <circle cx="32" cy="35" r="14" fill="#ffd9bd"/>
+    <path d="M15 38 C15 54 24 60 32 60 C40 60 49 54 49 38 C45 44 40 45 32 45 C24 45 19 44 15 38 Z" fill="#fff"/>
+    <rect x="12" y="26" width="40" height="9" rx="4.5" fill="#fff"/>
+    <circle cx="26" cy="37" r="2.1" fill="#2a1a14"/><circle cx="38" cy="37" r="2.1" fill="#2a1a14"/>
+    <circle cx="21.5" cy="41" r="3" fill="#ff9a94" opacity=".75"/><circle cx="42.5" cy="41" r="3" fill="#ff9a94" opacity=".75"/>
+    <ellipse cx="32" cy="41.5" rx="3" ry="2.4" fill="#f08f80"/>
+    <path d="M27 47 Q32 51 37 47" fill="none" stroke="#c9847a" stroke-width="1.8" stroke-linecap="round"/>
+  </svg>`;
+  // Schlitten mit drei Rentieren, fliegt nach rechts
+  const SANTA_SVG = `<svg viewBox="0 0 660 210" width="100%" style="display:block;overflow:visible" aria-hidden="true">
+    <defs><g id="ng-rd">
+      <path d="M-16 18 L-24 44 L-16 46 L-7 24 Z M-4 22 L-15 44 L-8 47 L4 25 Z M24 22 L40 40 L46 34 L34 16 Z M34 18 L52 30 L56 23 L40 10 Z" fill="#7a4a2a"/>
+      <path d="M-24 44 L-16 46 L-17 50 L-26 48 Z M-15 44 L-8 47 L-10 51 L-18 48 Z M40 40 L46 34 L50 37 L44 44 Z M52 30 L56 23 L60 26 L56 33 Z" fill="#3a2214"/>
+      <path d="M-30 6 Q-40 -4 -30 -10 Q-26 -2 -22 2 Z" fill="#f4e6d4"/>
+      <ellipse cx="6" cy="8" rx="34" ry="19" fill="#9a6236"/>
+      <ellipse cx="6" cy="14" rx="24" ry="10" fill="#c79a6b"/>
+      <path d="M26 2 L46 -30 L60 -24 L44 14 Z" fill="#9a6236"/>
+      <path d="M21 -7 Q33 2 46 10" fill="none" stroke="#c8202c" stroke-width="5"/><circle cx="33" cy="2" r="4" fill="#ffd25f"/>
+      <ellipse cx="60" cy="-34" rx="17" ry="13" fill="#9a6236"/>
+      <ellipse cx="73" cy="-30" rx="9" ry="7.5" fill="#c79a6b"/>
+      <path d="M46 -42 Q34 -48 36 -38 Q41 -36 48 -37 Z" fill="#7a4a2a"/>
+      <path d="M52 -45 Q48 -62 36 -68 M49 -55 Q42 -56 38 -52 M62 -46 Q64 -64 76 -72 M64 -58 Q70 -60 74 -56" fill="none" stroke="#6a3f22" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="63" cy="-38" r="3.2" fill="#fff"/><circle cx="64" cy="-38" r="2" fill="#20140e"/>
+    </g></defs>
+    <path d="M214 122 Q300 92 356 92 M356 92 Q420 88 476 90 M476 90 Q530 82 590 78" fill="none" stroke="#e8b63e" stroke-width="3"/>
+    <use href="#ng-rd" x="326" y="98"/>
+    <use href="#ng-rd" x="446" y="88"/>
+    <use href="#ng-rd" x="566" y="76"/>
+    <circle cx="639" cy="46" r="11" fill="#ff3b3b" opacity=".3"/><circle cx="639" cy="46" r="6.5" fill="#ff3b3b"/><circle cx="637" cy="44" r="2" fill="#fff"/>
+    <!-- Sack mit Geschenken -->
+    <path d="M18 112 Q6 58 46 50 Q86 46 92 110 Z" fill="#8f5a33"/>
+    <path d="M36 50 Q50 40 62 49" fill="none" stroke="#e8b63e" stroke-width="5" stroke-linecap="round"/>
+    <rect x="30" y="26" width="26" height="26" rx="3" fill="#2f9163" transform="rotate(-10 43 39)"/><rect x="40" y="25" width="6" height="26" fill="#ffd25f" transform="rotate(-10 43 39)"/>
+    <rect x="58" y="32" width="22" height="20" rx="3" fill="#e0262e" transform="rotate(12 69 42)"/><rect x="66" y="32" width="5" height="20" fill="#fff" transform="rotate(12 69 42)"/>
+    <!-- Weihnachtsmann -->
+    <path d="M86 118 Q84 58 124 56 Q164 58 164 118 Z" fill="#d6222e"/>
+    <path d="M146 78 Q176 74 188 96 L176 106 Q160 92 142 96 Z" fill="#d6222e"/>
+    <circle cx="186" cy="100" r="9" fill="#2a1a14"/><rect x="141" y="74" width="9" height="34" rx="4" fill="#fff" transform="rotate(-8 145 91)"/>
+    <circle cx="130" cy="42" r="21" fill="#ffd9bd"/>
+    <path d="M108 46 C106 76 122 88 136 86 C150 84 156 66 152 46 C146 54 140 56 130 56 C120 56 114 54 108 46 Z" fill="#fff"/>
+    <path d="M108 30 C104 10 124 -6 146 4 C158 10 118 12 104 -4 C98 -8 90 -6 86 2" fill="none"/>
+    <path d="M110 30 C110 8 132 -2 146 8 C126 2 108 2 88 16 L96 26 Z" fill="#d6222e"/>
+    <circle cx="86" cy="20" r="8" fill="#fff"/>
+    <rect x="106" y="24" width="50" height="11" rx="5.5" fill="#fff"/>
+    <circle cx="124" cy="43" r="2.6" fill="#2a1a14"/><circle cx="141" cy="43" r="2.6" fill="#2a1a14"/>
+    <circle cx="117" cy="49" r="3.6" fill="#ff9a94" opacity=".7"/><circle cx="147" cy="49" r="3.6" fill="#ff9a94" opacity=".7"/>
+    <ellipse cx="133" cy="50" rx="4" ry="3.2" fill="#f08f80"/>
+    <!-- Schlitten -->
+    <path d="M6 104 Q2 150 44 156 L176 156 Q216 154 232 104 Q190 122 150 116 L44 116 Q20 116 6 104 Z" fill="#c81e2a"/>
+    <path d="M6 104 Q20 116 44 116 L150 116 Q190 122 232 104" fill="none" stroke="#ffd25f" stroke-width="5" stroke-linecap="round"/>
+    <path d="M58 130 q16 -9 32 0 q-16 9 -32 0 Z M120 130 q16 -9 32 0 q-16 9 -32 0 Z" fill="#ffd25f"/>
+    <path d="M44 156 L44 176 M172 156 L172 176" stroke="#e8b63e" stroke-width="6"/>
+    <path d="M-6 170 Q14 182 36 180 L190 180 Q226 180 248 156" fill="none" stroke="#e8b63e" stroke-width="7" stroke-linecap="round"/>
+  </svg>`;
+  // ── Schneehaufen (optional, je Gerät, nur Schneefall): wächst nach der Uhrzeit (auch bei Monitor aus), Wischen macht frei, Weihnachtsmann bläst alles weg ──
+  // Nur der Schnee selbst nimmt Berührungen an (clip-path der Fläche): Wischen schaltet nichts darunter. Offenes Pop-up blendet den Haufen aus, die Klingel lässt ihn schmelzen.
+  const PILE_K = "nullglow-snow-pile", SANTA_K = "nullglow-snow-santa", STATE_K = "nullglow-snow-pile-state";
+  const PILE_COL = 6, PILE_RATE = 0.053, PILE_MAX = 0.25, PILE_MIN_W = 700;   // Spaltenbreite px, Anteil der Bildhöhe je Stunde und höchstens
+  const store = {
+    get: (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: (k, v) => { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { /* privat/gesperrt */ } },
+  };
+  const pile = { h: null, w: 0, H: 0, t: 0, shown: false, hit: null, btn: null, fly: null, parts: [], saved: 0, hitAt: 0, last: null };
+  const pileK = (i) => 0.78 + 0.22 * Math.sin(i * 0.05 + 1.1) + 0.12 * Math.sin(i * 0.17 + 0.4);
+  const pileCap = (i) => pile.H * PILE_MAX * (0.84 + 0.16 * Math.sin(i * 0.031 + 2));
+  let pileDefault = false;   // Standard „an“ nur am Wandmonitor, wenn dessen Dashboard es meldet (snowPile); eigene Wahl am Gerät geht vor
+  const wantedOf = (k) => { const v = store.get(k); return v === "1" || (v === null && pileDefault); };
+  const pileWanted = () => wantedOf(PILE_K);
+  const santaWanted = () => wantedOf(SANTA_K);
+  window.__ngMotion.pile = { on: pileWanted, santa: santaWanted, minWidth: PILE_MIN_W,
+    set: (what, v) => {
+      if (what === "santa") store.set(SANTA_K, v ? "1" : "0");
+      else { store.set(PILE_K, v ? "1" : "0"); store.set(STATE_K, null); pile.h = null; }
+      tick();
+    } };
+  function pileSave(now) {
+    if (!pile.h) return;
+    pile.saved = now;
+    store.set(STATE_K, JSON.stringify({ t: pile.t, h: Array.from(pile.h, (x) => Math.round(x * 10) / 10) }));
+  }
+  function pileLoad(w, H) {
+    let st = null;
+    try { st = JSON.parse(store.get(STATE_K) || "null"); } catch (e) { /* kaputt = neu */ }
+    const old = pile.h && pile.h.length ? pile.h : (st && Array.isArray(st.h) && st.h.length ? st.h : null);
+    const n = Math.ceil(w / PILE_COL) + 2, h = new Float32Array(n);
+    Object.assign(pile, { w, H, h });
+    for (let i = 0; i < n; i++) h[i] = Math.min(pileCap(i), old ? old[Math.floor(i * old.length / n)] || 0 : H * 0.05 * pileK(i));   // neu: dünne Schicht, damit man sofort etwas sieht
+    if (!old || !pile.t) pile.t = st && old ? +st.t || Date.now() : Date.now();
+    pileGrow(Date.now());
+    pileHit();
+  }
+  function pileGrow(now) {
+    const dt = (now - pile.t) / 3600000;
+    if (dt < 1 / 3600) return;
+    pile.t = now;
+    for (let i = 0; i < pile.h.length; i++) pile.h[i] = Math.min(pileCap(i), pile.h[i] + pile.H * PILE_RATE * pileK(i) * dt);
+    if (now - pile.saved > 30000) pileSave(now);
+    if (now - pile.hitAt > 4000) pileHit();
+  }
+  const pileAt = (x) => (pile.h ? pile.h[Math.max(0, Math.min(pile.h.length - 1, Math.round(x / PILE_COL)))] : 0);
+  function pileHit() {
+    if (!pile.hit || !pile.h) return;
+    pile.hitAt = Date.now();
+    const box = Math.ceil(pile.H * PILE_MAX + 8);
+    let p = "0px " + box + "px";
+    for (let i = 0; i < pile.h.length; i += 2) p += `,${i * PILE_COL}px ${(box - pile.h[i]).toFixed(1)}px`;
+    pile.hit.style.height = box + "px";
+    pile.hit.style.clipPath = `polygon(${p},${pile.w + PILE_COL}px ${box}px)`;
+  }
+  function puff(x, y, n, gold) {
+    for (let k = 0; k < n && pile.parts.length < 140; k++) {
+      const a = Math.random() * 6.28, v = 30 + Math.random() * 120;
+      pile.parts.push({ x, y, vx: Math.cos(a) * v * (gold ? 0.4 : 1), vy: -Math.abs(Math.sin(a)) * v, r: gold ? 1 + Math.random() * 2 : 1.5 + Math.random() * 2.5, life: 0.5 + Math.random() * 0.7, gold });
+    }
+  }
+  function pileWipe(x0, x1, y) {
+    if (!pile.h) return;
+    const R = 52, a = Math.min(x0, x1), b = Math.max(x0, x1);
+    for (let i = Math.max(0, Math.floor((a - R * 1.6) / PILE_COL)); i < pile.h.length && i * PILE_COL <= b + R * 1.6; i++) {
+      if (pile.H - pile.h[i] - y > 90) continue;   // Finger weit über dem Schnee
+      const x = i * PILE_COL, d = x < a ? a - x : x > b ? x - b : 0;
+      pile.h[i] *= 1 - Math.exp(-(d / R) * (d / R) * 2);
+    }
+    puff(x1, y, 5);
+    pileHit();
+  }
+  function pileUi() {
+    if (pile.hit) return;
+    const hit = pile.hit = document.createElement("div");
+    hit.id = "ng-snow-hit";
+    Object.assign(hit.style, { position: "fixed", left: "0", bottom: "0", width: "100vw", zIndex: "6", touchAction: "none", cursor: "grab", display: "none" });
+    hit.addEventListener("pointerdown", (e) => { e.preventDefault(); e.stopPropagation(); hit.setPointerCapture(e.pointerId); pile.last = e.clientX; pileWipe(e.clientX, e.clientX, e.clientY); });
+    hit.addEventListener("pointermove", (e) => { if (pile.last === null) return; e.preventDefault(); pileWipe(pile.last, e.clientX, e.clientY); pile.last = e.clientX; });
+    const end = () => { if (pile.last !== null) { pile.last = null; pileSave(Date.now()); } };
+    hit.addEventListener("pointerup", end);
+    hit.addEventListener("pointercancel", end);
+    hit.addEventListener("click", (e) => e.stopPropagation());
+    const btn = pile.btn = document.createElement("button");
+    btn.id = "ng-santa-btn";
+    btn.type = "button";
+    btn.title = btn.ariaLabel = de() ? "Weihnachtsmann rufen: bläst den Schnee weg" : "Call Santa: blows the snow away";
+    btn.innerHTML = SANTA_FACE;
+    Object.assign(btn.style, { position: "fixed", right: "16px", width: "56px", height: "56px", padding: "0", border: "0", borderRadius: "50%", cursor: "pointer", zIndex: "7", display: "none",
+      background: "radial-gradient(circle at 35% 30%, #ff6a6f, #c81e2a 70%)", boxShadow: "0 0 0 3px #fff, 0 6px 18px rgba(0, 0, 0, .35)", touchAction: "manipulation" });
+    btn.addEventListener("click", (e) => { e.stopPropagation(); santaFly(); });
+    document.body.append(hit, btn);
+  }
+  function santaFly() {
+    if (pile.fly || !pile.h) return;
+    const w = innerWidth, W = Math.min(620, Math.max(380, w * 0.4));
+    const el = document.createElement("div");
+    el.id = "ng-santa";
+    el.innerHTML = SANTA_SVG;
+    Object.assign(el.style, { position: "fixed", left: "0", top: "0", width: W + "px", zIndex: "7", pointerEvents: "none", willChange: "transform" });
+    const inner = el.firstElementChild, dur = 7000, H = innerHeight;
+    document.body.appendChild(el);
+    el.animate([{ transform: `translateX(${-W - 20}px)` }, { transform: `translateX(${w + 20}px)` }], { duration: dur, easing: "linear", fill: "both" });
+    inner.animate([
+      { transform: `translateY(${H * 0.1}px) rotate(9deg)`, easing: "ease-in-out" },
+      { transform: `translateY(${H * 0.62}px) rotate(1deg)`, offset: 0.48, easing: "ease-in-out" },
+      { transform: `translateY(${H * 0.58}px) rotate(-2deg)`, offset: 0.62, easing: "ease-in" },
+      { transform: `translateY(${H * 0.04}px) rotate(-14deg)` },
+    ], { duration: dur, fill: "both" });
+    pile.fly = { el, t0: performance.now(), dur, W, w };
+    syncPile();
+  }
+  function santaFrame(dt) {
+    const f = pile.fly, p = Math.min(1, (performance.now() - f.t0) / f.dur);
+    const x = -f.W - 20 + p * (f.w + f.W + 40), front = x + f.W * 0.72;   // Nase des ersten Rentiers
+    for (let i = 0; i < pile.h.length; i++) if (i * PILE_COL < front) pile.h[i] *= Math.exp(-dt * 5);
+    if (front > 0 && front < f.w) {
+      puff(front, pile.H - pileAt(front) - 4, 3);
+      puff(x + f.W * 0.05, pile.H * (0.1 + 0.52 * Math.sin(Math.min(1, p / 0.55) * 1.57)), 2, true);   // Goldstaub hinter dem Schlitten
+    }
+    for (const fl of snow.list) if (Math.abs(fl.x - front) < 240) fl.x += 170 * dt;
+    if (p >= 1) { f.el.remove(); pile.fly = null; pile.h.fill(0); pile.t = Date.now(); pileHit(); pileSave(Date.now()); syncPile(); }
+    else if (Date.now() - pile.hitAt > 300) pileHit();
+  }
+  function pileDraw(ctx, dt) {
+    const h = pile.h, H = pile.H, n = h.length;
+    if (h.some((v) => v > 0.3)) {
+      ctx.beginPath();
+      ctx.moveTo(0, H);
+      ctx.lineTo(0, H - h[0]);
+      for (let i = 1; i < n; i++) { const x = i * PILE_COL, m = (h[i - 1] + h[i]) / 2; ctx.quadraticCurveTo(x - PILE_COL, H - h[i - 1], x - PILE_COL / 2, H - m); }
+      ctx.lineTo(pile.w + PILE_COL, H);
+      ctx.closePath();
+      const g = ctx.createLinearGradient(0, H - H * PILE_MAX, 0, H);
+      g.addColorStop(0, "#ffffff"); g.addColorStop(1, col.light ? "#dfe9f1" : "#cdd9e5");
+      ctx.fillStyle = g;
+      ctx.fill();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = col.light ? "rgba(110, 145, 170, .6)" : "rgba(170, 195, 215, .55)";
+      ctx.stroke();
+    }
+    pile.parts = pile.parts.filter((p) => (p.life -= dt) > 0);
+    for (const p of pile.parts) {
+      p.vy += 190 * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+      ctx.globalAlpha = Math.min(1, p.life * 2);
+      ctx.fillStyle = p.gold ? "#ffd25f" : col.light ? "#b9d0e0" : "#ffffff";
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.3); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+  function syncPile() {
+    const on = pileWanted() && mode === "snow" && active && canvas.isConnected && !document.hidden && innerWidth >= PILE_MIN_W;
+    if (on || pile.hit) pileUi();
+    const hash = location.hash;
+    if (on && !pile.h) pileLoad(innerWidth, innerHeight);
+    if (hash === "#klingel" && pile.h && pile.h.some((v) => v > 0)) { pile.h.fill(0); pile.t = Date.now(); pileHit(); pileSave(Date.now()); }   // Klingel: freie Sicht sofort
+    pile.shown = on && !hash;
+    if (pile.hit) {
+      pile.hit.style.display = pile.shown ? "block" : "none";
+      const small = innerWidth < 1200;   // schmal: über der Leiste, sonst daneben
+      pile.btn.style.bottom = small ? "84px" : "16px";
+      pile.btn.style.display = pile.shown && santaWanted() && !pile.fly && pile.h && pile.h.some((v) => v > 6) ? "block" : "none";
+    }
+  }
+  window.__ngSnowPile = { info: () => ({ on: pileWanted(), santa: santaWanted(), shown: pile.shown, max: pile.h ? Math.round(Math.max(...pile.h)) : 0, flying: !!pile.fly, t: pile.t }),
+    fill: (frac) => { if (pile.h) { for (let i = 0; i < pile.h.length; i++) pile.h[i] = Math.min(pileCap(i), pile.H * frac * pileK(i)); pile.t = Date.now(); pileHit(); syncPile(); } }, santa: santaFly,
+    reload: () => { pile.h = null; pile.t = 0; syncPile(); } };   // Test: Stand neu aus dem Browser-Speicher (wie nach einem Neustart)
+
   let t0 = performance.now(), last = 0, frames = 0, fpsT = performance.now(), running = false;
   function frame(now) {
     running = false;
@@ -6910,6 +7633,12 @@ window.__NULLGLOW_THEMES = {
     if (now - last < 1000 / CFG.fps - 2) return;
     const dt = Math.min(0.1, (now - last) / 1000);
     last = now;
+    if (mode === "snow") {
+      drawSnow(dt);
+      frames++;
+      if (now - fpsT > 2000) { info.fps = Math.round(frames * 1000 / (now - fpsT)); frames = 0; fpsT = now; }
+      return;
+    }
     const k = 1 - Math.exp(-dt / 4);                 // ~4 s Nachführzeit
     for (const n of ["power", "calm", "night"]) cur[n] += (target[n] - cur[n]) * k;
     const w = Math.max(2, Math.round(canvas.clientWidth * CFG.scale)), h = Math.max(2, Math.round(canvas.clientHeight * CFG.scale));
@@ -6943,11 +7672,11 @@ window.__NULLGLOW_THEMES = {
       if (!cfg && !forced) { active = false; return; }
       if (!cfg) cfg = CFG;
       readHass(); if (active && !document.hidden) schedule();
-    } catch (e) { /* Kür — nie etwas anderes stören */ }
+    } catch (e) { /* Kür — nie etwas anderes stören */ } finally { syncSnow(); syncPile(); }
   }
 
   window.__ngAurora = (v) => { forced = v || null; if (v && v.snap) Object.assign(cur, { power: v.power ?? 0.6, calm: v.calm ?? 0, night: v.night ? 1 : 0 }); tick(); };
-  window.__ngAurora.info = () => ({ ...info, mode, style, want: document.documentElement.dataset.ngMotion || "auto", target: { ...target }, cur: { ...cur }, active, mounted: !!canvas?.isConnected });
+  window.__ngAurora.info = () => ({ ...info, mode, flakes: snow.list.length, style, want: document.documentElement.dataset.ngMotion || "auto", target: { ...target }, cur: { ...cur }, active, mounted: !!canvas?.isConnected });
 
   try {
     if (!setup()) return;
@@ -6955,6 +7684,8 @@ window.__NULLGLOW_THEMES = {
   document.addEventListener("visibilitychange", tick);
   window.addEventListener("nullglow-eco", tick);   // Stromsparen an/aus (nullglow-strategy.js)
   window.addEventListener("nullglow-motion", tick);   // andere Animation gewählt (Uhr-Pop-up)
+  window.addEventListener("hashchange", tick);        // Pop-up auf/zu: Schneehaufen aus-/einblenden
+  window.addEventListener("location-changed", tick);
   setTimeout(tick, 1200);
   setInterval(tick, 2000);
 })();
@@ -9362,7 +10093,7 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     // Farbwörter der Design-Titel (ng-design-title)
     "Grün": "Green", "Violett": "Violet", "Türkis": "Teal", "Orange": "Orange", "Gold": "Gold", "Rosé": "Rose",
     "Blau": "Blue", "Eisblau": "Ice blue", "Limette": "Lime", "Magenta": "Magenta", "Silber": "Silver",
-    "Indigo": "Indigo", "Sand": "Sand", "Mint": "Mint",
+    "Indigo": "Indigo", "Sand": "Sand", "Mint": "Mint", "Weihnachten": "Christmas", "Rot & Grün": "Red & green",
     "Dunkel": "Dark", "Hell": "Light", "Sonne": "Sun", "Gerät": "Device", "Auto": "Auto",
     "dunkel": "dark", "hell": "light", "nach Sonne": "by sun", "wie Gerät": "like device",
     "Gilt nur für dieses Gerät · Standard: {d}, {m}": "Applies to this device only · Default: {d}, {m}",
@@ -9372,6 +10103,8 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     "Standard": "Default", "Glas": "Glass", "klar": "clear", "milchig": "frosted", "Glas-Deckkraft": "Glass opacity",
     "Design-Auswahl (Farbvarianten)": "Design picker (color variants)",
     "Stromsparen": "Power saving", "Aus": "Off", "An": "On",
+    "Schnee bleibt liegen": "Snow settles", "Flocken sammeln sich langsam am unteren Rand, auch bei ausgeschaltetem Monitor. Zum Freimachen wegwischen.": "Flakes slowly pile up along the bottom edge, even while the monitor is off. Wipe to clear.",
+    "Weihnachtsmann-Knopf": "Santa button", "Ein Knopf in der Ecke ruft den Schlitten, der den Schnee wegbläst.": "A button in the corner calls the sleigh, which blows the snow away.",
     "Nordlicht, Wetterfarben und Animationen aus — für langsame Geräte": "Aurora, weather colors and animations off — for slow devices",
     "Auto: gerade an (langsames Gerät erkannt)": "Auto: currently on (slow device detected)",
     "Auto: gerade an (keine Grafikbeschleunigung)": "Auto: currently on (no graphics acceleration)", "Auto: gerade aus": "Auto: currently off",
@@ -9653,7 +10386,14 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
           const x = A.meta(k), auto = k === "auto" ? A.meta(A.resolve("auto", m.style || "glas")) : null;
           return `<button class="s${(m.motion || "auto") === k ? " on" : ""}" data-a="${esc(k)}"><ha-icon class="ai" icon="${esc(auto ? auto.icon : x.icon)}"></ha-icon><span>${esc(auto ? `${t("Passend")} · ${auto.title}` : x.title)}</span></button>`;
         }).join("")}</div></div>` : "";
-      this.shadowRoot.innerHTML = `<style>${STYLE}</style><div class="top"><div class="hint">${esc(m.hint)}</div>${seg}${reset}</div>${glass}${eco}${sty}${mot}<div class="grid">${tiles}</div>`;
+      // Schneehaufen: gilt je Gerät (Browser-Speicher), nur bei Schneefall und nicht am Handy (Wischen ≠ Scrollen)
+      const P = A?.pile, onOff = (key, on) => `<div class="seg">${[["Aus", "0"], ["An", "1"]].map(([l, v]) => `<button data-${key}="${v}" class="${on === (v === "1") ? "on" : ""}">${t(l)}</button>`).join("")}</div>`;
+      const pileRow = P && m.pickMotion && innerWidth >= P.minWidth && A.resolve(m.motion || "auto", m.style || "glas") === "snow"
+        ? `<div class="eco"><ha-icon icon="mdi:snowflake-variant"></ha-icon><span class="lbl">${t("Schnee bleibt liegen")}</span>${onOff("pile", P.on())}
+            <span class="note">${t("Flocken sammeln sich langsam am unteren Rand, auch bei ausgeschaltetem Monitor. Zum Freimachen wegwischen.")}</span></div>
+          ${P.on() ? `<div class="eco"><ha-icon icon="mdi:sleigh"></ha-icon><span class="lbl">${t("Weihnachtsmann-Knopf")}</span>${onOff("santa", P.santa())}
+            <span class="note">${t("Ein Knopf in der Ecke ruft den Schlitten, der den Schnee wegbläst.")}</span></div>` : ""}` : "";
+      this.shadowRoot.innerHTML = `<style>${STYLE}</style><div class="top"><div class="hint">${esc(m.hint)}</div>${seg}${reset}</div>${glass}${eco}${sty}${mot}${pileRow}<div class="grid">${tiles}</div>`;
       const rng = this.shadowRoot.querySelector(".glass input");
       if (rng) {
         const val = this.shadowRoot.querySelector(".glass .val");
@@ -9667,6 +10407,8 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
       }
       this.shadowRoot.querySelectorAll(".seg button[data-m]").forEach((b) => b.addEventListener("click", () => m.pickMode(b.dataset.m)));
       this.shadowRoot.querySelectorAll(".eco button[data-e]").forEach((b) => b.addEventListener("click", () => m.pickEco(b.dataset.e)));
+      this.shadowRoot.querySelectorAll(".eco button[data-pile]").forEach((b) => b.addEventListener("click", () => { P.set("pile", b.dataset.pile === "1"); this._refresh(); }));
+      this.shadowRoot.querySelectorAll(".eco button[data-santa]").forEach((b) => b.addEventListener("click", () => { P.set("santa", b.dataset.santa === "1"); this._refresh(); }));
       this.shadowRoot.querySelectorAll(".d").forEach((b) => b.addEventListener("click", () => m.pickDesign(b.dataset.o)));
       this.shadowRoot.querySelectorAll(".s[data-s]").forEach((b) => b.addEventListener("click", () => m.pickStyle(b.dataset.s)));
       this.shadowRoot.querySelectorAll(".s[data-a]").forEach((b) => b.addEventListener("click", () => { m.pickMotion(b.dataset.a); setTimeout(() => window.dispatchEvent(new Event("nullglow-motion")), 300); }));
@@ -10642,7 +11384,11 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
       const ph = (v, d, txt) => (v !== null && v !== undefined && fin(v) ? t(txt, { v: de(v, d) }) : "");
       const inp = (f, label, placeholder, mode = "decimal") => `<label class="fl"><span>${esc(label)}</span><input data-f="${f}" inputmode="${mode}" value="${esc(S[f])}" placeholder="${esc(placeholder || "")}"></label>`;
       const ev = K === "ev" || K === "phev", fu = K !== "ev";
-      const priceSensors = Object.keys(h.states).filter((id) => id.startsWith("sensor.") && /(€|eur|\$|usd|£|gbp|chf|kr)\s*\/\s*(l|liter|litre)$/i.test(h.states[id].attributes?.unit_of_measurement || "")).slice(0, 8);
+      // Spritpreis-Sensoren: Einheit „€/l“ — oder wie bei Tankerkönig nur „€“ mit fuel_type (e5, e10, diesel …); passender Kraftstoff zuerst
+      const cur0 = /^(€|eur|\$|usd|£|gbp|chf|kr)$/i, perL = /(€|eur|\$|usd|£|gbp|chf|kr)\s*\/\s*(l|liter|litre)$/i;
+      const priceSensors = Object.keys(h.states).filter((id) => { const a = h.states[id].attributes || {}, u = String(a.unit_of_measurement || "").trim();
+        return id.startsWith("sensor.") && (perL.test(u) || (cur0.test(u) && /^(e5|e10|super|diesel|lpg|cng|super_plus)$/i.test(String(a.fuel_type || "")))); })
+        .sort((x, y) => { const d = (id) => (/diesel/i.test(String(h.states[id].attributes.fuel_type || id)) === (S.fuel_type === "diesel") ? 0 : 1); return d(x) - d(y); }).slice(0, 8);
       const row = (x, i) => `<div class="cr2"><input data-cf="${i}:name" value="${esc(x.name)}" placeholder="${esc(t("z. B. altes Auto"))}">
         <input data-cf="${i}:consumption" inputmode="decimal" value="${esc(x.consumption)}" placeholder="${x.fuel === "electric" ? "kWh/100" : "l/100"}">
         <div class="seg sm">${[["petrol", "Benzin"], ["diesel", "Diesel"], ["electric", "Elektro"]].map(([k, l]) => `<button class="${x.fuel === k ? "on" : ""}" data-a="set-cfuel:${i}:${k}">${esc(t(l))}</button>`).join("")}</div>
@@ -11356,7 +12102,7 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     // Farbwörter der Design-Titel (ng-design-title)
     "Grün": "Green", "Violett": "Violet", "Türkis": "Teal", "Orange": "Orange", "Gold": "Gold", "Rosé": "Rose",
     "Blau": "Blue", "Eisblau": "Ice blue", "Limette": "Lime", "Magenta": "Magenta", "Silber": "Silver",
-    "Indigo": "Indigo", "Sand": "Sand", "Mint": "Mint",
+    "Indigo": "Indigo", "Sand": "Sand", "Mint": "Mint", "Weihnachten": "Christmas", "Rot & Grün": "Red & green",
     // Seiten, Überschriften, Karten
     "Übersicht": "Overview", "Licht": "Lights", "Klima": "Climate", "Energie": "Energy", "Kameras": "Cameras", "Kamera": "Camera",
     "Kalender": "Calendar", "Sauger": "Vacuum", "Mäher": "Mower", "Rollläden": "Blinds", "Zuhause": "Home", "Termine": "Agenda",
@@ -12246,7 +12992,10 @@ ha-tile-info {
 .bubble-button.highlight .bubble-background-color { background: var(--ng-acc, var(--primary-color)) !important; box-shadow: 0 0 22px -4px rgba(var(--rgb-ng-acc, 124, 255, 178), calc(.7 * var(--ng-glow-k, 1))); }
 .bubble-button.highlight .bubble-icon, .bubble-button.highlight .bubble-name { color: var(--ng-acc-ink, #fff) !important; }
 .horizontal-buttons-stack-container::before { content: ""; position: absolute; inset: 0; border-radius: 999px; pointer-events: none; background: linear-gradient(var(--ng-glass-2, rgba(255, 255, 255, .06)), var(--ng-glass-2, rgba(255, 255, 255, .06))), rgba(var(--rgb-ng-bg, 10, 14, 18), .78); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); box-shadow: inset 0 0 0 1px var(--ng-line, rgba(255, 255, 255, .1)), 0 12px 40px -12px rgba(0, 0, 0, .6); }
-@media (min-width: 600px) { .card-content { overflow: visible !important; } .horizontal-buttons-stack-container::before { inset: -6px; } }
+.card-content.card-content.card-content { padding-top: 16px !important; margin-top: -16px; pointer-events: none; }
+.horizontal-buttons-stack-container { pointer-events: auto; }
+.horizontal-buttons-stack-container::after { content: ""; position: absolute; left: 14px; right: 14px; top: -14px; height: 18px; pointer-events: none; background: var(--ng-snowcap, none); -webkit-mask: var(--ng-snowcap-mask, none); mask: var(--ng-snowcap-mask, none); }
+@media (min-width: 600px) { .card-content { overflow: visible !important; } .horizontal-buttons-stack-container::before { inset: 0 -6px -6px; } }
 `;
   // ── Nav-Dock Ende ──
   function navSection(views, base, extra = []) {
