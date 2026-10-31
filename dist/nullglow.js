@@ -3,9 +3,9 @@
  * Built by tools/build-hacs.py — do not edit by hand. */
 
 window.__NG_BUNDLE = true;
-window.__NULLGLOW_VERSION = "2.13.1";
-window.__NULLGLOW_BUILD = "863ba76";
-console.info("%c NULLGLOW %c v2.13.1 · 863ba76 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
+window.__NULLGLOW_VERSION = "2.13.2";
+window.__NULLGLOW_BUILD = "d002c68";
+console.info("%c NULLGLOW %c v2.13.2 · d002c68 ", "background:#7cffb2;color:#04140d;font-weight:700", "color:#7cffb2");
 
 // ───── nullglow-fonts.js ─────
 (() => {
@@ -3493,6 +3493,7 @@ window.__NULLGLOW_THEMES = {
 "app-header-background-color": "rgba(var(--rgb-ng-bg), 0.72)",
 "app-theme-color": "#1a0c0a",
 "ng-design-title": "Noël — Weihnachten",
+"ng-scene": "1",
 "ng-motion-auto": "snow",
 "ng-snowcap-mask": "linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%)",
 "ng-snowcap": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='18' viewBox='0 0 240 18'%3E%3Cpath fill='rgba(40, 15, 10, 0.45)' transform='translate(0 1.5)' d='M0 6.5L6 6.7L12 5.4L18 4.7L24 5.4L30 5.9L36 5.5L42 5.7L48 5.8L54 4.2L60 2.3L66 2.1L72 2.4L78 2.3L84 3.1L90 4.6L96 4.8L102 3.9L108 3.9L114 4.6L120 4.6L126 5.2L132 6.9L138 7.7L144 6.7L150 5.7L156 5.2L162 4.1L168 3.0L174 3.5L180 4.5L186 4.0L192 3.3L198 3.3L204 2.8L210 1.8L216 2.4L222 4.3L228 5.3L234 5.7L240 6.5L240 13.8L234 12.6L228 12.1L222 12.3L216 12.5L210 11.9L204 10.8L198 10.4L192 11.2L186 12.8L180 13.9L174 14.0L168 13.3L162 13.0L156 13.3L150 13.7L144 13.3L138 11.9L132 10.6L126 10.3L120 11.2L114 12.4L108 12.9L102 12.7L96 12.5L90 13.1L84 14.2L78 14.6L72 13.8L66 12.2L60 11.1L54 11.0L48 11.7L42 12.0L36 11.7L30 11.3L24 11.7L18 13.1L12 14.4L6 14.7L0 13.8Z'/%3E%3Cpath fill='%23fff8f0' d='M0 6.5L6 6.7L12 5.4L18 4.7L24 5.4L30 5.9L36 5.5L42 5.7L48 5.8L54 4.2L60 2.3L66 2.1L72 2.4L78 2.3L84 3.1L90 4.6L96 4.8L102 3.9L108 3.9L114 4.6L120 4.6L126 5.2L132 6.9L138 7.7L144 6.7L150 5.7L156 5.2L162 4.1L168 3.0L174 3.5L180 4.5L186 4.0L192 3.3L198 3.3L204 2.8L210 1.8L216 2.4L222 4.3L228 5.3L234 5.7L240 6.5L240 13.8L234 12.6L228 12.1L222 12.3L216 12.5L210 11.9L204 10.8L198 10.4L192 11.2L186 12.8L180 13.9L174 14.0L168 13.3L162 13.0L156 13.3L150 13.7L144 13.3L138 11.9L132 10.6L126 10.3L120 11.2L114 12.4L108 12.9L102 12.7L96 12.5L90 13.1L84 14.2L78 14.6L72 13.8L66 12.2L60 11.1L54 11.0L48 11.7L42 12.0L36 11.7L30 11.3L24 11.7L18 13.1L12 14.4L6 14.7L0 13.8Z'/%3E%3C/svg%3E\") 0 0 / 240px 18px repeat-x"
@@ -3552,6 +3553,7 @@ window.__NULLGLOW_THEMES = {
 "app-header-background-color": "rgba(255, 255, 255, 0.72)",
 "app-theme-color": "#fbf3e6",
 "ng-design-title": "Noël — Weihnachten",
+"ng-scene": "1",
 "ng-motion-auto": "snow",
 "ng-snowcap-mask": "linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%)",
 "ng-snowcap": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='18' viewBox='0 0 240 18'%3E%3Cpath fill='rgba(120, 90, 80, 0.32)' transform='translate(0 1.5)' d='M0 6.5L6 6.7L12 5.4L18 4.7L24 5.4L30 5.9L36 5.5L42 5.7L48 5.8L54 4.2L60 2.3L66 2.1L72 2.4L78 2.3L84 3.1L90 4.6L96 4.8L102 3.9L108 3.9L114 4.6L120 4.6L126 5.2L132 6.9L138 7.7L144 6.7L150 5.7L156 5.2L162 4.1L168 3.0L174 3.5L180 4.5L186 4.0L192 3.3L198 3.3L204 2.8L210 1.8L216 2.4L222 4.3L228 5.3L234 5.7L240 6.5L240 13.8L234 12.6L228 12.1L222 12.3L216 12.5L210 11.9L204 10.8L198 10.4L192 11.2L186 12.8L180 13.9L174 14.0L168 13.3L162 13.0L156 13.3L150 13.7L144 13.3L138 11.9L132 10.6L126 10.3L120 11.2L114 12.4L108 12.9L102 12.7L96 12.5L90 13.1L84 14.2L78 14.6L72 13.8L66 12.2L60 11.1L54 11.0L48 11.7L42 12.0L36 11.7L30 11.3L24 11.7L18 13.1L12 14.4L6 14.7L0 13.8Z'/%3E%3Cpath fill='%23ffffff' d='M0 6.5L6 6.7L12 5.4L18 4.7L24 5.4L30 5.9L36 5.5L42 5.7L48 5.8L54 4.2L60 2.3L66 2.1L72 2.4L78 2.3L84 3.1L90 4.6L96 4.8L102 3.9L108 3.9L114 4.6L120 4.6L126 5.2L132 6.9L138 7.7L144 6.7L150 5.7L156 5.2L162 4.1L168 3.0L174 3.5L180 4.5L186 4.0L192 3.3L198 3.3L204 2.8L210 1.8L216 2.4L222 4.3L228 5.3L234 5.7L240 6.5L240 13.8L234 12.6L228 12.1L222 12.3L216 12.5L210 11.9L204 10.8L198 10.4L192 11.2L186 12.8L180 13.9L174 14.0L168 13.3L162 13.0L156 13.3L150 13.7L144 13.3L138 11.9L132 10.6L126 10.3L120 11.2L114 12.4L108 12.9L102 12.7L96 12.5L90 13.1L84 14.2L78 14.6L72 13.8L66 12.2L60 11.1L54 11.0L48 11.7L42 12.0L36 11.7L30 11.3L24 11.7L18 13.1L12 14.4L6 14.7L0 13.8Z'/%3E%3C/svg%3E\") 0 0 / 240px 18px repeat-x"
@@ -3761,6 +3763,7 @@ window.__NULLGLOW_THEMES = {
 "app-header-background-color": "rgba(var(--rgb-ng-bg), 0.72)",
 "app-theme-color": "#0c2119",
 "ng-design-title": "Weihnacht — Rot & Grün",
+"ng-scene": "1",
 "ng-motion-auto": "snow",
 "ng-snowcap-mask": "linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%)",
 "ng-snowcap": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='18' viewBox='0 0 240 18'%3E%3Cpath fill='rgba(4, 24, 16, 0.5)' transform='translate(0 1.5)' d='M0 6.5L6 6.7L12 5.4L18 4.7L24 5.4L30 5.9L36 5.5L42 5.7L48 5.8L54 4.2L60 2.3L66 2.1L72 2.4L78 2.3L84 3.1L90 4.6L96 4.8L102 3.9L108 3.9L114 4.6L120 4.6L126 5.2L132 6.9L138 7.7L144 6.7L150 5.7L156 5.2L162 4.1L168 3.0L174 3.5L180 4.5L186 4.0L192 3.3L198 3.3L204 2.8L210 1.8L216 2.4L222 4.3L228 5.3L234 5.7L240 6.5L240 13.8L234 12.6L228 12.1L222 12.3L216 12.5L210 11.9L204 10.8L198 10.4L192 11.2L186 12.8L180 13.9L174 14.0L168 13.3L162 13.0L156 13.3L150 13.7L144 13.3L138 11.9L132 10.6L126 10.3L120 11.2L114 12.4L108 12.9L102 12.7L96 12.5L90 13.1L84 14.2L78 14.6L72 13.8L66 12.2L60 11.1L54 11.0L48 11.7L42 12.0L36 11.7L30 11.3L24 11.7L18 13.1L12 14.4L6 14.7L0 13.8Z'/%3E%3Cpath fill='%23ffffff' d='M0 6.5L6 6.7L12 5.4L18 4.7L24 5.4L30 5.9L36 5.5L42 5.7L48 5.8L54 4.2L60 2.3L66 2.1L72 2.4L78 2.3L84 3.1L90 4.6L96 4.8L102 3.9L108 3.9L114 4.6L120 4.6L126 5.2L132 6.9L138 7.7L144 6.7L150 5.7L156 5.2L162 4.1L168 3.0L174 3.5L180 4.5L186 4.0L192 3.3L198 3.3L204 2.8L210 1.8L216 2.4L222 4.3L228 5.3L234 5.7L240 6.5L240 13.8L234 12.6L228 12.1L222 12.3L216 12.5L210 11.9L204 10.8L198 10.4L192 11.2L186 12.8L180 13.9L174 14.0L168 13.3L162 13.0L156 13.3L150 13.7L144 13.3L138 11.9L132 10.6L126 10.3L120 11.2L114 12.4L108 12.9L102 12.7L96 12.5L90 13.1L84 14.2L78 14.6L72 13.8L66 12.2L60 11.1L54 11.0L48 11.7L42 12.0L36 11.7L30 11.3L24 11.7L18 13.1L12 14.4L6 14.7L0 13.8Z'/%3E%3C/svg%3E\") 0 0 / 240px 18px repeat-x"
@@ -3820,6 +3823,7 @@ window.__NULLGLOW_THEMES = {
 "app-header-background-color": "rgba(255, 255, 255, 0.72)",
 "app-theme-color": "#fdf6ec",
 "ng-design-title": "Weihnacht — Rot & Grün",
+"ng-scene": "1",
 "ng-motion-auto": "snow",
 "ng-snowcap-mask": "linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%)",
 "ng-snowcap": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='18' viewBox='0 0 240 18'%3E%3Cpath fill='rgba(40, 90, 65, 0.34)' transform='translate(0 1.5)' d='M0 6.5L6 6.7L12 5.4L18 4.7L24 5.4L30 5.9L36 5.5L42 5.7L48 5.8L54 4.2L60 2.3L66 2.1L72 2.4L78 2.3L84 3.1L90 4.6L96 4.8L102 3.9L108 3.9L114 4.6L120 4.6L126 5.2L132 6.9L138 7.7L144 6.7L150 5.7L156 5.2L162 4.1L168 3.0L174 3.5L180 4.5L186 4.0L192 3.3L198 3.3L204 2.8L210 1.8L216 2.4L222 4.3L228 5.3L234 5.7L240 6.5L240 13.8L234 12.6L228 12.1L222 12.3L216 12.5L210 11.9L204 10.8L198 10.4L192 11.2L186 12.8L180 13.9L174 14.0L168 13.3L162 13.0L156 13.3L150 13.7L144 13.3L138 11.9L132 10.6L126 10.3L120 11.2L114 12.4L108 12.9L102 12.7L96 12.5L90 13.1L84 14.2L78 14.6L72 13.8L66 12.2L60 11.1L54 11.0L48 11.7L42 12.0L36 11.7L30 11.3L24 11.7L18 13.1L12 14.4L6 14.7L0 13.8Z'/%3E%3Cpath fill='%23ffffff' d='M0 6.5L6 6.7L12 5.4L18 4.7L24 5.4L30 5.9L36 5.5L42 5.7L48 5.8L54 4.2L60 2.3L66 2.1L72 2.4L78 2.3L84 3.1L90 4.6L96 4.8L102 3.9L108 3.9L114 4.6L120 4.6L126 5.2L132 6.9L138 7.7L144 6.7L150 5.7L156 5.2L162 4.1L168 3.0L174 3.5L180 4.5L186 4.0L192 3.3L198 3.3L204 2.8L210 1.8L216 2.4L222 4.3L228 5.3L234 5.7L240 6.5L240 13.8L234 12.6L228 12.1L222 12.3L216 12.5L210 11.9L204 10.8L198 10.4L192 11.2L186 12.8L180 13.9L174 14.0L168 13.3L162 13.0L156 13.3L150 13.7L144 13.3L138 11.9L132 10.6L126 10.3L120 11.2L114 12.4L108 12.9L102 12.7L96 12.5L90 13.1L84 14.2L78 14.6L72 13.8L66 12.2L60 11.1L54 11.0L48 11.7L42 12.0L36 11.7L30 11.3L24 11.7L18 13.1L12 14.4L6 14.7L0 13.8Z'/%3E%3C/svg%3E\") 0 0 / 240px 18px repeat-x"
@@ -10946,7 +10950,10 @@ ${LIT} { ${ICON} { background: rgb(var(--ngl, var(--rgb-ng-acc))) !important; } 
     // Nur die Modi, die das Basis-Design hat (Designs ohne modes = nur dunkel)
     if (!base.modes) return { ...base, ...own, ...(S.dark || {}), "card-mod-card": css };
     const modes = {};
-    for (const m of ["dark", "light"]) if (base.modes[m]) modes[m] = { ...base.modes[m], ...own, ...(S[m] || {}) };
+    for (const m of ["dark", "light"]) if (base.modes[m]) {
+      modes[m] = { ...base.modes[m], ...own, ...(S[m] || {}) };
+      if (base.modes[m]["ng-scene"]) modes[m]["lovelace-background"] = base.modes[m]["lovelace-background"];   // Design mit eigenem Bild (Weihnachten): Stil formt nur die Karten
+    }
     return { ...base, ...own, "card-mod-card": css, modes };
   }
 
@@ -15212,6 +15219,13 @@ ha-tile-info {
           && lv.config.views.some((v) => v.theme && v.theme !== want)) {
         p._setLovelaceConfig({ ...lv.config, views: lv.config.views.map((v) => (v.theme ? { ...v, theme: want } : v)) }, lv.rawConfig, lv.mode);
         setTimeout(() => { window.dispatchEvent(new Event("nullglow-design")); window.__ngRepaint(); }, 400);
+      }
+      // HA prüft „fixed“ im Hintergrund nur, wenn sich hass.themes ändert, nicht beim View-Theme: Ohne das Attribut ist die Ebene so hoch
+      // wie die ganze Seite, und iOS (kennt background-attachment: fixed nicht) zeigt die Bäume erst ganz unten -> nachziehen, je Theme einmal
+      const vb = el("hui-view-background"), vt = el("hui-view-container")?.__themes?.cacheKey;
+      if (vb && !vb.background && vt && vb.__ngFixedFor !== vt) {
+        vb.__ngFixedFor = vt;
+        vb.toggleAttribute("fixed-background", getComputedStyle(vb).getPropertyValue("--lovelace-background").split(" ").includes("fixed"));
       }
     }
     const dark = m === "dark" ? true : m === "light" ? false : m === "sun" ? (h.states["sun.sun"]?.state !== "above_horizon") : null;
